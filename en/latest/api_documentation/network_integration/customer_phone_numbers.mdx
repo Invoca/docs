@@ -1,0 +1,221 @@
+---
+title: "Customer Phone Numbers"
+description: "Manage customer phone numbers via the Invoca Network Integration API."
+---
+
+# Customer Phone Numbers
+
+## Manage Destinations (aka Customer Phone Numbers)
+
+Destinations are an alternate way of managing [RingPools](/en/latest/api_documentation/network_integration/ringpools/index).
+
+[Learn more about RingPools here](https://community.invoca.com/t5/call-attribution/basic-knowledge-ringpools/ta-p/530).
+
+### Properties
+
+| Property | Type | Value |
+|----------|------|-------|
+| id | integer (read-only) | The internal Invoca id of the Destination. |
+| country_code | string | Country code of the phone number. |
+| phone_number | string | Phone number of the Destination. |
+| primary_url | string | Website or page URL on which the destination is applied. |
+| requested_destination_name | string (read-only) | Alias for the destination. Auto-generated names. |
+| **advertiser_campaign** | | |
+| id_from_network | string | The network object_id for this Advertiser Campaign. Unique within network. Not required when auto-generation is enabled at network level. |
+| name | string | Campaign name. |
+| status | string | Current campaign state. |
+| **dynamic_number_pool** | | |
+| id | integer (read-only) | The internal Invoca id of the RingPool. |
+| id_from_network | string (required) | Network specific id of the RingPool. Unique within network. Not required when auto-generation is enabled at network level. |
+| name | string | Arbitrary string. Names the RingPool. |
+| object_url | string (read-only) | URL for reaching the RingPool in the UI. |
+| lifetime_seconds | integer | The guaranteed minimum time that the number will be allocated for this RingPool. |
+| max_pool_size | integer | The maximum amount of phone numbers to be allotted at one time. |
+| preferred | boolean | true or false. Selects this RingPool if the advertiser has multiple RingPools for the campaign and the web integration code does not specify which pool to use. |
+| destination_phone_number | A phone number to be associated with the RingPool. | When using Destinations UI or the forward to destination IVR node, this number will be used. |
+| fill_immediately | boolean | When true, the ringpool will immediately be filled with phone numbers up to the max_pool_size, if numbers are available. When false, the pool will initially fill at 10% capacity to conserve phone number usage. The ringpool will increase phone numbers based on ringpool autoscaling settings and traffic volume. |
+
+Endpoint:
+
+```
+https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/customer_phone_numbers.json
+```
+
+<Note>
+**NOTE: Creating & Deleting Destinations**
+
+Creating a Destination via this endpoint isn't possible. A Destination can be made alongside a RingPool that it'll be associated with via the RingPool endpoint ([Documentation](/en/latest/api_documentation/network_integration/ringpools/index)).
+
+The Destination can be deleted via this endpoint, but if the associated RingPool is going to be deleted as well, you can save a request by utilizing the delete_detected_phone_number parameter in the RingPool endpoint.
+</Note>
+
+---
+
+## GET /customer_phone_numbers
+
+Get all Destinations
+
+### Parameters
+
+| Property | Type | Value |
+|----------|------|-------|
+| limit | integer (optional) (Default 100) | Number of objects to be returned in a single request. If not provided, first 100 objects will be returned. |
+| start | integer (optional) (Default 0) | First `x` number of objects to skip in the response. If not provided, the response will start from the first available object. |
+| query | string (optional) | Search string to search by phone number. If not provided, all objects will be returned given no other filters are included. |
+| status | string (optional) | To filter results by a specific type. If not provided, all objects will be returned given no other filters are included. Possible values include: **ignored** (Fetches only destinations that were ignored), **tracked** (Fetches only destinations that have a ringpool associated with them), **discovered** (Fetches only destinations that were neither ignored nor have a ringpool associated with them). |
+| sort_by | string (optional) (Default id) | Sort the result by a specific column. |
+| sort_dir | string (optional) (Default asc) | Sorting direction for the objects being returned. Possible values include `asc` and `desc`. |
+
+### Examples
+
+Read all Destinations as an array.
+
+Endpoint:
+
+```
+https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/customer_phone_numbers.json
+```
+
+Response Code: 200
+
+Response Body:
+
+```json
+{
+  "data": [
+    {
+      "id": "value",
+      "country_code": "1",
+      "phone_number": "202-555-0001",
+      "primary_url": "",
+      "requested_destination_name": "",
+      "acknowledged_at": null,
+      "created_at": "2023-10-19 03:34:42 -0700",
+      "updated_at": "2023-10-19 03:34:42 -0700",
+      "advertiser_campaign": {
+        "id_from_network": "83",
+        "name": "My test campaign 1 - New York",
+        "status": "Activated"
+      },
+      "dynamic_number_pool": {
+        "id_from_network": "13",
+        "name": "tag 1.83",
+        "pool_type": "Custom",
+        "destination_type": "Advertiser",
+        "lifetime_seconds": 300,
+        "max_pool_size": 2,
+        "preferred": false,
+        "is_first_preference": true,
+        "use_custom_data": true
+      },
+      "ignored_at": null,
+      "notified_at": null
+    },
+    {
+      "id": "value",
+      "country_code": "1",
+      "phone_number": "202-555-0002",
+      "primary_url": "",
+      "requested_destination_name": "",
+      "acknowledged_at": null,
+      "created_at": "2023-10-19 03:49:21 -0700",
+      "updated_at": "2023-10-19 03:54:56 -0700",
+      "advertiser_campaign": {
+        "id_from_network": "87",
+        "name": "Live campaign New Jersey",
+        "status": "Activated"
+      },
+      "dynamic_number_pool": {
+        "id_from_network": null,
+        "name": null,
+        "pool_type": null,
+        "destination_type": null,
+        "lifetime_seconds": null,
+        "max_pool_size": null,
+        "preferred": null,
+        "is_first_preference": null,
+        "use_custom_data": null
+      },
+      "ignored_at": null,
+      "notified_at": null
+    }
+  ],
+  "requestId": null,
+  "recordsTotal": 2
+}
+```
+
+---
+
+## GET /customer_phone_numbers/\<customer_phone_number_id\>
+
+Get a Destination
+
+### Examples
+
+Read a Destination
+
+Endpoint:
+
+```
+https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/customer_phone_numbers/<customer_phone_number_id>.json
+```
+
+Response Code: 200
+
+Response Body:
+
+```json
+{
+  "id": "value",
+  "country_code": "1",
+  "phone_number": "202-555-0001",
+  "primary_url": "",
+  "requested_destination_name": "",
+  "acknowledged_at": null,
+  "created_at": "2023-10-19 03:49:21 -0700",
+  "updated_at": "2023-10-19 03:54:56 -0700",
+  "advertiser_campaign": {
+    "id_from_network": "87",
+    "name": "test-campaign Arizona",
+    "status": "Activated"
+  },
+  "dynamic_number_pool": {
+    "id_from_network": "13",
+    "name": "tag 12.83",
+    "pool_type": "Custom",
+    "destination_type": "Advertiser",
+    "lifetime_seconds": 300,
+    "max_pool_size": 2,
+    "preferred": false,
+    "is_first_preference": true,
+    "use_custom_data": true
+  },
+  "ignored_at": null,
+  "notified_at": null
+}
+```
+
+---
+
+## DELETE /customer_phone_numbers/\<customer_phone_number_id\>
+
+Delete a Destination
+
+### Examples
+
+Delete a Destination
+
+Endpoint:
+
+```
+https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/customer_phone_numbers/<customer_phone_number_id>.json
+```
+
+Response Code: 200
+
+Response Body:
+
+```json
+{}
+```
