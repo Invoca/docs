@@ -1,0 +1,262 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Invoca",
+  "colors": {
+    "primary": "#00AD85",
+    "light": "#00AD85",
+    "dark": "#00AD85"
+  },
+  "appearance": {
+    "default": "light"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "fonts": {
+    "body": {
+      "family": "Gt America",
+      "source": "https://cdn.prod.website-files.com/5d82e225060d003d65ddae98/677d87009656fca63c0c7d8f_GT-America-Standard-Regular.woff2",
+      "format": "woff2"
+    }
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    "products": [
+      {
+        "product": "Invoca Support",
+        "tabs": [
+          {
+            "tab": "Home",
+            "icon": "house",
+            "pages": ["index"]
+          },
+          {
+            "tab": "Guide",
+            "icon": "book-open",
+            "pages": [
+              "s/article/jhdcp92865-587",
+              "s/article/jhdcp92865-601",
+              "s/article/jhdcp92865-688",
+              "s/article/jhdcp92865-585",
+              "s/article/jhdcp92865-582",
+              "s/article/How-to-Add-and-Map-Custom-Attributes-in-Okta-for-Configuring-Required-SSO-SAML-Parameters",
+              "s/article/jhdcp92865-570",
+              "s/article/jhdcp92865-698",
+              "s/article/jhdcp92865-8699"
+            ]
+          }
+        ]
+      },
+      {
+        "product": "Developer Portal",
+        "tabs": [
+          {
+            "tab": "Home",
+            "icon": "house",
+            "pages": ["en/latest"]
+          },
+          {
+            "tab": "Basics",
+            "icon": "list-radio",
+            "pages": [
+              {
+                "group": "Basics",
+                "icon": "list-radio",
+                "root": "en/latest/basics",
+                "pages": [
+                  "en/latest/basics/design_principles",
+                  "en/latest/basics/error_handling",
+                  "en/latest/basics/saml_single_sign_on"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Documentation",
+            "icon": "book",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "icon": "key",
+                "root": "en/latest/api_documentation",
+                "pages": [
+                  "en/latest/api_documentation/manage_api_credentials"
+                ]
+              },
+              {
+                "group": "Network Integration",
+                "root": "en/latest/api_documentation/network_integration",
+                "pages": [
+                  "en/latest/api_documentation/network_integration/advertiser_campaigns",
+                  {
+                    "group": "Advertiser Campaigns",
+                    "root": "en/latest/api_documentation/network_integration/advertiser_campaigns",
+                    "pages": [
+                      "en/latest/api_documentation/network_integration/advertiser_campaigns/get-a-campaign-for-an-advertiser",
+                      "en/latest/api_documentation/network_integration/advertiser_campaigns/create-an-advertiser-campaign"
+                    ]
+                  },
+                  "en/latest/api_documentation/network_integration/advertiser_users",
+                  {
+                    "group": "Advertiser Users",
+                    "root": "en/latest/api_documentation/network_integration/advertiser_users",
+                    "pages": [
+                      "en/latest/api_documentation/network_integration/advertiser_users/get-all-advertiser-users-for-advertiser",
+                      "en/latest/api_documentation/network_integration/advertiser_users/create-an-advertiser-user",
+                      "en/latest/api_documentation/network_integration/advertiser_users/update-an-advertiser-user",
+                      "en/latest/api_documentation/network_integration/advertiser_users/delete-an-advertiser-user"
+                    ]
+                  },
+                  "en/latest/api_documentation/network_integration/advertisers",
+                  "en/latest/api_documentation/network_integration/affiliates",
+                  "en/latest/api_documentation/network_integration/affiliate_campaigns",
+                  "en/latest/api_documentation/network_integration/advertiser_affiliate_relationships",
+                  "en/latest/api_documentation/network_integration/networks",
+                  "en/latest/api_documentation/network_integration/promo_numbers",
+                  "en/latest/api_documentation/network_integration/call_activity_tracking",
+                  "en/latest/api_documentation/network_integration/call_recording_condition",
+                  "en/latest/api_documentation/network_integration/prompt_recordings",
+                  "en/latest/api_documentation/network_integration/prompt_voice",
+                  "en/latest/api_documentation/network_integration/set_call_recorded_prompt",
+                  "en/latest/api_documentation/network_integration/custom_challenge_prompts",
+                  "en/latest/api_documentation/network_integration/custom_ivr_error_prompts",
+                  "en/latest/api_documentation/network_integration/automated_speech_recognition",
+                  "en/latest/api_documentation/network_integration/customer_phone_numbers",
+                  "en/latest/api_documentation/network_integration/js_tags",
+                  "en/latest/api_documentation/network_integration/tag_revisions",
+                  "en/latest/api_documentation/network_integration/ringpools",
+                  "en/latest/api_documentation/network_integration/whisper_prompts"
+                ]
+              },
+              {
+                "group": "Transactions API",
+                "root": "en/latest/api_documentation/transactions_api",
+                "pages": [
+                  "en/latest/api_documentation/transactions_api/network_user",
+                  "en/latest/api_documentation/transactions_api/advertiser_user",
+                  "en/latest/api_documentation/transactions_api/affiliate_user"
+                ]
+              },
+              {
+                "group": "Signal API",
+                "root": "en/latest/api_documentation/signal_api",
+                "pages": [
+                  "en/latest/api_documentation/signal_api/index"
+                ]
+              },
+              {
+                "group": "Call API",
+                "root": "en/latest/api_documentation/call_api",
+                "pages": [
+                  "en/latest/api_documentation/call_api/transcript_api",
+                  "en/latest/api_documentation/call_api/transcript_analysis_api"
+                ]
+              },
+              {
+                "group": "Call Ingestion API",
+                "root": "en/latest/api_documentation/call_ingestion_api",
+                "pages": [
+                  "en/latest/api_documentation/call_ingestion_api/index"
+                ]
+              },
+              {
+                "group": "Calls In Progress API",
+                "root": "en/latest/api_documentation/calls_in_progress_api",
+                "pages": [
+                  "en/latest/api_documentation/calls_in_progress_api/index"
+                ]
+              },
+              {
+                "group": "Bulk RingPool API",
+                "root": "en/latest/api_documentation",
+                "pages": [
+                  "en/latest/api_documentation/bulk_ringpool_api"
+                ]
+              },
+              {
+                "group": "SMS Messaging API",
+                "root": "en/latest/api_documentation/sms_messaging_api",
+                "pages": [
+                  "en/latest/api_documentation/sms_messaging_api/index"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Web Integration",
+            "icon": "gears",
+            "pages": [
+              {
+                "group": "Web Integration",
+                "root": "en/latest/web_integration",
+                "pages": [
+                  "en/latest/web_integration/invoca_tags",
+                  "en/latest/web_integration/toolkit_library",
+                  "en/latest/web_integration/pnapi_web_integration",
+                  "en/latest/web_integration/advertiser_web_integration"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Contact Us",
+          "href": "https://www.invoca.com/uk/company/contact",
+          "icon": "headset"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://www.invoca.com/uk/blog",
+          "icon": "newspaper"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://www.invoca.com/"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Login",
+        "href": "https://www2.invoca.net/login"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Learn more",
+      "href": "https://www.invoca.com/demo/book-a-demo"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/invoca",
+      "instagram": "https://www.instagram.com/invoca/",
+      "linkedin": "https://www.linkedin.com/company/invoca-com",
+      "facebook": "https://www.facebook.com/Invoca/",
+      "youtube": "https://www.youtube.com/channel/UCLQwNQFnN1OV1ACnlXICPKw"
+    }
+  }
+}
