@@ -1,0 +1,153 @@
+---
+title: "Advertiser Affiliate Relationships"
+description: "Manage relationships between advertisers and affiliates via the Invoca Network Integration API."
+---
+
+Changes to the Relationship between Advertiser and Affiliate on the network platform are replicated to the Invoca platform using this API.
+The operations on Advertiser-Affiliate Relationships are similar to Network, in that the interface is fully idempotent, and the create and update commands will act as "create or update".
+
+When setting the Relationship between an Advertiser and Affiliate to Approved, all current and future campaign applications made between the Affiliate and Advertiser will be auto-approved.
+If the Relationship is set to any status other than Approved, all current and future applications will be declined and any active affiliate campaigns will be suspended.
+
+Relationship status is set individually but reading is available for one or all relationships for an advertiser.
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| affiliate_id_from_network | string | The network id for the affiliate. (read only) |
+| status | One of: Pending, Approved, Suspended, Declined, Deactivated | Status of the advertiser-affiliate relationship. |
+
+**Endpoint:**
+
+`https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/advertisers/<advertiser_id_from_network>/affiliates/<affiliate_id_from_network>.json`
+
+---
+
+## GET All Advertiser-Affiliate Relationships
+
+Get all Advertiser-Affiliate relationships for an advertiser.
+
+### Example
+
+Read all relationships for advertiser id from network 1.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/advertisers/1/affiliates.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+[
+  {
+    "status": "Approved",
+    "affiliate_id_from_network": "222"
+  },
+  {
+    "status": "Approved",
+    "affiliate_id_from_network": "34518"
+  }
+]
+```
+
+---
+
+## GET Advertiser-Affiliate Relationship
+
+Get a single Advertiser-Affiliate relationship.
+
+### Example
+
+Read a single relationship.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/advertisers/1/affiliates/222.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "status": "Approved",
+  "affiliate_id_from_network": "222"
+}
+```
+
+---
+
+## POST Advertiser-Affiliate Relationship
+
+Create an Advertiser-Affiliate relationship.
+
+### Example
+
+Create relationship between Advertiser id from network 1 and Affiliate id from network 222.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/advertisers/1/affiliates/222.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "status": "Approved"
+}
+```
+
+**Response Code:** 201
+
+**Response Body:**
+
+```json
+{}
+```
+
+---
+
+## PUT Advertiser-Affiliate Relationship
+
+Update an Advertiser-Affiliate relationship.
+
+### Example
+
+Update an Advertiser-Affiliate relationship with id from network 1 and Affiliate id from network 222.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/advertisers/1/affiliates/222.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "status": "Approved"
+}
+```
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{}
+```
+
+---
+
+## DELETE Advertiser-Affiliate Relationship
+
+Delete an Advertiser-Affiliate relationship.
+
+### Example
+
+Delete a relationship.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/advertisers/1/affiliates/222.json`
+
+**Response Code:** 200

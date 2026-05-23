@@ -1,0 +1,234 @@
+---
+title: "Networks"
+description: "Manage network configuration and users via the Invoca Network Integration API."
+---
+
+Network users are replicated to and retrieved from the Invoca Marketing Automation Platform using this API.
+
+The network interface is fully idempotent, and the create and update commands both expect the full set of users each time. For instance, if on one POST two users, user1@invoca.com and user2@invoca.com are specified, but on the next POST, only user1@invoca.com is specified, then as a result of that second post, user2@invoca.com will be deleted. For this reason, POST and PUT requests are identical in their effect, although they return 201 and 200 codes respectively for ease of integration.
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| name | string | Network name (read only). |
+| **users** | JSON array of hashes | 0 or more users for the organization. Each must have first 5 fields below. |
+| id_from_network | string | The network id for this User. |
+| email_settings | JSON array of hashes | Each hash has two required fields: `email_address` (string in RFC 2822 addr-spec format — the user's email address, unique for this user) and `use_for_notifications` (boolean used to indicate if notifications should be sent to the email address). A user must have at least one email address where `use_for_notifications` is true. |
+| first_name | string (Required) | The user's first name. |
+| last_name | string (Required) | The user's last name. |
+| contact_phone_number | string in ITU E.164 format or 10-digit US form (no punctuation) | The user's phone number. |
+| oauth_refresh_token | string | Not used. Reserved. |
+| role | One of: Super (default), Manager, Member, Observer | This user's role in this organization. (A user may have different roles in different organizations.) |
+| notify_on_budgets | boolean, optional, defaults to false | |
+| notify_on_campaign_applications | boolean, optional, defaults to false | |
+| notify_on_campaign_expirations | boolean, optional, defaults to false | |
+| notify_on_creative_duplication_requests | boolean, optional, defaults to false | |
+| notify_on_network_announcements | boolean, optional, defaults to false | |
+| notify_on_performance_notifications | Deprecated, always returns false | |
+| notify_on_monthly_campaign_performance_reports | Deprecated, always returns false | |
+| notify_on_weekly_campaign_performance_reports | Deprecated, always returns false | |
+| notify_on_call_activities | boolean, optional, defaults to false | |
+| can_login_via_platform | boolean (read-only) | Indicates if user can directly login with username and password. If false, the user is managed via SSO. |
+
+**Endpoint:**
+
+`https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/network.json`
+
+---
+
+## GET Network and Users
+
+Get the network and its users.
+
+### Example
+
+Read network and its users.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/network.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "name": "Invoca",
+  "users": [
+    {
+      "id_from_network": "549494858585cFUyYnFHyiYA42TrpM",
+      "email_settings": [
+        { "email_address": "chris@nfltix.com", "use_for_notifications": true }
+      ],
+      "first_name": "Chris",
+      "last_name": "Dean",
+      "phone_number": "800-437-7950",
+      "role": "Manager",
+      "oauth_refresh_token": "556588585858585858585858858",
+      "notify_on_budgets": true,
+      "notify_on_campaign_applications": false,
+      "notify_on_campaign_expirations": false,
+      "notify_on_creative_duplication_requests": true,
+      "notify_on_network_announcements": true,
+      "notify_on_performance_notifications": false,
+      "notify_on_monthly_campaign_performance_reports": false,
+      "notify_on_weekly_campaign_performance_reports": false,
+      "notify_on_call_activities": true,
+      "can_login_via_platform": false
+    },
+    {
+      "id_from_network": "694940505055cFUyYnFHyiYA42TrpM",
+      "email_address": "jim@nfltix.com",
+      "first_name": "Jim",
+      "last_name": "Williams",
+      "phone_number": "800-437-7950",
+      "role": "Observer",
+      "oauth_refresh_token": "556588585858585858585858858",
+      "notify_on_budgets": true,
+      "notify_on_campaign_applications": false,
+      "notify_on_campaign_expirations": false,
+      "notify_on_creative_duplication_requests": true,
+      "notify_on_network_announcements": true,
+      "notify_on_performance_notifications": false,
+      "notify_on_monthly_campaign_performance_reports": false,
+      "notify_on_weekly_campaign_performance_reports": false,
+      "notify_on_call_activities": true,
+      "can_login_via_platform": false
+    }
+  ]
+}
+```
+
+---
+
+## POST Network Users
+
+Create network users.
+
+### Example
+
+Create network users.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/network.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "users": [
+    {
+      "id_from_network": "549494858585cFUyYnFHyiYA42TrpM",
+      "email_settings": [
+        { "email_address": "chris@nfltix.com", "use_for_notifications": true }
+      ],
+      "first_name": "Chris",
+      "last_name": "Dean",
+      "phone_number": "8004377950",
+      "role": "Manager",
+      "notify_on_budgets": true,
+      "notify_on_campaign_applications": false,
+      "notify_on_campaign_expirations": false,
+      "notify_on_creative_duplication_requests": true,
+      "notify_on_network_announcements": true,
+      "notify_on_call_activities": true
+    },
+    {
+      "id_from_network": "694940505055cFUyYnFHyiYA42TrpM",
+      "email_address": "jim@nfltix.com",
+      "first_name": "Jim",
+      "last_name": "Williams",
+      "phone_number": "8004377950",
+      "role": "Observer",
+      "notify_on_budgets": true,
+      "notify_on_campaign_applications": false,
+      "notify_on_campaign_expirations": false,
+      "notify_on_creative_duplication_requests": true,
+      "notify_on_network_announcements": true,
+      "notify_on_call_activities": true
+    }
+  ]
+}
+```
+
+**Response Code:** 201
+
+---
+
+## PUT Network Users
+
+Update network users.
+
+### Examples
+
+#### Update with Invalid Email Address
+
+Update a network and its user with an invalid email address.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/network.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "users": [
+    {
+      "id_from_network": "549494858585cFUyYnFHyiYA42TrpM",
+      "email_settings": [
+        { "email_address": "chris@domain.com", "use_for_notifications": true }
+      ],
+      "first_name": "Chris",
+      "last_name": "Dean",
+      "phone_number": "8004377950",
+      "role": "Manager",
+      "notify_on_budgets": true,
+      "notify_on_campaign_applications": false,
+      "notify_on_campaign_expirations": false,
+      "notify_on_creative_duplication_requests": true,
+      "notify_on_network_announcements": true,
+      "notify_on_call_activities": true
+    }
+  ]
+}
+```
+
+**Response Code:** 403
+
+**Response Body:**
+
+```json
+{
+  "errors": {
+    "users": [
+      {
+        "email_settings": [
+          { "email_address": ["is invalid"] }
+        ]
+      }
+    ]
+  }
+}
+```
+
+---
+
+#### Delete Network Users
+
+Delete network users by putting an empty user array.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/network.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "users": []
+}
+```
