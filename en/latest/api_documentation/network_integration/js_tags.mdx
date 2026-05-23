@@ -1,0 +1,1129 @@
+---
+title: "JS Tags"
+description: "Create, manage, and deploy JavaScript tags via the Invoca Network Integration API."
+---
+
+# JS Tags
+
+The Invoca Tag is a snippet of code that connects Invoca to your landing pages. This API documentation helps provide necessary features to create and manage an Invoca Tag and its revisions.
+
+More details on the Invoca Tags can be found:
+
+- [How to configure and deploy your Invoca Tag with the Invoca Tag Wizard](https://community.invoca.com/t5/call-tracking/how-to-configure-and-deploy-your-invoca-tag-with-the-invoca-tag/ta-p/465#U465)
+- [Invoca Tag Wizard - Custom Code Settings](https://community.invoca.com/t5/developer-features/invoca-tag-wizard-custom-code-settings/ta-p/691)
+
+## JS Tag Properties
+
+| Property | Type | Value |
+|----------|------|-------|
+| id | integer (read-only) | The internal Invoca id of the Invoca Tag. |
+| name | string | The name of the Invoca Tag. Unique within network. |
+| description | string | Invoca Tag description. |
+| landing_page_url | string | Website or page URL on which the destination is applied. |
+| active | boolean | Current status of the Invoca Tag. |
+| status | string | Current status. |
+| created_at | string (read-only) | Alias for the destination. Auto-generated names. |
+| **live_revision** | object | Current live revision. |
+| **draft_revision** | object | Current draft revision. |
+
+<Warning>
+When viewing JS Tags, you will also be viewing their associated revisions. Below is a reference for the revision and its attributes. If you are looking to edit the revision itself, use the <a href="/en/latest/api_documentation/network_integration/tag_revisions">Tag Revision API</a> instead.
+</Warning>
+
+## JS Tag Revision Parameters
+
+Revision for the JS Tag
+
+| Property | Type | Value |
+|----------|------|-------|
+| external_revision_id | string (read-only) | The current recent revision id if live or nil if draft. |
+| allow_overflow | boolean (default false) | Reserve one phone number for "overflow" and apply to any additional visitors. |
+| auto_create_local_ringpools | boolean (default false) | Auto create a ring pool with local numbers. |
+| auto_create_toll_free_ringpools | boolean (default false) | Auto create a ring pool with toll free numbers. |
+| auto_swap | boolean (default false) | Set to true if you want the Invoca JS to automatically detect and replace all numbers on page. This can be useful if you have a large list of phone numbers to manage, or don't know all of the numbers listed across your site. If true, `number_selector` and `number_to_replace` are not needed. |
+| body | string | Response body of the JS Tag to be added to the site. |
+| cache_lifetime_days | integer (default 30) | This setting determines how long Invoca identifies a visitor to your landing page as a unique visitor. By default, your Tag's attribution window is set to 30 days. |
+| collect_ip | boolean (default false) | If the IP address of the visiting user should be collected. |
+| collect_user_agent | boolean (default false) | If data like browser type, operating system, device model, and software versions of the visiting user should be collected. |
+| custom_code | string | The custom code is a scoped function to insert any custom JavaScript to manipulate the options config that will be passed into the Invoca Integration. |
+| **custom_data_fields** | array of objects | Marketing data fields. |
+| custom_data_fields[].enabled | boolean | Status of the marketing data field. |
+| custom_data_fields[].partner_name | string | Marketing data field name. |
+| custom_data_fields[].friendly_name | string | Marketing data field friendly name. |
+| custom_data_fields[].attribution_model | string | Marketing data field model type. |
+| custom_data_fields[].data_source_type | string | Data source for the marketing data field. |
+| custom_data_fields[].data_source_name | string | Friendly name for the marketing data field. |
+| default_campaign | object | Default campaign for all numbers found except for ones in `numbers_to_replace` and `numbers_to_not_replace` configurations. |
+| default_campaign.default_campaign_id | integer | Internal campaign id of the default campaign. |
+| default_campaign.default_campaign_name | string | Name of the default campaign. |
+| destination_param | string | Destination key for dynamic routing. |
+| message | string | Auto-generated or user defined note for the revision. |
+| **numbers_to_replace** | array of objects | Specify which number(s) to replace and what campaign ID to use for each number. |
+| numbers_to_replace[].phone_number | string | Phone number to be replaced. |
+| numbers_to_replace[].phone_number_e164 | string | E.164 version of the phone number to be replaced. |
+| numbers_to_replace[].advertiser_campaign_id | integer | Id of the advertiser campaign to be used for the above phone number. |
+| numbers_to_replace[].advertiser_campaign_name | string | Name of the advertiser campaign for the above phone number. |
+| numbers_to_replace[].advertiser_campaign_id_from_network | string | Id of the advertiser campaign to be used for the above phone number. |
+| numbers_to_replace[].destinations_enabled | boolean | If the linked advertiser campaign has destinations settings. |
+| **numbers_to_not_replace** | array of objects | Specify which number(s) to **not** replace. |
+| numbers_to_not_replace[].phone_number | string | Phone number to **not** be replaced. |
+| numbers_to_not_replace[].phone_number_e164 | string | E.164 version of the phone number to **not** be replaced. |
+| numbers_to_not_replace[].destinations_enabled | boolean (read-only) | Always false. |
+| organic_sources | boolean | If you receive organic traffic to your landing page, enabling this will fill in your utm marketing parameters with a default value to record that organic attribution. |
+| re_run_attribution_after | integer | Number of seconds after which Invoca tag makes another attempt at capturing Marketing Data. |
+| required_params | string | Comma-separated list of parameters required to trigger Invoca Tag. |
+| reset_cache_on | string | List of Marketing Data parameters Invoca uses to determine attribution for your paid search ads. |
+| wait_for_in_seconds | string | Number of seconds by which to delay Invoca tag from running. |
+| is_draft_revision | boolean (read-only) | Identifier to find if the revision is draft. |
+| is_live_revision | boolean (read-only) | Identifier to find if the revision is live. |
+
+Endpoint:
+
+`https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags.json`
+
+---
+
+## GET All Invoca Tags
+
+Retrieve all Invoca Tags as an array.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags.json`
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "data": [
+    {
+      "id": "0054811245",
+      "name": "my first Invoca tag",
+      "description": "This tag applies to Example.com",
+      "landing_page_url": "example.com",
+      "active": true,
+      "status": "Live",
+      "created_at": "2023-11-06 04:10:51 -0800",
+      "updated_at": "2023-11-07 02:41:33 -0800",
+      "live_revision": {
+        "author": "Oauth API User",
+        "allow_overflow": true,
+        "auto_create_local_ringpools": false,
+        "auto_create_toll_free_ringpools": false,
+        "auto_swap": false,
+        "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+        "cache_lifetime_days": 30,
+        "created_at": "2023-11-06T04:10:51-08:00",
+        "custom_code": "console.log('Invoca Tag paused at 11/06/23   8:26 AM');",
+        "custom_data_fields": [],
+        "default_campaign": {},
+        "destination_param": null,
+        "external_revision_id": 0,
+        "is_draft_revision": false,
+        "is_live_revision": true,
+        "js_tag_id": "0054811245",
+        "message": "Auto-generated initial revision",
+        "numbers_to_replace": [],
+        "numbers_to_not_replace": [],
+        "organic_sources": true,
+        "re_run_attribution_after": null,
+        "required_params": "",
+        "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+        "cache_lifetime_warning": null,
+        "updated_at": "2023-11-06T08:55:11-08:00",
+        "wait_for_in_seconds": 0,
+        "cache_lifetime_options": [1, 7, 14, 30],
+        "warning": null
+      },
+      "draft_revision": {
+        "author": "John Doe",
+        "allow_overflow": false,
+        "auto_create_local_ringpools": false,
+        "auto_create_toll_free_ringpools": false,
+        "auto_swap": true,
+        "body": "(function(networkId) {\nvar cacheLifetimeDays = 7;\n...\n})(26);\n",
+        "cache_lifetime_days": 7,
+        "created_at": "2023-11-06T04:10:51-08:00",
+        "custom_code": "",
+        "custom_data_fields": [
+          {
+            "enabled": true,
+            "partner_name": "landing_page",
+            "friendly_name": "Landing Page",
+            "attribution_model": "Unique",
+            "data_source_type": "URLParam",
+            "data_source_name": ""
+          },
+          {
+            "enabled": true,
+            "partner_name": "line_of_business",
+            "friendly_name": "Line of Business",
+            "attribution_model": "Unique",
+            "data_source_type": "URLParam",
+            "data_source_name": ""
+          },
+          {
+            "enabled": true,
+            "partner_name": "offer",
+            "friendly_name": "Offer",
+            "attribution_model": "Unique",
+            "data_source_type": "URLParam",
+            "data_source_name": ""
+          }
+        ],
+        "default_campaign": {
+          "default_campaign_id": 84,
+          "default_campaign_name": "Campaign for NY"
+        },
+        "destination_param": null,
+        "external_revision_id": null,
+        "is_draft_revision": true,
+        "is_live_revision": false,
+        "js_tag_id": "0054811245",
+        "message": "updated note",
+        "numbers_to_replace": [
+          {
+            "phone_number": "44454545557",
+            "phone_number_e164": "44454545557",
+            "advertiser_campaign_id": 83,
+            "advertiser_campaign_name": "Campaign for Manhattan",
+            "advertiser_campaign_id_from_network": "83",
+            "destinations_enabled": false
+          }
+        ],
+        "numbers_to_not_replace": [
+          {
+            "phone_number": "888-676-5565",
+            "phone_number_e164": "+18886765565",
+            "destinations_enabled": false
+          }
+        ],
+        "organic_sources": true,
+        "re_run_attribution_after": 5,
+        "required_params": "gclid,utm_medium",
+        "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+        "cache_lifetime_warning": null,
+        "updated_at": "2023-11-07T02:41:33-08:00",
+        "wait_for_in_seconds": 0,
+        "cache_lifetime_options": [1, 7, 14, 30],
+        "warning": null
+      }
+    }
+  ],
+  "requestId": null,
+  "recordsTotal": 1
+}
+```
+
+---
+
+## GET One Invoca Tag
+
+Read a single Invoca Tag by ID.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>.json`
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "id": "0054811245",
+  "name": "my first Invoca tag",
+  "description": "This tag applies to Example.com",
+  "landing_page_url": "example.com",
+  "active": true,
+  "status": "Live",
+  "created_at": "2023-11-06 04:10:51 -0800",
+  "updated_at": "2023-11-07 02:41:33 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": true,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-06T04:10:51-08:00",
+    "custom_code": "console.log('Invoca Tag paused at 11/06/23   8:26 AM');",
+    "custom_data_fields": [],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 0,
+    "is_draft_revision": false,
+    "is_live_revision": true,
+    "js_tag_id": "0054811245",
+    "message": "Auto-generated initial revision",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-06T08:55:11-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": {
+    "author": "John Doe",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": true,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 7;\n...\n})(26);\n",
+    "cache_lifetime_days": 7,
+    "created_at": "2023-11-06T04:10:51-08:00",
+    "custom_code": "",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {
+      "default_campaign_id": 84,
+      "default_campaign_name": "Campaign for NY"
+    },
+    "destination_param": null,
+    "external_revision_id": null,
+    "is_draft_revision": true,
+    "is_live_revision": false,
+    "js_tag_id": "0054811245",
+    "message": "updated note",
+    "numbers_to_replace": [
+      {
+        "phone_number": "44454545557",
+        "phone_number_e164": "44454545557",
+        "advertiser_campaign_id": 83,
+        "advertiser_campaign_name": "Campaign for Manhattan",
+        "advertiser_campaign_id_from_network": "83",
+        "destinations_enabled": false
+      }
+    ],
+    "numbers_to_not_replace": [
+      {
+        "phone_number": "888-676-5565",
+        "phone_number_e164": "+18886765565",
+        "destinations_enabled": false
+      }
+    ],
+    "organic_sources": true,
+    "re_run_attribution_after": 5,
+    "required_params": "gclid,utm_medium",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T02:41:33-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  }
+}
+```
+
+---
+
+## POST Create an Invoca Tag
+
+Create a new Invoca Tag.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "name": "test for example.com",
+  "description": "An example to show how it works"
+}
+```
+
+**Response Code:** 201
+
+**Response Body:**
+
+```json
+{
+  "id": "4225568320",
+  "name": "test for example.com",
+  "description": "An example to show how it works",
+  "landing_page_url": "",
+  "active": true,
+  "status": "Live",
+  "created_at": "2023-11-07 03:30:12 -0800",
+  "updated_at": "2023-11-07 03:30:12 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:30:12-08:00",
+    "custom_code": "",
+    "custom_data_fields": [],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 0,
+    "is_draft_revision": false,
+    "is_live_revision": true,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated initial revision",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:30:12-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:30:12-08:00",
+    "custom_code": "console.log('Invoca Tag paused at 11/06/23   8:26 AM');",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": null,
+    "is_draft_revision": true,
+    "is_live_revision": false,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated first draft",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:30:12-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  }
+}
+```
+
+---
+
+## PUT Update an Invoca Tag
+
+Update an existing Invoca Tag.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "name": "alpha-test for example.com",
+  "description": "This is alpha phase test."
+}
+```
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "id": "4225568320",
+  "name": "alpha-test for example.com",
+  "description": "This is alpha phase test.",
+  "landing_page_url": "",
+  "active": true,
+  "status": "Live",
+  "created_at": "2023-11-07 03:30:12 -0800",
+  "updated_at": "2023-11-07 03:39:38 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:30:12-08:00",
+    "custom_code": "",
+    "custom_data_fields": [],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 0,
+    "is_draft_revision": false,
+    "is_live_revision": true,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated initial revision",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:30:12-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:30:12-08:00",
+    "custom_code": "",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": null,
+    "is_draft_revision": true,
+    "is_live_revision": false,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated first draft",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:30:12-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  }
+}
+```
+
+---
+
+## POST Pause an Invoca Tag
+
+Pause an Invoca Tag to stop number swapping.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>/pause.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "id": "4225568320",
+  "name": "alpha-test for example.com",
+  "description": "This is alpha phase test.",
+  "landing_page_url": "",
+  "active": false,
+  "status": "Paused",
+  "created_at": "2023-11-07 03:30:12 -0800",
+  "updated_at": "2023-11-07 03:46:45 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:46:45-08:00",
+    "custom_code": "console.log('Invoca Tag paused at 11/07/23   3:46 AM');",
+    "custom_data_fields": [],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 1,
+    "is_draft_revision": false,
+    "is_live_revision": true,
+    "js_tag_id": "4225568320",
+    "message": "PAUSED",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:46:45-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:30:12-08:00",
+    "custom_code": "console.log('Invoca Tag paused at 11/06/23   8:26 AM');",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": null,
+    "is_draft_revision": true,
+    "is_live_revision": false,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated first draft",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:30:12-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  }
+}
+```
+
+---
+
+## POST Unpause an Invoca Tag
+
+Resume a paused Invoca Tag.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>/unpause.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "id": "4225568320",
+  "name": "alpha-test for example.com",
+  "description": "This is alpha phase test.",
+  "landing_page_url": "",
+  "active": true,
+  "status": "Live",
+  "created_at": "2023-11-07 03:30:12 -0800",
+  "updated_at": "2023-11-07 03:47:56 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:47:56-08:00",
+    "custom_code": "console.log('Invoca Tag paused at 11/07/23   3:46 AM');",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 3,
+    "is_draft_revision": false,
+    "is_live_revision": true,
+    "js_tag_id": "4225568320",
+    "message": "Reverted from Revision 1",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:47:56-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:30:12-08:00",
+    "custom_code": "console.log('Invoca Tag unpaused at 11/06/23   8:26 AM');",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": null,
+    "is_draft_revision": true,
+    "is_live_revision": false,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated first draft",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:30:12-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  }
+}
+```
+
+---
+
+## POST Make an Invoca Tag Revision Live
+
+Promote the current draft revision to live.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>/go_live.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "id": "4225568320",
+  "name": "alpha-test for example.com",
+  "description": "This is alpha phase test.",
+  "landing_page_url": "",
+  "active": true,
+  "status": "Live",
+  "created_at": "2023-11-07 03:30:12 -0800",
+  "updated_at": "2023-11-07 03:50:00 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:50:00-08:00",
+    "custom_code": "",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 4,
+    "is_draft_revision": null,
+    "is_live_revision": true,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated first draft",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:50:00-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": null
+}
+```
+
+---
+
+## POST Revert an Invoca Tag
+
+Revert an Invoca Tag to a previous live revision.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>/revert.json`
+
+**Format:** application/json
+
+**Request Body:**
+
+```json
+{
+  "external_revision_id": 2
+}
+```
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{
+  "id": "4225568320",
+  "name": "alpha-test for example.com",
+  "description": "This is alpha phase test.",
+  "landing_page_url": "",
+  "active": true,
+  "status": "Live",
+  "created_at": "2023-11-07 03:30:12 -0800",
+  "updated_at": "2023-11-07 03:51:22 -0800",
+  "live_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:50:00-08:00",
+    "custom_code": "console.log('Invoca Tag reverted on 11/06/23   8:26 AM');",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": 4,
+    "is_draft_revision": false,
+    "is_live_revision": true,
+    "js_tag_id": "4225568320",
+    "message": "Auto-generated first draft",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:50:00-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  },
+  "draft_revision": {
+    "author": "Oauth API User",
+    "allow_overflow": false,
+    "auto_create_local_ringpools": false,
+    "auto_create_toll_free_ringpools": false,
+    "auto_swap": false,
+    "body": "(function(networkId) {\nvar cacheLifetimeDays = 30;\n...\n})(26);\n",
+    "cache_lifetime_days": 30,
+    "created_at": "2023-11-07T03:51:22-08:00",
+    "custom_code": "console.log('Invoca Tag paused at 11/07/23   3:46 AM');",
+    "custom_data_fields": [
+      {
+        "enabled": true,
+        "partner_name": "landing_page",
+        "friendly_name": "Landing Page",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "line_of_business",
+        "friendly_name": "Line of Business",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      },
+      {
+        "enabled": true,
+        "partner_name": "offer",
+        "friendly_name": "Offer",
+        "attribution_model": "Unique",
+        "data_source_type": "URLParam",
+        "data_source_name": ""
+      }
+    ],
+    "default_campaign": {},
+    "destination_param": null,
+    "external_revision_id": null,
+    "is_draft_revision": true,
+    "is_live_revision": false,
+    "js_tag_id": "4225568320",
+    "message": "Reverted from Revision 2",
+    "numbers_to_replace": [],
+    "numbers_to_not_replace": [],
+    "organic_sources": true,
+    "re_run_attribution_after": null,
+    "required_params": "",
+    "reset_cache_on": ["gclid", "utm_source", "utm_medium"],
+    "cache_lifetime_warning": null,
+    "updated_at": "2023-11-07T03:51:22-08:00",
+    "wait_for_in_seconds": 0,
+    "cache_lifetime_options": [1, 7, 14, 30],
+    "warning": null
+  }
+}
+```
+
+---
+
+## DELETE an Invoca Tag
+
+Delete an Invoca Tag permanently.
+
+**Endpoint:** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>.json`
+
+**Format:** application/json
+
+**Response Code:** 200
+
+**Response Body:**
+
+```json
+{}
+```
+
+---
+
+## Error Handling
+
+### Forbidden – 403
+
+**POST** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags.json`
+
+Content Type: application/json | Response Code: 403
+
+**Request Body:**
+
+```json
+{
+  "name": "test for example.com",
+  "description": "An example to show how it works"
+}
+```
+
+**Response Body:**
+
+```json
+{
+  "errors": {
+    "name": [
+      "has already been taken"
+    ]
+  }
+}
+```
+
+### Not Found – 404
+
+**GET** `https://invoca.net/api/@@NETWORK_API_VERSION/networks/<network_id>/js_tags/<js_tag_id>.json`
+
+Content Type: application/json | Response Code: 404
+
+**Response Body:**
+
+```json
+{
+  "errors": {
+    "class": "RecordNotFound",
+    "invalid_data": "Invoca Tag not found with id: '00548112'"
+  }
+}
+```
