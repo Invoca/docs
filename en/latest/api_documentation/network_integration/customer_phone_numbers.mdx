@@ -7,7 +7,7 @@ description: "Manage customer phone numbers via the Invoca Network Integration A
 
 ## Manage Destinations (aka Customer Phone Numbers)
 
-Destinations are an alternate way of managing [RingPools](/en/latest/api_documentation/network_integration/ringpools/index).
+Destinations are an alternate way of managing [RingPools](/en/latest/api_documentation/network_integration/ringpools).
 
 [Learn more about RingPools here](https://community.invoca.com/t5/call-attribution/basic-knowledge-ringpools/ta-p/530).
 
@@ -44,7 +44,7 @@ https://invoca.net/api/@@NETWORK_API_VERSION/<network_id>/customer_phone_numbers
 <Note>
 **NOTE: Creating & Deleting Destinations**
 
-Creating a Destination via this endpoint isn't possible. A Destination can be made alongside a RingPool that it'll be associated with via the RingPool endpoint ([Documentation](/en/latest/api_documentation/network_integration/ringpools/index)).
+Creating a Destination via this endpoint isn't possible. A Destination can be made alongside a RingPool that it'll be associated with via the RingPool endpoint ([Documentation](/en/latest/api_documentation/network_integration/ringpools)).
 
 The Destination can be deleted via this endpoint, but if the associated RingPool is going to be deleted as well, you can save a request by utilizing the delete_detected_phone_number parameter in the RingPool endpoint.
 </Note>
