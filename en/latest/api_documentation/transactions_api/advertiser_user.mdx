@@ -1,0 +1,441 @@
+---
+title: "Transactions API - Advertiser User"
+description: "Read-only access to call transaction data for advertiser/merchant users."
+---
+
+# Advertiser / Merchant
+
+## Signal Transactions Rollup
+
+<Warning>
+  If you're upgrading from API versions older than **2020-10-01** we suggest testing to familiarize yourself with the updated Signal data structure.
+
+  For more information, view the support documentation for [best practices in accessing Invoca Call Data via the Transactions API](https://community.invoca.com/t5/developer-features/how-to-access-invoca-call-data-programmatically-via-api/ta-p/602).
+</Warning>
+
+## URL
+
+The API follows REST conventions. Perform an HTTPS GET to the URL with the format in which you'd like to receive data. The following response formats are supported, where 33 is the advertiser id.
+
+| Format | Description and URL |
+|--------|---------------------|
+| csv | Comma-Separated Values, or really Anything-Separated Values (see column_separator= below). Returns an optional header row followed by one row for each transaction, with delimited values for each row. `https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv` |
+| xml | Returns an XML document with an array of Transaction elements. `https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.xml` |
+| json | Returns a JSON array of transaction objects. `https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.json` |
+
+**Endpoint:**
+
+`https://invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/<advertiser_id>.<format>`
+
+## Authentication
+
+The API uses OAuth to validate access. The OAuth Token can be passed in two ways. The first way is to pass the OAuth Token in the header of the request. The second is to pass the OAuth Token like any other query parameter. Please note that the OAuth Token is a required parameter. OAuth Tokens may be generated from the Manage API Credentials page.
+
+## Query Parameters
+
+The API takes the following optional query parameters:
+
+| Parameter | Description |
+|-----------|-------------|
+| `from=` | Starting date in user's time zone, in format YYYY-MM-DD. Example: 2011-06-01. Inclusive. **Note:** When using from and to params, transactions are returned based on the associated call start time. |
+| `to=` | Ending date in user's time zone, in format YYYY-MM-DD. Example: 2011-06-07. Inclusive. **Note:** When using from and to params, transactions are returned based on the associated call start time. |
+| `limit=` | Max number of transactions to return at a time. Defaults to 1000. Limited to at most 4000. |
+| `transaction_id=` | A specific transaction. If transaction_id is specified and no transaction with that ID is found, nothing will be returned. Returns at most 1 transaction. |
+| `call_record_id=` | All transactions belonging to a specific call. If call_record_id is specified and no call with that ID is found, nothing will be returned. Returns all transactions belonging to the call record. **Note:** If transaction_id *and* call_record_id are passed, the specified transaction must belong to the specified call. If it does, the transaction will be returned. If it does not, nothing will be returned. |
+| `start_after_transaction_id=` | Transaction_id to start retrieving after. This should be the last value retrieved previously. Default (or empty string) means start at the oldest. |
+| `include_columns=` | comma-separated list of field names to be returned in the response for each transaction (if not specified, all available fields for the account will be returned, minus any columns in exclude_columns) |
+| `exclude_columns=` | comma-separated list of field names to be excluded in the response for each transaction |
+| `column_separator=` | [.csv format only] Separator between columns. Default is , for comma-separated values. (Can be set to any other separator like \| for pipe-separated values or %09 for tab-separated values.) |
+| `row_separator=` | [.csv format only] Separator between lines. Defaults to %0A for \n (line feed). Use %0D%0A for \r\n (carriage return + line feed). |
+| `include_header=` | [.csv format only] 1 to include a header row; 0 to omit the header row. Default is 1. |
+| `force_quotes=` | [.csv format only] 1 to quote all CSV fields; 0 to only quote fields that contain separators. Default is 0. |
+| `transaction_type=` | Filters for the type of transaction. Valid inputs are Call, PostCallEvent, Sale, or Signal. Sale maps to the Reported Conversion type. |
+
+In order to ensure that all transactions are returned when using the from= and to= date query parameters, you should store the last transaction id you have downloaded and pass it as the start_after_transaction_id to the next request *so long as you do not change the date range*. Once you update the date range, the best practice is to omit the start_after_transaction_id param for the first request, then use the last transaction id you have downloaded until the date range is complete. This is because using from and to params sorts transactions in relation to the call start time, not the transaction time. Typical usage on the polling interval is to repeatedly call the API until no rows are returned, meaning you have downloaded all transactions. Please note, the "to" and "from" date range parameters are both necessary, providing only one or the other will not filter the results.
+
+We provide three helpful constants that can be used in the include_columns and exclude_columns options:
+
+- `$invoca_custom_columns` — a dynamic constant that represents the current list of your Marketing Data Fields. Note: If the list of custom columns changes, those changes will be included in future API calls that use "include_columns=$invoca_custom_columns", independent of the API version. See Marketing Data Parameters section for more details.
+- `$invoca_custom_source_columns` — a dynamic constant that represents the sources for the current list of your Marketing Data Fields. Note: If the list of custom columns changes, those changes will be included in future API calls that use "include_columns=$invoca_custom_source_columns", independent of the API version. See Marketing Data Parameters section for more details.
+- `$invoca_default_columns` — represents the default set of columns provided by the Transactions API for your requested version.
+
+## Response
+
+### General Parameters
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `advertiser_campaign_id` | Advertiser Campaign ID (Invoca ID) | The Invoca identifier of the campaign. |
+| `advertiser_campaign_id_from_network` | Advertiser Campaign ID | The Campaign ID from the network as set on the advertiser campaign. |
+| `advertiser_campaign_name` | Advertiser Campaign | Name of the campaign. |
+| `advertiser_campaign_country` | Advertiser Campaign Country | Country of the campaign. |
+| `advertiser_payin_localized` | Earned | Amount paid in by advertiser *(Summed total amount for the call for Signal Transactions Rollup)* |
+| `advertiser_promo_line_description` | Promo Number Description | Additional details about the transaction source |
+| `affiliate_call_volume_ranking` | Affiliate Volume Ranking | Network ranking of affiliate's call volume (0 to 5, and -1 being 'new'). Blank if no affiliate. |
+| `affiliate_commissions_ranking` | Affiliate Commissions Ranking | Network ranking of affiliate's commissions (0 to 5, and -1 being 'new'). Blank if no affiliate. |
+| `affiliate_conversion_rate_ranking` | Affiliate Conversion Rate Ranking | Network ranking of affiliate's conversion rate (0 to 5, and -1 being 'new'). Blank if no affiliate. |
+| `affiliate_id` | Affiliate ID (Invoca ID) | The Invoca identifier of the affiliate |
+| `affiliate_id_from_network` | Affiliate ID | Affiliate ID from the network as set on the Invoca affiliate. |
+| `affiliate_name` | Affiliate | Name of the affiliate |
+| `call_result_description_detail_managed_advertiser` | Call Result | Status of the transaction *(For the call for Signal Transactions Rollup)* |
+| `call_source_description` | Source | Source of the transaction |
+| `calling_phone_number` | Caller ID | Caller ID. Formatted as 12 characters like 866-555-1234 |
+| `city` | City | City where transaction originated |
+| `complete_call_id` | Call Record ID | Globally unique identifier for the call this transaction is part of. Up-to 32 character string, can contain alphanumeric characters (i.e. 0-9A-Z) and the -. |
+| `connect_duration` | Connected Duration | Duration in seconds that the call that was connected to the call center. |
+| `corrected_at` | Corrected At | [Correction only] Date and time the transaction was corrected, in user's time zone, followed by offset from GMT. |
+| `corrects_transaction_id` | Corrects Call | [Correction only] Id of the original transaction that this transaction updates. Values in this row are the corrected ones and should replace the original values. Same format as transaction_id. Up-to 32 character string, can contain alphanumeric characters (i.e. 0-9A-Z) and the -. |
+| `destination_phone_number` | Destination Phone Number | The phone number where the call was transferred to (useful if an IVR transfers to multiple destinations). Up-to 20 character string, can contain numeric characters (i.e. 0-9) and the following additional characters: '-', '#', '*', 'x', and ','. |
+| `duration` | Total Duration | Duration of the call in seconds. Includes any time spent in an IVR tree before transferring to the call center. |
+| `ivr_duration` | IVR Duration | Duration in seconds that the call spent in the IVR tree. |
+| `keypress_1` | Key 1 | Name of the first key that was pressed |
+| `keypress_2` | Key 2 | Name of the second key that was pressed |
+| `keypress_3` | Key 3 | Name of the third key that was pressed |
+| `keypress_4` | Key 4 | Name of the fourth key that was pressed |
+| `keypresses` | Keypresses | List of unique keynames that were pressed during the call |
+| `matching_advertiser_payin_policies` | Matching Advertiser Payin Policies | List of advertiser policies that matched (base, bonus1, bonus2, etc.) to determine the advertiser payin, separated by +. For example, base+bonus1+bonus3. Note that if there was any advertiser payin, this field guaranteed to start with base. |
+| `media_type` | Media Type | Media type of the transaction source |
+| `mobile` | Phone Type | Landline or Mobile or empty string if type is unknown |
+| `notes` | Notes | Free-form notations on transaction |
+| `opt_in_SMS` | Opt In Sms | Whether the caller opted in to receive an SMS promotion. |
+| `original_order_id` | Order ID | [Sales reporting only] Id of the original transaction that this row is in reference to. Up-to 32 character string, can contain alphanumeric characters (i.e. 0-9A-Z) and the -. |
+| `payin_conditions` | Payin Conditions | Base condition with highlighting around the term(s) that disqualified advertiser payin. For example: duration > 1 min and in_region |
+| `qualified_regions` | Qualified Regions | The list of regions that that the caller matched |
+| `recording` | Recording | URL to the call recording, if available |
+| `recording_download_url` | (Not Present) | Signed URL to download the call recording. Only present if the feature is enabled for the network. |
+| `region` | Region | Region (state, province or country) where transaction originated |
+| `repeat_calling_phone_number` | Repeat Caller | Whether the call was a repeat call. Repeat call detection is not applied to shared or unavailable caller ids. |
+| `start_time_local` | Call Start Time | Start of the call in the API user's time zone, followed by offset from GMT. |
+| `start_time_utc` | Call Start Time (UTC timestamp) | Start of the call in milliseconds since Jan 1, 1970. Divide by 1000 to get Unix epoch time. |
+| `start_time_xml` | Call Start Time (XML formatted) | Start of the call in Soap XML formatted time. |
+| `start_time_network_timezone` | Call Start Time Network Timezone | Start of the call in the networks's time zone, followed by offset from GMT. |
+| `start_time_network_timezone_xml` | Call Start Time Network Timezone (XML formatted) | Start of the call in the network's time zone in Soap XML formatted time. |
+| `syndicated_ident` | Syndicated ID | The syndicated id for this call. Uniquely identifies syndication sources for a campaign. |
+| `transaction_id` | Transaction ID | Globally unique identifier for this transaction. Up-to 32 character string, can contain alphanumeric characters (i.e. 0-9A-Z) and the -. This is the Primary Key of the results. |
+| `transaction_type` | Type | The type of transaction - Call, Post Call Event, Reported Conversion, or Signal. |
+| `transfer_from_type` | Transfer Type | Where the call came from |
+| `verified_zip` | Verified Zip Code | Zip Code entered by callers when prompted during call treatment |
+| `virtual_line_id` | Promo Number ID | The Promo Number ID from the network |
+
+### RingPool Parameters
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `dynamic_number_pool_id` | Pool ID | The ID of the pool. |
+| `dynamic_number_pool_pool_type` | Pool Type | The type of pool: Search, SearchKeyword or Custom |
+| `dynamic_number_pool_referrer_param1_name` | Pool Param 1 Name | The name for parameter 1 |
+| `dynamic_number_pool_referrer_param1_value` | Pool Param 1 Value | The value for parameter 1 |
+| `dynamic_number_pool_referrer_param2_name` | Pool Param 2 Name | The name for parameter 2 |
+| `dynamic_number_pool_referrer_param2_value` | Pool Param 2 Value | The value for parameter 2 |
+| `dynamic_number_pool_referrer_param3_name` | Pool Param 3 Name | The name for parameter 3 |
+| `dynamic_number_pool_referrer_param3_value` | Pool Param 3 Value | The value for parameter 3 |
+| `dynamic_number_pool_referrer_param4_name` | Pool Param 4 Name | The name for parameter 4 |
+| `dynamic_number_pool_referrer_param4_value` | Pool Param 4 Value | The value for parameter 4 |
+| `dynamic_number_pool_referrer_param5_name` | Pool Param 5 Name | The name for parameter 5 |
+| `dynamic_number_pool_referrer_param5_value` | Pool Param 5 Value | The value for parameter 5 |
+| `dynamic_number_pool_referrer_param6_name` | Pool Param 6 Name | The name for parameter 6 |
+| `dynamic_number_pool_referrer_param6_value` | Pool Param 6 Value | The value for parameter 6 |
+| `dynamic_number_pool_referrer_param7_name` | Pool Param 7 Name | The name for parameter 7 |
+| `dynamic_number_pool_referrer_param7_value` | Pool Param 7 Value | The value for parameter 7 |
+| `dynamic_number_pool_referrer_param8_name` | Pool Param 8 Name | The name for parameter 8 |
+| `dynamic_number_pool_referrer_param8_value` | Pool Param 8 Value | The value for parameter 8 |
+| `dynamic_number_pool_referrer_param9_name` | Pool Param 9 Name | The name for parameter 9 |
+| `dynamic_number_pool_referrer_param9_value` | Pool Param 9 Value | The value for parameter 9 |
+| `dynamic_number_pool_referrer_param10_name` | Pool Param 10 Name | The name for parameter 10 |
+| `dynamic_number_pool_referrer_param10_value` | Pool Param 10 Value | The value for parameter 10 |
+| `dynamic_number_pool_referrer_param11_name` | Pool Param 11 Name | The name for parameter 11 |
+| `dynamic_number_pool_referrer_param11_value` | Pool Param 11 Value | The value for parameter 11 |
+| `dynamic_number_pool_referrer_param12_name` | Pool Param 12 Name | The name for parameter 12 |
+| `dynamic_number_pool_referrer_param12_value` | Pool Param 12 Value | The value for parameter 12 |
+| `dynamic_number_pool_referrer_param13_name` | Pool Param 13 Name | The name for parameter 13 |
+| `dynamic_number_pool_referrer_param13_value` | Pool Param 13 Value | The value for parameter 13 |
+| `dynamic_number_pool_referrer_param14_name` | Pool Param 14 Name | The name for parameter 14 |
+| `dynamic_number_pool_referrer_param14_value` | Pool Param 14 Value | The value for parameter 14 |
+| `dynamic_number_pool_referrer_param15_name` | Pool Param 15 Name | The name for parameter 15 |
+| `dynamic_number_pool_referrer_param15_value` | Pool Param 15 Value | The value for parameter 15 |
+| `dynamic_number_pool_referrer_param16_name` | Pool Param 16 Name | The name for parameter 16 |
+| `dynamic_number_pool_referrer_param16_value` | Pool Param 16 Value | The value for parameter 16 |
+| `dynamic_number_pool_referrer_param17_name` | Pool Param 17 Name | The name for parameter 17 |
+| `dynamic_number_pool_referrer_param17_value` | Pool Param 17 Value | The value for parameter 17 |
+| `dynamic_number_pool_referrer_param18_name` | Pool Param 18 Name | The name for parameter 18 |
+| `dynamic_number_pool_referrer_param18_value` | Pool Param 18 Value | The value for parameter 18 |
+| `dynamic_number_pool_referrer_param19_name` | Pool Param 19 Name | The name for parameter 19 |
+| `dynamic_number_pool_referrer_param19_value` | Pool Param 19 Value | The value for parameter 19 |
+| `dynamic_number_pool_referrer_param20_name` | Pool Param 20 Name | The name for parameter 20 |
+| `dynamic_number_pool_referrer_param20_value` | Pool Param 20 Value | The value for parameter 20 |
+| `dynamic_number_pool_referrer_param21_name` | Pool Param 21 Name | The name for parameter 21 |
+| `dynamic_number_pool_referrer_param21_value` | Pool Param 21 Value | The value for parameter 21 |
+| `dynamic_number_pool_referrer_param22_name` | Pool Param 22 Name | The name for parameter 22 |
+| `dynamic_number_pool_referrer_param22_value` | Pool Param 22 Value | The value for parameter 22 |
+| `dynamic_number_pool_referrer_param23_name` | Pool Param 23 Name | The name for parameter 23 |
+| `dynamic_number_pool_referrer_param23_value` | Pool Param 23 Value | The value for parameter 23 |
+| `dynamic_number_pool_referrer_param24_name` | Pool Param 24 Name | The name for parameter 24 |
+| `dynamic_number_pool_referrer_param24_value` | Pool Param 24 Value | The value for parameter 24 |
+| `dynamic_number_pool_referrer_param25_name` | Pool Param 25 Name | The name for parameter 25 |
+| `dynamic_number_pool_referrer_param25_value` | Pool Param 25 Value | The value for parameter 25 |
+| `dynamic_number_pool_referrer_search_engine` | Traffic Source | Search engine used. |
+| `dynamic_number_pool_referrer_search_keywords` | Keywords | Search keywords used |
+| `dynamic_number_pool_referrer_search_type` | Search Type | Paid or Organic. |
+
+### AdWords Parameters
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `dynamic_number_pool_referrer_ad` | AdWords Ad | AdWords Ad Headline copy, provided by Google |
+| `dynamic_number_pool_referrer_ad_group` | AdWords Ad Group | AdWords Ad Group name, provided by Google |
+| `dynamic_number_pool_referrer_ad_group_id` | AdWords Ad Group ID | AdWords Ad Group ID, provided by Google |
+| `dynamic_number_pool_referrer_ad_id` | AdWords Ad ID | AdWords Ad ID, provided by Google |
+| `dynamic_number_pool_referrer_referrer_campaign` | AdWords Campaign | AdWords Campaign name, provided by Google |
+| `dynamic_number_pool_referrer_referrer_campaign_id` | AdWords Campaign ID | AdWords Campaign ID, provided by Google |
+| `dynamic_number_pool_referrer_search_keywords_id` | AdWords Keywords ID | AdWords Keyword ID, provided by Google |
+| `dynamic_number_pool_referrer_keyword_match_type` | AdWords Keyword Match Type | The match type for the Keyword |
+
+### Conversion Reporting Parameters
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `address1` | Address (Reported) | Customer's street address as given to the call center (first line). |
+| `address2` | Address 2 (Reported) | Customer's street address as given to the call center (second line). |
+| `cell_phone_number` | Cell Phone (Reported) | Customer's cell phone number as given to the call center. |
+| `country` | Country (Reported) | Customer's country as given to the call center. |
+| `email_address` | Email Address (Reported) | Email address as given to the call center. |
+| `home_phone_number` | Home Phone (Reported) | Customer's home phone number as given to the call center. |
+| `name` | Name (Reported) | Customer's full name as given to the call center. |
+| `order_city` | City (Reported) | Customer's city as given to the call center. |
+| `quantity_list` | Quantity List | Comma-separated list of order quantities as reported by the call center. Each quantity in the list matches the sku_list entry in that same position. |
+| `reason_code` | Reason Code | Call center-specific status code giving the disposition of the call. |
+| `sale_amount` | Sale Amount | Total order amount (not including shipping) as reported by the call center. |
+| `sku_list` | SKU List | Comma-separated list of order SKUs as reported by the call center. |
+| `state_or_province` | State or Province (Reported) | Customer's state or province as given to the call center. |
+| `zip_code` | Zip Code (Reported) | Customer's zip code as given to the call center. |
+
+### Marketing Data & Signal Parameters
+
+Please visit the [marketing data parameters](https://www2.invoca.net/customer_data_dictionary/home) page to access the marketing data parameters specific to your account.
+
+The Partner (API) Name is used as the field name returned by the Transactions API. Any Marketing Data or Signal fields named the same as a standard Invoca Transactions API field will be returned by the API rather than the standard field. If any field names have spaces in their name, XML format will not be supported.
+
+**Marketing Data & Signal can be accessed in two ways by Transactions API**
+
+1. (JSON & XML formats only) By including `custom_data` as field in the `include_columns` parameter (e.g. `include_columns=transaction_id,start_time_local,custom_data`) a nested structure is returned containing all of the Marketing Data and Signals that were specified for the given transaction. Note: null values are not returned.
+
+**Array of Marketing Data Objects**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | String | Marketing Data Partner (API) Name or Signal Name. Up to 255 characters. |
+| `data_type` | String | One of: Signal, Category, Long Text, Short Text |
+| `source` | String | One of: UserOverride, Api, Import, DynamicAttribution, LookupTable, Expression, Ivr, VirtualLine, AffiliateCampaign, AdvertiserCampaign, Affiliate, Advertiser, Network, AI, Default, Syndicated |
+| `value` | Boolean or String | For data_type = Signal: true, false or null. For all other data types it is the string value of the field. Category and Short Text are up to 255 characters. Long Text can be up to 10,000 characters. |
+
+Example response:
+
+```json
+[
+  {
+    "transaction_id": "FE7F3A51-11111111",
+    "start_time_local": "2019-01-24 06:43:15 -07:00",
+    "custom_data": [
+      {
+        "name": "Quote",
+        "data_type": "Signal",
+        "source": "Expression",
+        "value": true
+      },
+      {
+        "name": "utm_medium",
+        "data_type": "Category",
+        "source": "DynamicAttribution",
+        "value": "Search"
+      },
+      {
+        "partner_name": "gclid",
+        "data_type": "Short Text",
+        "source": "DynamicAttribution",
+        "value": "198ab9a93f8c7348"
+      }
+    ]
+  },
+  {
+    "transaction_id": "E9C4063A-22222222",
+    "start_time_local": "2019-01-24 06:43:16 -07:00",
+    "custom_data": [
+      {
+        "name": "Purchase Made",
+        "data_type": "Signal",
+        "source": "AI",
+        "value": true
+      },
+      {
+        "name": "utm_medium",
+        "data_type": "Category",
+        "source": "VirtualLine",
+        "value": "Email"
+      }
+    ]
+  }
+]
+```
+
+2. (All formats) Marketing Data and Signal fields can be accessed in the response by specifying the special `$invoca_custom_columns` constant in your `include_columns` parameter, or mentioning specific fields that you want to include, e.g. `include_columns=transaction_id,start_time_local,utm_medium,gclid,Quote,Purchase%20Made`.
+
+Example response:
+
+```json
+[
+  {
+    "transaction_id": "FE7F3A51-11111111",
+    "start_time_local": "2019-01-24 06:43:15 -07:00",
+    "Quote": 1,
+    "Purchase Made": null,
+    "utm_medium": "Search",
+    "gclid": "198ab9a93f8c7348"
+  },
+  {
+    "transaction_id": "E9C4063A-22222222",
+    "start_time_local": "2019-01-24 06:43:16 -07:00",
+    "Quote": null,
+    "Purchase Made": 1,
+    "utm_medium": "Email",
+    "gclid": null
+  }
+]
+```
+
+To also get the source of each Marketing Data & Signal field, specify the special `$invoca_custom_source_columns` constant in your `include_columns` parameter. Doing that would result in an additional ".source" field for every Marketing Data & Signal field:
+
+```json
+[
+  {
+    "transaction_id": "FE7F3A51-11111111",
+    "start_time_local": "2019-01-24 06:43:15 -07:00",
+    "Quote": 1,
+    "Quote.source": "Expression",
+    "Purchase Made": null,
+    "Purchase Made.source": null,
+    "utm_medium": "Search",
+    "utm_medium.source": "DynamicAttribution",
+    "gclid": "198ab9a93f8c7348",
+    "gclid.source": "DynamicAttribution"
+  },
+  {
+    "transaction_id": "E9C4063A-22222222",
+    "start_time_local": "2019-01-24 06:43:16 -07:00",
+    "Quote": null,
+    "Quote.source": null,
+    "Purchase Made": 1,
+    "Purchase Made.source": "AI",
+    "utm_medium": "Email",
+    "utm_medium.source": "VirtualLine",
+    "gclid": null,
+    "gclid.source": null
+  }
+]
+```
+
+To get the complete Signal view for a given call you can utilize the `complete_call_id` field as the primary ID. For every transaction (regardless of `transaction_type`), update your complete call row as follows:
+
+- add any true Signals
+- remove any false Signals
+- ignore any null Signals (a null value for a Signal means the Signal was not applicable to that transaction but may have already been evaluated as true for the given call on any previous or subsequent transactions)
+
+### Signal Parameters
+
+<Warning>
+  Most of the fields in this table are now deprecated. See Marketing Data & Signal Parameters section for best practices for accessing Signal name, source and value. Additionally, some fields will be removed if the Signal Transactions Rollup feature is enabled.
+</Warning>
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `signal_name` *(deprecated)* | Signal Name | The name describing the signal event. See the Marketing Data Parameters section for an updated way of accessing the Signal(s) that are true on a given transaction. *(Merged results for the call for Signal Transactions Rollup)* |
+| `signal_description` *(deprecated)* | Signal Description | Free form text for providing additional details about the signal. *(Removed for Signal Transactions Rollup)* |
+| `signal_partner_unique_id` | Signal Partner ID | Unique identifier, to distinguish between updating an existing Signal or Post Call Event (for example correcting a sale that was reported) versus adding a second sale or Post call Event to the call (for example a reservation made while on the call and then an add on item purchased later). |
+| `signal_occurred_at` | Signal Occurred At | 10 digit time that the signal occurred, in UTC seconds since 1/1/70, also known as Unix time_t. |
+| `signal_source` *(deprecated)* | Signal Source | The source of the signal. Possible values are :UserOverride, :Api, :Import, :Expression, :Ivr, and :Machine. *(Removed for Signal Transactions Rollup)* |
+| `signal_value` *(deprecated)* | Signal Value | True or false as to whether or not the signal was met and null if it is not a signal transaction. *(Removed for Signal Transactions Rollup)* |
+| `revenue` | Revenue (Sale Amount) | The revenue applied to the call via Signal revenue proxies or Post Call Events. |
+| `signal_custom_parameter_1` *(deprecated)* | Signal Custom Param 1 | Up to 255 character string. *(Removed for Signal Transactions Rollup)* |
+| `signal_custom_parameter_2` *(deprecated)* | Signal Custom Param 2 | Up to 255 character string. *(Removed for Signal Transactions Rollup)* |
+| `signal_custom_parameter_3` *(deprecated)* | Signal Custom Param 3 | Up to 255 character string. *(Removed for Signal Transactions Rollup)* |
+
+### Enhanced Caller Profile Parameters
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `address_city_data_append` | City (Data Append) | Data from caller demographics lookup |
+| `address_country_data_append` | Country (Data Append) | Data from caller demographics lookup |
+| `address_full_street_data_append` | Street Address (Data Append) | Data from caller demographics lookup |
+| `address_state_data_append` | State (Data Append) | Data from caller demographics lookup |
+| `address_type_data_append` | Address Type (Data Append) | Data from caller demographics lookup |
+| `address_zip_data_append` | Zip (Data Append) | Data from caller demographics lookup |
+| `age_range_data_append` | Age Range (Data Append) | Data from caller demographics lookup |
+| `carrier_data_append` | Carrier (Data Append) | Data from caller demographics lookup |
+| `display_name_data_append` | Display Name (Data Append) | Data from caller demographics lookup |
+| `first_name_data_append` | First Name (Data Append) | Data from caller demographics lookup |
+| `gender_data_append` | Gender (Data Append) | Data from caller demographics lookup |
+| `is_prepaid_data_append` | Is Prepaid (Data Append) | Data from caller demographics lookup |
+| `last_name_data_append` | Last Name (Data Append) | Data from caller demographics lookup |
+| `line_type_data_append` | Line Type (Data Append) | Data from caller demographics lookup |
+| `primary_email_address_data_append` | Primary Email Address (Data Append) | Data from caller demographics lookup |
+| `linked_email_addresses_data_append` | Linked Email Addresses (Data Append) | Data from caller demographics lookup |
+| `household_income_data_append` | Household Income (Data Append) | Data from caller demographics lookup |
+| `marital_status_data_append` | Marital Status (Data Append) | Data from caller demographics lookup |
+| `home_owner_status_data_append` | Home Owner Status (Data Append) | Data from caller demographics lookup |
+| `home_market_value_data_append` | Home Market Value (Data Append) | Data from caller demographics lookup |
+| `length_of_residence_years_data_append` | Length of Residence in Years (Data Append) | Data from caller demographics lookup |
+| `occupation_data_append` | Occupation (Data Append) | Data from caller demographics lookup |
+| `education_data_append` | Education (Data Append) | Data from caller demographics lookup |
+| `has_children_data_append` | Has Children (Data Append) | Data from caller demographics lookup |
+| `high_net_worth_data_append` | High Net Worth (Data Append) | Data from caller demographics lookup |
+
+### Additional Feature Parameters
+
+| Field | Name in Reports | Description |
+|-------|-----------------|-------------|
+| `advertiser_call_fee_localized` | Fees | Advertiser Telecommunications fee associated with transaction *(Summed total amount for the call for Signal Transactions Rollup)* |
+| `affiliate_campaign_id_from_network` | Affiliate Campaign ID | The Campaign ID from the network as set on the affiliate campaign. |
+| `margin_localized` | Margin | Difference between advertiser_payin_localized and affiliate_payout_localized |
+| `promo_line_description` | Promo Number Description | Additional details about the transaction source |
+| `real_time_response` | Real Time Routing Response | Response information returned to Invoca when using the real-time routing webhook. |
+
+## Examples
+
+These examples use CURL, and are using the following fake OAuth API token: `YbcFH`
+
+Note: the -k option asks curl to not bother checking the SSL certificate authority chain as that requires extra configuration.
+
+**Example 1:** Get the next 20 transactions that occurred after transaction id C624DA2C-CF3367C3:
+
+```bash
+curl -k -H 'Authorization: <token>' 'https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv?limit=20&start_after_transaction_id=C624DA2C-CF3367C3'
+```
+
+**Example 2:** Get 50 rows from a specific time period with only the transaction_id and all Marketing Data columns:
+
+```bash
+curl -k -H 'Authorization: <token>' 'https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv?limit=50&include_columns=transaction_id,$invoca_custom_columns&exclude_columns=$invoca_default_columns&from=2015-03-26&to=2015-03-27'
+```
+
+**Example 3:** Get 50 rows that exclude a few columns such as Caller ID and Call Recordings:
+
+```bash
+curl -k -H 'Authorization: <token>' 'https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv?limit=50&exclude_columns=calling_phone_number,recording&start_after_transaction_id=C624DA2C-CF3367C3'
+```
+
+**Example 4:** Get All Transactions from a specific time period that are of transaction_type Signal:
+
+```bash
+curl -k -H 'Authorization: <token>' 'https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv?transaction_type=Signal&from=2015-03-24&to=2015-03-27'
+```
+
+**Example 5:** Get All Transactions from a specific time period that are of transaction_type Post Call Event:
+
+```bash
+curl -k -H 'Authorization: <token>' 'https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv?transaction_type=PostCallEvent&from=2015-03-24&to=2015-03-27'
+```
+
+**Example 6:** Get All Transactions from a specific time period that are of transaction_type Call and Signal:
+
+```bash
+curl -k -H 'Authorization: <token>' 'https://mynetwork.invoca.net/api/@@TRANSACTION_API_VERSION/advertisers/transactions/33.csv?transaction_type[]=Call&transaction_type[]=Signal&from=2015-03-24&to=2015-03-27'
+```
