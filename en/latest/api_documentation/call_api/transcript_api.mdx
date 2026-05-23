@@ -1,0 +1,144 @@
+---
+title: "Transcript API"
+description: "Retrieve call transcripts from Invoca."
+---
+
+## URL
+
+The API follows REST conventions. Perform an HTTPS GET to the URL with the format in which you'd like to receive data.
+The following response formats are supported, where CUID-33 is the call record id.
+
+| Format | Description and URL |
+|--------|---------------------|
+| json (default) | Returns a JSON array of the transcript. `https://mynetwork.invoca.net/call/transcript/CUID-33?transcript_format=agent` |
+
+## Authentication
+
+The API uses OAuth to validate access. The OAuth Token can be passed in two ways. The first way is to pass the OAuth Token in the header of the request. The second is to pass the OAuth Token like any other query parameter. Please note that the OAuth Token is a required parameter.
+OAuth Tokens may be generated from the [Manage API Credentials](/en/latest/api_documentation/manage_api_credentials) page.
+
+## Query Parameters
+
+The API takes the following optional query parameters:
+
+| Parameter | Description |
+|-----------|-------------|
+| transcript_format= (required) | Determines what format the transcripts are returned as, see response parameters below for information on each format. |
+
+## Response
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript/<call_record_id>?transcript_format=<format>`
+
+### GET /call/transcript/&lt;call_record_id&gt;?transcript_format=caller
+
+Get a transcript of the call for just the caller.
+
+#### Examples
+
+Get transcript for the given call record `CUID-33` with just the caller included
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript/CUID-33?transcript_format=caller`
+
+Format: application/json
+
+Response Code: 200
+
+Response Body:
+
+```json
+[
+  {
+    "caller": "Orange, Awesome thank you, Have a good one"
+  }
+]
+```
+
+---
+
+### GET /call/transcript/&lt;call_record_id&gt;?transcript_format=agent
+
+Get a transcript of the call for just the agent.
+
+#### Examples
+
+Get transcript for the given call record `CUID-33` with just the agent included
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript/CUID-33?transcript_format=agent`
+
+Format: application/json
+
+Response Code: 200
+
+Response Body:
+
+```json
+[
+  {
+    "agent": "Which Color?, Okay I will look into that, Goodbye!"
+  }
+]
+```
+
+---
+
+### GET /call/transcript/&lt;call_record_id&gt;?transcript_format=caller_agent_block
+
+Get a transcript of the call as a block.
+
+#### Examples
+
+Get transcript for the given call record `CUID-33` with both agent and caller included in a single block for each.
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript/CUID-33?transcript_format=caller_agent_block`
+
+Format: application/json
+
+Response Code: 200
+
+Response Body:
+
+```json
+[
+  { "agent": "Which Color?, Okay I will look into that, Goodbye!" },
+  { "caller": "Orange, Awesome thank you, Have a good one" }
+]
+```
+
+---
+
+### GET /call/transcript/&lt;call_record_id&gt;?transcript_format=caller_agent_conversation
+
+Get a transcript of the call as a conversation.
+
+#### Examples
+
+Get transcript for the given call record `CUID-33` with both agent and caller included in the corresponding conversation order.
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript/CUID-33?transcript_format=caller_agent_conversation`
+
+Format: application/json
+
+Response Code: 200
+
+Response Body:
+
+```json
+[
+  { "agent": "Which Color?" },
+  { "caller": "Orange" },
+  { "agent": "Okay I will look into that" },
+  { "caller": "Awesome thank you" },
+  { "agent": "Goodbye!" },
+  { "caller": "Have a good one" }
+]
+```

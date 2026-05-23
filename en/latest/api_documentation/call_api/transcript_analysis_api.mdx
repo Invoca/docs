@@ -1,0 +1,75 @@
+---
+title: "Transcript Analysis API"
+description: "Retrieve AI-analyzed call transcript data from Invoca."
+---
+
+## URL
+
+The API follows REST conventions. Perform an HTTPS GET to the URL in order to retrieve Transcript Analysis. Currently, the transcript summary will be returned if it is available.
+The following response formats are supported, where CUID-33 is the call record id.
+
+| Format | Description and URL |
+|--------|---------------------|
+| json (default) | Returns a JSON object of the transcript analysis. `https://mynetwork.invoca.net/call/transcript_analysis/CUID-33` |
+
+## Authentication
+
+The API uses OAuth to validate access. The OAuth Token can be passed in two ways. The first way is to pass the OAuth Token in the header of the request. The second is to pass the OAuth Token like any other query parameter. Please note that the OAuth Token is a required parameter.
+OAuth Tokens may be generated from the [Manage API Credentials](/en/latest/api_documentation/manage_api_credentials) page.
+
+## Response
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript_analysis/<call_record_id>`
+
+### GET /call/transcript_analysis/&lt;call_record_id&gt; (summary available)
+
+Get a transcript analysis when a transcript summary is available.
+
+#### Examples
+
+Get transcript analysis for the given call record `CUID-33` and a summary is available
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript_analysis/CUID-33`
+
+Format: application/json
+
+Response Code: 200
+
+Response Body:
+
+```json
+{
+   "call_record_id": "CUID-33",
+   "transcript_summary": "The customer was looking to purchase a new vehicle."
+}
+```
+
+---
+
+### GET /call/transcript_analysis/&lt;call_record_id&gt; (no summary available)
+
+Get a transcript analysis when no transcript summary is available.
+
+#### Examples
+
+Get transcript analysis for the given call record `CUID-33` and no summary is available
+
+Endpoint:
+
+`https://mynetwork.invoca.net/call/transcript_analysis/CUID-33`
+
+Format: application/json
+
+Response Code: 200
+
+Response Body:
+
+```json
+{
+   "call_record_id": "CUID-33"
+}
+```
