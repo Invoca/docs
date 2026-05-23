@@ -1,0 +1,445 @@
+---
+title: "Call Ingestion API"
+description: "Submit external calls to Invoca with optional recording support."
+---
+
+The Call Ingestion API is used to submit call details along with a recording URL for calls that were not live-connected and routed through the Invoca Telephony platform.
+
+Calls submitted through this API are available to all Invoca systems. This includes the Invoca transcription engine, Signal AI, as well as the Dashboard and Reporting system.
+
+Invoca post-call processing services are applied to calls based on network and campaign settings. The campaign for the call is determined by the `advertiser_campaign_id_from_network` parameter in the API.
+
+Additionally, Signals and Custom Data related to the call can be submitted during the initial call ingestion step. Please note that Signals and Custom Data can also be applied in the future using the [Signal API](/en/latest/api_documentation/signal_api/index).
+
+Requests may take up to 24 hours to process into the Invoca system.
+
+## Requirements
+
+In order to use the Call Ingestion API:
+
+- The Call Ingestion feature must be enabled for your network. Your Invoca Customer Success Manager (CSM) can enable this for you.
+- A specific "External" campaign must be created on your network. This campaign ID is what you'll use in the API request.
+- Call recordings must be dual-channel/stereo recordings. They must also be in a file format that we support. Invoca cannot process single-channel/mono recordings or unsupported file types. See the **Supported Recording Formats** section for more details.
+- Call recordings must be accessible by Invoca. See **Supported Recording Access Options** for more details.
+
+## Endpoint
+
+```
+https://invoca.net/api/@@CALL_INGESTION_API_VERSION/calls.json
+```
+
+## Request Parameters
+
+Passed in `application/json` format.
+
+### Call Parameters
+
+These are the call details used when creating the call in the Invoca platform.
+
+**Required**
+
+| Parameter | Description |
+|-----------|-------------|
+| `external_call_unique_id` | The unique ID of the call from the external system. This field is required to be unique across all calls within a network that are submitted from external sources. |
+| `start_time` | The date and time when the call started on the call origination platform. See the **Timestamp Formats** section below for descriptions of supported timestamps. |
+| `destination_phone_number` | DNIS in E.164 format `+country national_number`; example: `+18885551212`. UK and Spanish numbers are also supported (country codes `+44` and `+34`). Recommended to always be set to the business's phone number. See **Recommendations on Phone Number Fields** for more details. |
+| `calling_phone_number` | ANI in E.164 format `+country national_number`; example: `+18885551212`. Recommended to always be set to the customer's phone number. See **Recommendations on Phone Number Fields** for more details. |
+| `advertiser_campaign_id_from_network` | The ID from network field on the advertiser campaign. The submitted call will be added to this campaign. **This campaign must be of type ExternalOnly.** See [Advertiser Campaigns](/en/latest/api_documentation/network_integration/advertiser_campaigns/index) for more details. |
+| `call_direction` | The direction of the call flow. Accepted values: `inbound` or `outbound`. |
+| `recording_url` or `recording_filename` | Either the URL to the call recording, or if you are using the Direct Access to S3/Azure/SFTP feature, the filepath to the recording. See **Supported Recording Formats** and **Supported Recording Access Options** for more details. |
+
+**Optional**
+
+| Parameter | Description |
+|-----------|-------------|
+| `language_code` | The IETF language tag for the call transcription. This parameter can be processed only if multiple language processing is enabled for the network or it matches the default language code of the network. The default is given from the network attribute `default_language_code` if set, otherwise `en-US`. See supported language codes below. |
+| `recording_auth_config_id` | The ID from the Auth Configuration setup step. See **Supported Recording Access Options** for more details. |
+
+**Supported Language Codes**
+
+| Language Code | Description |
+|---------------|-------------|
+| `en-US` | English (United States) |
+| `en-GB` | English (United Kingdom) |
+| `es-ES` | Spanish (Spain) |
+| `fr-FR` | French (France) |
+
+---
+
+### Signal Parameters
+
+Used to create the fields of a signal. The Signal name provided in a request **must** already exist in your **Signal AI configuration**.
+
+**Required**
+
+| Parameter | Description |
+|-----------|-------------|
+| `name` | The name describing the signal event. For reporting a sale happened on a call, `Sale` is recommended. Other examples include `Free Trial`, `2yr Subscription`, `Cancellation`. Names are matched case-insensitively. |
+
+**Optional**
+
+| Parameter | Description |
+|-----------|-------------|
+| `value` | True or false as to whether the signal was met or not. Defaults to `true` if not passed. Can be a string `'true'` or `'false'`, `1` (true), `0` (false), `Yes` (true), or `No` (false). These values are not case sensitive. |
+
+---
+
+### Custom Data Parameters
+
+Apply Custom Data values to a call based on your Custom Data configuration. Custom Data can be any alpha-numeric value (e.g. account type, customer quality score, etc).
+
+The Custom Data Fields provided in a request **must** already exist in your [Custom Data Configuration](https://www2.invoca.net/customer_data_dictionary/home).
+
+**Required**
+
+| Parameter | Description |
+|-----------|-------------|
+| `name` | The Partner (API) Name of the Custom Data Field you want to apply a value to. Visit your [Custom Data Management Page](https://www2.invoca.net/customer_data_dictionary/home) to view your available Custom Data Fields. |
+| `value` | The value you would like to apply to the associated Custom Data Field for this call. |
+
+---
+
+### Additional Parameters
+
+**Required**
+
+| Parameter | Description |
+|-----------|-------------|
+| `oauth_token` | API token for authentication. Can be specified in the header or body of the request. See [Manage API Credentials](/en/latest/api_documentation/manage_api_credentials). |
+
+## Examples
+
+All of these examples use `POST` requests, but `PUT` requests with the same request format are also accepted.
+
+### POST /calls — Create a new call
+
+**Endpoint:**
+
+```
+https://invoca.net/api/@@CALL_INGESTION_API_VERSION/calls.json
+```
+
+**Request Body:**
+
+```json
+{
+  "call": {
+    "external_call_unique_id": "100002",
+    "start_time": "2016-02-03 09:30:00 AM",
+    "destination_phone_number": 2165388265,
+    "calling_phone_number": 8779257383,
+    "advertiser_campaign_id_from_network": 85,
+    "call_direction": "inbound",
+    "recording_url": "<CALL RECORDING URL>"
+  },
+  "oauth_token": "<YOUR OAUTH TOKEN>"
+}
+```
+
+**Response Code:** 201
+
+**Response Body:**
+
+```json
+{
+  "cuid": "<NEW_CUID>"
+}
+```
+
+---
+
+### POST /calls — Create a call with signals and custom data
+
+**Endpoint:**
+
+```
+https://invoca.net/api/@@CALL_INGESTION_API_VERSION/calls.json
+```
+
+**Request Body:**
+
+```json
+{
+  "call": {
+    "external_call_unique_id": "123ABC",
+    "start_time": "2016-08-08 11:03:31 -0700",
+    "destination_phone_number": 9093900003,
+    "calling_phone_number": 8779257383,
+    "advertiser_campaign_id_from_network": 85,
+    "call_direction": "inbound",
+    "recording_url": "<CALL RECORDING URL>"
+  },
+  "signals": [
+    {
+      "name": "sale",
+      "value": 1
+    },
+    {
+      "name": "quote",
+      "value": 1
+    }
+  ],
+  "custom_data": [
+    {
+      "name": "channel",
+      "value": "Paid Search"
+    },
+    {
+      "name": "line_of_business",
+      "value": "Social"
+    }
+  ],
+  "oauth_token": "<YOUR OAUTH TOKEN>"
+}
+```
+
+**Response Code:** 201
+
+**Response Body:**
+
+```json
+{
+  "cuid": "<NEW_CUID>"
+}
+```
+
+## Response Codes
+
+Remember to check the HTTP status code returned. This helps greatly when debugging.
+
+| Status Code | Meaning |
+|-------------|---------|
+| 201 Created | A new call creation request was successfully created. |
+| 202 Accepted | The call creation request has already been received. |
+| 400 Bad Request | Attempted to make a request with an invalid API Version for route. Check the error message for any necessary corrections. |
+| 401 Not Authorized | Invalid or missing oauth token. |
+| 403 Forbidden | Attempted to access an invalid resource or provided invalid data. Check the errors object in the response. |
+| 409 Conflict | The `external_call_unique_id` in the request has already been used. Please submit a case via the [Community Case Portal](https://community.invoca.com/t5/crmsupport/page) for further assistance. |
+
+## Timestamp Formats
+
+The following formats are supported for the `start_time` parameter.
+
+All examples below correspond to a date time of **11 April 2016** at **1 PM Pacific Time**.
+
+**Epoch:** 10 digit timestamp in UTC seconds since 1/1/70, also known as Unix time_t. UTC milliseconds since 1/1/70 (which is the default in Javascript) are also supported, i.e. a 13 digit start time.
+
+- Example (10 digits): `1460404800`
+- Example (13 digits): `1460404800000`
+
+**Compressed:** 17 digit timestamp always parsed in UTC.
+
+- Format: `YYYYMMDDHHMMSSsss`
+- Example: `20160411130000000`
+
+**ISO 8601:** Timestamp with +/- UTC offset or Z to indicate time is in UTC. Milliseconds are optional.
+
+- Format: `YYYY/MM/DDTHH:MM:SS.sss+hh:mm`
+- Example (UTC offset of +3 hours): `2016/04/11T23:00:00.000+03:00`
+- Example (UTC offset of -7 hours): `2016/04/11T13:00:00.000-07:00`
+- Example (UTC): `2016/04/11T20:00:00.000Z`
+- Example (no milliseconds): `2016/04/11T13:00:00-07:00`
+
+**Excel Compatible:** Timestamp parsed in the timezone of the **oauth token**'s associated network. Milliseconds are optional.
+
+- Format: `YYYY/MM/DD HH:MM:SS.sss AM/PM`
+- Example: `2016/04/11 13:00:00.000 PM`
+- Example (no milliseconds): `2016/04/11 13:00:00 PM`
+
+## Recommendations on Phone Number Fields
+
+For all calls submitted via the Call Ingestion API, regardless of whether the call is inbound or outbound, we recommend the customer's phone number is always set as the **calling_phone_number**, and the business or agent's phone number should always be set as the **destination_phone_number**.
+
+This standardization ensures that all calls match the Invoca recording channel layout and enables consistency across reporting and features in the Invoca platform.
+
+For example:
+
+- If a customer calls a business (inbound), the customer's number is the **calling_phone_number** and the business's number is the **destination_phone_number**.
+- If a business calls a customer (outbound), the customer's number is still the **calling_phone_number** and the business's number is still the **destination_phone_number**.
+
+## Example POST Request Using cURL
+
+You can send call results to Invoca servers in the form of an HTTP POST or PUT. cURL is recommended because it is simple and preinstalled on most machines. Below is an example of a cURL request:
+
+```bash
+curl --location --request POST 'https://invoca.net/api/@@CALL_INGESTION_API_VERSION/calls.json' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: <token>' \
+--data-raw '
+{
+  "call": {
+    "external_call_unique_id": "10002",
+    "start_time": "2022-03-25 09:31:29",
+    "destination_phone_number": 9093900003,
+    "calling_phone_number": 8779257384,
+    "advertiser_campaign_id_from_network": 86,
+    "call_direction": "inbound",
+    "recording_url": "<CALL RECORDING URL>"
+  }
+}'
+```
+
+Below is the same example with the OAuth Token passed in via the request headers:
+
+```bash
+curl --location --request POST 'https://invoca.net/api/@@CALL_INGESTION_API_VERSION/calls.json' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: <token>' \
+--data-raw '
+{
+  "call": {
+    "external_call_unique_id": "10001",
+    "start_time": "2022-03-25 09:31:29",
+    "destination_phone_number": 9093900003,
+    "calling_phone_number": 8779257384,
+    "advertiser_campaign_id_from_network": 86,
+    "call_direction": "inbound",
+    "recording_url": "<CALL RECORDING URL>"
+  }
+}'
+```
+
+## Errors
+
+The Call Ingestion API clearly identifies errors when a request cannot be processed.
+
+### Invalid Inputs
+
+If invalid parameters are passed, an error will be returned with a 403 response code.
+
+For example, if a `call` or parameters within the call are not passed in the request, the following error will be returned. If there are multiple issues with the request, we will do our best to package all of the issues together in one response message.
+
+**Response (403 Forbidden):**
+
+```json
+{
+  "errors": {
+    "class": "RecordInvalid",
+    "invalid_data": "Validation failed: 'call' is required"
+  }
+}
+```
+
+---
+
+### Permission Errors
+
+If you do not have access to the Call Ingestion API, the following error will be returned with a 403 response code.
+
+<Note>
+  The Call Ingestion API is enabled per network. Please submit a case via the [Community Case Portal](https://community.invoca.com/t5/crmsupport/page) for setup assistance.
+</Note>
+
+**Response (403 Forbidden):**
+
+```json
+{
+  "errors": {
+    "class": "UnauthorizedOperation",
+    "invalid_data": "You do not have permissions to perform the requested operation."
+  }
+}
+```
+
+---
+
+### Authorization Errors
+
+If you do not have access to the `advertiser_campaign_id_from_network`, an error will be returned with a 403 response code. For example, if you pass an `advertiser_campaign_id_from_network` that you do not have access to, the following error will be returned.
+
+**Response (403 Forbidden):**
+
+```json
+{
+  "errors": {
+    "class": "UnauthorizedAdvertiser",
+    "invalid_data": "You do not have access to this advertiser"
+  }
+}
+```
+
+---
+
+### Campaign Configuration Related Errors
+
+In order to fully utilize the Call Ingestion API, there are some configuration requirements for the campaign that the call is being submitted under:
+
+- Campaigns must be setup with a campaign type of **ExternalOnly**.
+- Campaigns need to have either the **Signal AI** product feature or at least one Voice Signal enabled. This will enable transcription service on the submitted call.
+
+<Note>
+  If any of these settings are misconfigured you'll see error messages similar to the examples below. Please submit a case via the [Community Case Portal](https://community.invoca.com/t5/crmsupport/page) for setup assistance.
+</Note>
+
+**Response (403 Forbidden):**
+
+```json
+{
+  "errors": {
+    "class": "call.advertiser_campaign_id_from_network",
+    "invalid_data": "campaign must be for external calls only"
+  }
+}
+```
+
+**Response (403 Forbidden):**
+
+```json
+{
+  "errors": {
+    "class": "call.advertiser_campaign_id_from_network",
+    "invalid_data": "campaign must have transcription enabled"
+  }
+}
+```
+
+## Supported Recording Formats
+
+The Call Ingestion API supports the following file formats:
+
+- [WAV](https://en.wikipedia.org/wiki/WAV)
+- [MP3](https://en.wikipedia.org/wiki/MP3)
+- [MP4](https://en.wikipedia.org/wiki/MP4_file_format) — Note: MP4s should be audio-only
+
+Please note that after ingestion, the Invoca Audio Processing system will upsample or downsample accordingly into our default call recording format, which is [MP3](https://en.wikipedia.org/wiki/MP3) with an 8 kHz sample rate.
+
+All call recordings are required to be in dual-channel or stereo format. The call recording of an inbound call on the Invoca platform has the caller channel on channel 0 and the agent audio on channel 1. For all calls submitted via the Call Ingestion API, we will normalize the channels to match the Invoca call record channel layout.
+
+The `call_direction` field will determine how the recording is normalized:
+
+| Value | Behavior |
+|-------|----------|
+| `inbound` | The audio processing system will assume that the call recording matches the Invoca default with the caller channel on channel 0 and the agent channel on channel 1. |
+| `outbound` | The audio processing system will assume that the call recording is the opposite of the Invoca default. The audio processing system will normalize the call recording by swapping the channels. |
+
+If the Invoca Audio Processing system finds any call recording format problems, a message will be sent via email notifying your Invoca Customer Success Manager (CSM) who will then reach out to help resolve any issues. See **Call Processing Error Notifications** for more details.
+
+## Supported Recording Access Options
+
+Call Recordings must be accessible to the Invoca system. There are a few ways to configure your recordings to support this requirement:
+
+**Public URL** — Provide a `recording_url` for the call recording that can be downloaded without access credentials or API keys. Requesting this URL should directly download the recording.
+
+**Presigned URL** — If the call recording is hosted in [AWS S3](https://docs.aws.amazon.com/s3/index.html), you can use [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html). Provide a `recording_url` with a presigned URL that grants access for a predefined period of time. The presigned URL must be live for more than 24 hours to give Invoca enough time to process the recording.
+
+**Direct Recording Access to S3/Azure/SFTP** — Provide Invoca with credentials to access recordings in Amazon S3, Microsoft Azure Blob Storage, or via SFTP. Then provide a `recording_filename` with a path to the recording. If your recording filename exactly matches the `external_call_unique_id`, you can omit this field entirely. Your Invoca Customer Success Manager (CSM) can assist with setting this up.
+
+**Secure Recording URL** — If accessing your call recordings requires an API token, you can set an Auth Configuration with Invoca support. After setup, Invoca will provide you with the corresponding Auth Configuration ID. When passed as the `recording_auth_config_id` parameter in your API request, the Invoca Audio Processing system can access the recording. Supported authentication methods:
+
+| Authentication Method | Description |
+|-----------------------|-------------|
+| HTTP Authentication Header | Sends a header with the format `Authorization: Bearer <Token>` |
+| Query String Parameter | Appends a new query string param to the `recording_url` parameter with the format `?<Query String>=<Token>` |
+| Custom Header | Sends a header with the format `<Custom Header>: <Token>` |
+
+After a new call is successfully submitted via the API, a message is sent to notify the Invoca Audio Processing system to download the recording and begin processing. The audio processing system attempts to download the recording via a standard network request using **wget** or **curl**.
+
+If the Invoca Audio Processing system is unable to successfully download and process the call recording, a message will be sent via email notifying your Invoca Customer Success Manager (CSM) who will then reach out to help resolve any issues. See **Call Processing Error Notifications** for more details.
+
+## Call Processing Error Notifications
+
+*Details on this process coming soon.*
+
+## Retrying Failed Calls
+
+*Details on this process coming soon.*
