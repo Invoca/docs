@@ -1,0 +1,218 @@
+---
+title: "SAML SSO Setup"
+---
+
+If your organization uses an identity provider such as Microsoft ADFS, Okta, or Azure to log into your apps, you can use that service to log in to Invoca as well. These identity providers use a standard called Security Assertion Markup Language Single Sign-On (SAML SSO) to exchange information, such as login details, with apps like Invoca. With this feature enabled, whenever someone in your organization tries to log in to Invoca, they’ll be directed to sign in through your SSO provider instead — with no Invoca usernames or passwords!  
+  
+SAML SSO is a different feature from the similarly-named SSO for Affiliates and Advertisers, which allows performance marketers to more easily share Invoca access with Advertisers and Publishers on their network. For more help setting up Affiliate SSO, see [How to share access to Invoca with Affiliates and Advertisers using SSO](https://community.invoca.com/t5/affiliate-marketing/how-to-share-invoca-data-with-affiliates-and-advertisers-using/ta-p/593).  
+ 
+
+<Note>
+**Who can use this article?**  
+
+To complete this guide, you must be logged in to Invoca as a user with the role of Super User. Additionally, many of the steps in this article require administrator access to your SAML identity provider (such as Microsoft ADFS, Okta, or Azure), which is typically handled by an organization’s IT or Security team.
+</Note>
+
+## Step 1: Enable SAML SSO in your Invoca account
+
+<Steps>
+<Step>
+Log in to your Invoca account and click settings in your sidebar menu, then select Users.
+</Step>
+<Step>
+In the Users pane, click the menu button, then select SSO Settings.  
+	<Frame>
+	![](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000AlFN&feoid=00N4u0000044b0C&refid=0EMUT00000EWRmb)
+	</Frame>
+    <Note>
+	**Can’t find these settings?**  
+
+	If you’re having trouble finding these settings, first make sure you’re logged in as a user with the role of Super User. If you are, and still can’t find these settings, contact your Invoca Account Manager to discuss enabling SAML SSO for your Invoca network.
+    </Note>
+</Step>
+</Steps>
+
+- In the SAML SSO drop-down menu, select how you want users on your Invoca network to log in with SAML:  
+	 
+	- **Disabled:** All users on your Invoca network must sign in to Invoca using a username and password.
+	- **Enabled - Mandatory for all users:** All users on your Invoca network must sign in to Invoca through your identity provider.
+	- **Enabled - Optional for all users:** Users on your Invoca network will be able to sign in either using a username and password or through your identity provider.
+	<Frame>
+	![](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000AlFN&feoid=00N4u0000044b0C&refid=0EMUT00000EWRoD)
+	</Frame>
+- If your identity provider requires its connected apps to returned signed requests (standard X509 certificates) check the Require Signed Requests checkbox.
+- In the Login URL text box, enter your identity provider’s login URL. You should be able to find this in the settings of your identity provider account.
+- In the Logout URL text box, you may enter a URL to allow the use of Single Logout (SLO) support. Note that after 30 minutes of inactivity, SAML SSO-configured users will be automatically logged out of Invoca.
+- If required, enter the SHA-1 Fingerprint of your identity provider in the SHA-1 Fingerprint text box. You should also be able to find this in the settings of your identity provider account.: A Fingerprint is the digest of your identity provider certificate. Please provide the correct value to ensure security in your authentication. Please separate tuples with a colon (‘:’).
+- In the Default Role menu, select the default [user role](https://community.invoca.com/t5/platform-management/managing-users-in-your-invoca-account/m-p/514#U514) you’d like to assign to new users accessing your Invoca network through SAML Single Sign-on.
+- Download your Invoca SAML SSO identity provider configuration metadata file at https://\[Your Invoca Network Here\].invoca.net/sso/invoca-sso. When setting up your identity provider settings in step 2 of this guide, you’ll need access to this metadata file.
+
+## Step 2: Set up your identity provider to connect to Invoca
+
+In this section, we’ll be setting up your identity provider to correctly access and authenticate with Invoca. Every identity provider works and looks slightly different, so don’t be discouraged if the names of the fields in this guide and your identity provider settings don’t match exactly. We’ve also included more specific instructions for connecting to Microsoft ADFS in step 3 of this guide. If you want more precise help, please contact your friendly Invoca account Customer Support Manager.  
+ 
+
+<Steps>
+<Step>
+When assigning a Name id (a unique identifier field) to your Invoca users, use the format “urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress”. This is because Invoca uses email address as unique identifiers for users.
+</Step>
+<Step>
+Set each user's Entity ID as “Invoca\_SAML\_Service\_Provider”.
+</Step>
+<Step>
+To enable Single Sign-on workflow, please set the Setting Assertion Consumer Service URL to  “https://\[Your Invoca Network Here\].invoca.net/sso/consume”
+</Step>
+<Step>
+To enable Single logout workflow, please set the Single Logout endpoint to “https://\[Your Invoca Network Here\].invoca.net/sso/logout”
+</Step>
+<Step>
+Next, you’ll need to set up each user you want to create in your Invoca account, filling in each of the following SAML attributes for each user, according to the table below. For any SAML attribute that isn’t listed below, enter “urn:oasis:names:tc:SAML:2.0:attrname-format:basic” as its name format.
+</Step>
+</Steps>
+
+| Attribute Name | Description | Value/Data-type | Type | Default Value |
+| :--- | :--- | :--- | :--- | :--- |
+| first_name | The user’s first name | String | Required |  |
+| last_name | The user’s last name | String | Required |  |
+| contact_phone_number | The user’s phone number | Valid phone number string | Required |  |
+| organization_type | >The [account level](https://community.invoca.com/t5/invoca-overview/platform-organization-and-account-types/m-p/466#U466) at which you want this user to access your Invoca account. | Enter one of: “Network”, “Advertiser” (profile), or “Affiliate” (publisher). | Optional | Network |
+| organization_id_from _network | Specifies which profile(s) in your invoca account you want this user to be able to access. | If Advertiser or Affiliate is specified as your user’s organization_type, list the ID number of each Advertiser or Affiliate you want this user to access, separated by commas. | Required if organization_type is Advertiser or Affiliate |  |
+| time_zone | The user’s time zone, if different from your Network’s default time zone. | String | Optional | Your network’s default time zone |
+| role | The[user's role](https://community.invoca.com/t5/platform-management/managing-users-in-your-invoca-account/m-p/514#U514) within the network | Enter one of: "Super", "Manager", "Member", "Observer", "Reporting", or "[Filtered](https://community.invoca.com/t5/platform-management/how-to-restrict-your-users-access-to-reporting-data-with/m-p/668#U668)" | Optional | The default user role in your network |
+| report_filters | For networks with [Filtered Reporting](https://community.invoca.com/t5/platform-management/how-to-restrict-your-users-access-to-reporting-data-with/m-p/668#U668) users, a list of the filters for reporting data those uses are able to view. | String (see below) | Optional |  |
+| licenses | The Invoca account [license types](https://community.invoca.com/t5/platform-management/managing-users-in-your-invoca-account/m-p/514#U514) that are enabled for this user. | Enter "marketing", "contact_center", or both, separated by a comma. Any users with only the "contact_center" license enabled ***must*** have the role of either "Manager" or "Filtered", above. | Optional | marketing |
+
+**How to format your report\_filters for Filtered Reporting users**  
+For each filter you'd like to set up, enter it as a pair of the reporting field name and the value you'd like to filter, connected by an equals sign (Example: "report\_filters": "location=nyc"). You can filter by more than one value on the same field by delimiting each value with a comma (Example: "report\_filters": "location=nyc,phi") and filter by more than one field by delimiting each set of report filters with an ampersand (Example: "report\_filters": "location=nyc,phi&channel=online")
+
+## Microsoft ADFS Configuration
+
+As a courtesy, we've included more detailed instructions to set up your SAML SSO for Invoca with Microsoft Active Directory Federation Services (AD FS) as your identity provider. Note that these instructions are subject to change, and may not be accurate, depending on your Microsoft AD FS version.  
+  
+**Step 1: Create a Relying Party in Microsoft AD FS for Invoca**  
+Log in to your AD FS Management snap-in, then [follow this article from Microsoft to create a new Relying Party Trust](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust), using the following options:  
+ 
+
+- **Configure certificate:** Don’t select or browse for a certificate, just click next. Invoca does not support encrypted communication for this feature.
+- **Configure URL:** Select Enable support for SAML 2.0 WebSSO Protocol. In the Service URL text box, enter https://yournetwork.invoca.net/sso/invoca-sso, replacing yournetwork with the url name of your Invoca network.
+- **Configure Identifiers:** In the Relying party trust identifier text box, add Invoca\_SAML\_Service\_Provider
+- **Access Control Policy:** Permit Everyone is selected by default
+- **Configure Claims:** Leave checkbox checked to configure claims issuance policies. [See this article from Microsoft on configuring claim rules for more details](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/deployment/configuring-claim-rules).
+
+  
+  
+**Step 2: Configure your Invoca Relying Party AD FS metadata and endpoints**  
+ 
+
+<Steps>
+<Step>
+Right click your newly created Invoca Relying Party Trust and select properties.
+</Step>
+<Step>
+Enter the service URL you used above (https://yournetwork.invoca.net/sso/invoca-sso) into the relying party metadata URL field.
+</Step>
+<Step>
+Click the Endpoints tab, highlight SAML Assertion Consumer Endpoints URL and click edit.
+</Step>
+<Step>
+Modify URL to Invoca consume URL (https://yournetwork.invoca.net/sso/consume).
+</Step>
+<Step>
+Click on checkbox to set trusted URL as default and click OK.
+</Step>
+<Step>
+Click Add SAML to bring up SAML endpoint screen. Select SAML Logout as the endpoint type and enter the proper URL for trusted and response URL (https://yournetwork.invoca.net/sso/logout). Click OK.
+</Step>
+<Step>
+Validate you have both Assertion and Logout endpoints defined.
+</Step>
+<Step>
+Click the Advanced tab and change the hash from SHA-256 to SHA-1.  Click Apply then OK.
+</Step>
+</Steps>
+
+   
+**Step 3: Configure Claims Rules for your Invoca Relying Party Trust**   
+  
+Right click your new Invoca Relying Party Trust and select edit claims issuance policy. [Take a look at Microsoft's general guide to Configuring Claim Rules](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/deployment/configuring-claim-rules), then follow each of these guides to create new Claims Rules for the following claims:  
+<Steps>
+<Step>
+[Create a Rule to Send LDAP Attributes as Claims](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-rule-to-send-ldap-attributes-as-claims) (Get Email)
+
+- **Name:** Get Email
+- **Active Directory:** Attribute Store
+- **LDAP attributes:** Email-Addresses
+- **Outgoing claim type:** Email Address
+</Step>
+<Step>
+[Create a Rule to Send Claims Using a Custom Rule](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-rule-to-send-claims-using-a-custom-rule) (Transform Email to NameID)
+
+- **Name:** Transform Email to NameID
+- **Custom Code:** Paste the following code:
+
+```text
+c:\[Type == "[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress](http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress)"\] => issue(Type = "[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier](http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier)", Issuer = c.Issuer, OriginalIssuer = c.OriginalIssuer, Value = c.Value, ValueType = c.ValueType, Properties\["[http://schemas.xmlsoap.org/ws/2005/05/identity/claimproperties/format](http://schemas.xmlsoap.org/ws/2005/05/identity/claimproperties/format)"\] = "urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress";
+```
+</Step>
+<Step>
+[Create a Rule to Send LDAP Attributes as Claims](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-rule-to-send-ldap-attributes-as-claims) (Get Required Attributes) 
+
+- **Name:** Get Required Attributes
+- **Active Directory:** Attribute Store
+- **LDAP attributes:** Given-Name, Surname, Telephone-Number
+- **Outgoing claim types:** Enter first\_name, last\_name, and contact\_phone\_number — matching each to the LDAP attributes listed above.
+- **Validate minimum rules** configured as shown
+</Step>
+</Steps>
+
+**Step 4: Obtain Signing Fingerprint from AD FS**
+
+<Steps>
+<Step>
+Inside the ADFS Management snap-in, navigate to Service -> Certificates. [Take a look at this guide from Microsoft to Obtain and Configure TS and TD Certificates for AD FS](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/configure-ts-td-certs-ad-fs) , and follow the following instructions:
+</Step>
+<Step>
+Right click the token signing certificate and select view certificate.
+</Step>
+<Step>
+Click details and navigate to fingerprint.  Copy the fingerprint and upload into relevant location in Invoca platform.
+</Step>
+</Steps>
+
+   
+**Step 5: Configure Invoca Single-Sign On**
+
+<Steps>
+<Step>
+Follow part 1 of this article to enable SAML Single-Sign On in your Invoca account. Edit both the Login and Logout URLs to https://youradfsdomain.com/adfs/ls, replacing your adsf domain with the domain name of your AD SF server instance.
+</Step>
+<Step>
+Paste the SHA-1 Fingerprint you retrieved in step 4 of this AD FS mini-guide, above — delimited by colons instead of spaces (ex. 05:59:51:D6:29:F8:26:2C:E6:8A:AC:FB:C5:2D:B7:2D:83:E5:2A:35).
+</Step>
+<Step>
+When you're finished, click Save.
+</Step>
+</Steps>
+
+**Related:**  
+
+<CardGroup>
+  <Card
+    title="Managing users in your Invoca account"
+    icon="users"
+    href="https://community.invoca.com/t5/platform-management/managing-users-in-your-invoca-account/m-p/514#U514"
+    horizontal
+  />
+  <Card
+    title="How to share Invoca data with Affiliates and Advertisers using Single Sign-On (SSO)"
+    icon="share"
+    href="https://community.invoca.com/t5/affiliate-marketing/how-to-share-invoca-data-with-affiliates-and-advertisers-using/m-p/593#U593"
+    horizontal
+  />
+  <Card
+    title="How to pull a new OAuth token to authorize third party access to Invoca data via API"
+    icon="key"
+    href="https://community.invoca.com/t5/invoca-apis/how-to-pull-a-new-oauth-token-to-authorize-third-party-access-to/m-p/526#U526"
+    horizontal
+  />
+</CardGroup>

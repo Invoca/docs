@@ -1,0 +1,212 @@
+---
+title: "Advertiser Campaigns"
+---
+
+Advertiser Campaigns can be managed using the Network API. In addition to create, update, and show operations, this interface provides additional endpoints including go\_live, archive, and quick\_stats.
+
+<Note>
+**Note**
+
+Note that the *`<advertiser_id_from_network>`* and *`<advertiser_campaign_id_from_network>`* are the network’s id for those objects, not Invoca’s.
+</Note>
+
+`/api/2022-08-01/<network_id>/advertisers/<advertiser_id_from_network>/advertiser_campaigns/<advertiser_campaign_id_from_network>.json`
+
+We support passing back current\_terms and future\_terms on campaigns. The current properties of the campaign are reflected in current\_terms. All changes to the campaign are staged in future\_terms. Once the campaign goes live, future\_terms transition over to current\_terms.
+
+You can set budgets on your campaign. There are three budget types, budget\_cap\_alert which is based on commissions, periodic\_call\_cap\_alert, which is based on the number of calls in a given period, and concurrent\_call\_cap\_alert, which is based on the number of simultaneous calls. These budget activities are only applicable for AffiliateEnabled campaigns (Known in the platform as a “Publisher Promotion” Campaign Type.)
+
+You are not allowed to delete campaigns.
+
+| Property | Type | Value |
+| --- | --- | --- |
+| id | integer (read-only) | The internal Invoca id for this Advertiser Campaign. |
+| id\_from\_network | string | The network object\_id for this Advertiser Campaign. Unique within network. Not required when auto-generation is enabled at network level. |
+| name | string | Campaign name. |
+| campaign\_type | string | 3 Campaign Types Supported: <br/><br/> **AffiliateEnabled:** Advertiser Campaign that allows Affiliates to promote it. Includes Payin and Payouts for qualified Calls. <br/><br/>**DirectOnly:** Advertiser Campaign used for internal marketing. No ability to promote via Affiliates or setup Payin and Payouts for Calls. <br/><br/>**ExternalOnly:** Advertiser Campaign used for external calls uploaded via the Call Ingestion API. See [Call Ingestion API](../../call_ingestion_api/index.html) for more details. |
+| description | string | Campaign Description. |
+| url | string | Click URL Template. |
+| object\_url | string (read-only) | URL for reaching the advertiser campaign in the UI. |
+| timezone | string | Supported Time Zones: [https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html](https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html) |
+| campaign\_language | string | Supported Campaign Languages: “English”, “French”, “Spanish”. |
+| campaign\_country | string | Supported Countries: “US”, “CA”, “UK”, “AU”, “CN”, “FI”, “FR”, “DE”, “HK”, “IT”, “JP”, “NL”, “SG”, “SE”, “CH”. |
+| operating\_24\_7 | boolean |  |
+| **affiliate\_payout** |  |  |
+| **policies** |  |  |
+| currency | string | USD, GBP, EUR. |
+| amount | decimal | Payout Amount. |
+| condition | string | Condition options depend on the following Campaign Setup items being in place: Duration (seconds/minutes) and (greater than, greater than or equal to, less than, less than or equal to, equal to), Connect Duration (seconds/minutes) and (greater than, greater than or equal to, less than, less than or equal to, equal to), Repeat, In Region (specified across multiple Regions), During Hours, Key Press, Is Mobile, Is Landline, Send SMS All may be grouped with logic operators (AND/OR/NOT). |
+| type | string | One of: Base, Bonus. |
+| **advertiser\_payin** |  |  |
+| **policies** |  |  |
+| currency | string | Supported Currencies: ‐ USD, GBP, EUR. |
+| amount | integer | Advertiser Payin Amount. |
+| condition | string | Condition options depend on the following Campaign Setup items being in place: Duration (seconds/minutes) and (greater than, greater than or equal to, less than, less than or equal to, equal to), Connect Duration (seconds/minutes) and (greater than, greater than or equal to, less than, less than or equal to, equal to), Repeat, In Region (specified across multiple Regions), During Hours, Key Press, Is Mobile, Is Landline, Send SMS. All may be grouped with logic operators (AND/OR/NOT). |
+| type | string | One of: Base, Bonus. |
+| **hours** |  |  |
+| \[day of week\]\_open (e.g. friday\_open) | string | Open Hours. In seconds past midnight (e.g. 0 for midnight, 32400 for 9:00 AM). |
+| \[day of week\]\_close (e.g. friday\_close) | string | Closed Hours. In seconds past midnight (e.g. 0 for midnight, 75600 for 9:00 PM). |
+| \[day of week\]\_closed (e.g. sunday\_closed) | string | true, false, or null. Whether the business is closed that day of the week. |
+| **named\_regions** |  |  |
+| name | string | Region Name. |
+| **regions** |  |  |
+| region\_type | string | Region Type. Can be one of: Zone, City, State, Country. |
+| value | string | Region Value, e.g. “Sacramento, CA”, or just “CA”. |
+| ivr\_tree | hash | See following Advertiser Campaign IVR Section. |
+| **budget\_activities** |  | Only applicable for AffiliateEnabled campaigns. |
+| **budget\_cap\_alert** |  |  |
+| reset\_period | string (required) | Budget will reset based on this entry. One of: Daily, Weekly, Monthly, Quarterly, Ongoing. |
+| starts\_at | date (required) | Budget Start. |
+| budget\_currency | string (required) | Budget Currency. |
+| time\_zone | string (required) | Supported Time Zones: “Pacific Time (US & Canada)”, “Mountain Time (US & Canada)”, “Central Time (US & Canada)”, “Eastern Time (US & Canada)”, “London”, “UTC”. |
+| budget\_amount | decimal (required) | Budget Amount. |
+| include\_call\_fees | boolean | True if you want call fees to be included in the budget. |
+| **periodic\_call\_cap\_alert** |  |  |
+| reset\_period | string (required) | Budget will reset based on this entry. One of: Daily, Weekly, Monthly, Quarterly, Ongoing. |
+| starts\_at | date (required) | Call Cap Start. |
+| budget\_currency | string (required) | Budget Currency. |
+| time\_zone | string (required) | Supported Time Zones: “Pacific Time (US & Canada)”, “Mountain Time (US & Canada)”, “Central Time (US & Canada)”, “Eastern Time (US & Canada)”, “UTC”. |
+| budget\_amount | decimal (required) | Budget Amount. |
+| auto\_approve | string | One of: All, None, Approved\_Affiliates Default: None This controls if affiliates are automatically approved when applying to the campaign. |
+| visibility | string | One of: All, None, Approved\_Affiliates Default: All This controls the level of visibility publishers have when applying to campaigns. |
+| pause\_date | string | date string (ex. ‘2015-01-01 15:59:00 -0700’). |
+| expiration\_date | string | date string. Read only. Alias of “pause\_date”. |
+| default\_creative\_id\_from\_network | integer | Default Creative ID. |
+| **concurrent\_call\_cap\_alert** |  |  |
+| budget\_amount | decimal (required) | Budget Amount. |
+| timeout | integer | Seconds to wait for the campaign to go live. Between 2 and 60. |
+
+## Advertiser Campaign IVRs
+
+When creating an advertiser campaign, you need to provide some call flow logic through an IVR tree. Depending on the advertiser/campaign type (direct, bundled, etc) you may use the following node types:
+
+Node Parameters and Usage
+
+\* => required parameter
+
+| Node Type | Parameters | Usage |
+| --- | --- | --- |
+| Menu | \*prompt<br/><br/>  asr\_phrases<br/><br/>  confirm\_response\_enabled | Allows the caller to select from up to 9 choices (e.g. choosing a department, selecting a language, etc). |
+| Connect | prompt<br/><br/>  \*destination\_phone\_number <br/><br/> \*destination\_country\_code<br/><br/>  \*destination\_extension<br/><br/>  asr\_phrases <br/><br/> connect\_timeout | Forwards the call to a selected phone number after optionally reading a prompt. If ringing\_rollover is enabled for the network, a connect\_timeout value can be configured along with a “Failover” child node. |
+| Failover | \*destination\_phone\_number | Forwards the call to a fallback destination number if the original destination configured on the parent node returns a busy signal OR if the configured connect\_timeout value on the parent node is exceeded. Can only be configured as the child of another node, and not as a standalone node. |
+| EndCall | prompt<br/><br/>  asr\_phrases | Ends the call after optionally reading a prompt. |
+| SmsPromo | \*prompt <br/><br/> \*sms\_promo\_copy<br/><br/>  sms\_promo\_delay <br/><br/> sms\_promo\_sender <br/><br/> asr\_phrases | Provide the option for a user to receive a text message with a special promotion. |
+| Condition | \*condition <br/><br/> asr\_phrases | If/else option for a call based on the qualities of the call/caller. |
+| VerifyLocation | prompt <br/><br/> asr\_phrases | Prompts the caller to verify the guessed location or confirm through input. Useful if geographical data is important or useful in a condition node. |
+| DynamicRoute | prompt <br/><br/> \*dynamic\_route\_destination <br/><br/> asr\_phrases <br/><br/> behave\_like\_ring\_group <br/><br/> ring\_group\_connect\_timeout <br/><br/> distribution\_method <br/><br/> call\_acceptance <br/><br/> ring\_group\_destination\_total\_limit <br/><br/> max\_simultaneous\_calls | Forwards the call to a destination that is extracted from a marketing data field specified in dynamic\_route\_destination. The destination must be a phone number or if you are SIP integrated, can be a string that is routable by your SIP infrastructure. If behave\_like\_ring\_group is enabled, then the marketing data field selected as the dynamic\_route\_destination may contain a comma-separated string of values, where each value represents a phone number that will be dialed as part of a RingGroup. RingGroup settings, such as ring\_group\_connect\_timeout, distribution\_method, call\_acceptance, ring\_group\_destination\_total\_limit, and max\_simultaneous\_calls will also be made available. |
+| AnyKeyPress | \*prompt <br/><br/> asr\_phrases | Prompts the caller to make any keypress to continue the call. |
+| NumberQuestion | \*prompt <br/><br/> \*number\_question\_type <br/><br/> confirm\_response\_enabled <br/><br/> error\_prompt\_disabled <br/><br/> custom\_error\_prompt\_text <br/><br/> caller\_response\_custom\_data\_partner\_name <br/><br/> asr\_phrases | Prompts the caller to respond with a multi-digit number (e.g. Phone Number, Date) and validates it if applicable. The caller’s response may be saved to a marketing data field. |
+| YesOrNo | \*prompt <br/><br/> confirm\_response\_enabled <br/><br/> error\_prompt\_disabled <br/><br/> custom\_error\_prompt\_text  asr\_phrases | Prompts the caller to respond with either a yes or no answer. The caller’s response determines how the call will continue. |
+| RingGroup | prompt<br/><br/>  \*ring\_group\_destinations <br/><br/> \*ring\_group\_connect\_timeout  <br/><br/>distribution\_method  <br/><br/>call\_acceptance <br/><br/> ring\_group\_destination\_total\_limit <br/><br/> max\_simultaneous\_calls | Forwards the call to a group of numbers defined in the ring\_group\_destinations array of hashes. The destinations will be in the order determined by the distribution\_method. If a destination plays a busy signal OR the ring\_group\_connect\_timeout value is exceeded before the call is answered, the next destination will be dialed. When call\_acceptance is enabled, the call must be expressly accepted instead of answered. The ring\_group\_destination\_total\_limit may only be configured when the distribution\_type is set to Random. This node type also allows for the configuration of max\_simultaneous\_calls when simultaneous calling is enabled for the network. |
+| MessagingAi | \*prompt <br/><br/> \*messaging\_ai\_agent\_id <br/><br/> \*messaging\_ai\_first\_message  <br/><br/>\*messaging\_ai\_promo\_number\_id | Allows the caller to opt in to a conversation with an AI agent. If the customer opts in, they will receive a message from the AI agent. You can configure any child nodes for both the case where the caller opts in, and when they opt out. |
+| RealTime | \*webhook\_id <br/><br/> prompt | Routes the call in real time by firing a configured Real-Time Routing webhook and using the response to determine the call destination. Requires real time routing to be enabled for the network. The webhook must be owned by the advertiser or the network. |
+
+Node Details
+
+| Node Type | Details |
+| --- | --- |
+| Menu | Can have 1-9 child nodes, with each child corresponding to keypresses 1-9. At the end of the child list, it can also optionally have failover child nodes designated by a node with a keypress\_failover\_type parameter (see example below). If speech recognition is enabled, the caller may also respond verbally with their menu choice, including using the phrases that have been configured in field asr\_phrases for each of the child nodes. (e.g. the caller can say “sales” or “one” for 1, and “support” or “two” for 2). |
+| Connect | May not have any children unless ringing\_rollover is enabled for the network. The prompt will be read before connecting to the provided phone number. If ringing\_rollover is enabled for the network, a connect\_timeout value can be configured along with a “Failover” child node. |
+| Failover | May not have any children. The provided phone number will be dialed if the destination configured on the parent node returns a busy signal when dialed OR if the connect\_timeout value configured on the parent node is exceeded. Can only be configured as the child of another node, and not as a standalone node. |
+| EndCall | May not have any children. The prompt will be read before ending the call. |
+| SmsPromo | May have exactly 1 child node. After accepting or declining the promotional sms, the child node will be executed. To accept the promotional sms, the user must push 9 on the phone (this should be added as part of the prompt). Only numbers recognized as mobile phones will be offered the sms option. |
+| Condition | May have exactly 2 child nodes. If the conditions are met, the first child node is executed. If they are not met then the second child node is executed. See the conditions section and examples below for details on valid conditions. |
+| NearestBranch | May have exactly 1 child node. The caller will be prompted to verify their location prior to forwarding the call. If no branch is within ‘radius\_miles’ of the caller then the child node will be executed. |
+| VerifyLocation | May have exactly 1 child node. The prompt will play before verifying the callers location. The child node will be executed after verifying the callers location. |
+| DynamicRoute | May have exactly 1 child node. We will evaluate the marketing data field value specified on this node’s dynamic\_route\_destination. With non-SIP integration, if the extracted value is a valid phone number and the destination phone number is in an allowed region given your settings, we will play the prompt and transfer the call, otherwise the child node will be executed without the prompt. When SIP integrated, we also allow transferring to any string (such as an extension), in which case the destination should be routable by your SIP infrastructure. If the node is enabled to behave like a RingGroup, then the marketing data field selected as the dynamic\_route\_destination may contain a comma-separated string of values, where each value represents a phone number that will be dialed as part of a RingGroup. |
+| AnyKeyPress | May have exactly 2 child nodes. If any keypress is made, the first child node is executed. If no keypress is made, then the second child node is executed. |
+| NumberQuestion | May have exactly 1 child node. Requires a question type to be selected (e.g. Phone Number, Date). The prompt will play before the caller answers the question. The answer may be saved in a marketing data field. At the end of the child list, this node type can also optionally have failover child nodes, designated by a node with a keypress\_failover\_type parameter (see example below). |
+| YesOrNo | May have exactly 2 child nodes. If a keypress of 1 is made, the first child node is executed. If a kepyress of 2 is made, the second child node is executed. If speech recognition is enabled, the caller can also say “yes” for 1 and “no” for 2. At the end of the child list, this node type can also optionally have failover child nodes, designated by a node with a keypress\_failover\_type parameter (see example below). |
+| RingGroup | Forwards the call to a group of numbers that will be dialed in the order determined by the distribution method. If a destination plays a busy signal OR the ring\_group\_connect\_timeout value is exceeded before the call is answered (or accepted), the next destination will be dialed. This node type also allows for simultaneous calling when it is enabled. |
+| MessagingAi | May have exactly 2 child nodes. If the caller opts in to receive a message the first node is executed. If the caller does not opt in, or they are calling from a land line, the second node will be executed. |
+| RealTime | Must have exactly one child node as a fallback. The configured Real-Time Routing webhook is called in real time during the call; the response determines the routing destination. If the webhook does not respond within 4 seconds, the fallback child node is executed. |
+
+Parameter Details
+
+| Property | Type | Value |
+| --- | --- | --- |
+| asr\_phrases | Array of hashes | A list of phrases that apply to the child of a Menu node. Can only be used when speech recognition is enabled. Allows the caller to respond verbally with one of the configured phrases instead of making a keypress. For example, the first child of a Menu node may have a value of `[{“phrase”: “sales”}, {“phrase”: “support”}]` for “asr\_phrases”, where the caller may say “sales” or “support” to select the Menu option instead of pressing 1. |
+| behave\_like\_ring\_group | Boolean | When enabled, the given node will behave like a RingGroup node and additional settings may become available. See the “Node Parameters and Usage” and “Node Details” tables for more details. |
+| call\_acceptance | Boolean | When enabled, the agent / call recipient must press 1 on their keypad to accept the call or can press 2 to decline. If speech recognition is also enabled, the agent can also say ‘yes’ to accept or ‘no’ to decline the call. This is only available for RingGroup nodes or nodes that have the behave\_like\_ring\_group setting enabled. |
+| caller\_response\_custom\_data\_partner\_name | String | The partner name of the custom data field that will be used to save the caller’s response to the NumberQuestion prompt. |
+| condition | String | The boolean condition that decided if the first or second child will be executed in a condition node. |
+| confirm\_response\_enabled | Boolean | When enabled, the system will read back the caller’s answer to the prompt and ask for confirmation. The caller can press 1 for “yes” and 2 for “no”. If speech recogition is enabled, callers can also confirm their response by saying “yes” or “no”. |
+| connect\_timeout | Integer | The number of seconds we will wait before dialing the fallback number configured in the “Failover” node if the call is not answered or a busy signal is detected. |
+| custom\_error\_prompt\_text | String | Custom text that will be played to the caller when they provide an invalid response or no response. |
+| destination\_country\_code | String | The country code for the destination\_phone\_number. |
+| destination\_phone\_number | String | The phone number to forward the caller to. |
+| destination\_extension | String | Extension keypresses on the destination number. Commas indicate pause (e.g. 1,,,234 means a keypress of “1” is executed followed by a 3 second pause and an extension keypress of “234”). |
+| distribution\_method | String | The method used to determine which order the numbers in a RingGroup are dialed. Default is “InOrder”. For RingGroup nodes, the available methods are “InOrder”, “Random” and “Weighted”. For nodes that have the behave\_like\_ring\_group setting enabled, only methods “InOrder” and “Random” are available. When set to “Random”, all enabled numbers are equally likely to be near the top of the list. When set to “Weighted”, numbers with a higher distribution weight are more likely to be near the top of the list. (See the ring\_group\_destinations parameter details for how to configure “distriubiton\_weight”). |
+| dynamic\_route\_destination | Strings | The custom data field partner name you want to use as the destination in a dynamic route node. Typically a phone number in e164 format. |
+| error\_prompt\_disabled | Boolean | If set to true, no error sound or prompt will play when the caller provides an invalid response or no response. If set to false, when the caller provides an invalid response or no response, an error sound will play, or you can optionally define a custom error prompt via the parameter custom\_error\_prompt\_text. |
+| keypress\_failover\_type | String | The failover type to use for a child node of a Menu. “Wrong” for when a wrong keypress is pressed by the caller on any attempt for the parent menu (shown in reporting as keypress “W”). “None” for when there is no keypress by the caller for all attempts for the parent menu (shown in reporting as keypress “N”). Omit this parameter for normal keypresses. See example below. |
+| max\_simultaneous\_calls | Integer | The maximum amount of ring group numbers that we will attempt to dial at one time. Default is 1. |
+| messaging\_ai\_agent\_id | Integer | The id associated with the Messaging AI agent you want to use. |
+| messaging\_ai\_first\_message | String | The initial message that the AI Agent will send to the customer when they opt in to receive messages. |
+| messaging\_ai\_promo\_number\_id | Integer | The ID of a static promo number that is enabled for SMS messaging to be used by the agent to send messages. |
+| number\_question\_type | String | The type of question you want to ask as part of the NumberQuestion node type. This may be “Digits”, “Number”, “PhoneNumber”, “Date”, “Currency”, “Time”, or “ZipCode”. |
+| prompt | String | The text that will be read before a nodes action occurs. An empty string will result in no prompt being read, and the following action will occur immediately. |
+| ring\_group\_connect\_timeout | Integer | The number of seconds we will wait before dialing the next number in a RingGroup if the call is not answered or a busy signal is detected. When call\_acceptance is enabled, this will represent the amount of time we will wait for the call to be accepted instead of answered. |
+| ring\_group\_destinations | Array of hashes | A list of destination hashes for the RingGroup node. Each hash must contain a “ring\_group\_number” parameter at minimum. Other optional parameters are “description” (string), “ring\_group\_country\_code” (number, default: the Campaign’s locale, e.g. 1 for US/Canada), “destination\_disabled” (boolean, default: false), and “distribution\_weight” (integer, default: 1). “destination\_disabled” when set to true, will prohibit the destination from being dialed as part of the RingGroup. “distribution\_weight” may only be used when the distribution\_method of the RingGroup node is set to “Weighted”. For example, ring\_group\_destinations may have a value of `[{“ring_group_number”: “8004441111”, “ring_group_country_code”: 1, “description”: “Call Center 1”, “distribution_weight”: 2 }, {“ring_group\_number”: “8004442222”, “ring_group_country_code”: 1, “description”: “Call Center 2”, “distribution_weight”: 1 }]`. |
+| ring\_group\_destination\_total\_limit | Integer | The total amount of phone numbers in the RingGroup that we will try dialing before giving up. For example, if you have configured 10 ring group numbers and the limit is set to 4, we will only dial the first 4 dynamically chosen numbers. |
+| sms\_promo\_copy | String | The text that will be sent to the caller if they accept the promotional sms. |
+| sms\_promo\_delay | Integer | The time delay in seconds before sending the promotional sms. This may be 1 (Immediately), 1800 (30 minutes), 86400 (1 day), 604800 (7 days), or 2592000 (30 days). |
+| sms\_promo\_sender | String | The email address that will be shown in the sms. This defaults to [sms@invoca.net](mailto:sms%40invoca.net). |
+| webhook\_id | Integer | The ID of the Real-Time Routing webhook to use for a RealTime node. The webhook must be owned by the advertiser or the network. |
+
+Conditions
+
+| Condition | Details |
+| --- | --- |
+| during\_hours | True if the caller is calling during the hours specified in the campaign. |
+| in\_region | True if the caller is calling from the region specified in the campaign. |
+| landline | True if the caller is calling from a landline phone. |
+| mobile | True if the caller is calling from a mobile phone. |
+| pressed\[key\] | True if the caller pressed the named key. |
+| repeat | True if the caller has already called this campaign in the last N days (the interval N can be set on the campaign; the default is 30 days). |
+| sms\_sent | The caller chose to receive a text message during the call. |
+| and | Joins two conditions and is true if both conditions are true. |
+| or | Joins two conditions and is true if either condition is true. |
+| not | Inverts the following condition. |
+| ( ) | Used for grouping. |
+
+Example Conditions
+
+| Example | Condition |
+| --- | --- |
+| Call duration was a minute and a half or longer | duration >= 1 min 30 sec. |
+| Call came in during business hours | during\_hours. |
+| Call was from a mobile phone where the caller pressed the 2 key in response to the first menu | mobile and pressed\[2\]. |
+| Call was from the selected geographic region or was longer than 12 seconds | in\_region or duration > 12 sec. |
+| Caller pressed 1 to the first question in a series and was not in the geographic region or calling during business hours | pressed\[a 1\] and not (in\_region or during\_hours). |
+
+Note that **and** is higher precedence than **or**. So if you use both in a condition like this:
+
+`mobile or in_region and during_hours`
+
+it is equivalent to this:
+
+`mobile or (in_region and during_hours)`
+
+Caller ID options can also be configured by optionally including a `caller_id` object inside `ivr_tree`:
+
+| Setting | Mask | Example | Details |
+| --- | --- | --- | --- |
+| “original” | None | `{ setting: “original” }` | Display caller’s caller id to call center agent. (Default) |
+| “promo” | None | `{ setting: “promo” }` | Display affiliate promo number to call center agent. (Only if forwarding to a local number.) |
+| “specific” | String containing phone number | `{ setting: “specific”, mask: “800-555-5555” }` | Display a specific caller ID number. |
+| “partial” | String containing mask format | `{ setting: “partial”, mask: “800-555-XXXX” }` | Display caller’s caller ID with digits replaced. |
+
+### Custom Data
+
+Advertiser campaigns may have Custom Data Fields applied to them, which will be applied to calls originating through the advertiser campaign. To apply Custom Data Values to an advertiser campaign, the top level parameter `custom_data` should be assigned a hash with each pair’s key corresponding to a partner name. The value of the pair should be the value to be applied.
+
+For the following example, we would apply the value “Offline newspaper” to the Custom Data Field “channel”.
+
+```json
+{
+  "custom_data": {
+    "channel": "Offline newspaper"
+  }
+}
+```

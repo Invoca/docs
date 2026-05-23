@@ -1,0 +1,76 @@
+---
+title: "How to Add and Map Custom Attributes in Okta for Configuring Required SSO/SAML Parameters"
+---
+
+**Objective**
+
+Add custom attributes to an Okta user profile to define additional attributes that are not available in the base attributes. This will allow you to pass the required parameters (first name, last name, phone number) in the Invoca SSO/SAML integration. Please note that the Okta tile has to be created before you can map the required parameters.
+
+**Applies To**
+
+**Procedure**
+
+## Part 1 - Add custom attributes to an Okta user profile
+
+<Steps>
+<Step>
+In the Admin Console, go to Directory > Profile Editor.
+</Step>
+<Step>
+Search and select the SSO SAML app for Invoca.
+</Step>
+<Step>
+Click Add Attribute.
+
+<Frame>
+![add attributes.png](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000Ar4r&feoid=00N4u000004AOFC&refid=0EM4u000009PrWp)
+</Frame>
+</Step>
+<Step>
+Complete these fields:<br/>
+	a. Select the String data type<br/>
+	b. Display name: A human readable label that will appear in the UI<br/>
+	c. Variable name: Name of attribute that can be referenced in mappings<br/>
+	d. Description: Description of the attribute
+</Step>
+<Step>
+Click Save or Save and Add Another to add another custom attribute.
+
+<Frame>
+![Screenshot 2023-10-16 at 4.44.04 PM.png](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000Ar4r&feoid=00N4u000004AOFC&refid=0EM4u000009PrWu)
+</Frame>
+</Step>
+</Steps>
+
+## [Part 2 - Map Custom Attributes to App Attributes](https://help.okta.com/en-us/content/topics/users-groups-profiles/usgp-map-attributes.htm)
+
+<Steps>
+<Step>
+While continuing in the Profile Editor view within the selected Apps in the Filters.
+</Step>
+<Step>
+Click Mappings for the app and select Configure User mappings if a list appears.
+</Step>
+<Step>
+Select Okta User to App: Select this tab to map the flow of attributes from Okta to the app. Okta contains the source attributes and the app is the target.
+</Step>
+<Step>
+Map attributes:
+	1. Scroll down through the attribute mappings.
+	2. Make sure the required attributes are mapped. The Okta or app user profile indicates which are required
+	3. Use the drop-down to add attributes, or use expressions to add attributes with concatenated or transformed values.
+
+<Frame>
+![Screenshot 2023-10-16 at 4.48.16 PM.png](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000Ar4r&feoid=00N4u000004AOFC&refid=0EM4u000009PrX4)
+</Frame>
+</Step>
+<Step>
+Click Save Mappings and Apply updates now.
+</Step>
+</Steps>
+
+## Part 3 - Navigate back to the Okta app to finish the SSO/SAML configuration
+
+<CardGroup>
+<Card title="This link will navigate back to the original article to finish the configuration." icon="link" href="https://community.invoca.com/t5/how-to/configure-sso-with-okta/ta-p/5421" horizontal/>
+</CardGroup>

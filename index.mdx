@@ -1,133 +1,225 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
-icon: 'star'
+mode: "custom"
+title: "Invoca Docs"
+description: "Integration guides, SAML SSO, Invoca Tags, and platform help—aligned with the Invoca Support knowledge base."
 ---
 
-## Setting up
+<div className="relative w-full flex items-center justify-center" style={{ height: "32rem", overflow: "hidden" }}>
 
-Get your documentation site up and running in minutes.
+<div className="absolute inset-0 h-full bg-cover bg-center" />
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
+<div
+  className="absolute inset-0 h-full bg-cover bg-center"
+  style={{
+    backgroundImage:
+      'url("https://support.invoca.com/s/sfsites/c/file-asset/support_portal_image?v=1")',
+  }}
+/>
+
+<div style={{ position: "absolute", textAlign: "center", padding: "0 1rem" }}>
+
+  <p className="text-2xl text-white">
+   Browse the knowledge base or reach out to our team
+  </p>
+
+  <div
+    className="text-5xl text-white font-bold w-full mt-4 leading-[1.2] tracking-tight"
+  >
+    We’re here to help
+    </div>
+
+    <div className="flex items-center justify-center" style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <button
+        type="button"
+        className="hidden w-full lg:flex items-center text-sm leading-6 py-4 pl-4 pr-4 text-gray-500 rounded-full"
+        id="home-search-entry"
+        style={{
+          marginTop: "2rem",
+          maxWidth: "40rem",
+          background: "#FFF",
+          boxShadow: "0px 1px 4px 0px rgba(8, 9, 10, 0.25), 0px 0px 0px 4px rgba(255, 255, 255, 0.20)",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+        onClick={()=> document.getElementById('search-bar-entry').click()}
+      >
+        <svg
+          className="h-4 w-4 ml-1.5 flex-none bg-primary hover:bg-gray-600 dark:bg-primary-dark dark:hover:bg-white/70"
+          style={{
+          marginRight: "0.5rem",
+          maskImage:
+            'url("https://mintlify.b-cdn.net/v6.5.1/solid/magnifying-glass.svg")',
+          maskRepeat: "no-repeat",
+          maskPosition: "center center",
+          }}
+        />
+        Search or ask...
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  className="mx-auto px-4 sm:px-6 lg:px-8"
+  style={{
+    marginTop: "2rem",
+    marginBottom: "4rem",
+    maxWidth: "70rem",
+    paddingLeft: "1.25rem",
+    paddingRight: "1.25rem",
+  }}
 >
-  Follow our three step quickstart guide.
-</Card>
 
-## Make it yours
+  <p className="mx-auto max-w-3xl text-center text-base leading-7 text-slate-600 dark:text-slate-300">
+    Find setup guides for integrations, identity (SAML and Okta), Invoca Tags, and transcription redaction. These
+    articles follow the same topics customers use on the{" "}
+    <a
+      href="https://support.invoca.com/s/"
+      target="_blank"
+      rel="noreferrer"
+      className="font-medium text-[#00AD85] underline decoration-[#00AD85]/30 underline-offset-2 hover:decoration-[#00AD85]"
+    >
+      Invoca Support portal
+    </a>
+    .
+  </p>
 
-Design a docs site that looks great and empowers your users.
+  <div className="mt-14">
+    <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+      Marketing & analytics integrations
+    </h2>
+    <p className="mx-auto mt-3 max-w-2xl text-center text-base leading-7 text-slate-600 dark:text-slate-300">
+      Overview articles for connecting Invoca to ad platforms and analytics products.
+    </p>
+    <div className="mt-8">
+      <CardGroup cols={3}>
+        <Card
+          title="Google Ads"
+          icon="chart-line"
+          href="/s/article/jhdcp92865-688"
+          cta="Open guide"
+        >
+          Installation, call extensions, reporting, and FAQs for Invoca for Google Ads.
+        </Card>
+        <Card
+          title="Google Analytics 4"
+          icon="chart-pie"
+          href="/s/article/jhdcp92865-585"
+          cta="Open guide"
+        >
+          GA4 integration overview and Measurement Protocol–based call reporting.
+        </Card>
+        <Card
+          title="Google Campaign Manager"
+          icon="bullhorn"
+          href="/s/article/jhdcp92865-698"
+          cta="Open guide"
+        >
+          Floodlight activities, audiences, and offline conversions with Campaign Manager.
+        </Card>
+        <Card
+          title="Adobe Experience Cloud"
+          icon="layer-group"
+          href="/s/article/jhdcp92865-582"
+          cta="Open guide"
+        >
+          Adobe Analytics, Audience Manager, Target, Launch, and related integrations.
+        </Card>
+        <Card
+          title="Salesforce Sales Cloud"
+          icon="cloud"
+          href="/s/article/jhdcp92865-587"
+          cta="Open guide"
+        >
+          CRM integration overview: leads, closed-loop reporting, and the article series.
+        </Card>
+        <Card
+          title="SIP integration"
+          icon="phone-volume"
+          href="/s/article/jhdcp92865-601"
+          cta="Open guide"
+        >
+          Route calls over SIP, reduce inbound telecom fees, and optional PreSense data.
+        </Card>
+      </CardGroup>
+    </div>
+  </div>
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+  <div className="mt-20">
+    <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+      Identity, tags & compliance
+    </h2>
+    <p className="mx-auto mt-3 max-w-2xl text-center text-base leading-7 text-slate-600 dark:text-slate-300">
+      SSO configuration, tag troubleshooting, and how Invoca protects sensitive data in transcripts.
+    </p>
+    <div className="mt-8">
+      <CardGroup cols={2}>
+        <Card title="SAML SSO setup" icon="shield-check" href="/s/article/jhdcp92865-570" cta="Open guide">
+          Enable SAML in Invoca, map identity provider settings, and optional Microsoft AD FS steps.
+        </Card>
+        <Card
+          title="Okta custom attributes & SAML"
+          icon="id-card"
+          href="/s/article/How-to-Add-and-Map-Custom-Attributes-in-Okta-for-Configuring-Required-SSO-SAML-Parameters"
+          cta="Open guide"
+        >
+          Add and map profile attributes in Okta for required Invoca SSO/SAML parameters.
+        </Card>
+        <Card title="Validating & troubleshooting Invoca Tags" icon="code" href="https://support.invoca.com/s/article/jhdcp92865-455" cta="Open guide">
+          Draft revisions, console checks, number swap tests, and marketing data verification.
+        </Card>
+        <Card title="Transcription redaction overview" icon="eye-slash" href="/s/article/jhdcp92865-8699" cta="Open guide">
+          Standard redaction, PCI-related fields, and viewing redaction settings in your network.
+        </Card>
+      </CardGroup>
+    </div>
+  </div>
 
-## Create beautiful pages
+  <div className="mt-20 rounded-3xl border border-slate-200 bg-slate-50 px-6 py-10 dark:border-slate-800 dark:bg-slate-900">
+    <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Developers & APIs</h2>
+    <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">
+      If you are implementing Invoca Tags, REST APIs, or server-side web integration, use the Developer Portal section of
+      this site for credentials, network APIs, and PNAPI reference—alongside the tag guides above.
+    </p>
+    <div className="mt-8">
+      <CardGroup cols={3}>
+        <Card title="Developer Home" icon="house" href="/en/latest" cta="Open">
+          Welcome page with quick start for Basics, APIs, and web integration.
+        </Card>
+        <Card title="Invoca Tags (technical)" icon="tags" href="/en/latest/web_integration/invoca_tags" cta="Open">
+          Tag Wizard, revisions, and deployment details that complement tag validation.
+        </Card>
+        <Card title="Manage API credentials" icon="key" href="/en/latest/api_documentation/manage_api_credentials" cta="Open">
+          OAuth-style tokens for Invoca APIs used with integrations and automation.
+        </Card>
+      </CardGroup>
+    </div>
+  </div>
 
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Make your content agent ready
-
-Make your docs work for humans and AI agents alike.
-
-<Columns cols={2}>
-  <Card
-    title="Prompt component"
-    icon="robot"
-    href="/agent-ready/prompt"
-  >
-    Embed shareable AI prompts readers can copy or open in Cursor.
-  </Card>
-  <Card
-    title="Visibility"
-    icon="eye"
-    href="/agent-ready/visibility"
-  >
-    Show different content to humans and agents reading your docs.
-  </Card>
-  <Card
-    title="Contextual menu"
-    icon="bolt"
-    href="/agent-ready/contextual"
-  >
-    Give readers one-click access to Claude, ChatGPT, Cursor, and more.
-  </Card>
-  <Card
-    title="AI coding tools"
-    icon="wand-magic-sparkles"
-    href="/ai-tools/claude-code"
-  >
-    Set up Claude Code, Cursor, or Windsurf with Mintlify's skill.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+  <div className="mt-16 flex flex-wrap items-center justify-center gap-4 border-t border-slate-200 pt-10 dark:border-slate-800">
+    <a
+      href="https://support.invoca.com/s/"
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 no-underline transition hover:border-[#00AD85] hover:text-[#006b5c] dark:border-slate-600 dark:text-white dark:hover:border-emerald-400"
+    >
+      Full Support portal
+    </a>
+    <a
+      href="https://www2.invoca.net/login"
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center justify-center rounded-lg bg-[#00AD85] px-5 py-3 text-sm font-semibold text-white no-underline transition hover:bg-[#009973]"
+    >
+      Invoca login
+    </a>
+    <a
+      href="https://www.invoca.com/uk/company/contact"
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 no-underline transition hover:border-[#00AD85] hover:text-[#006b5c] dark:border-slate-600 dark:text-white dark:hover:border-emerald-400"
+    >
+      Contact Invoca
+    </a>
+  </div>
+</div>

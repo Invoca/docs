@@ -1,0 +1,65 @@
+---
+title: "SIP Integration Overview"
+---
+
+
+Session Initiation Protocol (SIP) is a standard for initiating, maintaining, and terminating multimedia communications. Invoca can use SIP to connect inbound phone calls to your business over the Internet to reduce telecom fees and send real-time data to your call center, as part of your Invoca account's [PreSense](https://community.invoca.com/t5/other-integrations/how-to-serve-pre-call-data-to-your-call-center-agents-in-real/m-p/6315#U6315) package.
+
+## How does the SIP integration change how my Invoca account works?
+
+Without the Invoca SIP integration, phone calls you receive go through the Public Switched Telephone Network (PTSN), incurring inbound telecom fees on your side. The PTSN will route to your phone system and then your phone system will connect the caller to an agent.  
+  
+<Frame>
+![](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000Apnl&feoid=00N4u0000044b0C&refid=0EMUT00000EKVHK)
+</Frame>
+   
+If you enable the SIP integration, your phone calls are instead connected directly to your phone system’s server over the Internet. Then, your phone system will connect the caller to an agent.  
+
+<Frame>
+![](https://support.invoca.com/servlet/rtaImage?eid=ka0VJ000000Apnl&feoid=00N4u0000044b0C&refid=0EMUT00000EKWA9)
+</Frame>
+
+<Note>
+**Note**
+
+Not all phone systems are configured to support SIP. Check with your IT team or your call center software provider to confirm your phone system is SIP enabled.
+</Note>
+
+## Why should I consider implementing the Invoca Invoca’s SIP integration?
+
+1. **Cost savings**  
+	You can eliminate your inbound telecom fees when Invoca routes to a SIP-enabled destination.
+2. **Share Invoca data with your call center system (PreSense)**  
+	With the Invoca SIP integration enabled, you may also be able to send Invoca data directly to your call center in the same request that SIP uses to route your phone calls. Depending on the capabilities of your call center software, the Invoca data sent in the SIP headers can be used to personalize the caller experience or to support closed-loop conversion reporting.  
+	  
+	For example, with the SIP integration enabled, you can pass the name of the product the caller was viewing before picking up the phone. This intel can be used to route the caller to an agent with a particular skill set to deliver an optimal experience.   
+	  
+	As another example, you can pass the Invoca Call Record ID. Call outcomes or conversions recorded in your call center software can be reported back to Invoca using this unique call identifier. Invoca can then turn around and share these Signals with other platforms — like Google Ads, Adobe, and Facebook — for optimization and targeting.   
+	  
+	That’s just a sample of what can be done with the valuable data Invoca is collecting before the call connects to an agent.
+
+  
+To learn more about how to implement SIP in your Invoca account, read our guide [How to connect Invoca phone calls to your business over the internet using Session Initiation Protocol (SIP)](https://community.invoca.com/t5/other-integrations/how-to-connect-invoca-phone-calls-to-your-business-over-the/m-p/510#U510)  (Invoca customer login required).
+
+### **Related Articles**
+
+<CardGroup>
+  <Card
+    title="How to Serve Pre-Call Data to your Call Center Agents in real time with PreSense"
+    icon="headset"
+    href="https://community.invoca.com/t5/other-integrations/how-to-serve-pre-call-data-to-your-call-center-agents-in-real/ta-p/6315#U6315"
+    horizontal
+  />
+  <Card
+    title="How to Connect Invoca Phone Calls to your Business over the internet using Session Initiation Protocol (SIP)"
+    icon="phone"
+    href="https://community.invoca.com/t5/other-integrations/how-to-connect-invoca-phone-calls-to-your-business-over-the/ta-p/510#U510"
+    horizontal
+  />
+  <Card
+    title="Best Practices for Configuring and Managing your Integrations"
+    icon="sliders"
+    href="https://community.invoca.com/t5/invoca-overview/best-practices-for-configuring-and-managing-your-integrations/ta-p/584#U584"
+    horizontal
+  />
+</CardGroup>
