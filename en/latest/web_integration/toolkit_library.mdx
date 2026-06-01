@@ -101,7 +101,7 @@ Looking for a needle in a haystack!
 
 #### Description:
 
-This function will search all query strings the the URL for a key name and return it’s value.
+This function will search all query strings in the URL for a key name and return its value.
 
 #### Usage:
 
@@ -154,10 +154,10 @@ This function will wait for a function to return a value before executing the ne
 
 #### Response:
 
-`inputFuction` must be a function, any value returned by this function will be considered true, so return null to try again.
+`inputFunction` must be a function, any value returned by this function will be considered true, so return null to try again.
 
 `callbackFunction` must be a function, and is called with the found value or default value passed as an argument.
 
-`defaultVaule` is the value that will be passed into `callbackFunction` if `inputFunction` fails to return a value within the `maxWaitTime`.
+`defaultValue` is the value that will be passed into `callbackFunction` if `inputFunction` fails to return a value within the `maxWaitTime`.
 
-`maxWaitTime` is the maximum amount of miliseconds to wait for `inputFunction` to return a value.
+`maxWaitTime` is the maximum amount of milliseconds to wait for `inputFunction` to return a value.

@@ -67,11 +67,11 @@ Additionally, the `defaultCampaignId` can be assigned dynamically with JavaScrip
 | Required: One of the following |  |  |
 | --- | --- | --- |
 | numberSelector | String | CSS selector for phone number HTML elements Accepts one or many like so `“.invocaNumber, .phoneNumber”` |
-| numberToReplace | String or Hash | Default: `null` <br/><br/> Specify which number(s) to replace. Can accept one or many like so: `“888-999-1010, 777-888-9999”`. Optionally accepts a hash with the number as a key name, and campaignId as it’s value like so: <br/> `{ “888-999-1010”: ‘campaignIdHere’ }` |
+| numberToReplace | String or Hash | Default: `null` <br/><br/> Specify which number(s) to replace. Can accept one or many like so: `“888-999-1010, 777-888-9999”`. Optionally accepts a hash with the number as a key name, and campaignId as its value like so: <br/> `{ “888-999-1010”: ‘campaignIdHere’ }` |
 
 | Optional parameters: |  |  |
 | --- | --- | --- |
-| autoRun | Bool | Default `true`<br/><br/>  determines whether Invoca’s web integration runs when the page loads.  If you have a single page application and would like to control when Invoca’s web integration runs, set autoRun to false and call Invoca.PNAPI.run() whenever you are ready.  Note: autoRun does not have to be false in order to call Inovca.PNAPI.run(). |
+| autoRun | Bool | Default `true`<br/><br/>  determines whether Invoca’s web integration runs when the page loads.  If you have a single page application and would like to control when Invoca’s web integration runs, set autoRun to false and call Invoca.PNAPI.run() whenever you are ready.  Note: autoRun does not have to be false in order to call Invoca.PNAPI.run(). |
 | destinationAsId | Bool | Default `false`<br/><br/>  Strips out any special characters and uses found destination phone number’s digits as campaign ID. <br/><br/><Warning> **Warning! Requires Invoca campaign with explicit ID for each number.**</Warning> |
 | campaignIdOverrideParam | String | Default: `null`<br/><br/>  Query string name used to identify Campaign ID |
 | poolParams | Hash | Default: `{}`<br/><br/>  Set of JavaScript parameters to be captured where the key name should be RingPool parameter name. These values are updated every subsequent visit. |
