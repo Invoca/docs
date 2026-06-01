@@ -176,7 +176,7 @@
               },
               {
                 "group": "Bulk RingPool API",
-                "root": "en/latest/api_documentation",
+                "root": "en/latest/api_documentation/bulk_ringpool_api",
                 "pages": [
                   "en/latest/api_documentation/bulk_ringpool_api"
                 ]
