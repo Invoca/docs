@@ -4,15 +4,15 @@ title: "Transcription Redaction Overview"
 
 ## How Redaction Protects Your Data
 
-Some of the most powerful features in your Invoca account — such as Signal AI — use call recordings and transcripts to give you actionable insights based on the real words and phrases spoken during your calls. At the same time, not all information should live in your account.
+Some of the most powerful features in your Invoca account — such as Signal AI — use call recordings and transcripts to give you actionable insights based on the real words and phrases spoken during your calls. These features work best when as much of the conversation as possible is available for analysis. At the same time, not all information should live in your account: sensitive personal and financial details that callers share, often incidentally, carry real risk if they're stored, and they aren't necessary for generating business insights.
 
-To help protect sensitive data, Invoca automatically applies Standard Redaction to both call recordings and transcripts. This ensures personal and financial information is never stored in your account, supporting your compliance efforts and safeguarding caller privacy.
+To help protect sensitive data, Invoca automatically applies Standard Redaction to both call recordings and transcripts. Redaction happens as part of the recording pipeline itself, rather than as a cleanup step after the fact, so sensitive values are identified and removed before storage rather than found and deleted afterward. This ensures personal and financial information is never stored in your account, supporting your compliance efforts and safeguarding caller privacy, while still preserving the surrounding conversation for downstream features to use.
 
-In addition, you can configure your account to automatically delete call recordings after a set retention period of your choice.
+In addition, you can configure your account to automatically delete call recordings after a set retention period of your choice. This gives you a second, independent layer of control over how long call data persists — redaction removes specific sensitive fields at the time of recording, while retention settings govern how long the remaining (already-redacted) recording and transcript are kept before being purged entirely.
 
-Beginning May 5th, Invoca’s Standard Redaction functionality will be enabled across all networks, except those having purchased the Advanced Redaction feature.
+Beginning May 5th, Invoca's Standard Redaction functionality will be enabled across all networks, except those having purchased the Advanced Redaction feature. This means most customers do not need to take any action to benefit from this protection — it is applied automatically at the network level rather than requiring per-user or per-campaign configuration. Networks that have purchased Advanced Redaction will continue to use that feature's configuration instead, since Advanced Redaction offers a superset of Standard Redaction's capabilities.
 
-Standard redaction automatically removes sensitive information such as credit card numbers, expiration dates, CVV codes, Social Security numbers, and passwords from the audio recording and transcription of recorded calls.
+Standard redaction automatically removes sensitive information such as credit card numbers, expiration dates, CVV codes, Social Security numbers, and passwords from the audio recording and transcription of recorded calls. This covers the categories of data most commonly spoken aloud during a call — for example, a caller reading off a card number to complete a payment, or confirming their identity with a Social Security number — and removes them from both the audio track and any corresponding transcript text, so the sensitive value cannot be reconstructed from either source.
 
 ## How Redaction Works
 
