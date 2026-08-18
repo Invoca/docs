@@ -13,6 +13,20 @@ mint dev
 
 Runs a local preview at http://localhost:3000.
 
+> **Node version:** `mint` requires Node 24 or earlier — it does not run on
+> Node 25+. If your default `node` is on an unsupported version (e.g. via
+> Homebrew), install an LTS version with `nvm` and either `nvm use` before
+> running `mint dev`, or use a wrapper script that puts the right `node` on
+> `PATH` first:
+> ```bash
+> #!/usr/bin/env bash
+> export PATH="$HOME/.nvm/versions/node/v20.17.0/bin:$PATH"
+> exec mint dev
+> ```
+> This matters because `mint`'s shebang is `#!/usr/bin/env node`, so it
+> always resolves to whatever `node` is first on `PATH`, regardless of which
+> Node version it was installed under.
+
 ## Repo layout
 
 ```
