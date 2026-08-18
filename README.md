@@ -4,6 +4,10 @@ Mintlify-powered documentation site for Invoca's Support and Developer Portal.
 
 Production: https://docs.invoca.com (deployed automatically on push to `main`).
 
+## Contributing with Claude
+
+Instructions can be found [here](https://invoca.atlassian.net/wiki/spaces/DEV/pages/61633659116/Editing+the+Mintlify+Docs+repo+with+Claude).
+
 ## Local development
 
 ```bash
