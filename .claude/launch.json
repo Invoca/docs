@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "mint-dev",
-      "runtimeExecutable": "/Users/dpeck/invoca/docs/.claude/mint-dev.sh",
+      "runtimeExecutable": "${workspaceFolder}/.claude/mint-dev.sh",
       "runtimeArgs": [],
       "port": 3000,
       "autoPort": true
