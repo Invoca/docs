@@ -1,0 +1,59 @@
+---
+title: "Invoca Design System"
+description: "Getting started with Invoca's shared UI patterns, components, and documentation conventions for product teams building on the platform."
+---
+
+The Invoca Design System documents reusable UI patterns, components, and content guidelines used across Invoca products. Use this section to learn how to adopt shared building blocks consistently and how to contribute new component documentation.
+
+<Note>
+  This product is **docs scaffolding** to help teams get started. It is not a complete component catalog or token library yet.
+</Note>
+
+## What you'll find here
+
+- **Components** — documented UI building blocks with usage guidance, copy-paste examples, and props tables
+- **Patterns** — common layouts and interaction models (coming soon)
+- **Foundations** — color, typography, spacing, and accessibility guidance (coming soon)
+
+## Get started
+
+<Steps>
+  <Step title="Browse the example component">
+    Start with the [Button](/design-system/components/button) page to see the recommended structure for component docs: when to use it, a usage snippet, and a props/variants table.
+  </Step>
+  <Step title="Copy the page template">
+    Duplicate the Button MDX file when documenting your next component. Keep the frontmatter (`title`, `description`) and section headings consistent so pages feel cohesive in search and navigation.
+  </Step>
+  <Step title="Wire it into navigation">
+    Add your new page path under the **Components** tab in `docs.json` inside the `Invoca Design System` product block.
+  </Step>
+</Steps>
+
+## Quick links
+
+<CardGroup cols={2}>
+  <Card
+    title="Components"
+    icon="cube"
+    href="/design-system/components"
+    horizontal
+  >
+    Browse the starter component group and add new pages as your catalog grows.
+  </Card>
+  <Card
+    title="Example: Button"
+    icon="hand-pointer"
+    href="/design-system/components/button"
+    horizontal
+  >
+    Reference implementation for documenting a UI component in Mintlify.
+  </Card>
+</CardGroup>
+
+## Contributing
+
+When you add or update design system docs:
+
+1. Create MDX under `design-system/` (not under `en/latest/`, which is reserved for Developer Portal API docs).
+2. Follow existing frontmatter and Mintlify component patterns from pages like [Basics](/en/latest/basics).
+3. Mark work-in-progress pages clearly so readers know what is example scaffolding versus production-ready guidance.

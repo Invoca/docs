@@ -1,0 +1,28 @@
+---
+title: "Components"
+description: "Starter component documentation for the Invoca Design System, beginning with an example Button page you can copy when adding new UI components."
+---
+
+Component pages describe **when** to use a UI element, **how** to implement it, and **which props or variants** are available. Each page should be self-contained so designers and engineers can adopt it without hunting across multiple docs.
+
+<Warning>
+  The pages listed here are **example starters**, not a complete Invoca component library. Replace placeholder content with real package imports and prop definitions as components are published.
+</Warning>
+
+<CardGroup>
+  <Card
+    title="Button"
+    icon="hand-pointer"
+    href="/design-system/components/button"
+    horizontal
+  >
+    Example component page with usage guidance, a copy-paste snippet, and a props/variants table.
+  </Card>
+</CardGroup>
+
+## Adding a new component page
+
+1. Create `design-system/components/<component-name>.mdx`.
+2. Add frontmatter with a unique `title` and a 130–160 character `description`.
+3. Register the page path in `docs.json` under **Invoca Design System → Components**.
+4. Link to the page from this index using a `Card` so readers can discover it from the group landing page.

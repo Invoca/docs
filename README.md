@@ -1,6 +1,6 @@
 # Invoca Docs
 
-Mintlify-powered documentation site for Invoca's Support and Developer Portal.
+Mintlify-powered documentation site for Invoca Support, the Developer Portal, and the Invoca Design System.
 
 Production: https://docs.invoca.com (deployed automatically on push to `main`).
 
@@ -35,11 +35,12 @@ Runs a local preview at http://localhost:3000.
 
 ```
 docs.json              # Mintlify config: navigation, theming, versions
-index.mdx              # Site landing page
+index.mdx              # Invoca Support landing page
 en/latest/             # Developer Portal content (current API version)
   api_documentation/
   basics/
   web_integration/
+design-system/         # Invoca Design System content (components, patterns)
 s/article/             # Invoca Support articles
 images/                # Shared image assets
 logo/                  # Brand logos

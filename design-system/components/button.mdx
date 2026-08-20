@@ -1,0 +1,94 @@
+---
+title: "Button"
+description: "Example starter page for documenting an Invoca Button component: when to use it, a copy-paste usage snippet, and a props and variants reference table."
+---
+
+<Note>
+  **Example / starter page.** This documents the recommended Mintlify structure for component pages. Replace placeholder imports, prop names, and variant values with your real design system package when ready.
+</Note>
+
+Buttons trigger actions. Use them for primary flows (submit, save, confirm) and secondary actions (cancel, back). Avoid buttons for pure navigation when a text link is clearer.
+
+## When to use
+
+- **Primary actions** — one main action per view (for example, "Save changes").
+- **Secondary actions** — supporting actions that should remain visible but less prominent.
+- **Destructive actions** — irreversible operations; pair with confirmation patterns.
+
+Avoid using a button when:
+
+- The control only navigates to another page (prefer a link).
+- Multiple equally weighted actions compete for attention (revisit layout or use a menu).
+
+## Usage
+
+<CodeGroup>
+
+```tsx React
+import { Button } from '@invoca/design-system';
+
+export function SaveCampaignButton() {
+  return (
+    <Button variant="primary" onClick={() => saveCampaign()}>
+      Save campaign
+    </Button>
+  );
+}
+```
+
+```html HTML
+<!-- Example only — replace with your framework component when available -->
+<button type="button" class="invoca-button invoca-button--primary">
+  Save campaign
+</button>
+```
+
+</CodeGroup>
+
+### Variants
+
+| Variant | When to use |
+| --- | --- |
+| `primary` | The single most important action on the screen |
+| `secondary` | Supporting actions such as "Cancel" or "Back" |
+| `tertiary` | Low-emphasis actions in dense toolbars |
+| `destructive` | Irreversible or high-risk operations |
+
+## Props
+
+<ResponseField name="variant" type="'primary' | 'secondary' | 'tertiary' | 'destructive'" default="primary">
+  Visual style that communicates action priority. Use one primary button per view when possible.
+</ResponseField>
+
+<ResponseField name="size" type="'sm' | 'md' | 'lg'" default="md">
+  Controls height, padding, and type scale. Prefer `md` for standard forms; use `sm` in compact tables.
+</ResponseField>
+
+<ResponseField name="disabled" type="boolean" default="false">
+  Prevents interaction and removes the control from the tab order when `true`. Do not use disabled states as the only way to gate permissions—explain why the action is unavailable.
+</ResponseField>
+
+<ResponseField name="loading" type="boolean" default="false">
+  Shows a progress indicator and prevents duplicate submissions while an async action is in flight.
+</ResponseField>
+
+<ResponseField name="icon" type="ReactNode">
+  Optional leading icon. Keep labels readable; do not rely on iconography alone for meaning.
+</ResponseField>
+
+<ResponseField name="onClick" type="() => void">
+  Called when the button is activated. For form submission, prefer `type="submit"` on the underlying element when using native forms.
+</ResponseField>
+
+## Accessibility
+
+- Button text must describe the action ("Save campaign"), not the control type ("Click here").
+- Ensure disabled and loading states are announced to assistive technology.
+- Maintain a visible focus indicator that meets contrast requirements.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Components index" icon="cube" href="/design-system/components" horizontal />
+  <Card title="Design System home" icon="house" href="/design-system" horizontal />
+</CardGroup>

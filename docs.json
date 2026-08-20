@@ -209,6 +209,30 @@
         ]
           }
         ]
+      },
+      {
+        "product": "Invoca Design System",
+        "tabs": [
+          {
+            "tab": "Home",
+            "icon": "house",
+            "pages": ["design-system/index"]
+          },
+          {
+            "tab": "Components",
+            "icon": "cube",
+            "pages": [
+              {
+                "group": "Components",
+                "icon": "cube",
+                "root": "design-system/components",
+                "pages": [
+                  "design-system/components/button"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ],
     "global": {
