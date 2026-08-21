@@ -1,0 +1,155 @@
+---
+title: "Button"
+description: "Buttons trigger an action or event with a single click — submitting a form, confirming a choice, advancing a flow."
+icon: "hand-pointer"
+---
+
+{/* generated:embed start */}
+
+<iframe src="https://main--64e4dc66838839c721332d22.chromatic.com/iframe.html?id=components-buttons--basic-button&viewMode=story" style={{ width: "100%", height: "140px", border: "1px solid #e5e7eb", borderRadius: "8px" }} title="Button — Storybook" />
+
+{/* generated:embed end */}
+
+## Overview
+
+Button commits the user to an action — submitting a form, confirming a choice, advancing a flow. It is the most emphatic interactive control in Titan, so its presence signals "this is the thing to do here."
+
+The rule of thumb: if clicking it _does_ something, use a Button. If clicking it _goes_ somewhere, use a link.
+
+## When to use
+
+- Committing an action: **Save**, **Apply**, **Create**, **Delete**.
+- Advancing or completing a flow: **Next**, **Finish**.
+- Triggering an operation from a toolbar or a dialog footer.
+
+### When not to use
+
+- Don't use for navigation to another page or view — use [TextLink](/design-system/components/text-link) instead.
+- Don't use for toggling a single on/off setting — use [Toggle](/design-system/components/toggle) instead.
+- Don't use for choosing one of several options — use [Radio](/design-system/components/radio) instead.
+- Don't use for filtering a data set — use [FilterButton](/design-system/components/filter-button) instead.
+- Don't use for an icon-only action — use [IconButton](/design-system/components/icon-button) instead, which requires an accessible name.
+
+## Choosing between options
+
+### Emphasis
+
+Emphasis is expressed through the variant — never through colour or size.
+
+| Variant | Use it for |
+| --- | --- |
+| `contained` | The single most important action in a view. Aim for one per screen or section. |
+| `outlined` | Secondary actions sitting beside a contained button. |
+| `text` | Low-emphasis or tertiary actions — "Cancel", inline actions in dense UI. |
+
+Note that the code default is `text`, which is the least emphatic option. Most product usage should set the variant explicitly rather than relying on the default.
+
+### Colour
+
+| Colour | Use it for |
+| --- | --- |
+| `primary` (default) | Every ordinary action. |
+| `error` | Destructive actions only — delete, remove, disconnect. Pair with a confirmation step when the loss is not recoverable. |
+
+The underlying library also accepts `info`, `warning` and `inherit`. These are not part of the Invoca design language; check with the design team before reaching for one.
+
+### Size
+
+| Size | Use it for |
+| --- | --- |
+| `small` | Dense contexts — tables, filter bars, tight card layouts. |
+| `medium` (default) | Everything else — forms, modals, page actions. |
+
+There is no large button in the design system.
+
+## Anatomy
+
+1. **Container** — carries the variant's fill or border; corners use the base radius.
+2. **Label** — the action, stated as a verb.
+3. **Start icon** (optional) — reinforces the action's meaning; sits before the label.
+4. **End icon** (optional) — sits after the label; reserve it for directional cues such as a dropdown caret.
+
+## Behavior
+
+- **Labels never wrap.** The container uses `nowrap`, so a long label widens the button rather than growing taller. Keep labels short — see Content guidelines.
+- **Paired actions.** In a modal footer or a confirmation row, place the committing action last and the dismissing action before it.
+- **Async actions.** Button has a built-in loading state that shows an indicator and disables the button while it runs. Use it for anything that takes more than a moment, instead of disabling the button by hand.
+- **Ripples are off** platform-wide, so a click gives a colour change rather than an animation.
+
+## Content guidelines
+
+- Lead with the verb that names the action: "Save changes", "Create signal", "Apply label".
+- Author labels in sentence case; the theme handles their presentation.
+- No punctuation, no articles, one to three words wherever possible.
+- A destructive button names what it destroys: "Delete tag", not a bare "Delete" when the context is ambiguous.
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| "Save changes" | "Submit" |
+| "Delete tag" | "Are you sure?" |
+| "Generate preview" | "Click here to generate a preview" |
+
+## Do & don't
+
+<Columns cols={2}>
+  <Card title="✅ Do" icon="check">
+    Keep one contained button per view, with supporting actions as outlined or text. The hierarchy is what tells someone where to start.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Stack contained buttons side by side. Two primary actions compete, and the user has to decide which one you meant.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Reserve the error colour for destructive, hard-to-undo actions, and pair it with a confirmation.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Use the error colour to draw attention to an ordinary action. It reads as dangerous, and it dilutes the signal where it matters.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Use the loading state for async work, so the button explains itself while it waits.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Disable a button without saying why. If an action is unavailable, put the reason in nearby helper text.
+  </Card>
+</Columns>
+
+## Accessibility
+
+**What you get.** Button renders a native `<button>`, so its role, focus behaviour, and keyboard activation come for free — <kbd>Tab</kbd> to reach it, <kbd>Enter</kbd> or <kbd>Space</kbd> to activate it. Disabled buttons are removed from the tab order.
+
+**What you must provide.**
+
+- A label that describes the action. "Submit" and "OK" describe a mechanism, not an outcome.
+- An `aria-label` for any icon-only usage — though prefer [IconButton](/design-system/components/icon-button), which is built for that case.
+- An explanation for unavailable actions. A disabled button communicates "not now" but never "why", so put the reason in adjacent text.
+
+<Warning>
+  Never suppress the focus indicator. Keyboard users rely on it to know where they are, and it is the only cue that a button is about to receive their keypress.
+</Warning>
+
+## Related components
+
+- [IconButton](/design-system/components/icon-button) — icon-only actions; requires an accessible name.
+- [FilterButton](/design-system/components/filter-button) — pill-shaped filter toggle with an active count.
+- [ButtonGroup](/design-system/components/button-group) — a set of related actions presented together.
+- [TextLink](/design-system/components/text-link) — navigation that looks like text; use it when the click goes somewhere.
+
+## Resources
+
+{/* generated:resources start */}
+
+<CardGroup cols={2}>
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com/?path=/docs/components-buttons--docs">
+    Live playground, every variant, and the full props table
+  </Card>
+
+  <Card title="Source" icon="github" href="https://github.com/Invoca/Titan/tree/main/components/core/src/components/Button">
+    Implementation and the tokens it binds
+  </Card>
+</CardGroup>
+
+{/* generated:resources end */}

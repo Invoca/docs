@@ -1,0 +1,135 @@
+---
+title: "Alert"
+description: "Alert shows a short, important message in place, without interrupting what the user is doing."
+icon: "circle-exclamation"
+---
+
+{/* DRAFT — grounded in code (Alert.tsx, Alert.overrides.ts, Alert.stories.js). Needs a review pass for product-specific conventions. */}
+
+{/* generated:embed start */}
+
+<iframe src="https://main--64e4dc66838839c721332d22.chromatic.com/iframe.html?id=components-alerts--basic-alerts&viewMode=story" style={{ width: "100%", height: "300px", border: "1px solid #e5e7eb", borderRadius: "8px" }} title="Alert — Storybook" />
+
+{/* generated:embed end */}
+
+## Overview
+
+Alert draws attention to something the user should know — a failure, a warning, a confirmation, a piece of context — while leaving them in control of what happens next. It sits in the layout rather than over it.
+
+Its severity does the communicating. An alert's colour and icon tell the user how much to care before they read a word, so the severity has to be honest: if everything is an error, nothing is.
+
+## When to use
+
+- Reporting the result of an action the user just took, in place.
+- Explaining why something on the page is unavailable or incomplete.
+- Warning about a consequence before the user commits to it.
+- Surfacing a persistent condition — an expiring credential, a partial data set.
+
+### When not to use
+
+- Don't use for something requiring an answer before continuing — that is a [Modal](/design-system/components/modal).
+- Don't use for a transient success confirmation that needs no follow-up; a toast disappears on its own and doesn't leave residue in the layout.
+- Don't use for field-level validation. A field's own error message sits next to the field, where the fix is — see [FormInput](/design-system/components/form-input).
+- Don't use as a decorative callout for ordinary content. An alert that carries no consequence trains people to skip the ones that do.
+
+## Choosing between options
+
+### Severity
+
+| Severity | Use it for |
+| --- | --- |
+| `error` | Something failed, or is broken and blocks progress. |
+| `warning` | Something will go wrong, or has a consequence worth stating first. |
+| `info` | Context the user needs but doesn't have to act on. |
+| `success` | Something completed, where confirmation in place is useful. |
+
+Severity is a claim about consequence, not about emphasis. Reach for a higher severity only when the consequence is genuinely higher.
+
+### Variant
+
+| Variant | Use it for |
+| --- | --- |
+| `standard` (default) | Almost everything. Tinted background, readable, doesn't dominate. |
+| `outlined` | Quieter placement in dense layouts, or several alerts in sequence. |
+| `filled` | Maximum emphasis. Reserve it for a single blocking error — the weight stops working when it repeats. |
+
+## Anatomy
+
+1. **Icon** — set by severity; can be replaced, or hidden when it adds nothing.
+2. **Message** — what happened, and what to do about it.
+3. **Action** (optional) — a single control such as "Retry" or "Undo".
+4. **Close** (optional) — dismissal, when the message is not permanent.
+
+## Behavior
+
+- **Dismissal is opt-in.** An alert stays until removed. Give it a close control only when dismissing is genuinely the user's choice — a blocking error shouldn't be dismissible.
+- **One action, at most.** The action slot is for a single next step. More than one means the decision belongs in a modal.
+- **Transitions.** Alerts compose with a collapse transition so a dismissal animates out rather than snapping the layout.
+
+## Content guidelines
+
+- Say what happened and what to do: "Couldn't save the tag — check your connection and try again."
+- Write in plain language. No error codes as the whole message, no stack traces, no "an error occurred."
+- Keep it to one or two sentences; if it needs more, link out.
+- Don't restate the severity in words. "Error: failed" is redundant — the colour and icon already said it.
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| "Couldn't save the tag — check your connection and try again." | "Error: operation failed (500)." |
+| "This report includes data up to yesterday." | "Info: data notice." |
+
+## Do & don't
+
+<Columns cols={2}>
+  <Card title="✅ Do" icon="check">
+    Match severity to consequence, so colour stays a reliable signal.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Use `error` for a warning, or `filled` for emphasis. Both spend credibility you need later.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Put the fix in the message, and a single action beside it when there's something to click.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Stack several alerts at the top of a view. Three simultaneous alerts communicate less than one.
+  </Card>
+</Columns>
+
+## Accessibility
+
+**What you get.** The severity's icon and colour, and an alert role from the underlying component.
+
+**What you must provide.**
+
+- **Meaning that survives without colour.** Colour is a second channel, never the only one; the words must carry the severity on their own.
+- **A labelled close control**, if the alert is dismissible.
+- **Considered placement.** An alert announcing the result of an action should sit where focus already is, or near the control that caused it. One at the top of a long page can be missed entirely.
+
+<Warning>
+  An alert added dynamically is not always announced. If a message appears in response to an action and the user must hear it, verify it with a screen reader rather than assuming.
+</Warning>
+
+## Related components
+
+- [Modal](/design-system/components/modal) — when the user must respond before continuing.
+- [Tooltip](/design-system/components/tooltip) — supplementary detail on hover or focus.
+- [Chip](/design-system/components/chip) — compact status on an individual item, rather than a message about the view.
+
+## Resources
+
+{/* generated:resources start */}
+
+<CardGroup cols={2}>
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com/?path=/docs/components-alerts--docs">
+    Every severity and variant, with actions and transitions
+  </Card>
+
+  <Card title="Source" icon="github" href="https://github.com/Invoca/Titan/tree/main/components/core/src/components/Alert">
+    Implementation and the tokens it binds
+  </Card>
+</CardGroup>
+
+{/* generated:resources end */}

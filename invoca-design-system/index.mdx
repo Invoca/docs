@@ -1,0 +1,48 @@
+---
+title: "Invoca Design System"
+description: "Titan components and the intent behind them — when to use each one, when not to, and why."
+icon: "home"
+---
+
+The Invoca Design System documents **Titan**, our React component library, and the design decisions behind it. It exists so that anyone building an Invoca product — a designer, an engineer, or an AI tool generating UI — works from the same understanding of what each component is for.
+
+## What lives here, and what doesn't
+
+These pages answer one question per component: **should I use this, and how do I use it well?**
+
+They deliberately do not restate the API. A component's props, its design tokens, and its code examples all have an authoritative home already, and copying them here would create a second version that quietly goes stale. Each page links out instead:
+
+| To know… | Go to |
+| --- | --- |
+| Whether this is the right component, and how to use it well | **These pages** |
+| The exact props, types, and defaults | **Storybook** and the exported types |
+| Which design tokens a component consumes | the component's overrides file in **Titan** |
+| A live, interactive example | the **Storybook** embed on each page |
+
+<Info>
+  Titan's code is the source of truth. If code and this documentation ever disagree, code wins — and that's a bug to report, not a decision to make locally.
+</Info>
+
+## Why the intent matters more than the API
+
+An API is discoverable: types, autocomplete and Storybook all describe what a component _accepts_. Nothing in the code describes what a component is _for_, or which of two plausible components is the right one — and that judgement is where most design-system mistakes actually happen.
+
+That is also the part an AI tool cannot infer. Given types alone, a tool will produce something that compiles and is still wrong for the situation. Given intent, it produces something a reviewer recognises. These pages are published in machine-readable form for exactly that reason.
+
+## Sections
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="shapes" href="/design-system/components/button">
+    When to use each Titan component, when not to, and the rules that make it work.
+  </Card>
+
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com">
+    Live components, props, and every variant as it actually renders.
+  </Card>
+</CardGroup>
+
+## Who this is for
+
+- **Designers and PMs** — decide which component fits, and specify it correctly the first time.
+- **Engineers** — get the intent here and the API from Storybook and the types.
+- **AI tools** — this content is published as an `llms.txt` index, a full-text export, and a docs endpoint, so generated UI is grounded in real components and real constraints rather than guesses.
