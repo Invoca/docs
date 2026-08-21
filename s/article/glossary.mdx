@@ -1,0 +1,166 @@
+---
+title: "Glossary"
+---
+
+Use this glossary as a quick reference for terms used across Invoca's documentation, including integrations, SSO/SAML setup, and data compliance features.
+
+## A
+
+### Adobe Launch / Extension
+
+Invoca's extension for Adobe Launch that lets you implement the Invoca Tag across your website without custom development. See [Adobe Experience Cloud: Integration Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/06086917-72ae-43ab-96a2-4059bcb0463b).
+
+### Advanced Redaction
+
+An upgraded redaction tier available as an add-on. Networks that purchase it are exempt from Invoca's default Standard Redaction rollout. See [Transcription Redaction Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/cb8f63ac-4493-4f51-8a20-f1ff48c54bad).
+
+### AppExchange
+
+Salesforce's public marketplace where you can install the Invoca for Salesforce Sales Cloud package as a preliminary test of compatibility with your org before full installation. See [Salesforce: Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/a2b04eb2-107b-46ba-916a-a8f753649244).
+
+### Assertion Consumer Service (ACS) URL
+
+The endpoint your identity provider sends SAML assertions to in order to complete Single Sign-On into Invoca (`https://[network].invoca.net/sso/consume`). See [SAML SSO Setup](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/84c7da07-e522-4ab4-9508-c987f6017043).
+
+### Audience
+
+A list of users built from Invoca call and Signal data in a connected platform, such as Google Analytics or Adobe Audience Manager, then used for targeting or personalization in that platform. See [Google Analytics 4.0 (GA4): Integration Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/8abe93a3-dfe7-4910-bb3b-27469090fce9).
+
+## C
+
+### Call Record ID
+
+Invoca's unique identifier for a call. Call center software can use it to report outcomes and conversions back to Invoca. See [SIP Integration Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/2b804afb-8c17-4dfe-b9aa-7ef7fc961be9).
+
+### Closed Loop Reporting
+
+The process of reporting a call's outcome or conversion from a connected platform, like Salesforce, back to Invoca — so Invoca can share it with other marketing platforms for optimization. See [Salesforce: Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/a2b04eb2-107b-46ba-916a-a8f753649244).
+
+## D
+
+### Default Role
+
+The user role automatically assigned to new users who access Invoca through SAML SSO, unless a different role is specified in their SAML attributes. See [SAML SSO Setup](#).
+
+## E
+
+### Entity ID
+
+The value that identifies Invoca as the service provider to your identity provider during SAML SSO setup (`Invoca_SAML_Service_Provider`). See [SAML SSO Setup](#).
+
+## F
+
+### Filtered Reporting
+
+A user role and permission model that restricts which reporting data a SAML SSO user can view, defined using `report_filters`. See [SAML SSO Setup](#).
+
+### Floodlight Activity
+
+A Google Campaign Manager conversion-tracking tag. Invoca reports phone calls and Signals to Campaign Manager as Floodlight activities. See [Google Campaign Manager: Integration Overview](#).
+
+## G
+
+### Google Call Extensions
+
+A Google Ads ad format that adds a click-to-call phone number to search ads. Invoca call tracking can be added to these extensions. See [Google Ads: Integration Overview](#).
+
+## I
+
+### Identity Provider (IdP)
+
+The external system — such as Okta, Microsoft ADFS, or Azure — that authenticates users and passes their login details to Invoca via SAML SSO. See [SAML SSO Setup](#).
+
+## L
+
+### License Type
+
+Designates which parts of the Invoca platform (`marketing`, `contact_center`, or both) a SAML SSO user is licensed to access. See [SAML SSO Setup](#).
+
+## N
+
+### Name ID
+
+The unique identifier Invoca uses to match a SAML SSO user, formatted as the user's email address. See [SAML SSO Setup](#).
+
+### Network
+
+The top level of the Invoca account hierarchy. Some settings, like Redaction, are defined at the Network level rather than the Profile level. See [Transcription Redaction Overview](#).
+
+## O
+
+### Offline Conversions API
+
+Google's API for reporting conversions that happen outside a web browser, such as phone calls, back into Google's ad platforms. See [Google Campaign Manager: Integration Overview](#).
+
+## P
+
+### PCI DSS (Payment Card Industry Data Security Standard)
+
+A global security standard for protecting credit card data. Invoca is PCI DSS certified, a certification that covers call recordings and transcripts that may contain payment details. See [Transcription Redaction Overview](#).
+
+### PII (Personally Identifiable Information)
+
+Personal data — such as date of birth, driver's license number, SSN, and passport number — that Invoca's Standard Redaction automatically removes from recordings and transcripts. See [Transcription Redaction Overview](#).
+
+### PreSense
+
+An Invoca feature that shares Invoca data with your call center system in real time, using the same request that routes the call over SIP. See [SIP Integration Overview](#).
+
+### Profile
+
+An Advertiser- or Affiliate-level account within an Invoca Network. SAML SSO users can be scoped to access specific Profiles. See [SAML SSO Setup](#).
+
+## Q
+
+### Qualified Call
+
+A phone call that meets criteria you define to count as a marketing conversion. Qualified calls can be sent to platforms like Google Ads. See [Google Ads: Integration Overview](#).
+
+## R
+
+### Retention Period
+
+The length of time you configure Invoca to store call recordings before automatically deleting them. See [Transcription Redaction Overview](#).
+
+## S
+
+### SAML SSO (Security Assertion Markup Language Single Sign-On)
+
+A standard that lets your organization's identity provider handle login to Invoca, removing the need for separate Invoca usernames and passwords. See [SAML SSO Setup](#).
+
+### Segment
+
+A group of callers or calls defined by shared Signals or attributes, used in platforms like Adobe Audience Manager for targeting and personalization. See [Adobe Experience Cloud: Integration Overview](#).
+
+### SHA-1 Fingerprint
+
+A digest of your identity provider's certificate, entered in Invoca to verify the authenticity of SAML SSO requests. See [SAML SSO Setup](#).
+
+### Signal
+
+An in-call event or outcome that Invoca detects and can share with other marketing and analytics platforms — such as Google Ads, Adobe, and Facebook — for optimization and targeting. See [SIP Integration Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/2b804afb-8c17-4dfe-b9aa-7ef7fc961be9).
+
+### Signal AI
+
+Invoca's AI feature that analyzes call recordings and transcripts to surface actionable Signals. See [Transcription Redaction Overview](#).
+
+### Single Logout (SLO)
+
+A SAML SSO feature that logs a user out of Invoca when they log out of their identity provider. See [SAML SSO Setup](#).
+
+### SIP (Session Initiation Protocol)
+
+A standard for initiating, maintaining, and terminating multimedia communications. Invoca uses it to connect inbound phone calls directly to your business over the internet, reducing telecom fees. See [SIP Integration Overview](https://app.mintlify.com/invoca-5bd45748/invoca-5bd45748/~/2b804afb-8c17-4dfe-b9aa-7ef7fc961be9).
+
+### Standard Redaction
+
+Invoca's default redaction level, which automatically removes PII and PCI data from call recordings and transcripts before they're stored. See [Transcription Redaction Overview](#).
+
+### Super User
+
+The Invoca user role required to configure account-wide settings, such as SAML SSO. See [SAML SSO Setup](#).
+
+## Related topics
+
+- [Concepts](#)
+- [Integrations overview](#)

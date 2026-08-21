@@ -1,0 +1,134 @@
+---
+title: "Modal"
+description: "Modal interrupts the current task with a focused dialog that must be dealt with before continuing."
+icon: "window-maximize"
+---
+
+{/* DRAFT — grounded in code (Modal.tsx, Modal.overrides.ts, Modal.stories.js). Needs a review pass for product-specific conventions. */}
+
+{/* generated:embed start */}
+
+<iframe src="https://main--64e4dc66838839c721332d22.chromatic.com/iframe.html?id=components-modals--medium-modal&viewMode=story" style={{ width: "100%", height: "180px", border: "1px solid #e5e7eb", borderRadius: "8px" }} title="Modal — Storybook" />
+
+{/* generated:embed end */}
+
+## Overview
+
+Modal takes over the screen to ask for one thing: a confirmation, a short form, a decision that shouldn't be lost in the page behind it. Everything else becomes unavailable until it is resolved.
+
+That interruption is the whole cost and the whole value. Use a modal when continuing without an answer would be wrong — and avoid it when the user could reasonably keep working.
+
+## When to use
+
+- Confirming a consequential or irreversible action before it runs.
+- A short, self-contained form — a handful of fields, one outcome.
+- A decision that must be made before the underlying view makes sense.
+
+### When not to use
+
+- Don't use for a message the user only needs to notice — use [Alert](/design-system/components/alert) inline, or a toast.
+- Don't use for supplementary detail on hover or focus — use [Tooltip](/design-system/components/tooltip).
+- Don't use for a long form or a multi-step flow. If it needs scrolling to comprehend, it needs a page.
+- Don't use for content the user needs to compare against the page behind it — a modal hides exactly that context. Use [Drawer](/design-system/components/drawer) instead.
+- Don't reach for the underlying library's raw `Dialog`. Titan's Modal carries the layout, the footer conventions and the tokens; a raw dialog carries none of them.
+
+## Choosing between options
+
+### Size
+
+Six presets, chosen by content rather than by importance — a critical confirmation is still small.
+
+| Size | Use it for |
+| --- | --- |
+| `sm` | A confirmation, or one or two fields. |
+| `md` | The common case — a short form. |
+| `lg` | A form that needs two columns or a preview beside it. |
+| `xl` / `xxl` | Dense content such as a table or a configuration surface. Reconsider whether this should be a page. |
+| `fullscreen` | An immersive task on small viewports, or content that genuinely needs the whole screen. |
+
+If you are choosing `xl` or larger, that is usually a signal the interaction belongs on a page instead.
+
+### Footer actions
+
+The footer supports a confirm action, a close action, and an optional third action on the left — conventionally for something that is neither confirming nor cancelling, such as "Learn more" or a destructive alternative. The whole footer can be hidden for a modal that is purely informational and dismissed by its close control.
+
+## Anatomy
+
+1. **Overlay** — dims and blocks the page behind.
+2. **Title** — names the decision, not the mechanism.
+3. **Content** — the form or the explanation.
+4. **Dividers** (optional) — separate the header and footer from content; useful when content scrolls, noise when it doesn't.
+5. **Footer** — the confirm action, the close action, and an optional left-hand action.
+
+## Behavior
+
+- **Focus is trapped** inside the modal while it is open, and <kbd>Esc</kbd> dismisses it. Both come from the underlying dialog.
+- **Placement of actions** follows the platform convention: the committing action last, the dismissing action before it.
+- **Dividers are optional.** Enable them when content scrolls, so the header and footer stay visually anchored.
+
+## Content guidelines
+
+- The title states the decision: "Delete this tag?" rather than "Confirm".
+- The body says what happens next, including what cannot be undone.
+- Buttons name their outcome — "Delete tag" and "Keep tag" beat "OK" and "Cancel", because they are unambiguous when read alone.
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| "Delete this tag?" / "Delete tag" | "Confirm" / "OK" |
+| "This removes the tag from 43 calls. It can't be undone." | "Are you sure?" |
+
+## Do & don't
+
+<Columns cols={2}>
+  <Card title="✅ Do" icon="check">
+    Use a modal when proceeding without an answer would be wrong.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Use one to announce something. An interruption that needs no response is an alert.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Name the outcome in the confirming button, so it makes sense read on its own.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Stack modals. A second modal over a first leaves no way to understand what is being asked.
+  </Card>
+</Columns>
+
+## Accessibility
+
+**What you get.** A dialog role, a focus trap while open, and <kbd>Esc</kbd> to dismiss. Focus returns to the page when it closes.
+
+**What you must provide.**
+
+- A title that identifies the dialog — it is what a screen reader announces on open.
+- A reachable dismissal. If you hide the footer, something else must close the modal.
+- Focus placement that makes sense on open: the first field for a form, or the safest action for a confirmation. Never the destructive one.
+
+<Warning>
+  Don't rely on the overlay click as the only way out. It is undiscoverable by keyboard and invisible to screen readers.
+</Warning>
+
+## Related components
+
+- [Drawer](/design-system/components/drawer) — a side panel that keeps the page visible; use it when context matters.
+- [Alert](/design-system/components/alert) — an inline message that doesn't interrupt.
+- [Tooltip](/design-system/components/tooltip) — supplementary detail on hover or focus.
+
+## Resources
+
+{/* generated:resources start */}
+
+<CardGroup cols={2}>
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com/?path=/docs/components-modals--docs">
+    Every size, footer configuration, and the raw-dialog anti-pattern
+  </Card>
+
+  <Card title="Source" icon="github" href="https://github.com/Invoca/Titan/tree/main/components/core/src/components/Modal">
+    Implementation and the tokens it binds
+  </Card>
+</CardGroup>
+
+{/* generated:resources end */}

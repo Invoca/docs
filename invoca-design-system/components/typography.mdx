@@ -1,0 +1,115 @@
+---
+title: "Typography"
+description: "Typography renders every piece of text in Titan through a named variant, so type, colour and spacing stay consistent."
+icon: "text"
+---
+
+{/* DRAFT — grounded in code (Typography.tsx, Typography.stories.js). Needs a review pass for product-specific conventions. */}
+
+{/* generated:embed start */}
+
+<iframe src="https://main--64e4dc66838839c721332d22.chromatic.com/iframe.html?id=design-tokens-typography--all-variants&viewMode=story" style={{ width: "100%", height: "460px", border: "1px solid #e5e7eb", borderRadius: "8px" }} title="Typography — Storybook" />
+
+{/* generated:embed end */}
+
+## Overview
+
+Typography is how text enters the product. Every string a user reads should be wrapped in it with a named variant, rather than in a raw `<p>`, `<span>` or heading tag.
+
+That matters more than it first appears: the variant is what connects text to the type scale, the colour tokens and the spacing rules. Raw HTML text elements inherit browser defaults, which means they silently ignore the design system — and they keep ignoring it when the scale changes.
+
+This is the most-used component in Titan by a wide margin, so it is also the one where a small inconsistency spreads fastest.
+
+## When to use
+
+- Any user-visible text: body copy, headings, labels, captions, help text, empty-state messages.
+- Text inside another component's slot, when that component doesn't already style it.
+- Code or identifiers shown inline, using the `code` variant.
+
+### When not to use
+
+- Don't wrap text a component already styles — a Button's label, a Chip's label, a TextField's helper text. Those components own their type, and wrapping fights them.
+- Don't use a raw `<p>`, `<span>`, `<h1>` or `<h2>` for text. This is the anti-pattern the component exists to prevent, and Storybook documents each case explicitly under its "Do not use" stories.
+- Don't reach for `sx` to change size or weight. Pick the variant that already means what you want; a one-off override is drift.
+
+## Choosing between options
+
+Eleven variants, and the choice is semantic — pick by the role the text plays, not by how big you want it to look.
+
+| Variant | Use it for |
+| --- | --- |
+| `mainHeader` | The page or view title. One per view. |
+| `subHeader` | A section heading within a view. |
+| `base` (default) | Body copy — the default for ordinary text. |
+| `baseBold` | Emphasis within body copy, and short inline labels. |
+| `baseItalic` | Quoted or attributed text; use sparingly. |
+| `baseSmall` | Secondary text — captions, help text, metadata. |
+| `baseSmallBold` | A small label that needs to read as a label. |
+| `baseSmallItalic` | Small quoted or de-emphasised text. |
+| `baseSmallAllCaps` | Table column headers and small category labels. |
+| `baseSmallAllCapsBold` | The same, where the label carries more weight. |
+| `code` | Identifiers, keys, and inline code. |
+
+If two variants both look acceptable, choose the one whose _name_ matches the content's role. That is what keeps the scale meaningful when it changes.
+
+## Behavior
+
+- **The rendered element is separate from the variant.** Use `component` to choose the underlying tag — so a `subHeader` can render as an `<h2>` for document structure without changing its appearance. Do this whenever heading order matters for screen readers.
+- Variants carry their own display behaviour — some are block-level, some inline-block — so they sit correctly in a layout without extra wrappers.
+
+## Content guidelines
+
+- Sentence case for headings and labels; reserve all-caps for the `allCaps` variants, which handle it typographically.
+- Keep headings short enough to survive a narrow viewport without wrapping to three lines.
+- Don't communicate meaning through weight or size alone — a bold word is not a substitute for saying the thing.
+
+## Do & don't
+
+<Columns cols={2}>
+  <Card title="✅ Do" icon="check">
+    Pick the variant that names the role of the text: `baseSmall` for help text, `baseSmallAllCaps` for a column header.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Pick a variant because it happens to be the right size, then override its weight. The name stops describing the content.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Set `component` so heading order is correct for assistive technology, independent of visual size.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Use `mainHeader` more than once in a view. It stops meaning "this is the title."
+  </Card>
+</Columns>
+
+## Accessibility
+
+**What you must provide.** Heading structure. The variant controls appearance, not document semantics, so a visually-correct page can still be unnavigable by screen reader if every heading renders as a `<span>`. Set `component` to the right heading level and keep the order unbroken — no jumping from `h1` to `h3`.
+
+**Colour.** Variants don't set their own colour; whatever you pass must still meet contrast requirements against its background. Small text is where this fails most often.
+
+<Warning>
+  Don't use all-caps variants for long strings. Screen readers may read them letter by letter, and they are measurably harder to scan.
+</Warning>
+
+## Related components
+
+- [TextLink](/design-system/components/text-link) — text that navigates.
+- [Tooltip](/design-system/components/tooltip) — supplementary text on hover or focus, rather than in the flow.
+
+## Resources
+
+{/* generated:resources start */}
+
+<CardGroup cols={2}>
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com/?path=/docs/design-tokens-typography--docs">
+    Every variant rendered at its real size, plus the anti-patterns
+  </Card>
+
+  <Card title="Source" icon="github" href="https://github.com/Invoca/Titan/tree/main/components/core/src/components/Typography">
+    Implementation and the canonical type scale it maps to
+  </Card>
+</CardGroup>
+
+{/* generated:resources end */}

@@ -1,0 +1,137 @@
+---
+title: "Chip"
+description: "Chip represents a compact entity — a tag, an attribute, a status, a selection — in a small, self-contained block."
+icon: "tag"
+---
+
+{/* DRAFT — grounded in code (Chip.tsx, Chip.overrides.ts, Chip.stories.js). Needs a review pass for product-specific conventions. */}
+
+{/* generated:embed start */}
+
+<iframe src="https://main--64e4dc66838839c721332d22.chromatic.com/iframe.html?id=components-chips--color-chips&viewMode=story" style={{ width: "100%", height: "140px", border: "1px solid #e5e7eb", borderRadius: "8px" }} title="Chip — Storybook" />
+
+{/* generated:embed end */}
+
+## Overview
+
+Chip turns a small piece of data into an object on screen — a tag applied to a call, a status on a record, a filter the user has chosen. Its value is that it reads as one thing, so it can be counted, removed, or scanned in a row alongside others.
+
+The important distinction: a chip describes _an item_. A message about the whole view is an [Alert](/design-system/components/alert), and an action is a [Button](/design-system/components/button).
+
+## When to use
+
+- Labelling an entity with a tag, category or attribute.
+- Showing a status on a record, in a table cell or a list row.
+- Displaying the filters currently applied, each removable.
+- Representing selected values inside a field, where each can be removed individually.
+
+### When not to use
+
+- Don't use as a button. A chip that only performs an action should be a [Button](/design-system/components/button) — chips read as data, and users don't expect them to _do_ things.
+- Don't use for a filter control that opens a menu — use [FilterButton](/design-system/components/filter-button), which is built for it and carries an active count.
+- Don't use for a message about the page — that is an [Alert](/design-system/components/alert).
+- Don't use for long text. A chip that wraps or truncates has stopped being a compact object.
+
+## Choosing between options
+
+### Colour
+
+Colour on a chip means **status**, so use it only when there is a status to convey. A row of colourful chips with no semantic difference between them is noise.
+
+| Colour | Use it for |
+| --- | --- |
+| `default` | Neutral data — tags, categories, selections. This is most chips. |
+| `success` | A positive terminal state: complete, active, verified. |
+| `error` | A failed or blocked state. |
+| `warning` | A state needing attention but not broken. |
+| `info` | A state worth noting, with no judgement attached. |
+| `primary` / `secondary` | Brand-weight emphasis. Rarely the right answer for data; prefer `default`. |
+
+### Variant and size
+
+| Option | Use it for |
+| --- | --- |
+| `filled` (default) | Standard presentation; reads clearly against a page background. |
+| `outlined` | Lighter weight — many chips at once, or chips on a tinted surface. |
+| `size="small"` | Inside table rows and dense lists. |
+| `size="medium"` | Standalone, or in a filter bar with room to breathe. |
+
+## Anatomy
+
+1. **Container** — the pill; its fill or border carries the colour.
+2. **Label** — the entity, kept short.
+3. **Icon or avatar** (optional) — a leading glyph reinforcing the category.
+4. **Delete affordance** (optional) — appears when the chip is removable.
+
+## Behavior
+
+- **Deletable and clickable are independent.** A chip can be removable, activatable, both, or neither. Whatever you enable, keep it consistent across a set — a row where only some chips can be removed is a puzzle.
+- **Removal is immediate and should be reversible.** If deleting a chip destroys something, confirm it elsewhere; a chip's delete control looks lightweight and will be clicked accidentally.
+- **Labels don't wrap.** Long values widen the chip, so keep them to a word or two and let the underlying record hold the detail.
+
+## Content guidelines
+
+- One or two words. A chip is a label, not a sentence.
+- Use the entity's real name rather than a paraphrase, so it matches what the user sees elsewhere.
+- For statuses, use the same vocabulary everywhere — "Active" in one place and "Enabled" in another reads as two different things.
+- Sentence case, no punctuation.
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| "Sales qualified" | "This call was sales qualified" |
+| "Active" | "Currently active ✓" |
+
+## Do & don't
+
+<Columns cols={2}>
+  <Card title="✅ Do" icon="check">
+    Use colour only where it means a status, and keep the mapping identical across the product.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Colour chips for variety. Once colour is decorative, it can't signal anything.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Keep a set consistent: same size, same variant, same affordances.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Use a chip as the primary action in a view. It doesn't look clickable enough to be found.
+  </Card>
+</Columns>
+
+## Accessibility
+
+**What you must provide.**
+
+- **A label on the delete control** that says what it removes. A bare "remove" in a row of ten chips tells a screen reader user nothing.
+- **Status in words, not just colour.** A green chip and a red chip are identical to anyone who can't distinguish them; the label must carry the state.
+- **Keyboard reachability for interactive chips.** A chip that can be clicked or deleted must be reachable and operable by keyboard — verify it, because a decorative chip and an interactive one look the same in code.
+- **Feedback after removal.** When a chip disappears, nothing announces it by default. If removal matters, say so in a live region.
+
+<Warning>
+  A chip that is only clickable — no delete, no visible affordance — is effectively invisible as a control. Use a button instead.
+</Warning>
+
+## Related components
+
+- [FilterButton](/design-system/components/filter-button) — a filter control with an active count.
+- [Badge](/design-system/components/badge) — a count or dot attached to another element.
+- [Alert](/design-system/components/alert) — a message about the view rather than an item in it.
+
+## Resources
+
+{/* generated:resources start */}
+
+<CardGroup cols={2}>
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com/?path=/docs/components-chips--docs">
+    Colours, variants, sizes, and clickable/deletable combinations
+  </Card>
+
+  <Card title="Source" icon="github" href="https://github.com/Invoca/Titan/tree/main/components/core/src/components/Chip">
+    Implementation and the tokens it binds
+  </Card>
+</CardGroup>
+
+{/* generated:resources end */}

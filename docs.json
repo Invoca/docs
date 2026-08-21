@@ -209,6 +209,29 @@
         ]
           }
         ]
+      },
+      {
+        "product": "Invoca Design System",
+        "icon": "palette",
+        "color": {
+          "light": "#00b388",
+          "dark": "#00b388"
+        },
+        "description": "",
+        "pages": [
+          "invoca-design-system/index",
+          {
+            "group": "components",
+            "pages": [
+              "invoca-design-system/components/alert",
+              "invoca-design-system/components/button",
+              "invoca-design-system/components/chip",
+              "invoca-design-system/components/modal",
+              "invoca-design-system/components/tooltip",
+              "invoca-design-system/components/typography"
+            ]
+          }
+        ]
       }
     ],
     "global": {
@@ -264,5 +287,6 @@
       "facebook": "https://www.facebook.com/Invoca/",
       "youtube": "https://www.youtube.com/channel/UCLQwNQFnN1OV1ACnlXICPKw"
     }
-  }
+  },
+  "redirects": []
 }
