@@ -1,0 +1,128 @@
+---
+title: "Tooltip"
+description: "Tooltip reveals a short explanation when the user hovers, focuses, or taps an element."
+icon: "message"
+---
+
+{/* DRAFT — grounded in code (Tooltip.tsx, Tooltip.overrides.ts, Tooltip.stories.js). Needs a review pass for product-specific conventions. */}
+
+{/* generated:embed start */}
+
+<iframe src="https://main--64e4dc66838839c721332d22.chromatic.com/iframe.html?id=components-tooltips--textonly&viewMode=story" style={{ width: "100%", height: "140px", border: "1px solid #e5e7eb", borderRadius: "8px" }} title="Tooltip — Storybook" />
+
+{/* generated:embed end */}
+
+## Overview
+
+Tooltip explains an element on demand — what an icon means, why a control is disabled, what a truncated value says in full. It appears on hover or focus and disappears when attention moves on.
+
+Its defining constraint is that the content is _transient and unrequested_. Anything a user needs to complete a task, compare, or copy has to live in the page, because a tooltip can't be relied on to be seen, found again, or reached at all on touch.
+
+## When to use
+
+- Naming an icon-only control, in addition to its accessible name.
+- Showing a truncated value in full.
+- Explaining why a control is unavailable.
+- Adding a definition or unit that would clutter the layout if always visible.
+
+### When not to use
+
+- Don't put essential information in a tooltip. If the task can't be completed without it, it belongs on the page.
+- Don't use it for anything the user needs to interact with. Content that must be clicked, selected or copied should be in a [Modal](/invoca-design-system/components/modal) or inline — a tooltip disappears as soon as the pointer leaves.
+- Don't use it to hold a paragraph. Long explanations belong in help text or a linked page.
+- Don't use it as the _only_ label for an icon-only control. Use an accessible name for the control and let the tooltip repeat it visually.
+- Don't attach one to a plain text label that already says what it means.
+
+## Choosing between options
+
+### Content
+
+| Content | Use it for |
+| --- | --- |
+| Plain text | The overwhelming majority. One short sentence or a phrase. |
+| Rich content | Structured detail — a small definition list, a formatted value. Reach for it only when plain text genuinely can't carry the meaning, and keep it brief. |
+
+Rich content is supported, and it is also where tooltips go wrong: the more it can hold, the more tempting it is to put something important inside a control that vanishes.
+
+### Placement
+
+Placement is available on all four sides, with start and end alignment. Pick the side with room to render — near a viewport edge a tooltip that flips or clips is worse than one placed deliberately. Default to the side away from the content the user is reading.
+
+### Arrow
+
+The arrow ties the tooltip to its element. Use it when several controls sit close together and the association would otherwise be ambiguous; skip it when the target is obvious.
+
+## Behavior
+
+- **Enter and leave delays are tunable.** A short enter delay stops tooltips flickering as the pointer crosses a toolbar. Don't set a long one on a control whose meaning isn't otherwise available.
+- **Focus opens it too**, not just hover, which is what makes it usable by keyboard.
+- **Touch has no hover.** On a touch device a tooltip is reached by long-press at best, so treat it as unavailable there — another reason essential content can't live inside one.
+- **Open state can be controlled** when a tooltip needs to be shown programmatically, such as briefly confirming an action.
+
+## Content guidelines
+
+- One short sentence, or a phrase. No paragraph, no line breaks.
+- Say the thing, don't restate the label: for a disabled control, "You need admin access to edit tags" beats "Disabled".
+- No terminal punctuation on a fragment.
+- Sentence case.
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| "Download as CSV" | "Click this button to download the data as a CSV file." |
+| "You need admin access to edit tags" | "Unavailable" |
+
+## Do & don't
+
+<Columns cols={2}>
+  <Card title="✅ Do" icon="check">
+    Use a tooltip to name an icon-only control, alongside its accessible name.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Hide anything required inside one. It is invisible on touch and easy to miss everywhere else.
+  </Card>
+
+  <Card title="✅ Do" icon="check">
+    Explain _why_ a control is disabled, which is otherwise unknowable.
+  </Card>
+
+  <Card title="❌ Don't" icon="xmark">
+    Put links or buttons in a tooltip. It closes before the pointer arrives.
+  </Card>
+</Columns>
+
+## Accessibility
+
+**What you must provide.**
+
+- **An accessible name on the control itself.** A tooltip is a visual supplement; it is not a substitute for a label. An icon-only button needs its own name whether or not it has a tooltip.
+- **Keyboard access.** The tooltip must open on focus, not hover alone, or keyboard users never see it.
+- **Nothing essential inside.** Assume some users will never see it — on touch, with a screen reader, or because they moved the pointer.
+
+**Disabled controls are the trap.** A disabled element doesn't receive focus or fire pointer events, so a tooltip attached directly to one may never open. Attach it to a wrapper around the control instead, and verify it opens by keyboard.
+
+<Warning>
+  If a tooltip explains why an action is unavailable, put that reason in the page too. The people most likely to need it are the least likely to reach it.
+</Warning>
+
+## Related components
+
+- [Alert](/invoca-design-system/components/alert) — a persistent message that doesn't depend on hover.
+- [Modal](/invoca-design-system/components/modal) — when the explanation needs interaction.
+- [Typography](/invoca-design-system/components/typography) — inline help text that is always visible.
+
+## Resources
+
+{/* generated:resources start */}
+
+<CardGroup cols={2}>
+  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com/?path=/docs/components-tooltips--docs">
+    Text and rich content, placements, and extended width
+  </Card>
+
+  <Card title="Source" icon="github" href="https://github.com/Invoca/Titan/tree/main/components/core/src/components/Tooltip">
+    Implementation and the tokens it binds
+  </Card>
+</CardGroup>
+
+{/* generated:resources end */}

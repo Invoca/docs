@@ -212,24 +212,23 @@
       },
       {
         "product": "Invoca Design System",
-        "tabs": [
+        "icon": "palette",
+        "color": {
+          "light": "#00b388",
+          "dark": "#00b388"
+        },
+        "description": "",
+        "pages": [
+          "invoca-design-system/index",
           {
-            "tab": "Home",
-            "icon": "house",
-            "pages": ["design-system/index"]
-          },
-          {
-            "tab": "Components",
-            "icon": "cube",
+            "group": "components",
             "pages": [
-              {
-                "group": "Components",
-                "icon": "cube",
-                "root": "design-system/components",
-                "pages": [
-                  "design-system/components/button"
-                ]
-              }
+              "invoca-design-system/components/alert",
+              "invoca-design-system/components/button",
+              "invoca-design-system/components/chip",
+              "invoca-design-system/components/modal",
+              "invoca-design-system/components/tooltip",
+              "invoca-design-system/components/typography"
             ]
           }
         ]
@@ -288,5 +287,6 @@
       "facebook": "https://www.facebook.com/Invoca/",
       "youtube": "https://www.youtube.com/channel/UCLQwNQFnN1OV1ACnlXICPKw"
     }
-  }
+  },
+  "redirects": []
 }
