@@ -1,0 +1,38 @@
+---
+title: "Button: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Button."
+icon: "square-mouse-pointer"
+---
+
+See [Button](/invoca-design-system/components/actions/button) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented — Button inherits its focus ring |
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | Documentation groups by concept; the package exports by unit |
+| [**TITAN-DIV-11**](/invoca-design-system/foundations/divergences#titan-div-11) | Divergence | The design vocabulary is prominence; code names the treatment |
+| [**TITAN-DIV-23**](/invoca-design-system/foundations/divergences#titan-div-23) | Divergence | The theme's naive capitalize-every-word doesn't implement title case's function-word exceptions |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | No selection rule where two tokens both apply |
+| [**TITAN-GAP-22**](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component expresses a failed action |
+
+## Gaps in the current rules
+
+- **The theme's title-case rendering doesn't implement the function-word exception.**
+  `textTransform: "capitalize"` capitalizes every word unconditionally; for most short,
+  verb-first labels that happens to agree with headline style, but they diverge on any label
+  containing a function word like "to" or "of" — "Save Changes To Draft" instead of "Save
+  Changes to Draft." See
+  [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23).
+- **The `large` size is reachable and undefined.** It is not themed, but nothing prevents
+  passing it. [TITAN-BTN-10](/invoca-design-system/components/actions/button#constraints) is a documentation rule with no enforcement.
+- **`tertiary` exists as a design term and in no token.** The prominence vocabulary is three
+  levels; the token layer names none of them. See
+  [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11).
+- **Icon-only sizing has no rule.** Three icon sizes and two control heights exist; nothing
+  states which pairs.
+- **`FilterButton`'s applied-state treatment is not specified.** It carries a `count` prop and
+  two of its own tokens, and no page states what an active filter should look like.
+- **No rule for buttons inside dense table rows** beyond "use a smaller size", which does not
+  say which size or what happens in a row that already has three actions.

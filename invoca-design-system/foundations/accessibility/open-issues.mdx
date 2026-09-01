@@ -1,0 +1,42 @@
+---
+title: "Accessibility: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Accessibility."
+icon: "accessibility"
+---
+
+See [Accessibility](/invoca-design-system/foundations/accessibility) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented |
+| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
+| [**TITAN-GAP-06**](/invoca-design-system/foundations/open-decisions#titan-gap-06) | Open decision | the measured contrast failures are untriaged |
+| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
+| [**TITAN-GAP-09**](/invoca-design-system/foundations/open-decisions#titan-gap-09) | Open decision | Focus Not Obscured is unaddressed |
+| [**TITAN-GAP-10**](/invoca-design-system/foundations/open-decisions#titan-gap-10) | Open decision | no forced-colors guidance exists |
+| [**TITAN-GAP-11**](/invoca-design-system/foundations/open-decisions#titan-gap-11) | Open decision | contrast is not enforced in Titan's own CI |
+
+## Gaps in the current rules
+
+- **The light-mode status failures are untriaged.** Whether they are known and accepted,
+  scoped to non-text uses, or unnoticed is not recorded. See
+  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
+- **`text-error-invert` on `background-error` fails in dark** (2.49:1) and is marginal in
+  light (4.36:1), despite the names implying they pair.
+- **No token expresses dark text on a bold status fill**, which is what conformant
+  light-mode success and warning banners require.
+- **No semantic focus token exists.** See
+  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+- **No reduced-motion implementation exists** in the token layer. See
+  [Motion](/invoca-design-system/foundations/motion/open-issues#gaps-in-the-current-rules).
+- **No forced-colors / High Contrast Mode guidance exists.**
+- **Focus Not Obscured is unaddressed.** No rule governs the interaction between the `z-*`
+  ladder and focus.
+- **Contrast is checked here, not in Titan.** `emit-tokens.mjs --check` fails the docs build
+  if a ratio changes, but nothing in Titan's own CI blocks a token change that breaks
+  contrast.

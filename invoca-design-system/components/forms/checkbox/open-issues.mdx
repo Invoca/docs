@@ -1,0 +1,27 @@
+---
+title: "Checkbox: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Checkbox."
+icon: "square-check"
+---
+
+See [Checkbox](/invoca-design-system/components/forms/checkbox) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Two independent disabled-opacity values exist for form controls, with no rule for which applies |
+| [**TITAN-GAP-33**](/invoca-design-system/foundations/open-decisions#titan-gap-33) | Open decision | No mixed/indeterminate state exists for showing a partially-checked group |
+
+## Gaps in the current rules
+
+- **No stated rule for an empty group.** Whether a select-all checkbox hides, disables, or
+  renders unchecked with nothing to check is undecided.
+- **No indeterminate state exists.** Checked against the Figma library's own `Checkbox`
+  component (`Checked=false/true` × `State=Default/Hover/Disabled/Focused` — 8 combinations,
+  exhaustively named, none of them a third value) and its `Checkbox + Label` composite
+  (`Selected=false/true` × the same four states) — neither carries an indeterminate or mixed
+  axis. An earlier pass of this documentation treated indeterminate as an established
+  feature; that was written from general checkbox conventions, not from any Titan evidence,
+  and was wrong to state as settled. See
+  [TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33).

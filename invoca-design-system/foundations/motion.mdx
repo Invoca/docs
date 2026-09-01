@@ -17,23 +17,12 @@ keywords: ["motion", "animation", "transition", "duration", "easing", "reduced m
 Every transition and animation: how long it takes and how it accelerates. Eleven tokens —
 seven durations and four easings.
 
-<Warning>
-  **Motion is the least-decided foundation.** The eleven values ship and are what renders,
-  but nothing records why these durations and not others, or which interaction each is
-  meant for. The mapping on this page is a proposal.
-
-  Treat that as the cost of change: a color token overturns an Invoca decision, a duration
-  token overturns nothing that has been written down.
-</Warning>
+**Motion is the least-decided foundation** — see
+[Open issues](/invoca-design-system/foundations/motion/open-issues) for what that leaves
+unsettled. Treat that as the cost of change: a color token overturns an Invoca decision, a
+duration token overturns nothing that has been written down.
 
 ## Vocabulary
-
-<Warning>
-  **The naming specification does not cover motion.** It defines the six naming axes and 64
-  colour definitions; motion appears in neither. The terms used on this page are therefore
-  descriptive rather than decided — see
-  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
-</Warning>
 
 Durations are named by **length** (`shortest` … `complex`) and easings by **curve shape**
 (`ease-in`, `ease-out`, `sharp`). Neither names what the value is *for*, so there is no
@@ -135,32 +124,9 @@ currently implemented anywhere in the token layer.
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
-| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
-| [**TITAN-GAP-16**](/invoca-design-system/foundations/open-decisions#titan-gap-16) | Open decision | no design intent is recorded for any motion value |
-
-## Gaps in the current rules
-
-This foundation has more gaps than settled rules. Do not infer answers.
-
-- **No reduced-motion handling exists in the token layer.** No token, no media query, no
-  documented pattern. The constraints above state what should be true; nothing enforces it.
-  This is the most significant gap in Foundations.
-- **No Invoca intent is recorded for any value.** Whether 300ms is right for Titan's
-  surfaces has not been asked.
-- **The duration-to-use mapping on this page is proposed, not transcribed.** Nothing binds
-  a named duration to a component, so which duration a Drawer actually uses is a
-  component-level fact this page cannot assert.
-- **No curve is named for what it does.** The easings are named by shape, not by purpose,
-  so there is no shared vocabulary for "how Titan moves."
-- **No guidance exists on animating layout properties.** Nothing says whether to prefer
-  `transform`/`opacity` over `height`/`top`, which is a performance decision with a visible
-  cost on long tables.
+<Card title="Motion: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/motion/open-issues">
+  Divergences, open decisions, and undocumented gaps for Motion.
+</Card>
 
 ## Related
 

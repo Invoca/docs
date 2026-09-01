@@ -42,15 +42,6 @@ correction and the reference going forward.
 | **Empty-state title and body** | Sentence case | **Proposed** — carried from the earlier EmptyState page, not stated in the Empty States zeroheight page itself |
 | **Page titles, headings, table column headers, menu and option labels, tab labels** | **Unconfirmed** | See [Gaps](#gaps-in-the-current-rules) |
 
-<Warning>
-  **This documentation previously stated the opposite rule for buttons.** An earlier pass of
-  [Button](/invoca-design-system/components/actions/button) asserted sentence case as the rule and framed the
-  theme's title-case rendering as a bug to work around
-  ([TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23), now corrected). zeroheight states
-  plainly: **"Label text should be title case,"** with an explicit **"Label text should not
-  be sentence case"** don't. That correction is reflected here and on the Button page.
-</Warning>
-
 ## Two casing systems, and where each one applies
 
 **Title case** (headline style): capitalize the principal words. Lowercase articles (`a`,
@@ -61,16 +52,6 @@ correction and the reference going forward.
 |---|---|---|
 | Lowercase short function words mid-phrase | Save Changes to Draft | Save Changes To Draft |
 | Capitalize the first and last word regardless | Turn Notifications On | turn Notifications on |
-
-<Warning>
-  **This is not what the shipped theme currently does.** [Button's](/invoca-design-system/components/actions/button#content)
-  theme applies `textTransform: "capitalize"`, which capitalizes *every* word with no
-  exception for short function words. For a short, verb-first label ("Save changes," "Publish
-  campaign") the two rarely disagree — most button labels don't contain an article or
-  preposition long enough to notice. They would disagree on a label like "Save Changes to
-  Draft," which the theme would render "Save Changes To Draft." This is a smaller, more
-  precise version of what [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23) tracks now.
-</Warning>
 
 **Sentence case**: capitalize only the first word and proper nouns. This is the default for
 anything meant to be read as a sentence rather than scanned as a label — error messages,
@@ -117,12 +98,9 @@ this documentation's authority on UI terminology specifically:
 
 ## Gaps in the current rules
 
-| Gap | Why it matters | Status |
-|---|---|---|
-| **No casing rule for page titles, headings, table column headers, menu items, or tab labels.** Confirmed for exactly two content types (buttons, error messages); everything else is inferred or unconfirmed. | The most common failure mode for a casing rule is not having one — every other content type in the product needs one of these, whether the answer is title case, sentence case, or something else. | Open |
-| **Field labels' casing is Proposed, not confirmed.** | If a real source states otherwise, [TITAN-CASE-05](#constraints) and [FieldLabel's](/invoca-design-system/components/forms/field-label#constraints) content rule both need to change together. | Open |
-| **No stated rule for ellipsis on actions that open a further step** (e.g., "Export…"). Common in other design systems, not confirmed for Titan. | A missing rule here means every author decides independently whether "Export" needs the ellipsis. | Open |
-| **AP style's other conventions are assumed, not verified.** The source states exactly one exception (Oxford comma); whether every other AP convention (number spelling, quotation punctuation, etc.) is actually followed in shipped product copy hasn't been checked against real screens. | An assumed baseline is only as good as the one exception anyone has bothered to write down — there could be more that nobody's documented. | Open |
+<Card title="Capitalization and punctuation: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/capitalization-and-punctuation/open-issues">
+  Divergences, open decisions, and undocumented gaps for Capitalization and punctuation.
+</Card>
 
 ## Why it works this way
 

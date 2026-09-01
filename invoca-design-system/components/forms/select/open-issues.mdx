@@ -1,0 +1,24 @@
+---
+title: "Select: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Select."
+icon: "chevron-down"
+---
+
+See [Select](/invoca-design-system/components/forms/select) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-24**](/invoca-design-system/foundations/divergences#titan-div-24) | Divergence | The trigger's error focus ring is a third red, unaliased to the semantic error tokens — inherited from the field chrome it shares with Input |
+| — | Needs sign-off | This page previously pointed to a separate, undocumented "Combobox" for typing to filter options — that was wrong. Autocomplete is modeled as a mode of Select in the design library (an `Autocomplete` variant, `false`/`true`, on the same `Select Input` component as everything else on this page), not a separate component — see [Vocabulary](/invoca-design-system/components/forms/select#vocabulary). There is no `Combobox` page or component anywhere in the library's 49 pages. Titan's actual code structure for this is unconfirmed without a checkout. |
+
+## Gaps in the current rules
+
+- **No decided behavior for zero available options.**
+- **No truncation rule for a long option label**, in either the trigger or the list.
+- **No decided threshold for turning Autocomplete on** — the design library shows it as a
+  binary mode, not a rule tied to option count.
+- **Multi-select's trigger summary format is undecided** — a count, chips, and a truncated
+  label list all satisfy [TITAN-SELECT-05](/invoca-design-system/components/forms/select#constraints) without choosing between them.
+- **Whether the option-list overlay shares implementation with Menu** — the shared naming is suggestive, not confirmed against source.

@@ -244,15 +244,70 @@
                 "root": "invoca-design-system/foundations/overview",
                 "directory": "card",
                 "pages": [
-                  "invoca-design-system/foundations/color",
-                  "invoca-design-system/foundations/typography",
-                  "invoca-design-system/foundations/space-and-density",
-                  "invoca-design-system/foundations/elevation",
-                  "invoca-design-system/foundations/radius",
-                  "invoca-design-system/foundations/motion",
-                  "invoca-design-system/foundations/iconography",
-                  "invoca-design-system/foundations/layout-and-grid",
-                  "invoca-design-system/foundations/accessibility",
+                  "invoca-design-system/foundations/overview/open-issues",
+                  {
+                    "group": "Color",
+                    "root": "invoca-design-system/foundations/color",
+                    "pages": [
+                      "invoca-design-system/foundations/color/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Typography",
+                    "root": "invoca-design-system/foundations/typography",
+                    "pages": [
+                      "invoca-design-system/foundations/typography/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Space",
+                    "root": "invoca-design-system/foundations/space-and-density",
+                    "pages": [
+                      "invoca-design-system/foundations/space-and-density/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Elevation",
+                    "root": "invoca-design-system/foundations/elevation",
+                    "pages": [
+                      "invoca-design-system/foundations/elevation/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Radius",
+                    "root": "invoca-design-system/foundations/radius",
+                    "pages": [
+                      "invoca-design-system/foundations/radius/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Motion",
+                    "root": "invoca-design-system/foundations/motion",
+                    "pages": [
+                      "invoca-design-system/foundations/motion/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Iconography",
+                    "root": "invoca-design-system/foundations/iconography",
+                    "pages": [
+                      "invoca-design-system/foundations/iconography/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Layout & grid",
+                    "root": "invoca-design-system/foundations/layout-and-grid",
+                    "pages": [
+                      "invoca-design-system/foundations/layout-and-grid/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Accessibility",
+                    "root": "invoca-design-system/foundations/accessibility",
+                    "pages": [
+                      "invoca-design-system/foundations/accessibility/open-issues"
+                    ]
+                  },
                   "invoca-design-system/foundations/divergences",
                   "invoca-design-system/foundations/open-decisions"
                 ]
@@ -270,7 +325,13 @@
               {
                 "group": "Actions",
                 "pages": [
-                  "invoca-design-system/components/actions/button",
+                  {
+                    "group": "Button",
+                    "root": "invoca-design-system/components/actions/button",
+                    "pages": [
+                      "invoca-design-system/components/actions/button/open-issues"
+                    ]
+                  },
                   "invoca-design-system/components/actions/link",
                   "invoca-design-system/components/actions/button-group",
                   "invoca-design-system/components/actions/menu"
@@ -279,33 +340,93 @@
               {
                 "group": "Forms",
                 "pages": [
-                  "invoca-design-system/components/forms/input",
-                  "invoca-design-system/components/forms/select",
-                  "invoca-design-system/components/forms/checkbox",
-                  "invoca-design-system/components/forms/radio",
-                  "invoca-design-system/components/forms/switch",
-                  "invoca-design-system/components/forms/date-picker",
+                  {
+                    "group": "Input",
+                    "root": "invoca-design-system/components/forms/input",
+                    "pages": [
+                      "invoca-design-system/components/forms/input/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Select",
+                    "root": "invoca-design-system/components/forms/select",
+                    "pages": [
+                      "invoca-design-system/components/forms/select/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Checkbox",
+                    "root": "invoca-design-system/components/forms/checkbox",
+                    "pages": [
+                      "invoca-design-system/components/forms/checkbox/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Radio",
+                    "root": "invoca-design-system/components/forms/radio",
+                    "pages": [
+                      "invoca-design-system/components/forms/radio/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Switch",
+                    "root": "invoca-design-system/components/forms/switch",
+                    "pages": [
+                      "invoca-design-system/components/forms/switch/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "DatePicker",
+                    "root": "invoca-design-system/components/forms/date-picker",
+                    "pages": [
+                      "invoca-design-system/components/forms/date-picker/open-issues"
+                    ]
+                  },
                   "invoca-design-system/components/forms/file-upload",
                   "invoca-design-system/components/forms/form",
-                  "invoca-design-system/components/forms/field-label"
+                  {
+                    "group": "FieldLabel",
+                    "root": "invoca-design-system/components/forms/field-label",
+                    "pages": [
+                      "invoca-design-system/components/forms/field-label/open-issues"
+                    ]
+                  }
                 ]
               },
               {
                 "group": "Data display",
                 "pages": [
-                  "invoca-design-system/components/data-display/table",
+                  {
+                    "group": "Table",
+                    "root": "invoca-design-system/components/data-display/table",
+                    "pages": [
+                      "invoca-design-system/components/data-display/table/open-issues"
+                    ]
+                  },
                   "invoca-design-system/components/data-display/list",
                   "invoca-design-system/components/data-display/card",
                   "invoca-design-system/components/data-display/tag",
                   "invoca-design-system/components/data-display/badge",
                   "invoca-design-system/components/data-display/avatar",
-                  "invoca-design-system/components/data-display/empty-state"
+                  {
+                    "group": "EmptyState",
+                    "root": "invoca-design-system/components/data-display/empty-state",
+                    "pages": [
+                      "invoca-design-system/components/data-display/empty-state/open-issues"
+                    ]
+                  }
                 ]
               },
               {
                 "group": "Navigation",
                 "pages": [
-                  "invoca-design-system/components/navigation/tabs",
+                  {
+                    "group": "Tabs",
+                    "root": "invoca-design-system/components/navigation/tabs",
+                    "pages": [
+                      "invoca-design-system/components/navigation/tabs/open-issues"
+                    ]
+                  },
                   "invoca-design-system/components/navigation/breadcrumb",
                   "invoca-design-system/components/navigation/pagination",
                   "invoca-design-system/components/navigation/side-nav",
@@ -315,12 +436,24 @@
               {
                 "group": "Feedback",
                 "pages": [
-                  "invoca-design-system/components/feedback/alert",
+                  {
+                    "group": "Alert",
+                    "root": "invoca-design-system/components/feedback/alert",
+                    "pages": [
+                      "invoca-design-system/components/feedback/alert/open-issues"
+                    ]
+                  },
                   "invoca-design-system/components/feedback/toast",
                   "invoca-design-system/components/feedback/banner",
                   "invoca-design-system/components/feedback/progress-bar",
                   "invoca-design-system/components/feedback/spinner",
-                  "invoca-design-system/components/feedback/skeleton"
+                  {
+                    "group": "Skeleton",
+                    "root": "invoca-design-system/components/feedback/skeleton",
+                    "pages": [
+                      "invoca-design-system/components/feedback/skeleton/open-issues"
+                    ]
+                  }
                 ]
               },
               {
@@ -368,7 +501,14 @@
                 "root": "invoca-design-system/views/overview",
                 "directory": "card",
                 "pages": [
-                  "invoca-design-system/views/list-view",
+                  "invoca-design-system/views/overview/open-issues",
+                  {
+                    "group": "List view",
+                    "root": "invoca-design-system/views/list-view",
+                    "pages": [
+                      "invoca-design-system/views/list-view/open-issues"
+                    ]
+                  },
                   "invoca-design-system/views/detail-view",
                   "invoca-design-system/views/settings-view",
                   "invoca-design-system/views/wizard",
@@ -386,13 +526,55 @@
               {
                 "group": "Content",
                 "pages": [
-                  "invoca-design-system/content/voice-and-tone",
-                  "invoca-design-system/content/ui-labels",
-                  "invoca-design-system/content/error-messages",
-                  "invoca-design-system/content/empty-state-copy",
-                  "invoca-design-system/content/capitalization-and-punctuation",
-                  "invoca-design-system/content/numbers",
-                  "invoca-design-system/content/dates-and-times"
+                  {
+                    "group": "Voice and tone",
+                    "root": "invoca-design-system/content/voice-and-tone",
+                    "pages": [
+                      "invoca-design-system/content/voice-and-tone/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "UI labels",
+                    "root": "invoca-design-system/content/ui-labels",
+                    "pages": [
+                      "invoca-design-system/content/ui-labels/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Error messages",
+                    "root": "invoca-design-system/content/error-messages",
+                    "pages": [
+                      "invoca-design-system/content/error-messages/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Empty state copy",
+                    "root": "invoca-design-system/content/empty-state-copy",
+                    "pages": [
+                      "invoca-design-system/content/empty-state-copy/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Capitalization and punctuation",
+                    "root": "invoca-design-system/content/capitalization-and-punctuation",
+                    "pages": [
+                      "invoca-design-system/content/capitalization-and-punctuation/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Numbers",
+                    "root": "invoca-design-system/content/numbers",
+                    "pages": [
+                      "invoca-design-system/content/numbers/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Dates and times",
+                    "root": "invoca-design-system/content/dates-and-times",
+                    "pages": [
+                      "invoca-design-system/content/dates-and-times/open-issues"
+                    ]
+                  }
                 ]
               }
             ]
@@ -406,8 +588,20 @@
                 "pages": [
                   "invoca-design-system/contribute/governance",
                   "invoca-design-system/contribute/propose-a-component",
-                  "invoca-design-system/contribute/token-workflow",
-                  "invoca-design-system/contribute/versioning-and-deprecation",
+                  {
+                    "group": "Token workflow",
+                    "root": "invoca-design-system/contribute/token-workflow",
+                    "pages": [
+                      "invoca-design-system/contribute/token-workflow/open-issues"
+                    ]
+                  },
+                  {
+                    "group": "Versioning & deprecation",
+                    "root": "invoca-design-system/contribute/versioning-and-deprecation",
+                    "pages": [
+                      "invoca-design-system/contribute/versioning-and-deprecation/open-issues"
+                    ]
+                  },
                   "invoca-design-system/contribute/figma-sync",
                   "invoca-design-system/contribute/reporting-drift"
                 ]

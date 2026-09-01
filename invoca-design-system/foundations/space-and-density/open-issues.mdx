@@ -1,0 +1,36 @@
+---
+title: "Space: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Space."
+icon: "ruler"
+---
+
+See [Space](/invoca-design-system/foundations/space-and-density) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-06**](/invoca-design-system/foundations/divergences#titan-div-06) | Divergence | two tokens for zero |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+
+## Gaps in the current rules
+
+- **The specification stops at `spacing-9`; code ships `spacing-0` through `spacing-10`.** The
+  specification also records no definition for any spacing step, so which gap each step is
+  *for* is undecided — see
+  [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02) and
+  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+- **`spacing-0` (`0rem`) and `spacing-none` (`0px`) are duplicates.** Both ship, neither is
+  marked deprecated. This page recommends `spacing-none` on the grounds that it reads as a
+  decision, but that is an inference, not a documented policy. See
+  [TITAN-DIV-06](/invoca-design-system/foundations/divergences#titan-div-06).
+- **`--titan-spacing-compact-3` (`0.375rem`) exists as a public CSS custom property** but is
+  not a token on any access surface. Treat it as private; it is not documented as such.
+- **A second, older 8px spacing unit is still exposed** alongside the scale. Its
+  relationship to the `spacing-*` steps is unstated, and its multiplier behavior does not
+  correspond to any step on this page.

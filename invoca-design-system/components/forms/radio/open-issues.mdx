@@ -1,0 +1,21 @@
+---
+title: "Radio: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Radio."
+icon: "circle-dot"
+---
+
+See [Radio](/invoca-design-system/components/forms/radio) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Multiple independent disabled-opacity values exist across the Forms group, with no rule for which applies |
+
+## Gaps in the current rules
+
+- **No stated default-selection rule** for a mandatory Radio group — see
+  [TITAN-RADIO-06](/invoca-design-system/components/forms/radio#constraints).
+- **No rule for a group with only one option** beyond [TITAN-RADIO-05](/invoca-design-system/components/forms/radio#constraints) saying it
+  shouldn't happen — what to do if it does (render anyway, warn, fall back to something else)
+  is unstated.

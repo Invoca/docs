@@ -47,12 +47,8 @@ It stays until something changes it. That is what separates it from a
 library publishes exactly four alerts — one per severity — each in a single-line and a wrapped
 form, and each dismissible.
 
-<Warning>
-  **`severity` and `color` are separate props, and separating them is a mistake.** A published
-  example sets `severity="success"` with `color="info"`, producing an alert that *is* a success and
-  *looks* like information. The colour is how a reader identifies the severity before reading, so
-  the two must always agree — [TITAN-ALR-03](#constraints).
-</Warning>
+`severity` and `color` are separate props. The colour is how a reader identifies the severity
+before reading, so the two must always agree — [TITAN-ALR-03](#constraints).
 
 ## Choose Alert when
 
@@ -216,26 +212,9 @@ four severities; the other two variants do not — see the table above.
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-21**](/invoca-design-system/foundations/divergences#titan-div-21) | Divergence | Only the standard variant is colour-complete; filled and outlined fail contrast |
-
-**Also true and not yet recorded as either:** `severity` defaults to `success`, which no design
-decision supports; every published example overrides the severity icon, so the default mapping is
-demonstrated nowhere; and `AlertTitle` is exported with no treatment defined, so a titled alert is
-buildable and unspecified.
-
-## Gaps in the current rules
-
-- **Whether an alert may carry a title is undecided.** `AlertTitle` ships, the design library
-  publishes no titled alert, and nothing states when a message needs a heading.
-- **No rule for how many alerts a page may show at once**, or whether they should merge.
-- **Whether alerts are dismissible by default is unstated.** The design draws a dismiss control on
-  every alert; code makes it opt-in via `onClose`.
-- **No rule for placement precision** beyond "with the thing it is about" — whether a
-  section-level alert goes above the section heading or below it is undecided.
-- **Nothing states what happens to a dismissed alert whose condition persists.** It returns on the
-  next render, and whether that is correct has not been decided.
+<Card title="Alert: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/alert/open-issues">
+  Divergences, open decisions, and undocumented gaps for Alert.
+</Card>
 
 ## Why it works this way
 

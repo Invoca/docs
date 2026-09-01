@@ -1,0 +1,24 @@
+---
+title: "DatePicker: open issues"
+description: "Divergences, open decisions, and undocumented gaps for DatePicker."
+icon: "calendar"
+---
+
+See [DatePicker](/invoca-design-system/components/forms/date-picker) for the decided part of this page.
+
+## Known issues
+
+None specific to this component beyond the Forms-group-wide items already tracked — see
+[TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).
+
+## Gaps in the current rules
+
+- **No "jump to today" affordance was found.** The header's navigation axis has forward, back,
+  both, or neither — nothing for returning to the current month directly.
+- **No stated behavior for an in-progress range** — how the grid previews a range after only
+  the start date is chosen is undecided.
+- **No DatePicker-specific tokens exist in the theme snapshot at all.** Every fact on this page
+  is structural, from the design library — none of it is a resolved color, spacing, or motion
+  value. This is a wider gap in this page's grounding than any other Forms page written so
+  far.
+- **No stated minimum or maximum navigable range** for the calendar header.

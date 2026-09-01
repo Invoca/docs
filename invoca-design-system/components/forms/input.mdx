@@ -26,11 +26,12 @@ them is one decision about the same field, not two components.
 
 ## Live example
 
-<StorybookFrame story="components-input--default" height={160} />
+<StorybookFrame story="components-form-elements-textfield--default" height={160} />
 
 <Note>
-  Story ID `pending`. This session did not have access to
-  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+  Story ID `verified` against the real Chromatic Storybook index. There is no
+  top-level `Input` group — the free-text field this page describes is Titan's
+  **Form Elements/TextField**, which does ship a `default` story.
 </Note>
 
 ## Exports
@@ -100,9 +101,9 @@ them is one decision about the same field, not two components.
 |---|---|---|
 | Empty | Placeholder shows if one is set; otherwise blank. The library names this the `Default` state, distinct from `Filled`. | Placeholder is not a substitute for the label |
 | Value longer than the field (single-line) | Scrolls horizontally within the field; text does not wrap | Use multiline if values routinely exceed the field's width |
-| Value being validated asynchronously | **Undefined.** No loading affordance was found for this component. | See [Gaps](#gaps-in-the-current-rules) |
+| Value being validated asynchronously | **Undefined.** No loading affordance was found for this component. | See [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules) |
 | Disabled | Renders at the disabled tokens, not focusable | Pair with a reachable explanation, same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) |
-| Read-only | **Undefined whether visually distinguished from disabled.** See [TITAN-INPUT-02](#constraints) for what it should do; unconfirmed whether Titan does. | See [Gaps](#gaps-in-the-current-rules) |
+| Read-only | **Undefined whether visually distinguished from disabled.** See [TITAN-INPUT-02](#constraints) for what it should do; unconfirmed whether Titan does. | See [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules) |
 | Invalid | Border and focus ring switch to error tokens; error text replaces helper text | See [FieldLabel](/invoca-design-system/components/forms/field-label#edge-and-failure-states) |
 
 ## Tokens
@@ -113,7 +114,7 @@ them is one decision about the same field, not two components.
 
 Always paired with [FieldLabel](/invoca-design-system/components/forms/field-label) above it. Multiple Inputs
 stack vertically inside [Form](/invoca-design-system/components/forms/form) — no vertical-rhythm token between
-stacked fields was found in the snapshot; see [Gaps](#gaps-in-the-current-rules).
+stacked fields was found in the snapshot; see [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules).
 
 ## Content
 
@@ -149,18 +150,9 @@ should show — both belong to [Form validation](/invoca-design-system/patterns/
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-24**](/invoca-design-system/foundations/divergences#titan-div-24) | Divergence | The error focus ring is a third red, unaliased to the semantic error tokens |
-
-## Gaps in the current rules
-
-- **No loading affordance for asynchronous validation.** A field being checked against a
-  server has no stated visual treatment.
-- **Read-only's visual treatment is unconfirmed.** [TITAN-INPUT-02](#constraints) states what
-  it should do; whether Titan's implementation matches was not verifiable this pass.
-- **No vertical-rhythm token between stacked fields inside a form** was found in the token
-  snapshot.
+<Card title="Input: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/input/open-issues">
+  Divergences, open decisions, and undocumented gaps for Input.
+</Card>
 
 ## Why it works this way
 

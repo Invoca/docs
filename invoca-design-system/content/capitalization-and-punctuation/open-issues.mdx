@@ -1,0 +1,28 @@
+---
+title: "Capitalization and punctuation: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Capitalization and punctuation."
+icon: "case-sensitive"
+---
+
+See [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation) for the decided part of this page.
+
+## History
+
+This documentation previously stated the opposite rule for buttons: an earlier pass of
+[Button](/invoca-design-system/components/actions/button) asserted sentence case and framed the
+theme's title-case rendering as a bug to work around. zeroheight states plainly: **"Label text
+should be title case,"** with an explicit **"Label text should not be sentence case"** don't.
+That correction is reflected on both pages now — see
+[TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23) for what's left as
+an actual code divergence now that the direction is fixed, and
+[Button's open issues](/invoca-design-system/components/actions/button/open-issues) for exactly
+where the shipped theme's rendering still disagrees with the rule stated here.
+
+## Gaps in the current rules
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **No casing rule for page titles, headings, table column headers, menu items, or tab labels.** Confirmed for exactly two content types (buttons, error messages); everything else is inferred or unconfirmed. | The most common failure mode for a casing rule is not having one — every other content type in the product needs one of these, whether the answer is title case, sentence case, or something else. | Open |
+| **Field labels' casing is Proposed, not confirmed.** | If a real source states otherwise, [TITAN-CASE-05](/invoca-design-system/content/capitalization-and-punctuation#constraints) and [FieldLabel's](/invoca-design-system/components/forms/field-label#constraints) content rule both need to change together. | Open |
+| **No stated rule for ellipsis on actions that open a further step** (e.g., "Export…"). Common in other design systems, not confirmed for Titan. | A missing rule here means every author decides independently whether "Export" needs the ellipsis. | Open |
+| **AP style's other conventions are assumed, not verified.** The source states exactly one exception (Oxford comma); whether every other AP convention (number spelling, quotation punctuation, etc.) is actually followed in shipped product copy hasn't been checked against real screens. | An assumed baseline is only as good as the one exception anyone has bothered to write down — there could be more that nobody's documented. | Open |

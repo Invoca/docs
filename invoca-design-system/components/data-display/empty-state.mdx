@@ -164,11 +164,9 @@ table.
   source; see [TITAN-EMPTYCOPY-04](/invoca-design-system/content/empty-state-copy#constraints). Added this pass —
   this page didn't previously state it.
 
-<Warning>
-  **The default message breaks three of those rules.** With no props, the component renders
-  **"No Records found!"** — title case, an exclamation mark, and the word *records*. Do not rely on
-  the fallback; pass a title. Recorded as an issue against the component, not as guidance.
-</Warning>
+**The default message ("No Records found!") breaks these rules** — see
+[Open issues](/invoca-design-system/components/data-display/empty-state/open-issues). Do not
+rely on the fallback; always pass a title.
 
 ## Accessibility
 
@@ -182,12 +180,10 @@ its own; what it must not do is carry information the text omits.
 a filter and gets no results needs to know that, and nothing about this component announces
 itself — the announcement belongs to the region that swapped its content.
 
-<Warning>
-  **The supporting line renders as a heading, and it is not one.** `title` renders as an `h3` and
-  `subTitle` renders as an `h6` — skipping two levels, and asserting that a sentence of supporting
-  text is a document heading. This corrupts the heading outline of any page carrying an empty
-  state. See [TITAN-DIV-22](/invoca-design-system/foundations/divergences#titan-div-22).
-</Warning>
+**The supporting line renders as a heading, and it is not one** ([known
+issue](/invoca-design-system/components/data-display/empty-state/open-issues)) — `title`
+renders as an `h3` and `subTitle` as an `h6`, which corrupts the heading outline of any page
+carrying an empty state.
 
 ## Constraints
 
@@ -203,32 +199,9 @@ itself — the announcement belongs to the region that swapped its content.
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-22**](/invoca-design-system/foundations/divergences#titan-div-22) | Divergence | The supporting line renders as an `h6` beneath an `h3` |
-
-**Also true and not yet recorded as either:**
-
-- The default message, **"No Records found!"**, violates the system's own capitalization,
-  punctuation, and word-choice rules.
-- **Five of the fifteen illustrations have no design representation** — `activeComments`,
-  `activeTable`, `error`, `inactiveComments`, and `inactiveTable` exist in code and not in the
-  design library, including the one an error state needs.
-- `IllustrationWrapper` spreads any additional props into its `style` object, so a prop that is not
-  a style property becomes a style key.
-
-## Gaps in the current rules
-
-- **No rule for which illustration belongs to which region.** Fifteen exist, several overlap, and
-  nothing states whether a table's empty state should use `activeTable`, `search`, or `default`.
-- **No small variant.** The illustration is one size, so an empty state inside a card or a panel is
-  either oversized or hand-built.
-- **Nothing states whether the illustration may be omitted.** Passing an empty custom illustration
-  is possible; whether a text-only empty state is sanctioned is undecided.
-- **No rule for the action's prominence.** [TITAN-EMP-05](#constraints) requires one action and
-  does not say whether it is primary or secondary.
-- **Whether an empty state may carry a link to documentation is unstated**, which is the most
-  common request for an onboarding zero state.
+<Card title="EmptyState: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/empty-state/open-issues">
+  Divergences, open decisions, and undocumented gaps for EmptyState.
+</Card>
 
 ## Why it works this way
 

@@ -1,0 +1,39 @@
+---
+title: "Foundations overview: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Foundations overview."
+icon: "compass"
+---
+
+See [Foundations overview](/invoca-design-system/foundations/overview) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
+| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | the SCSS token surface is frozen at 82 names |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+
+## Gaps in the current rules
+
+Genuinely undecided. Do not infer answers to these.
+
+- **`spacing-0` and `spacing-none` are duplicates** — `0rem` and `0px` respectively. Both
+  ship. Neither is documented as preferred, and nothing indicates which is deprecated.
+- **`--titan-spacing-compact-3` is a leaked internal.** It exists as a public
+  custom property but is not a token in any of the three access surfaces above. Treat it as
+  private; it is not documented as such.
+- **The stacking ladder does not cover every layer.** Drawers and toasts stack at values no
+  token expresses. See [Elevation](/invoca-design-system/foundations/elevation#the-ladder-has-holes).
+- **`overlay-default` is malformed on the JS surface** — the light value is
+  `rgba(21, / 36, / 62, / 0.3000)`, which is not valid CSS. The defect is scoped: the legacy
+  SCSS and CDN CSS outputs de-mangle it at build time, so only `theme.tokens` and
+  `--titan-tokens-overlay-default` carry the broken string. Reported, unresolved.
+- **Motion, breakpoints, and the z-index ladder have no recorded intent.** The values ship
+  and are what renders, but nothing states why these and not others, or which interaction
+  each is meant for.

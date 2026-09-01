@@ -20,17 +20,8 @@ Corner rounding on every surface: controls, cards, dialogs, chips, avatars. Five
 
 ## Vocabulary
 
-<Warning>
-  **The naming specification does not cover the radius scale.** It defines the six naming axes and 64
-  colour definitions; the radius scale appears in neither. The terms used on this page are therefore
-  descriptive rather than decided — see
-  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
-</Warning>
-
-The specification names corner *kinds* — `corner`, `hard-corner`, `soft-corner`, `round` —
-which do not correspond to the shipped tokens (`radius-sm`, `radius-base`, `radius-md`,
-`radius-pill`, `radius-circle`). Two vocabularies for one concept, and neither is mapped to
-the other. See [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+The terms used on this page are descriptive rather than decided — the naming specification
+does not cover the radius scale (see [Open issues](/invoca-design-system/foundations/radius/open-issues)).
 
 ## The scale
 
@@ -102,25 +93,9 @@ semantic property. Two indirect effects:
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
-| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
-
-## Gaps in the current rules
-
-- **`radius-base` (3px) vs `radius-md` (4px) has no selection rule.** A 1px difference is
-  at the edge of perceptibility, and nothing documents which surfaces get which. The
-  mapping on this page is a proposal.
-- **Why 3px is not recorded.** The choice is deliberate; the reasoning is not written down.
-- **No nesting guidance exists upstream.** [TITAN-RAD-02](#constraints) is this page's
-  proposal.
-- **No `radius-lg`.** Whether large decorative surfaces are meant to use `radius-md` or
-  something larger is undecided.
+<Card title="Radius: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/radius/open-issues">
+  Divergences, open decisions, and undocumented gaps for the radius scale — 3 items.
+</Card>
 
 ## Related
 

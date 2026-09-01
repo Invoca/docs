@@ -1,0 +1,25 @@
+---
+title: "FieldLabel: open issues"
+description: "Divergences, open decisions, and undocumented gaps for FieldLabel."
+icon: "type"
+---
+
+See [FieldLabel](/invoca-design-system/components/forms/field-label) for the decided part of this page.
+
+## Known issues
+
+| Kind | What |
+|---|---|
+| Known defect | `form-label-font-weight`'s captured value carries an invalid `px` unit — see [Known defects](/invoca-design-system/foundations/open-decisions#known-defects). |
+
+## Gaps in the current rules
+
+- **No spacing token for label-to-field or field-to-helper-text gaps.** Both render at
+  whatever the framework defaults to.
+- **No stated rule for the both-helper-and-error case.** [TITAN-FLD-03](/invoca-design-system/components/forms/field-label#constraints) says
+  they don't co-occur but nothing states what determines that when both would independently
+  apply.
+- **What the tooltip icon actually opens is unconfirmed** — a native tooltip, a popover, or
+  something else, and whether its content is itself subject to any content rules.
+- **Two independent disabled-opacity values exist across the Forms group** — see
+  [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).

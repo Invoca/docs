@@ -1,0 +1,33 @@
+---
+title: "Tabs: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Tabs."
+icon: "component"
+---
+
+See [Tabs](/invoca-design-system/components/navigation/tabs) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-14**](/invoca-design-system/foundations/divergences#titan-div-14) | Divergence | `TabPanel` names a tab nothing produces, with ids that collide between bars |
+| [**TITAN-DIV-15**](/invoca-design-system/foundations/divergences#titan-div-15) | Divergence | `TabPanel` wraps its children in a text element and unmounts the inactive section |
+| [**TITAN-DIV-16**](/invoca-design-system/foundations/divergences#titan-div-16) | Divergence | The header has no tab-bar slot, so a tabbed page composes one outside it |
+| [**TITAN-GAP-29**](/invoca-design-system/foundations/open-decisions#titan-gap-29) | Open decision | The vertical orientation is a navigation rail with no region and no archetype |
+| [**TITAN-GAP-30**](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | A tab can show an error in design and cannot in code |
+
+## Gaps in the current rules
+
+- **No maximum tab count.** The design library publishes slots for nine and the page templates
+  show five. Neither is a limit, and nothing says at what count a bar should have been a rail or a
+  set of pages.
+- **No stated default distribution.** Natural width, `fullWidth`, and `centered` all ship with
+  demos. Nothing says which a page should use, or what makes `fullWidth` right.
+- **Hover and pressed are designed and not themed.** The design library added both for
+  consistency with other components and flagged them for review on the code side; the code themes
+  neither for a horizontal tab. Recorded in
+  [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) so the note survives the file.
+- **Whether a tab may carry a count or a chip is unstated.** A rail row can carry a trailing
+  accessory, which is how a status chip ends up on one. Nothing says whether a horizontal tab may.
+- **`wrapped` has no rule.** A label may wrap to a second line, which makes the bar taller.
+  Nothing states when that is acceptable rather than a signal to shorten the label.

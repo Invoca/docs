@@ -36,22 +36,10 @@ where a fraction is the point.
 | Show one decimal place | `2.7M` | `2.77M` |
 | Drop a trailing zero decimal | `12M` | `12.0M` |
 
-<Warning>
-  **This conflicts with the comma rule above, and the source does not resolve it.**
-
-  "Use a comma to separate thousands" gives `23,400`. "Above 1,000, use K" gives `23.4K`.
-  Both rules apply to the same number, and the source documentation states no condition
-  that selects between them.
-
-  In practice the distinction is almost certainly **context**: abbreviate where space is
-  constrained and the exact value is not actionable (metric tiles, chart axes, sparkline
-  labels); show the full comma-separated number where the reader may need the exact value
-  (tables, exports, detail views, anything they will copy).
-
-  **That is an inference.** It is the most consequential open question on this page —
-  until it is settled, two engineers reading the same documentation will format the same
-  number two different ways. See [TITAN-NUM-06](#constraints).
-</Warning>
+**When to abbreviate versus show the full comma-separated number conflicts with the rule
+above, and the source does not resolve it** — see
+[Open issues](/invoca-design-system/content/numbers/open-issues) for the proposed reading and
+why it's still an open question.
 
 <Note>
   The source states the fourth rule as *"If amount is a whole thousand, such as $1,000, do
@@ -100,16 +88,9 @@ Same precision rule as abbreviated numbers: one decimal, and never a trailing `.
 
 ## Gaps in the current rules
 
-| Gap | Why it matters | Status |
-|---|---|---|
-| **When to abbreviate.** The single largest gap — see [TITAN-NUM-06](#constraints). | Without it, `23,400` and `23.4K` are both defensible for the same value in the same product. | Open — proposal above needs sign-off |
-| **Billions.** `K` and `M` are defined; `B` is not. | Reachable in aggregate revenue and total call minutes at Invoca's scale. | Open |
-| **Negative numbers.** No format given. | `-$1,200` vs `($1,200)` — the parenthetical form is a finance convention that may be expected in billing views. | Open |
-| **Zero and null.** No guidance on `0`, `—`, `N/A`, or blank. | This is the most common formatting inconsistency in data-heavy products, and the one users notice first in a table. | Open |
-| **Rounding direction.** "Round to the nearest whole dollar" does not say how `.5` resolves, or whether display rounding can disagree with an exported total. | A column of rounded values that does not sum to the displayed total is a support ticket. | Open |
-| **Non-USD currency.** "Or the appropriate currency symbol" — but not symbol placement, spacing, or which decimal separator. | Several currencies place the symbol after the amount and use `.` as the thousands separator. | Open |
-| **Duration.** No rule for call duration. | A core Invoca concept, formatted nowhere on this page. Likely belongs on [Dates and times](/invoca-design-system/content/dates-and-times). | Open |
-| **Alignment.** No rule on right-aligning numerals or using tabular figures in tables. | Proportional figures make a column of numbers impossible to compare down its length. Belongs in [Typography](/invoca-design-system/foundations/typography). | Open |
+<Card title="Numbers: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/numbers/open-issues">
+  Divergences, open decisions, and undocumented gaps for Numbers.
+</Card>
 
 ## Why it works this way
 

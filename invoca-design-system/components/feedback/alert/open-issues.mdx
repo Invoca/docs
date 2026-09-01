@@ -1,0 +1,32 @@
+---
+title: "Alert: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Alert."
+icon: "component"
+---
+
+See [Alert](/invoca-design-system/components/feedback/alert) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-21**](/invoca-design-system/foundations/divergences#titan-div-21) | Divergence | Only the standard variant is colour-complete; filled and outlined fail contrast |
+
+**Also true and not yet recorded as either:** a published example sets `severity="success"` with
+`color="info"`, producing an alert that *is* a success and *looks* like information — a direct
+violation of TITAN-ALR-03 in the system's own reference material; `severity` defaults to
+`success`, which no design decision supports; every published example overrides the severity
+icon, so the default mapping is demonstrated nowhere; and `AlertTitle` is exported with no
+treatment defined, so a titled alert is buildable and unspecified.
+
+## Gaps in the current rules
+
+- **Whether an alert may carry a title is undecided.** `AlertTitle` ships, the design library
+  publishes no titled alert, and nothing states when a message needs a heading.
+- **No rule for how many alerts a page may show at once**, or whether they should merge.
+- **Whether alerts are dismissible by default is unstated.** The design draws a dismiss control on
+  every alert; code makes it opt-in via `onClose`.
+- **No rule for placement precision** beyond "with the thing it is about" — whether a
+  section-level alert goes above the section heading or below it is undecided.
+- **Nothing states what happens to a dismissed alert whose condition persists.** It returns on the
+  next render, and whether that is correct has not been decided.

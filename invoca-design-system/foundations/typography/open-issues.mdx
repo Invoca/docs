@@ -1,0 +1,33 @@
+---
+title: "Typography: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Typography."
+icon: "type"
+---
+
+See [Typography](/invoca-design-system/foundations/typography) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-04**](/invoca-design-system/foundations/divergences#titan-div-04) | Divergence | three typography surfaces, three counts |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-18**](/invoca-design-system/foundations/open-decisions#titan-gap-18) | Open decision | typography redundancy and no responsive scale |
+
+## Gaps in the current rules
+
+- **`button` is the one variant not on the shared metrics.** It uses `0.875rem` and a
+  unitless line height of `1.75`, while every other variant is set in explicit `px`.
+  Whether that is deliberate or an unfinished migration is not recorded. It is the one
+  variant whose rendered line height changes with the root font size.
+- **`subtitle1`/`body1` and `subtitle2`/`body2` are metrically identical.** No rule says
+  which to prefer, and nothing distinguishes them at render time.
+- **No responsive type scale exists.** Sizes are fixed across all breakpoints. Whether a
+  24px `h1` is intended for a 1536px viewport is undecided.
+- **Weight non-monotonicity is undocumented upstream.** `h3` at 700 sitting between `h2`
+  at 400 and `h4` at 600 is either a considered emphasis decision or an accident. This
+  page describes the behavior; the intent is not recorded anywhere.

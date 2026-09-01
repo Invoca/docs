@@ -27,11 +27,12 @@ both as one `Display` axis on the same component, not two.
 
 ## Live example
 
-<StorybookFrame story="components-datepicker--default" height={400} />
+<StorybookFrame story="components-datepicker--basic-date-range-picker" height={400} />
 
 <Note>
-  Story ID `pending`. This session did not have access to
-  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+  Story ID `verified` against the real Chromatic Storybook index. Titan's DatePicker
+  group has no `default` story — this is `basic-date-range-picker`, the first and
+  simplest real story, matching this page's range-picker scope.
 </Note>
 
 ## Exports
@@ -57,7 +58,7 @@ both as one `Display` axis on the same component, not two.
 | If you need to… | Use | Why |
 |---|---|---|
 | Capture a value with no calendar meaning | [Input](/invoca-design-system/components/forms/input) | Browsing a calendar is this component's entire value; forcing it onto non-date data adds interaction cost with no benefit |
-| Capture a duration or a relative offset ("in 2 hours") | [Input](/invoca-design-system/components/forms/input), or a dedicated relative-time control (not modeled — see [Gaps](#gaps-in-the-current-rules)) | Nothing in the design library models a duration or relative-time axis for this component |
+| Capture a duration or a relative offset ("in 2 hours") | [Input](/invoca-design-system/components/forms/input), or a dedicated relative-time control (not modeled — see [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules)) | Nothing in the design library models a duration or relative-time axis for this component |
 
 ## Anatomy
 
@@ -100,9 +101,9 @@ both as one `Display` axis on the same component, not two.
 | Situation | What renders | Recovery |
 |---|---|---|
 | A day outside the selectable range (before a minimum or after a maximum date) | The `Disabled` day-cell state | Should be paired with a reachable reason per [TITAN-DATEPICKER-04](#constraints) |
-| Range mode with only a start date chosen | **Undefined** how the grid previews the incomplete range | See [Gaps](#gaps-in-the-current-rules) |
-| Today falls in a month the reader has navigated away from | **Undefined** — no "jump to today" control was found among the header's navigation options | See [Gaps](#gaps-in-the-current-rules) |
-| The trigger field's typed value doesn't parse (if typing is allowed at all) | **Undefined**, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) own async/invalid gaps | See [Gaps](#gaps-in-the-current-rules) |
+| Range mode with only a start date chosen | **Undefined** how the grid previews the incomplete range | See [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules) |
+| Today falls in a month the reader has navigated away from | **Undefined** — no "jump to today" control was found among the header's navigation options | See [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules) |
+| The trigger field's typed value doesn't parse (if typing is allowed at all) | **Undefined**, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) own async/invalid gaps | See [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules) |
 
 ## Tokens
 
@@ -161,20 +162,9 @@ beyond min/max bounds — that belongs to [Form validation](/invoca-design-syste
 
 ## Known issues
 
-None specific to this component beyond the Forms-group-wide items already tracked — see
-[TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).
-
-## Gaps in the current rules
-
-- **No "jump to today" affordance was found.** The header's navigation axis has forward, back,
-  both, or neither — nothing for returning to the current month directly.
-- **No stated behavior for an in-progress range** — how the grid previews a range after only
-  the start date is chosen is undecided.
-- **No DatePicker-specific tokens exist in the theme snapshot at all.** Every fact on this page
-  is structural, from the design library — none of it is a resolved color, spacing, or motion
-  value. This is a wider gap in this page's grounding than any other Forms page written so
-  far.
-- **No stated minimum or maximum navigable range** for the calendar header.
+<Card title="DatePicker: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/date-picker/open-issues">
+  Divergences, open decisions, and undocumented gaps for DatePicker.
+</Card>
 
 ## Why it works this way
 

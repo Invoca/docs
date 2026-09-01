@@ -30,28 +30,14 @@ breakpoints and a 12-column grid — and no tokens of its own.
   inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
 </Note>
 
-<Warning>
-  **The specification defines breakpoints as tokens; none ship.** It names
-  `breakpoint-tablet-min`, `breakpoint-desktop-min`, and `breakpoint-desktop-max` — three
-  bands. The code has five unnamed numeric breakpoints and no breakpoint tokens at all. The
-  vocabularies do not correspond. See
-  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09) and
-  [TITAN-GAP-12](/invoca-design-system/foundations/open-decisions#titan-gap-12).
-</Warning>
-
 ## Breakpoints
 
 Breakpoints are **min-width**: a rule at `md` applies at 900px *and above*. Titan is a
 desktop-first internal product, so in practice most surfaces live at `lg` and `xl`, and
 `xs`/`sm` are rarely exercised. The values are in
-[Token reference](#token-reference) below.
-
-<Warning>
-  **These are not Invoca measurements.** Nothing indicates the breakpoints were checked
-  against how Invoca's users actually size their windows. They are what ships and what to
-  build to, but no design decision stands behind the numbers — see
-  [gaps](#gaps-in-the-current-rules).
-</Warning>
+[Token reference](#token-reference) below — see
+[Open issues](/invoca-design-system/foundations/layout-and-grid/open-issues) for how they
+were arrived at and how they relate to the naming specification.
 
 ## The grid
 
@@ -131,34 +117,9 @@ page margin scale. See [TITAN-DIV-08](/invoca-design-system/foundations/divergen
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-08**](/invoca-design-system/foundations/divergences#titan-div-08) | Divergence | no grid specification |
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | no layout tokens exist |
-| [**TITAN-GAP-15**](/invoca-design-system/foundations/open-decisions#titan-gap-15) | Open decision | no page-region model exists |
-
-## Gaps in the current rules
-
-Layout is the least specified foundation in Titan. Do not infer answers to any of these.
-
-- **No layout tokens exist at all.** No container max-width, no page gutter, no column
-  count, no sidebar width. Every one of those is currently a per-view decision with nothing
-  to check it against.
-- **The breakpoint values are unvalidated.** No evidence they were checked against Invoca's
-  viewport distribution, and no decision is recorded for them.
-- **No maximum content width is defined.** On a 2560px monitor a full-width text region
-  produces line lengths far beyond the ~75-character readable maximum. Nothing prevents
-  it.
-- **`Grid`'s off-scale `spacing` prop is not documented as a hazard** anywhere in
-  Titan. [TITAN-LAY-03](#constraints) is this page's proposal, not existing policy.
-- **No guidance exists on breakpoints vs. container queries.** Both are available; nothing
-  says which to reach for.
-- **No published page-region model.** [Views](/invoca-design-system/views/overview) is the tier meant to answer this and
-  is entirely stubs. Until it is written, page structure is undocumented.
+<Card title="Layout & grid: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/layout-and-grid/open-issues">
+  Divergences, open decisions, and undocumented gaps for Layout & grid.
+</Card>
 
 ## Related
 

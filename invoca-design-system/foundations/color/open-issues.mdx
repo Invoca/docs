@@ -1,0 +1,43 @@
+---
+title: "Color: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Color."
+icon: "palette"
+---
+
+See [Color](/invoca-design-system/foundations/color) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
+| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented |
+| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
+| [**TITAN-DIV-07**](/invoca-design-system/foundations/divergences#titan-div-07) | Divergence | no surface layering model |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-04**](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Open decision | seven groups of tokens share one value with no visible distinction |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-13**](/invoca-design-system/foundations/open-decisions#titan-gap-13) | Open decision | surfaces have no layering order |
+
+## Gaps in the current rules
+
+- **`overlay-default` is malformed** — `rgba(21, / 36, / 62, / 0.3000)` is not
+  valid CSS and browsers will drop the declaration. The dark value is well-formed.
+- **`background-neutral` and `background-disabled` are identical** (`#e7e9eb`). Two names, one
+  value, different meanings — and one of seven such collisions. See
+  [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+- **`link-default` and `link-visited` are identical** (`#1c53e9`), so visited links cannot be
+  identified. See [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+- **`border-width-md` and `border-width-emphasis` are both 2px**, so their recorded distinction is invisible on screen. See [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+- **No semantic focus token exists.** See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+- **The light-mode status contrast failures are untriaged.** Whether they are known and
+  accepted or unnoticed is not recorded. See
+  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
+- **Surfaces have no defined layering order.** Titan ships four background tokens that
+  function as surfaces, with no defined order and no rule pairing a border to the surface
+  it sits on. The ordering on the main page is a proposal, not yet signed off. See
+  [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07).

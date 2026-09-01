@@ -24,16 +24,10 @@ look raised. Most layering bugs come from setting one and expecting the other.
 
 ## Vocabulary
 
-<Warning>
-  **The naming specification does not cover shadow or stacking order.** It defines the six naming axes and 64
-  colour definitions; shadow or stacking order appears in neither. The terms used on this page are therefore
-  descriptive rather than decided — see
-  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
-</Warning>
-
 The terms used here — *level*, *direction*, and the eight `z-*` rungs — are this page's
-description of what ships, not a decided vocabulary. `shadow-*-main` in particular has no
-recorded meaning distinct from `shadow-*-1`, which it aliases.
+description of what ships, not a decided vocabulary (the naming specification does not cover
+shadow or stacking order at all — see
+[Open issues](/invoca-design-system/foundations/elevation/open-issues)).
 
 ## Shadow is directional
 
@@ -92,15 +86,9 @@ Titan's stacking ladder covers eight layers:
 | `z-tooltip` | 1500 | Tooltips |
 | `z-loader-overlay` | 9999 | Full-page blocking loaders |
 
-<Warning>
-  **Two common layers have no token: drawers and toasts.** They stack at 1200 and 1400 —
-  values that come from the underlying component library, not from a Titan decision. Both
-  sit *above* `z-overlay` (1000) and below `z-modal` (1300).
-
-  The practical consequence: a surface placed at `z-overlay` will be covered by a drawer.
-  If you need something above a drawer and below a dialog, no token expresses it, and
-  picking a number locally puts it outside the ladder entirely.
-</Warning>
+**Two common layers have no token: drawers and toasts** — see
+[Open issues](/invoca-design-system/foundations/elevation/open-issues) for where they actually
+stack and what that costs.
 
 **Use the `z-*` tokens for everything they cover.** Where they do not cover a case, that is
 a gap to report rather than a number to invent.
@@ -133,29 +121,9 @@ a gap to report rather than a number to invent.
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
-| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
-| [**TITAN-GAP-14**](/invoca-design-system/foundations/open-decisions#titan-gap-14) | Open decision | the stacking ladder does not cover every layer |
-
-## Gaps in the current rules
-
-- **`overlay-default` is malformed.** The emitted value is `rgba(21, / 36, / 62, / 0.3000)` —
-  stray slashes, not valid CSS. Browsers drop the declaration entirely. Reported, unresolved.
-- **No token exists for the drawer or toast layers.** They stack at 1200 and 1400, which
-  no Titan token expresses, so their order relative to a Titan surface is not something the
-  design system controls.
-- **Whether `z-overlay` (1000) is meant to sit below a drawer is not recorded.** As
-  shipped it does, which means a scrim does not cover a drawer.
-- **`z-loader` (1038) is an unexplained number.** It corresponds to no round step and no
-  stated reasoning.
-- **`shadow-*-main` aliases `shadow-*-1`** in every direction. No rule says when to use the
-  alias rather than the numbered token.
+<Card title="Elevation: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/elevation/open-issues">
+  Divergences, open decisions, and undocumented gaps for Elevation.
+</Card>
 
 ## Related
 

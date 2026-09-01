@@ -1,0 +1,33 @@
+---
+title: "Elevation: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Elevation."
+icon: "layers"
+---
+
+See [Elevation](/invoca-design-system/foundations/elevation) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-14**](/invoca-design-system/foundations/open-decisions#titan-gap-14) | Open decision | the stacking ladder does not cover every layer |
+
+## Gaps in the current rules
+
+- **`overlay-default` is malformed.** The emitted value is `rgba(21, / 36, / 62, / 0.3000)` —
+  stray slashes, not valid CSS. Browsers drop the declaration entirely. Reported, unresolved.
+- **No token exists for the drawer or toast layers.** They stack at 1200 and 1400, which
+  no Titan token expresses, so their order relative to a Titan surface is not something the
+  design system controls.
+- **Whether `z-overlay` (1000) is meant to sit below a drawer is not recorded.** As
+  shipped it does, which means a scrim does not cover a drawer.
+- **`z-loader` (1038) is an unexplained number.** It corresponds to no round step and no
+  stated reasoning.
+- **`shadow-*-main` aliases `shadow-*-1`** in every direction. No rule says when to use the
+  alias rather than the numbered token.

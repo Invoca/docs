@@ -26,11 +26,14 @@ is never used alone; every Forms component composes with it.
 
 ## Live example
 
-<StorybookFrame story="components-fieldlabel--default" height={140} />
+<StorybookFrame story="components-form-elements-forminput--text-input-with-optional-label" height={140} />
 
 <Note>
-  Story ID `pending`. This session did not have access to
-  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+  Story ID `verified` against the real Chromatic Storybook index — with a caveat.
+  FieldLabel has no standalone story of its own (confirmed absent from the index, not
+  just unchecked), which is consistent with this page's own claim that it is never used
+  alone. This embeds the FormInput story that shows it composed with a field, which is
+  the only form a live example of FieldLabel can take.
 </Note>
 
 ## Exports
@@ -102,8 +105,8 @@ is never used alone; every Forms component composes with it.
 
 | Situation | What renders | Recovery |
 |---|---|---|
-| Label longer than the field is wide | Wraps to a second line — no truncation rule was found for this component | Needs confirmation — see [Gaps](#gaps-in-the-current-rules) |
-| Both helper text and an error would apply at once | Undefined | Error should take the slot — not stated as a rule anywhere found. See [Gaps](#gaps-in-the-current-rules) |
+| Label longer than the field is wide | Wraps to a second line — no truncation rule was found for this component | Needs confirmation — see [Gaps](/invoca-design-system/components/forms/field-label/open-issues#gaps-in-the-current-rules) |
+| Both helper text and an error would apply at once | Undefined | Error should take the slot — not stated as a rule anywhere found. See [Gaps](/invoca-design-system/components/forms/field-label/open-issues#gaps-in-the-current-rules) |
 | No helper text and no error | The slot renders nothing | The layout should not reserve empty space for a message that is not showing |
 | Field is disabled | Label renders at `text-disabled` | — |
 
@@ -154,21 +157,9 @@ to the first invalid field on submit — both belong to
 
 ## Known issues
 
-| Kind | What |
-|---|---|
-| Known defect | `form-label-font-weight`'s captured value carries an invalid `px` unit — see [Known defects](/invoca-design-system/foundations/open-decisions#known-defects). |
-
-## Gaps in the current rules
-
-- **No spacing token for label-to-field or field-to-helper-text gaps.** Both render at
-  whatever the framework defaults to.
-- **No stated rule for the both-helper-and-error case.** [TITAN-FLD-03](#constraints) says
-  they don't co-occur but nothing states what determines that when both would independently
-  apply.
-- **What the tooltip icon actually opens is unconfirmed** — a native tooltip, a popover, or
-  something else, and whether its content is itself subject to any content rules.
-- **Two independent disabled-opacity values exist across the Forms group** — see
-  [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).
+<Card title="FieldLabel: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/field-label/open-issues">
+  Divergences, open decisions, and undocumented gaps for FieldLabel.
+</Card>
 
 ## Why it works this way
 

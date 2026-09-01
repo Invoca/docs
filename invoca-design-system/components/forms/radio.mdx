@@ -24,11 +24,12 @@ selected — the group holds exactly one truth at a time, which is what separate
 
 ## Live example
 
-<StorybookFrame story="components-radio--default" height={140} />
+<StorybookFrame story="components-form-elements-radio-buttons--radio-input" height={140} />
 
 <Note>
-  Story ID `pending`. This session did not have access to
-  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+  Story ID `verified` against the real Chromatic Storybook index. Titan groups this
+  under **Form Elements/Radio Buttons**, not a top-level `Radio` group, and ships one
+  story: `radio-input`.
 </Note>
 
 ## Exports
@@ -90,9 +91,9 @@ selected — the group holds exactly one truth at a time, which is what separate
 | Situation | What renders | Recovery |
 |---|---|---|
 | No visible label | The circle alone | Must still carry an explicit accessible name — see [TITAN-RADIO-03](#constraints) |
-| A group with only one option | **Undefined.** A choice of one isn't a choice — see [TITAN-RADIO-05](#constraints). | See [Gaps](#gaps-in-the-current-rules) |
+| A group with only one option | **Undefined.** A choice of one isn't a choice — see [TITAN-RADIO-05](#constraints). | See [Gaps](/invoca-design-system/components/forms/radio/open-issues#gaps-in-the-current-rules) |
 | Disabled and selected | Renders at the disabled opacity applied over the selected fill | No dedicated disabled-selected colour exists as its own token — the two compose |
-| A mandatory group with nothing selected on load | **Undefined** whether a default selection is required | See [TITAN-RADIO-06](#constraints) and [Gaps](#gaps-in-the-current-rules) |
+| A mandatory group with nothing selected on load | **Undefined** whether a default selection is required | See [TITAN-RADIO-06](#constraints) and [Gaps](/invoca-design-system/components/forms/radio/open-issues#gaps-in-the-current-rules) |
 
 ## Tokens
 
@@ -148,17 +149,9 @@ belongs to [Form validation](/invoca-design-system/patterns/form-validation).
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Multiple independent disabled-opacity values exist across the Forms group, with no rule for which applies |
-
-## Gaps in the current rules
-
-- **No stated default-selection rule** for a mandatory Radio group — see
-  [TITAN-RADIO-06](#constraints).
-- **No rule for a group with only one option** beyond [TITAN-RADIO-05](#constraints) saying it
-  shouldn't happen — what to do if it does (render anyway, warn, fall back to something else)
-  is unstated.
+<Card title="Radio: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/radio/open-issues">
+  Divergences, open decisions, and undocumented gaps for Radio.
+</Card>
 
 ## Why it works this way
 

@@ -48,12 +48,11 @@ Titan authors tokens in three tiers. Adding to the wrong one is the most common 
 **Add at the semantic tier unless you have a reason not to.** A primitive is a value nobody
 can choose by intent; a component token is reachable only by that component.
 
-<Warning>
-  **Component tokens currently alias primitives, not semantics.** That contradicts the stated
-  model and is deliberate — see
-  [TITAN-DIV-01](/invoca-design-system/foundations/divergences#titan-div-01). When adding a *new* component token,
-  prefer a semantic alias and state a reason if you skip it. Do not "fix" the existing ones.
-</Warning>
+Existing component tokens alias primitives rather than semantics — a deliberate,
+already-recorded divergence from the stated model (see
+[Open issues](/invoca-design-system/contribute/token-workflow/open-issues)). When adding a
+*new* component token, prefer a semantic alias and state a reason if you skip it. Do not
+"fix" the existing ones.
 
 ## The mechanism
 
@@ -146,24 +145,9 @@ Three surfaces a new token will **not** appear on. None of these is a bug.
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
-| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | The SCSS token surface is frozen at 82 names |
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | The naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
-| [**TITAN-GAP-20**](/invoca-design-system/foundations/open-decisions#titan-gap-20) | Open decision | No approval path is recorded for a token change |
-
-## Gaps in the current rules
-
-- **No approval path is documented.** Who decides a token should exist, who reviews the
-  value, and whether design sign-off is required before merge — none of it is recorded. The
-  mechanism on this page is the technical path only.
-- **No naming review step.** A new token can be named anything the author chooses; nothing
-  checks it against the [naming grammar](/invoca-design-system/foundations/overview#the-naming-grammar).
-- **No rule for when a value earns a token.** One use, three uses, any use — undecided.
-- **No deprecation path**, so the workflow is add-only. See
-  [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation).
+<Card title="Token workflow: open issues" icon="triangle-exclamation" href="/invoca-design-system/contribute/token-workflow/open-issues">
+  Divergences, open decisions, and undocumented gaps for Token workflow.
+</Card>
 
 ## Related
 

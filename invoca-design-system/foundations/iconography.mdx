@@ -51,13 +51,9 @@ as `AgentManagementIcon` and `DomainIcon`.
   proposal, not an inline SVG. See [TITAN-ICO-01](#constraints).
 </Note>
 
-<Warning>
-  **Naming is inconsistent across the set.** Most icons carry no suffix — `Add`, `Check`,
-  `Close`. A minority carry `Icon` — `AssignmentIcon`, `ClearIcon`, `ErrorIcon`,
-  `FavoriteIcon`, `InputIcon`, `FindInPageIcon`. There is no rule distinguishing them; the
-  suffix does not indicate origin, variant, or anything else observable. Check the export
-  name against the Storybook index rather than guessing.
-</Warning>
+**Naming is inconsistent across the set** ([known
+issue](/invoca-design-system/foundations/iconography/open-issues)) — check the export name
+against the Storybook index rather than guessing.
 
 The full inventory renders live:
 
@@ -157,30 +153,9 @@ matched to its label is the entire job of this scale:
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
-| [**TITAN-GAP-17**](/invoca-design-system/foundations/open-decisions#titan-gap-17) | Open decision | iconography has no meaning registry |
-
-## Gaps in the current rules
-
-- **The `Icon` suffix is unexplained.** Six of 154 exports carry it. No rule distinguishes
-  `ErrorIcon` from `Error`, and both `ErrorIcon`, `ErrorOutline`, and `ErrorRounded` ship.
-- **Three variants of several glyphs ship with no selection rule** — `CheckCircle`,
-  `CheckCircleOutlineIcon`, and `CheckCircleRounded`; `Info`, `InfoOutlined`, and
-  `InfoRounded`. Nothing says when filled, outlined, or rounded is correct, so the set is
-  effectively three overlapping sets.
-- **No process is documented for proposing a new icon**, though
-  [TITAN-ICO-01](#constraints) requires one.
-- **`icon-with-tooltip-max-width` (300px) is a component token in the icon namespace.** It
-  belongs to `IconWithTooltip`, not to the foundation.
-- **No icon-to-meaning registry exists.** [TITAN-ICO-07](#constraints) requires one glyph
-  per meaning, but there is no published mapping to check against.
+<Card title="Iconography: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/iconography/open-issues">
+  Divergences, open decisions, and undocumented gaps for Iconography.
+</Card>
 
 ## Related
 

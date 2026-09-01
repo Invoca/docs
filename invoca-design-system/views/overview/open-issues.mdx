@@ -1,0 +1,87 @@
+---
+title: "Views overview: open issues"
+description: "Divergences, open decisions, and undocumented gaps for Views overview."
+icon: "layers"
+---
+
+See [Views overview](/invoca-design-system/views/overview) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing has
+been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-12**](/invoca-design-system/foundations/divergences#titan-div-12) | Divergence | The frame's regions carry wrong or missing landmark roles |
+| [**TITAN-DIV-13**](/invoca-design-system/foundations/divergences#titan-div-13) | Divergence | A sticky header and a sticky footer sit 1090 stacking steps apart |
+| [**TITAN-DIV-14**](/invoca-design-system/foundations/divergences#titan-div-14) | Divergence | `TabPanel` names a tab that nothing exported produces, with ids that collide |
+| [**TITAN-DIV-15**](/invoca-design-system/foundations/divergences#titan-div-15) | Divergence | `TabPanel` wraps whatever it is given in a text element, and discards the inactive section |
+| [**TITAN-DIV-16**](/invoca-design-system/foundations/divergences#titan-div-16) | Divergence | The header has no tab-bar slot, so a tabbed page composes one outside it |
+| [**TITAN-DIV-17**](/invoca-design-system/foundations/divergences#titan-div-17) | Divergence | The page divider floats clear of the header instead of closing it |
+| [**TITAN-DIV-18**](/invoca-design-system/foundations/divergences#titan-div-18) | Divergence | Filters are a header row in design and a separate region in code |
+| [**TITAN-GAP-09**](/invoca-design-system/foundations/open-decisions#titan-gap-09) | Open decision | Focus Not Obscured is unaddressed |
+| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | No layout tokens exist — no page gutter, no maximum content width |
+| [**TITAN-GAP-23**](/invoca-design-system/foundations/open-decisions#titan-gap-23) | Open decision | The frame measures its own layout from the DOM at runtime |
+| [**TITAN-GAP-25**](/invoca-design-system/foundations/open-decisions#titan-gap-25) | Open decision | The footer's leading slot is a convention, not a named slot |
+| [**TITAN-GAP-26**](/invoca-design-system/foundations/open-decisions#titan-gap-26) | Open decision | No step indicator exists for multi-step flows |
+| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Pagination has no home in the frame, and three implementations |
+| [**TITAN-GAP-29**](/invoca-design-system/foundations/open-decisions#titan-gap-29) | Open decision | Vertical tabs are a navigation rail with no region and no archetype |
+| [**TITAN-GAP-30**](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | A tab can show an error in design and cannot in code |
+| [**TITAN-GAP-24**](/invoca-design-system/foundations/open-decisions#titan-gap-24) | Open decision | The region layer largely bypasses the spacing scale |
+
+## Gaps in the current rules
+
+- **Whether the header's second row is truly exclusive (a tab bar or a filter row, never both)
+  needs confirming with the design team, not just read off a variant property.** A variant
+  property is how the design tool models a fixed set of choices — a header that could hold
+  both would be built with two independent toggles instead, and which of those two structures
+  is right can be a modelling decision rather than a design one. What ships either way: the
+  frame has one `Controls` region below the header, so a page can currently show both.
+  [TITAN-VIEW-17](/invoca-design-system/views/overview#constraints) is the design's *apparent*
+  rule, and the question to ask is whether a page with sections and header filters was ruled
+  out or just never built.
+- **The frame's regions don't map to the expected landmarks.** `Footer` declares
+  `role="navigation"`, which is not what a page footer is; `Header` and `Contents` declare no
+  role at all. See [TITAN-DIV-12](/invoca-design-system/foundations/divergences#titan-div-12).
+- **The tab-bar workaround costs structure, not just appearance.** `Header` puts every child
+  into one row, so `Tabs` passed as a child would land beside `Left` and `Right` rather than
+  beneath them — rendering it as a sibling instead reproduces the look but not the structure:
+  the header no longer owns its bottom edge, and the bar arrives with no gutter. See
+  [TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16).
+- **No archetype is fully documented.** [List view](/invoca-design-system/views/list-view) has its frame composition
+  written and nothing else; the other six pages are stubs. Which frame regions each archetype
+  requires, and what fills them, is undecided per archetype.
+- **No maximum content width.** On a wide monitor nothing stops a full-width text body from
+  running far past a readable line length. See
+  [TITAN-GAP-12](/invoca-design-system/foundations/open-decisions#titan-gap-12).
+- **No rule for when a page gets a `Footer`.** This page proposes "when the page is a single
+  unit of work"; nothing upstream states it.
+- **Pagination has no region.** A paged list has nowhere in the frame to put its controls, and
+  three unreconciled implementations exist. See
+  [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27).
+- **No step indicator exists.** A multi-step flow can offer a backward action but has no way to
+  show which step you are on or how many remain. See
+  [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26).
+- **When the leading slot applies is stated here and nowhere upstream.** "A step in a sequence"
+  is this page's proposal.
+- **No maximum number of tabs.** The design library's tab component publishes slots for nine, and
+  the page templates show five. Neither is a stated limit, and nothing says at what count a bar
+  should have been a side rail or a set of pages.
+- **Whether a tab bar and `Controls` may both appear is settled in design and not in code.** The
+  page templates show a tabbed table with a filter row and a search field beneath the header, which
+  is the order documented above. What the templates do *not* settle is whether those filters belong
+  to the page or to the table — in the template they are drawn inside the data grid, not in a page
+  region.
+- **Sub-tabs have a themed appearance and no rule.** The rail's indented mode exists in the theme,
+  so a nested level is buildable. Nothing states when nesting is right, or how deep it may go.
+- **Tab addressability is stated here and nowhere upstream.** Two approaches ship side by side —
+  a bar of links, and a bar driven by local state with `TabPanel`. TITAN-VIEW-14 picks the
+  first; that pick has not been signed off.
+- **`Information` has no content rule.** It is a growth slot with no stated limit, which is how a
+  header accumulates a paragraph.
+- **The site header is out of scope and undocumented.** The frame stops at the page. What sits
+  above it, and how a page coexists with it, is not covered anywhere. The boundary matters in one
+  direction: `Contents` sizes itself by measuring the site header at runtime, so a page frame
+  dropped into a shell that does not identify itself gets the wrong height. See
+  [TITAN-GAP-23](/invoca-design-system/foundations/open-decisions#titan-gap-23).
