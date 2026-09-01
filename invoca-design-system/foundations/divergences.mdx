@@ -1,0 +1,596 @@
+---
+title: "Divergences"
+description: "Where the design language and the shipped code disagree, and which one to follow."
+icon: "git-compare-arrows"
+keywords: ["divergence", "drift", "intent", "code", "roadmap", "tokens"]
+---
+
+This documentation carries three kinds of statement, and they are not interchangeable:
+
+| Register | Source | Authority |
+|---|---|---|
+| **Code fact** | Generated from Titan's DTCG token source | What ships. Not editable here. |
+| **Design intent** | Authored | What to build. Evolves by decision. |
+| **Divergence** | This page | Where the two disagree. |
+
+A divergence is not a bug report and not a wish. It is a place where building straight from
+the code would produce something the design language does not want, or where the language
+describes something the code does not yet provide. Each entry names both sides and says
+which to follow today.
+
+**Two kinds of disagreement land here, and they resolve differently.** When code and the design
+library each state a **value**, code is authoritative and the design library has drifted — the
+library is an emission target and is being rebuilt from code. When the design library states a
+**composition** — how regions nest, what a template is made of, which slots a page has — code is
+usually not disagreeing but *silent*, because the frame has no way to say it. There the design
+library carries the intent and code is the side that has to grow. `TITAN-DIV-16` is the second
+kind; `TITAN-DIV-01` is the first.
+
+<Note>
+  **Cite the ID.** When a divergence drives a decision, name it — "chip tint is Tier-3 by
+  design per TITAN-DIV-01." An agent or reviewer can then check the reasoning against the
+  system instead of against taste. IDs are stable and never renumbered.
+</Note>
+
+## How to use this page
+
+1. Build to **design intent**, not to what the code happens to do.
+2. When they conflict, follow the **Follow today** row — it is the safe answer right now.
+3. Cite the divergence ID in the PR or the design rationale.
+4. If a divergence is resolved, the entry stays and gains a resolution note. Deleting it
+   loses the reason the code looks the way it does.
+
+---
+
+## TITAN-DIV-01
+
+**Tier-3 tokens alias primitives, never semantics.**
+
+| | |
+|---|---|
+| **Code ships** | Every one of the 26 Tier-3 tokens that carries a reference points at a primitive. None routes through the semantic tier. All 26 declare their own `com.invoca.dark` override, and each carries a `$description` justifying the choice. |
+| **Design intends** | Three tiers, built in order: component → semantic → primitive. |
+| **Follow today** | **Follow the code.** These are deliberate, reasoned decisions recorded in source. Do not "fix" them. When adding a *new* component token, prefer a semantic alias and state a reason if you skip it. |
+| **Direction** | Decide whether the three-tier rule carves out a value-preserving exception, or whether the semantic tier grows to cover these cases. Currently the rule says one thing and the source consistently does another. |
+| **Affects** | [Color](/invoca-design-system/foundations/color), [Foundations overview](/invoca-design-system/foundations/overview) |
+
+The stated rationale for "never skip semantic" is that a component token pointing at a
+primitive cannot resolve correctly when the theme changes. **That rationale does not hold
+here** — every one of the 26 resolves correctly, because each declares its own values. The
+real cost is different, and smaller: each token re-decides independently what the semantic
+tier already decided, and its relationship to the token it was derived from exists only in
+prose.
+
+<Snippet file="generated/tokens/tier-audit.mdx" />
+
+---
+
+## TITAN-DIV-02
+
+**`border-focus` is specified and was never implemented.**
+
+| | |
+|---|---|
+| **Code ships** | No semantic focus token. Three component-scoped rings exist — `form-field-focus-ring`, `form-field-focus-ring-error`, `data-grid-focus-ring` — each Tier-3 and each aliasing a primitive independently. |
+| **Design intends** | `border-focus`, defined in the naming specification as `blue-80`, described as *"Border color for focused elements when using keyboard navigation."* The spec also defines `datepicker-border-focus`. |
+| **Follow today** | For a Form field or DataGrid, use the existing ring. For anything else there is still no token — **do not invent a hex**. Cite this entry and raise it. |
+| **Direction** | Implement `border-focus` as specified and repoint the three existing rings at it. The design decision already exists; only the implementation is missing. |
+| **Affects** | [Accessibility](/invoca-design-system/foundations/accessibility), [Color](/invoca-design-system/foundations/color) |
+
+This is the most consequential gap in the token layer, and it is **not an open question**.
+[TITAN-A11Y-04](/invoca-design-system/foundations/accessibility#constraints) requires a visible focus indicator;
+the specification supplies the token to do it with; the code does not have it. Every component
+deciding focus independently is the cost of that one missing implementation.
+
+<Note>
+  **This entry is a correction.** It previously described the focus token as undecided. The
+  specification defines it, which changes the work from *make a decision* to *ship what was
+  decided*.
+</Note>
+
+---
+
+## TITAN-DIV-03
+
+**Status colors fail contrast on light surfaces.**
+
+| | |
+|---|---|
+| **Code ships** | `text-success` at 2.41:1 and `text-warning` at 2.74:1 against every light surface — below even the 3:1 large-text floor. `text-invert` on the light success and warning fills measures the same. `icon-success` and `icon-warning` fail the 3:1 non-text minimum. |
+| **Design intends** | All text meets WCAG 2.2 AA in every mode combination. |
+| **Follow today** | On light surfaces use `text-success-alt` / `text-warning-alt` and `icon-*-alt`, which pass comfortably. Do not put `text-invert` on a light success or warning fill. |
+| **Direction** | Either retune the status ramp steps, or add a token expressing dark text on a bold status fill — which is what a conformant light-mode success banner needs and no token currently provides. |
+| **Affects** | [Accessibility](/invoca-design-system/foundations/accessibility), [Color](/invoca-design-system/foundations/color), [Iconography](/invoca-design-system/foundations/iconography) |
+
+The status tokens invert their safety between modes: `text-success` fails badly in light
+(2.41:1) and passes comfortably in dark (6.80:1). A component verified in one mode carries
+an undetected failure in the other. Measured values are in
+[the contrast tables](/invoca-design-system/foundations/accessibility#contrast).
+
+---
+
+## TITAN-DIV-04
+
+**Three typography surfaces, three different counts.**
+
+| | |
+|---|---|
+| **Code ships** | 34 variants defined in the type scale. 13 of them wired into the theme as base variants. 11 names exposed on `<Typography>`, which is the only way to reach them. |
+| **Design intends** | The 11 `<Typography>` names are the design vocabulary. The other two sets are implementation surface. |
+| **Follow today** | Use the 11 `<Typography>` variant names. Do not reach past the component into the underlying scale. |
+| **Direction** | Either expose the full scale as vocabulary or trim what is unused. 34 defined against 11 reachable is a gap nobody has decided about. |
+| **Affects** | [Typography](/invoca-design-system/foundations/typography) |
+
+---
+
+## TITAN-DIV-05
+
+**The SCSS token surface is frozen at 82 names.**
+
+| | |
+|---|---|
+| **Code ships** | `$token-name` in SCSS reaches 48 semantic + 10 spacing + 24 shadow names — 82 of the 244 on `theme.tokens`. The list is pinned by `config/legacy-surface-inventory.json` and asserted by `legacy-outputs.test.ts`. New tokens do not appear there. |
+| **Design intends** | One token, reachable from wherever you are writing. |
+| **Follow today** | Treat SCSS as a legacy surface. New work uses `theme.vars.tokens[…]` in JS or `var(--titan-tokens-…)` in CSS. If a token is not in SCSS, that is not a bug to file. |
+| **Direction** | Retire the SCSS surface, or state plainly that it is closed and frozen. Today it is closed in fact but presented as one of three equal access surfaces. |
+| **Affects** | [Foundations overview](/invoca-design-system/foundations/overview) |
+
+---
+
+## TITAN-DIV-06
+
+**Two tokens for zero.**
+
+| | |
+|---|---|
+| **Code ships** | `spacing-0` (`0rem`) and `spacing-none` (`0px`). Both carry a recorded rationale: `spacing-0` resets a default margin or padding, `spacing-none` is for "resets that must stay 0". **Neither rationale distinguishes them** — both are zero, and zero does not vary. |
+| **Design intends** | One zero. |
+| **Follow today** | Either works. Pick one and be consistent within a component. |
+| **Direction** | Consolidate. This is not "nobody decided" — someone recorded a reason for two, and the reason does not survive checking. |
+| **Affects** | [Space](/invoca-design-system/foundations/space-and-density) |
+
+<Note>
+  **The recorded reason does not hold.** `spacing-none` is described as being for resets that
+  must stay 0 regardless of context — but `spacing-0` is also always 0. The distinction exists
+  in prose and nowhere in the values.
+</Note>
+
+---
+
+## TITAN-DIV-07
+
+**No surface layering model.**
+
+| | |
+|---|---|
+| **Code ships** | Four background tokens that function as surfaces — `background-default`, `background-view-background`, `background-strong`, `background-neutral` — with no defined order and no rule pairing a field or border to the surface it sits on. |
+| **Design intends** | An ordered surface stack, so a reader knows which surface goes on which, and which border token pairs with each. |
+| **Follow today** | `background-view-background` is the page canvas; `background-default` is the raised surface on it. Beyond that nesting depth, Titan does not specify. |
+| **Direction** | Define the stack and the pairing rule. Carbon's `layer-01/02/03` with matched `field-0N` and `border-0N` sets is the reference model — Titan has four surfaces, not three numbered sets, so it is a reference and not a template. |
+| **Affects** | [Color](/invoca-design-system/foundations/color), [Elevation](/invoca-design-system/foundations/elevation) |
+
+---
+
+## TITAN-DIV-08
+
+**No grid specification.**
+
+| | |
+|---|---|
+| **Code ships** | A set of breakpoints and a 12-column grid, neither carrying a recorded Invoca decision. No columns-per-breakpoint table, no gutter scale, and no page margin scale exists anywhere. |
+| **Design intends** | A defined grid: columns, gutters, and margins per breakpoint. |
+| **Follow today** | Titan does not specify a grid. Use Grid v7 defaults and do not infer a spec from existing screens. |
+| **Direction** | Define one, or state that layout is deliberately unconstrained. |
+| **Affects** | [Layout & grid](/invoca-design-system/foundations/layout-and-grid) |
+
+---
+
+
+---
+
+## TITAN-DIV-09
+
+**The naming specification and the shipped tokens have substantially diverged.**
+
+| | |
+|---|---|
+| **Code ships** | 244 consumable tokens. **190 of them appear nowhere in the specification.** The spec's `color-` prefix was dropped in implementation, so `color-text-primary` ships as `text-primary`. |
+| **Design intends** | 269 specified token names across six naming axes. **215 of them never shipped** — including `border-focus`, `text-neutral-alt`, `icon-neutral`, the `tertiary` prominence states, and the whole specified `button-*` set. |
+| **Follow today** | Use the specification for **grammar and definitions**; use the [token reference](/invoca-design-system/foundations/color#token-reference) for **what exists**. Do not treat the spec as an inventory — a name being specified is not evidence it ships. |
+| **Direction** | Reconcile in three passes, cheapest first. **1.** Carry the 44 specification definitions into `$description` in Titan source — no naming changes, pure gain, see [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02). **2.** Implement the specified names still wanted, starting with `border-focus` ([TITAN-DIV-02](#titan-div-02)). **3.** For the 190 shipped-but-unspecified, either add them to the specification or retire them — that pass is a decision per token and should come last. |
+| **Affects** | [Foundations overview](/invoca-design-system/foundations/overview), [Color](/invoca-design-system/foundations/color), and every generated token table |
+
+| | Count |
+|---|---|
+| Specified **and** shipped | **54** |
+| Specified, never shipped | **215** |
+| Shipped, never specified | **190** |
+
+<Note>
+  **Both sides are legitimate.** The specification is the design baseline, confirmed by its
+  owner. The shipped tokens are what renders. Neither is drift *from* the other in a simple
+  sense — they grew apart, and 54 of 244 overlapping is the measure of how far.
+
+  This is why the grammar is documented separately from the inventory. The grammar transferred
+  intact; the token list did not.
+</Note>
+
+---
+
+## TITAN-DIV-10
+
+**Documentation groups by concept; the package exports by unit.**
+
+| | |
+|---|---|
+| **Code ships** | Separate exports for what a reader experiences as one thing. The button concept spans `Button` (a wrapper that adds nothing), `IconButton` (re-exported directly), and `FilterButton` (a full Titan component) — and the system's decisions for all three are authored in one place, alongside two further control types. |
+| **Design intends** | One page per concept a person recognises. Someone choosing between a labelled button and an icon-only one is making a single decision about emphasis and space. |
+| **Follow today** | Read the concept page. Use its **Exports** table to learn what to import — it is generated, so it cannot drift from the code. |
+| **Direction** | Either accepted as the permanent shape, or reconciled by consolidating exports. This is a real fork and neither side is obviously right. |
+| **Affects** | [Button](/invoca-design-system/components/actions/button), and every component page where one concept spans several exports |
+
+The documentation was already doing this implicitly. **19 of 39 component pages in the
+navigation have no matching Titan folder** — most are user-friendly aliases rather than
+absences: **Table** is `DataGrid`, `Switch` is `Toggle`, `Dialog` is `Modal`, `Tag` is
+`Chip`, `Input` is `TextField`, `FileUpload` is `Dropzone`, `Spinner` is `CircularProgress`.
+
+<Note>
+  **Switch/Toggle confirmed, not inferred, as of this pass.** The Figma library's own
+  component is named `Toggle`, and Titan's component tokens use the `toggle-*` prefix
+  (`toggle-track-width`, `toggle-thumb-size`, etc.) — both independent of this documentation's
+  earlier guess. Unlike the general pattern this entry describes, this is not "the design
+  library's word standing in front of code's": the design library and the token layer agree
+  with *each other*, and "Switch" is this documentation's own choice — closer to the
+  **Table**/`DataGrid` case than to the rest of this list. Kept as "Switch" regardless, as a
+  plain English word at least as common as "Toggle" — see
+  [Switch](/invoca-design-system/components/forms/switch#vocabulary).
+</Note>
+
+**Where the alias comes from matters.** Most of these are the design library's word standing in
+front of the code's. **Table** is not — code and the design library both say *data grid*, and
+*table* is what the team says out loud. That is the vocabulary rule working as intended: the
+reader-facing name is the decision name, and it is the team that holds it.
+
+<Note>
+  **The mapping was the missing piece, not the grouping.** Concept-named pages without a
+  recorded export mapping leave an engineer guessing what to import. `tools/component-concepts.json`
+  records it, and the Exports table on each page is generated from it.
+</Note>
+
+<Warning>
+  **This grouping also hides a real asymmetry.** Within one concept, `Button` is a wrapper
+  that adds nothing, `IconButton` is a bare re-export, and `FilterButton` is a full Titan
+  component with its own tokens. They carry very different amounts of Invoca decision, and the
+  Exports table is where that stays visible.
+</Warning>
+
+---
+
+## TITAN-DIV-11
+
+**The design vocabulary names prominence; the code names the treatment.**
+
+| | |
+|---|---|
+| **Code ships** | `variant="contained" \| "outlined" \| "text"` — names for how a button is *drawn*. No shipped token contains the word `primary`, `secondary`, or `tertiary` in the prominence sense. |
+| **Design intends** | `primary` · `secondary` · `tertiary` — names for how much *weight* the button carries. This is the design team's working vocabulary, and it is the naming specification's `prominence` axis. |
+| **Follow today** | **Say primary, secondary, tertiary.** Every page leads with the design term and gives the code value alongside, so the mapping is always one column away. |
+| **Direction** | Either rename the variant values to the prominence terms, or accept the two vocabularies permanently and keep the mapping generated. The specification already sides with design, which makes renaming the smaller change than it looks. |
+| **Affects** | [Button](/invoca-design-system/components/actions/button), and any component with weight levels |
+
+| Design term | Code value |
+|---|---|
+| `primary` | `contained` |
+| `secondary` | `outlined` |
+| `tertiary` | `text` |
+
+<Note>
+  **Prominence survives a visual change; treatment does not.** "Primary" names the decision —
+  this is the action the view exists to enable. "Contained" names one way of drawing it. If
+  primary buttons stopped being filled tomorrow,
+  [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints) would still say the right thing, and a
+  rule written against `contained` would not.
+</Note>
+
+<Warning>
+  **`tertiary` is specified and implemented nowhere.** The prominence axis lists it and **no
+  shipped token carries the word** — the treatment exists only as `variant="text"`. It is one of
+  the 215 specified-but-never-shipped names in
+  [TITAN-DIV-09](#titan-div-09).
+</Warning>
+
+<Warning>
+  **`primary` means three unrelated things.** Prominence (the highest-weight button), colour
+  intent (`color="primary"`, the brand blue), and text emphasis (`text-primary`, the default body
+  colour). Prominence and colour are independent axes — a *secondary* button can be
+  `color="primary"`, and a *primary* button can be `color="error"`. Any page using the word says
+  which sense it means.
+</Warning>
+
+---
+
+## TITAN-DIV-12
+
+**The frame's regions carry wrong or missing landmark roles.**
+
+| | |
+|---|---|
+| **Code ships** | `Footer` declares `role="navigation"`. `Header` declares no role. `Contents` declares no role. Of the frame's regions, only `TabPanel` sets correct semantics. |
+| **Design intends** | `Header` is `banner`, `Contents` is `main`, `Footer` is `contentinfo` — one of each per page, so a screen-reader user can jump between regions. |
+| **Follow today** | **Set the landmark yourself** on the region wrapper. Do not rely on the built-in roles, and do not assume `Footer` announcing as navigation is intentional. |
+| **Direction** | Correct the roles in the frame. This is a small change with no visual effect, and it is the difference between a navigable page and an unnavigable one. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+<Warning>
+  **This is a live conformance failure, not an open question.** A page footer announced as
+  navigation is wrong, and a page with no `main` cannot be skipped to. It is the view tier's
+  responsibility and only the view tier can fix it.
+</Warning>
+
+---
+
+## TITAN-DIV-13
+
+**A sticky header and a sticky footer sit 1090 stacking steps apart.**
+
+| | |
+|---|---|
+| **Code ships** | A sticky `Header` uses `z-sticky` (**10**). A sticky `Footer` uses `z-app-bar` (**1100**). Same behaviour, opposite ends of the ladder. |
+| **Design intends** | Both are page chrome pinned to an edge. They should occupy one plane, and it should be the sticky plane. |
+| **Follow today** | Expect a sticky footer to render above nearly everything, including a scrim at `z-overlay` (1000). If something must sit above a sticky footer, no token expresses it — raise it rather than picking a number. |
+| **Direction** | Put both on `z-sticky`, or define a page-chrome rung and put both there. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Elevation](/invoca-design-system/foundations/elevation) |
+
+<Note>
+  **The asymmetry is probably not deliberate.** Nothing records a reason for the footer needing to
+  outrank a modal scrim, and the two regions are otherwise treated as a pair throughout the frame.
+  Recorded as a divergence rather than a defect because "both on the sticky plane" is a design
+  decision to confirm, not an obvious bug fix.
+</Note>
+
+## TITAN-DIV-14
+
+**`TabPanel` names a tab that nothing exported produces, with ids that collide.**
+
+| | |
+|---|---|
+| **Code ships** | `TabPanel` hardcodes `id="simple-tabpanel-{index}"` and `aria-labelledby="simple-tab-{index}"`. Nothing in the package renders a tab with an id of `simple-tab-{index}` — the only thing that does is a helper written inline in a published story. The ids are keyed on the panel's index, not on the strip, so two strips on one page produce two `simple-tabpanel-0`s. |
+| **Design intends** | A tab and its panel reference each other, and the reference resolves. Ids are unique within the page. |
+| **Follow today** | **Set the pairing yourself.** Give each tab an `id` and `aria-controls`, and pass the matching `id` and `aria-labelledby` to the panel — its remaining props pass through, so both defaults are overridable. Scope the ids to the strip's subject: `campaign-tab-0`, not `simple-tab-0`. Do not assume the shipped defaults are wired. |
+| **Direction** | Generate the id pair from a strip-level identifier so the association is the frame's job, not the caller's. A panel that has to be told its own tab's id is a panel that will be wired wrong. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Tabs](/invoca-design-system/components/navigation/tabs), [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+<Warning>
+  **An unresolved `aria-labelledby` is silent.** Nothing renders differently, no console warns, and
+  the tab still switches. The only reader who notices is the one whose screen reader announces an
+  unnamed panel — which is why this survived into the shipped export.
+</Warning>
+
+---
+
+## TITAN-DIV-15
+
+**`TabPanel` wraps whatever it is given in a text element, and discards the inactive section.**
+
+| | |
+|---|---|
+| **Code ships** | Two behaviours in seven lines. Every child is wrapped in a body-text element, so a panel containing a table, a form, or any block-level content nests block content inside a paragraph. And the panel renders its children only while selected, so switching tabs unmounts the section rather than hiding it. Its padding is set off the framework's own scale rather than a `spacing-*` token. |
+| **Design intends** | A panel is a container. It sets its own padding from the spacing scale, imposes no typography on its contents, and hiding a section does not destroy it. |
+| **Follow today** | **Do not put block content in the shipped `TabPanel`.** For anything beyond a line of text, supply your own panel: keep `role="tabpanel"`, wire the ids per [TITAN-DIV-14](#titan-div-14), and pad from the spacing scale. This is already the common path — the library's own tab examples define a panel inline rather than importing this one, and applications carry their own `*TabPanel` files. |
+| **Direction** | Drop the text wrapper, pad from `spacing-*`, and hide the inactive panel rather than unmounting it. Until then the frame ships a panel its own published examples do not use, which is the clearest signal available that it does not do the job. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Tabs](/invoca-design-system/components/navigation/tabs), [Typography](/invoca-design-system/foundations/typography), [Space & density](/invoca-design-system/foundations/space-and-density) |
+
+<Note>
+  **Unmounting is a data decision disguised as a rendering one.** A half-filled form in the tab you
+  just left is gone, and nothing warned the person who left it. That is the same class of loss the
+  frame protects against elsewhere — which is why it is recorded here rather than treated as a
+  performance choice.
+</Note>
+
+---
+
+## TITAN-DIV-16
+
+**The header has no tab-bar slot, so a tabbed page composes one outside it.**
+
+| | |
+|---|---|
+| **Code ships** | `Header` places every child it is given into a single row, spaced apart and vertically centred. There is no second row and no named slot, so a `Tabs` passed as a child lands *beside* `Left` and `Right` instead of beneath them. The published example renders `Tabs` as a sibling after `Header`, with `hidePageDivider` set. |
+| **Design intends** | The tab bar is part of the header. The design library's page template has a `Header` whose children are a header row and a tab bar, both inset to the same gutter, and the header grows to accommodate the bar rather than the bar sitting outside it — its `Header Type` property is the switch. The claim is the slot and its owner, not the heights. |
+| **Follow today** | **Render `Tabs` after `Header`, pass `hidePageDivider`, and inset the bar to `spacing-6` yourself.** The result matches the design; the structure does not. Do not pass `Tabs` as a child of `Header` expecting a second row — you get a third item in the header row. |
+| **Direction** | Give `Header` a tab-bar slot that supplies the gutter and suppresses the divider on its own. That collapses three page-level rules — [TITAN-VIEW-11](/invoca-design-system/views/overview#constraints) through [TITAN-VIEW-13](/invoca-design-system/views/overview#constraints) — into a property of the region, and makes the design's `Header Type` switch expressible in one prop. Worth settling before the design library is rebuilt from code, since a rebuild that reads today's `Header` will emit a header with no tab bar in it. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Tabs](/invoca-design-system/components/navigation/tabs) |
+
+<Note>
+  **What the workaround costs is ownership.** Once the bar is a sibling, the header's bottom
+  boundary is produced by whatever the page put next to it, which is why the gutter has to be
+  re-supplied by hand — and why a page that forgets to looks identical to a page that chose not to.
+</Note>
+
+---
+
+## TITAN-DIV-17
+
+**The page divider belongs to no region.**
+
+| | |
+|---|---|
+| **Code ships** | `PageDivider` carries `spacing-3` of margin above *and* below the rule, so it sits clear of the header box on one side and clear of the body on the other. It is a sibling of both regions and part of neither. It is also independently exportable, so a page can place another one anywhere. |
+| **Design intends** | The rule is the header's **lower edge** — inside the region, flush with its bottom — and the separation between header and body sits below the rule rather than split across it. A tab bar can then replace it, because the bar's underline lands where the header's own edge was. |
+| **Follow today** | **Follow the code**, since the frame produces this spacing and overriding it per page is what [TITAN-VIEW-08](/invoca-design-system/views/overview#constraints) prohibits. Do not add a second `PageDivider` to compensate. |
+| **Direction** | Make the rule part of the header: no margin above it, and the separation moved below. Then "a tabbed header hides its divider" stops being a special case and becomes one region swapping its own bottom edge. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Space & density](/invoca-design-system/foundations/space-and-density) |
+
+<Note>
+  **This is a composition claim, not a measurement.** The gap sizes in the current design library
+  are not the argument and will be restated when it is rebuilt from code. The argument is which
+  region owns the rule: a region can swap its own bottom edge for a tab bar, and cannot swap a rule
+  that belongs to neither side of it ([TITAN-DIV-16](#titan-div-16)).
+</Note>
+
+---
+
+## TITAN-DIV-18
+
+**Filters are a header row in design and a separate region in code.**
+
+| | |
+|---|---|
+| **Code ships** | `Controls` — a region of its own, below the header and its divider, holding filters and view switches. The header has no row for them. |
+| **Design intends** | Filters are the header's second row. The design library's `Header` has one `Type` property with three values — `Default`, `Tabs`, `Filters` — so the filter row and the tab bar are alternatives for a single slot, and a header carrying filters grows the same way it does for tabs. |
+| **Follow today** | **Use `Controls`.** It is what ships, and it is where the code's spacing puts filters. Expect a page built from the frame to place them slightly lower than a page built from the template, and do not try to force them inside `Header` — see [TITAN-DIV-16](#titan-div-16) for why a second row cannot be passed as a child. |
+| **Direction** | Decide the header's second row as one slot with two occupants, which is what the design says, and then `Controls` either becomes that slot's filter state or is retired. Deciding it once resolves this and [TITAN-DIV-16](#titan-div-16) together, because both are the same missing row. |
+| **Affects** | [Views overview](/invoca-design-system/views/overview), [Filtering & search](/invoca-design-system/patterns/filtering-and-search) |
+
+<Note>
+  **The exclusivity is the part worth keeping.** Whatever happens to the API, the design's claim is
+  that a page does not get both a tab bar and a header filter row — recorded as
+  [TITAN-VIEW-17](/invoca-design-system/views/overview#constraints). The table page template is the worked example: it
+  has tabs in the header, so its filters sit in the body with the data they filter.
+</Note>
+
+---
+
+## TITAN-DIV-19
+
+**The selection bar and its select-all menu are designed and absent from code.**
+
+| | |
+|---|---|
+| **Code ships** | `checkboxSelection` renders a column of checkboxes and a header checkbox. Selecting rows changes nothing else: no count, no bar, no change to the toolbar, and no menu on the header checkbox. Where bulk actions go is left to each page. |
+| **Design intends** | Selection is a mode with its own bar. The design library's table header has a **Selected** state that takes the selected fill, shows a count — "4 selected" — keeps search available, and reveals the bulk actions. The header checkbox carries a menu with **Select all *n* items**, **Select all on page**, and **Deselect all**, which is how a page distinguishes selecting a page from selecting a whole result set. |
+| **Follow today** | **Build the bar yourself** with the grid's toolbar slot, and state the count and its scope before any bulk action runs — [TITAN-TBL-08](/invoca-design-system/components/data-display/table#constraints). Do not rely on the header checkbox to communicate scope: it selects what it selects, and the reader cannot tell which. |
+| **Direction** | Build the selection bar and the scope menu once, as the [Bulk selection](/invoca-design-system/patterns/bulk-selection) pattern, rather than per page. The scope distinction is the part that cannot be left out — "select all" over a filtered table is ambiguous between the page, the filter, and everything, and the destructive case is unrecoverable. |
+| **Affects** | [Table](/invoca-design-system/components/data-display/table), [Bulk selection](/invoca-design-system/patterns/bulk-selection), [List view](/invoca-design-system/views/list-view) |
+
+<Note>
+  **This answers a question the view tier had left open.** [List view](/invoca-design-system/views/list-view) recorded
+  three plausible homes for bulk actions — the page header, `Controls`, or a bar that appears on
+  selection. The design library answers: a bar that appears on selection, in the table's own
+  toolbar band.
+</Note>
+
+---
+
+## TITAN-DIV-20
+
+**A hovered row and a selected row are given the same fill.**
+
+| | |
+|---|---|
+| **Code ships** | The theme sets a row's `:hover` background and its selected background to the same value. Nothing else distinguishes the two states. |
+| **Design intends** | Hover and selected are different states in the design library — a row carries `Default`, `Hover`, `Selected`, and focus separately — because one is where the pointer is and the other is what the reader has chosen. |
+| **Follow today** | **Assume selection is not readable while the pointer is over the table**, and never let a selected row's fill be the only indication it is selected. The checkbox state carries it, and a count in the toolbar carries it better — see [TITAN-DIV-19](#titan-div-19). |
+| **Direction** | Give selected its own fill, distinct from hover, and check the pair against the row rule so a selected row's boundaries stay visible. |
+| **Affects** | [Table](/invoca-design-system/components/data-display/table), [Color](/invoca-design-system/foundations/color) |
+
+<Note>
+  **The cost lands exactly where selection matters.** On a table with bulk actions, the reader
+  answering "which rows did I select" is holding a pointer over the table while they do it, which is
+  the one condition under which the answer is unavailable.
+</Note>
+
+---
+
+## TITAN-DIV-21
+
+**Only the standard Alert variant is colour-complete; filled and outlined fail contrast.**
+
+| | |
+|---|---|
+| **Code ships** | Three variants, twelve themed combinations. The four `standard*` keys set a background, text, and icon colour from the `-alt` family. The four `outlined*` keys set text, icon, and border. The four `filled*` keys set **text and icon only** — the background stays whatever the framework supplies, which is the saturated severity colour. |
+| **Design intends** | One treatment per severity: a pale tint, a filled severity icon, dark text of the same hue, and a dismiss control. The design library publishes four alerts and no variant axis at all. |
+| **Follow today** | **Use `standard`**, which is the default. Do not use `filled` or `outlined`. |
+| **Direction** | Decide whether the two unsupported variants are withdrawn or themed. Withdrawing is the smaller change and matches what design publishes; theming them means choosing a text colour for a saturated background, which the `-alt` family does not provide. |
+| **Affects** | [Alert](/invoca-design-system/components/feedback/alert), [Color](/invoca-design-system/foundations/color), [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+Computed from the shipped token values, formula validated against published reference ratios:
+
+| Variant | Pairing | Range across the four severities | Verdict |
+|---|---|---|---|
+| `standard` | `text-{severity}-alt` on `background-{severity}-alt` | 4.84 : 1 – 9.74 : 1 | Passes AA |
+| `filled` | `text-{severity}-alt` on the framework's saturated fill | 2.16 : 1 – 3.81 : 1 | **Fails AA**, and three of four fail 3 : 1 |
+| `outlined` text | `text-{severity}-alt` on `background-default` | 5.93 : 1 – 12.87 : 1 | Passes AA |
+| `outlined` border | `border-{severity}-alt` on `background-default` | 1.19 : 1 – 1.61 : 1 | **Fails 3 : 1** — the boundary is invisible |
+
+<Warning>
+  **This is a live conformance failure, not a preference.** A filled error alert renders at 2.17 : 1.
+  The cause is structural rather than a bad colour choice: the `-alt` family is designed as dark text
+  on a pale tint, and `filled` keeps the dark text while replacing the pale tint with a saturated
+  one. `outlined` has the mirror problem — it uses the pale *background* tint as a border colour,
+  where 3 : 1 against white is needed to read as a boundary at all.
+</Warning>
+
+---
+
+## TITAN-DIV-22
+
+**EmptyState renders its supporting line as a heading.**
+
+| | |
+|---|---|
+| **Code ships** | `title` renders as an `h3`; `subTitle` renders as an **`h6`**. So a sentence of supporting text is announced as a document heading, two levels below the one above it, in a component that can appear anywhere on a page. |
+| **Design intends** | A title and a subtitle — one line of emphasis and one of supporting text. The design library models both as text, and neither as a document heading. |
+| **Follow today** | **Do not rely on the component's heading levels.** Where the empty state sits inside a section that already has a heading, know that it inserts an `h3` and an `h6` beneath it and corrupts the outline. Keep the message in `title` and treat `subTitle` as prose. |
+| **Direction** | Render the supporting line as body text, and make the title's level settable so it can sit correctly under whatever heading precedes it. |
+| **Affects** | [EmptyState](/invoca-design-system/components/data-display/empty-state), [Typography](/invoca-design-system/foundations/typography), [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+<Note>
+  **The visual size is already independent of the level.** The title is `h3` carrying a bold body
+  type, so the heading level is doing no visual work — which means correcting it costs nothing on
+  screen and fixes the outline for every page that uses the component.
+</Note>
+
+---
+
+## TITAN-DIV-23
+
+**The theme's naive every-word capitalization doesn't implement title case's function-word exceptions.**
+
+<Note>
+  **Corrected this pass.** An earlier version of this entry had the direction backwards —
+  it asserted sentence case as the design intent and framed the theme's title-case rendering
+  as the bug. zeroheight's Button page confirms title case is the actual rule: *"Label text
+  should be title case"* / *"Label text should not be sentence case."* It also cited a
+  specific usage count ("170 usages across 22 applications") that had no traceable source and
+  has been removed. See [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation)
+  for the corrected model.
+</Note>
+
+| | |
+|---|---|
+| **Code ships** | The theme sets `textTransform: "capitalize"` on every button, which capitalizes the first letter of *every* word at render — "save changes to draft" becomes "Save Changes To Draft". |
+| **Design intends** | **Title case, headline style** — capitalize principal words, but lowercase short articles, conjunctions, and prepositions unless one is the first or last word: "Save Changes to Draft." |
+| **Follow today** | Author labels in proper headline-style title case. For most Button labels — short, verb-first, rarely containing a function word — this already matches what the theme renders, so the divergence rarely surfaces in practice. It surfaces on any label containing a short function word, such as "Save Changes to Draft." |
+| **Direction** | Either accept the theme's simpler capitalize-every-word behavior as good enough given how rarely button labels contain a function word, or replace the blanket `textTransform` with logic that respects the headline-style exceptions. Not urgent — the residual gap is small. |
+| **Affects** | [Button](/invoca-design-system/components/actions/button), [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation) |
+
+---
+
+## TITAN-DIV-24
+
+**Input's error focus ring's light-mode value exactly matches `border-error`'s *dark*-mode value.**
+
+| | |
+|---|---|
+| **Code ships** | `form-field-focus-ring-error` resolves to `#ed3036` in the light scheme — the scheme every documented value in this site otherwise uses. `border-error` is `#e4131b` in light and **`#ed3036` in dark** — an exact match to the focus ring's light value. `border-error-alt` is `#fdbbbc` light, `#b3000b` dark; neither matches either figure. |
+| **Design intends** | One error meaning per the colour vocabulary's `purpose` axis (see [Color](/invoca-design-system/foundations/color#vocabulary)), consistently resolved within one scheme — a light-scheme component drawing a dark-scheme value is not a described case anywhere in that model. |
+| **Follow today** | Use `border-error` and `text-error-alt`, both resolved in **light**, for the input's border and message text, per [TITAN-COLOR-07](/invoca-design-system/foundations/color#constraints). Do not treat `#ed3036` as the system's light-scheme error red — it isn't one; it is dark's. |
+| **Direction** | Check whether the focus-ring token is reading `border-error` through an unguarded scheme lookup (a mode leak, given [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01) — neither scheme is designed, so a leak between them would be easy to ship unnoticed) or is a coincidence. If the former, fix the lookup, not the colour. |
+| **Affects** | [Input](/invoca-design-system/components/forms/input), [Select](/invoca-design-system/components/forms/select) |
+
+<Note>
+  **Found by cross-referencing two snapshot files, not source.** `density.json` records
+  `form-field-focus-ring-error` from a light-mode probe; `colorSchemes.json` records both
+  schemes' resolved tokens independently. Neither file states a relationship between the two
+  numbers — the match was found by comparing them, not documented anywhere as intentional.
+  This session had the resolved values but not the Titan checkout, so the coincidence is
+  confirmed and its cause is not.
+</Note>
+
+---
+
+## Resolved
+
+Nothing yet. When a divergence is closed, its entry moves here with a note on how it was
+resolved and in which release.

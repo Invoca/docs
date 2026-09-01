@@ -1,0 +1,197 @@
+---
+title: "Pattern name"
+description: "The recurring problem this pattern solves, in one sentence."
+icon: "layout-template"
+keywords: ["synonyms", "what people call this situation before they know the pattern name"]
+---
+
+{/*
+  PATTERN PAGE TEMPLATE
+
+  A Pattern is a named composition of two or more components, with rules, that does
+  NOT ship as an export. If it ships as an export it is a Component. If it defines
+  full-page regions it is a View.
+
+  A pattern page is problem-first. A component page can open with "what it is"
+  because the reader arrived knowing the name. Nobody arrives at a pattern page
+  knowing the name — they arrive with a problem. Keep that order.
+
+  A pattern's value is in BEHAVIOUR and ORDER, not appearance. If this page has no
+  sequence in it, what you are documenting is probably a component.
+
+  Section order is fixed. Do not reorder, do not omit — a fixed order makes an
+  omission visible.
+
+  Three registers:
+    [REF] code fact      — generated from source. Never hand-write a value.
+    [DEC] design intent  — normative. What to build.
+    [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
+
+  Delete these comment blocks when you author a real page.
+*/}
+
+<Note>
+  **Everything on this page is design intent**, not generated — a pattern has no export and
+  therefore no source to emit from. Constraints are **Proposed** until signed off. Values
+  referenced here come from the [foundations](/invoca-design-system/foundations/overview); disagreements between
+  the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## The problem
+
+State the recurring situation. Concretely, from the product, not in the abstract.
+
+## The solution
+
+<Frame caption="Caption states the rule, not what the image shows.">
+  <img src="/images/patterns/pattern-name.png" alt="Annotated example of the pattern" />
+</Frame>
+
+## Vocabulary
+
+{/* [DEC] What the system calls this pattern and its parts, and the terms it is NOT
+     using. Patterns accumulate synonyms faster than components because people name
+     them by the situation: "are you sure modal", "destructive confirm", "danger
+     dialog" are one pattern with three names.
+
+     Name the chosen term so it can be cited, and list the rejected ones so a
+     search lands. */}
+
+| Term | Also called | The system uses |
+|---|---|---|
+| | | |
+
+## When this applies
+
+{/* [DEC] Positive criteria. Each testable against a real screen. */}
+
+- Condition.
+
+## When it doesn't
+
+{/* [DEC] MANDATORY. Must name a specific alternative and link to it. This is the
+     entry that stops two patterns collapsing into one. */}
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The neighboring situation | [Other pattern](/invoca-design-system/patterns/other) | The distinction |
+
+## Structure
+
+{/* [DEC] Components in order, and the tokens between them. Ordering and spacing are
+     where compositions actually go wrong — not component choice. */}
+
+| Order | Component | Notes |
+|---|---|---|
+| 1 | [Component](/invoca-design-system/components/group/component) | Role in the composition |
+
+## Behavior
+
+{/* [DEC] The sequence. What happens first, what happens on each interaction, and
+     where the user ends up. This is the core of the page. */}
+
+### The happy path
+
+{/* Step by step. Numbered, so a reader can implement it in order. */}
+
+### Edge and failure states
+
+{/* Never let a failure state be the mere absence of a success state.
+
+     Cover every row that applies. Delete a row only when it genuinely cannot
+     occur — not when it has not been designed yet. That belongs in Gaps. */}
+
+| Situation | What the user sees | Recovery |
+|---|---|---|
+| Empty — nothing to act on | | |
+| Loading, or slower than expected | | |
+| Partial success | | |
+| Failed | | |
+| Permission denied | | |
+| More data than the design assumed | | |
+| Interrupted — navigated away mid-sequence | | |
+
+## Content
+
+{/* [DEC] The copy the pattern requires: titles, button labels, confirmation phrasing,
+     error and empty text. A pattern with the right components and the wrong words
+     does not work. Name the consequence in destructive copy, never "Are you sure?" */}
+
+## Accessibility
+
+{/* [DEC] Focus movement through the composition, what gets announced, and in what
+     order.
+
+     Individually accessible components compose into an inaccessible pattern more
+     often than not — focus order is where it breaks. This is the tier that owns
+     it; no single component can. */}
+
+**Focus.** Where focus starts, where it moves on each step, and where it returns when the
+pattern closes or completes.
+
+**Announcement.** What assistive technology is told, when, and via which mechanism —
+a live region, a focus move, or a role change.
+
+## Constraints
+
+{/* [DEC] Numbered, falsifiable, one rule per ID, rationale required.
+
+     ID FORMAT: TITAN-<AREA>-<NN>, where AREA is a short code for THIS pattern
+     (TITAN-DESTROY-01, TITAN-FILTER-01) — not a generic PAT prefix. Every
+     pattern sharing one area code guarantees number collisions across pages.
+
+     IDs are permanent. Deprecate, never renumber. */}
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| TITAN-AREA-01 | Testable rule. | Why. |
+
+## Variations
+
+{/* [DEC] Legitimate variants of the same pattern, and what selects between them.
+     A variation without a selection rule is two patterns wearing one name. */}
+
+## Anti-patterns
+
+{/* [DEC] What people build instead, and the specific way it fails. This is the
+     highest-value section on a pattern page and the one most systems omit
+     entirely. Naming the wrong solution is what stops it being rebuilt.
+
+     Each entry: what gets built, why it looks reasonable, and the concrete
+     failure — not "it's inconsistent". */}
+
+| Instead of this pattern, people build… | Why it looks reasonable | How it fails |
+|---|---|---|
+| | | |
+
+## Known issues
+
+{/* [DIV] One table for both registers, each row labelled by kind:
+
+     Divergence    — code and design intent disagree. /foundations/divergences
+     Open decision — nothing has been decided.        /foundations/open-decisions
+
+     Link them; do not restate them. If none apply, say so — an empty section is a
+     claim, a missing one is silence. */}
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-NN](/invoca-design-system/foundations/divergences) | Divergence | One line. |
+
+## Gaps in the current rules
+
+{/* Genuinely undecided. NOT a to-do list, and not an invitation to resolve them.
+     An agent asked about anything here answers "Titan does not specify this." */}
+
+## Why it works this way
+
+{/* [DEC] Why this composition and not the obvious alternative. State the mechanism,
+     not the sentiment. This is what keeps the constraints above from being
+     quietly deleted. */}
+
+## Related
+
+{/* Components this pattern composes, neighbouring patterns, and the views that
+     use it. Derive the component list from the Structure table above rather than
+     assuming. */}

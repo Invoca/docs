@@ -1,0 +1,300 @@
+{
+  "$comment": "The concept -> export map. Documentation groups by what a reader recognises; the package exports by unit. One doc page can cover several exports, and this file records which - so a designer reads one page and an engineer still knows what to import. Fields describe WHAT THE SYSTEM DECIDES for each export, never which upstream component it maps to: the underlying library is not the subject and must not reach reader-facing output. Committed and diffable; consumed by emit-components.mjs. See TITAN-DIV-10.",
+  "concepts": {
+    "components/actions/button": {
+      "title": "Button",
+      "sourceDir": "Button",
+      "covers": [
+        {
+          "export": "Button",
+          "role": "Text button, with or without an icon",
+          "implementation": "passthrough",
+          "decides": "Sizes, colours, states, geometry"
+        },
+        {
+          "export": "IconButton",
+          "role": "Icon-only button",
+          "implementation": "re-export",
+          "decides": "Colours and states only"
+        },
+        {
+          "export": "FilterButton",
+          "role": "Filter control that opens a menu and reflects applied state",
+          "implementation": "titan",
+          "decides": "Sizes, colours, states, plus its own tokens"
+        }
+      ],
+      "excludes": [
+        {
+          "export": "ButtonGroup",
+          "page": "components/actions/button-group",
+          "why": "Documented separately — it governs the relationship between buttons rather than a button itself."
+        }
+      ],
+      "stories": "Button.stories.js",
+      "alsoGoverned": "Two further control types are themed by the same decisions.",
+      "prominence": {
+        "$comment": "The design vocabulary for button weight, matching the naming specification's prominence axis. Code uses different variant values; this maps them. Reader-facing output leads with the design term.",
+        "levels": [
+          {
+            "term": "primary",
+            "codeValue": "contained",
+            "weight": "Highest"
+          },
+          {
+            "term": "secondary",
+            "codeValue": "outlined",
+            "weight": "Medium"
+          },
+          {
+            "term": "tertiary",
+            "codeValue": "text",
+            "weight": "Lowest"
+          }
+        ]
+      }
+    },
+    "views/overview": {
+      "title": "Page frame",
+      "sourceRoot": "templates",
+      "sourceDir": "Page",
+      "utilizationFrom": [
+        "Header",
+        "Footer",
+        "AppBar"
+      ],
+      "covers": [
+        {
+          "export": "Page",
+          "role": "The page surface everything sits on",
+          "implementation": "titan",
+          "decides": "Nothing — no padding, no elevation"
+        },
+        {
+          "export": "Header",
+          "role": "Page header region",
+          "implementation": "titan",
+          "dir": "components",
+          "subdir": "Header",
+          "decides": "Padding, sticky behaviour, the divider"
+        },
+        {
+          "export": "Left",
+          "role": "Header's leading slot — identity and context",
+          "implementation": "titan",
+          "decides": "Width ceiling and alignment"
+        },
+        {
+          "export": "Right",
+          "role": "Header's trailing slot — actions",
+          "implementation": "titan",
+          "decides": "Alignment and gap"
+        },
+        {
+          "export": "Title",
+          "role": "The page title",
+          "implementation": "titan",
+          "decides": "Type variant"
+        },
+        {
+          "export": "Breadcrumb",
+          "role": "Ancestry link above the title",
+          "implementation": "titan",
+          "decides": "Link treatment"
+        },
+        {
+          "export": "Status",
+          "role": "State of the thing the page is about",
+          "implementation": "titan",
+          "decides": "Chip size"
+        },
+        {
+          "export": "Information",
+          "role": "Supporting detail beside the title",
+          "implementation": "titan",
+          "decides": "Nothing — a growth slot"
+        },
+        {
+          "export": "Actions",
+          "role": "Page-level actions in the header",
+          "implementation": "titan",
+          "decides": "Gap between actions"
+        },
+        {
+          "export": "Controls",
+          "role": "Filters and view controls below the header",
+          "implementation": "titan",
+          "decides": "Padding and alignment"
+        },
+        {
+          "export": "Contents",
+          "role": "The page body",
+          "implementation": "titan",
+          "decides": "Minimum height"
+        },
+        {
+          "export": "TabPanel",
+          "role": "One tab's contents inside the body",
+          "implementation": "titan",
+          "decides": "Tab semantics"
+        },
+        {
+          "export": "Footer",
+          "role": "Page footer region",
+          "implementation": "titan",
+          "dir": "components",
+          "subdir": "Footer",
+          "decides": "Padding, separator, sticky behaviour, alignment"
+        },
+        {
+          "export": "PageDivider",
+          "role": "The rule under the header",
+          "implementation": "titan",
+          "decides": "Vertical rhythm"
+        },
+        {
+          "export": "Logo",
+          "role": "Brand mark in the header",
+          "implementation": "titan",
+          "decides": "Maximum width"
+        }
+      ]
+    },
+    "components/navigation/tabs": {
+      "title": "Tabs",
+      "sourceDir": "Tabs",
+      "covers": [
+        {
+          "export": "Tabs",
+          "role": "The tab bar — the container that holds and switches tabs",
+          "implementation": "passthrough",
+          "decides": "The boundary rule, and the vertical rail's dimensions and selected treatment"
+        },
+        {
+          "export": "Tab",
+          "role": "One tab within the bar",
+          "implementation": "re-export",
+          "decides": "Label casing, and the vertical row's type, colours, and selected marker"
+        },
+        {
+          "export": "TabIconLabel",
+          "role": "Icon-plus-label row structure for a vertical rail",
+          "implementation": "titan",
+          "decides": "Icon gap, alignment, and label truncation"
+        },
+        {
+          "export": "TabMenu",
+          "role": "A tab carrying its own overflow menu",
+          "implementation": "titan",
+          "decides": "The menu trigger and its accessible name"
+        }
+      ],
+      "excludes": [
+        {
+          "export": "TabPanel",
+          "page": "views/overview",
+          "why": "Documented with the page frame — it is the body of a tabbed page rather than part of the bar."
+        }
+      ],
+      "stories": "Tabs.stories.js"
+    },
+    "components/data-display/table": {
+      "title": "Table",
+      "$comment": "Reader-facing name is Table — the word the team uses. Code exports say DataGrid; the design library says Data Grid. See TITAN-DIV-10.",
+      "sourceDir": "DataGrid",
+      "covers": [
+        {
+          "export": "DataGridPro",
+          "role": "The table — rows, columns, sorting, selection, and pagination",
+          "implementation": "passthrough",
+          "decides": "Surface, row rule, header and cell type, selected row, cell focus ring, sort icon"
+        },
+        {
+          "export": "DataGridPremium",
+          "role": "The same table with the higher feature tier",
+          "implementation": "re-export",
+          "decides": "Nothing beyond what the theme already applies"
+        },
+        {
+          "export": "GridToolbar",
+          "role": "The band above the columns",
+          "implementation": "re-export",
+          "decides": "Type and spacing of its contents"
+        },
+        {
+          "export": "GridActionsCellItem",
+          "role": "One action inside a row's action cell",
+          "implementation": "re-export",
+          "decides": "Nothing"
+        },
+        {
+          "export": "GridColumnMenu",
+          "role": "The per-column menu",
+          "implementation": "re-export",
+          "decides": "Nothing"
+        }
+      ],
+      "excludes": [
+        {
+          "export": "Pagination",
+          "page": "components/navigation/pagination",
+          "why": "Three pagination approaches ship and none is confirmed — see TITAN-GAP-27."
+        }
+      ],
+      "stories": "DataGrid.stories.js"
+    },
+    "components/data-display/empty-state": {
+      "title": "EmptyState",
+      "sourceDir": "EmptyState",
+      "covers": [
+        {
+          "export": "EmptyState",
+          "role": "Centred illustration with a message, for a region with nothing to show",
+          "implementation": "titan",
+          "decides": "Illustration size, centring, the gap above the text, and the type of both lines"
+        },
+        {
+          "export": "IllustrationWrapper",
+          "role": "Sizes an illustration to the system's dimensions",
+          "implementation": "titan",
+          "dir": "illustrations",
+          "subdir": "",
+          "decides": "Width and height, from tokens"
+        }
+      ],
+      "stories": "EmptyState.stories.js"
+    },
+    "components/feedback/alert": {
+      "title": "Alert",
+      "sourceDir": "Alert",
+      "covers": [
+        {
+          "export": "Alert",
+          "role": "An inline message about the state of the thing on screen",
+          "implementation": "passthrough",
+          "decides": "Background, text, icon colour and padding — for the standard variant only"
+        },
+        {
+          "export": "AlertTitle",
+          "role": "A heading inside an alert",
+          "implementation": "re-export",
+          "decides": "Nothing — no treatment is defined for it"
+        }
+      ],
+      "stories": "Alert.stories.js"
+    },
+    "components/feedback/skeleton": {
+      "title": "Skeleton",
+      "sourceDir": "Skeleton",
+      "covers": [
+        {
+          "export": "Skeleton",
+          "role": "A placeholder in the shape of the content that is loading",
+          "implementation": "passthrough",
+          "decides": "Nothing — no theme overrides and no tokens exist"
+        }
+      ],
+      "stories": "Skeleton.stories.js"
+    }
+  }
+}

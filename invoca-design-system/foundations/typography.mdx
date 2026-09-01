@@ -1,0 +1,194 @@
+---
+title: "Typography"
+description: "Thirteen variants, what each one is for, and why the scale is not a size ramp."
+icon: "type"
+keywords: ["type", "font", "Lato", "heading", "body", "caption", "variant", "line height"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+All rendered text. Every variant is chosen for Titan — typography, with color, is one of
+the two foundations where every value carries a decision.
+
+## Vocabulary
+
+<Warning>
+  **The naming specification does not cover typography.** It defines the six naming axes and 64
+  colour definitions; typography appears in neither. The terms used on this page are therefore
+  descriptive rather than decided — see
+  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
+</Warning>
+
+Three naming systems coexist: the 11 `<Typography>` variant names (the design vocabulary),
+the 13 theme variants, and 34 scale entries. Only the first is meant to be used — see
+[TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04).
+
+## The family
+
+```
+Lato, Avenir, Avenir-Book, "Museo Sans", sans-serif
+```
+
+One family, four weights in use: 400 regular, 500 medium, 600 semibold, 700 bold. Base
+font size is 14px; the browser root is assumed at 16px.
+
+## The scale is a role map, not a size ramp
+
+The most common mistake with this scale is reading `h1`–`h6` as "biggest to smallest
+heading" and picking by size. Two things break that reading:
+
+- **`h5` (12px) and `h6` (10px) are smaller than `body1` (16px) and `body2` (14px).** They
+  are not headings in the document-outline sense. They are uppercase micro-labels.
+- **Weight is not monotonic.** `h1` and `h2` are regular (400) while `h3` is bold (700).
+  The large sizes get their prominence from size; the small ones get it from weight and
+  letter-spacing.
+
+| Variant | Size | Weight | Line height | Transform | Tracking |
+|---|---|---|---|---|---|
+| `h1` | 24px | 400 | 36px | — | 0 |
+| `h2` | 20px | 400 | 28px | — | 0 |
+| `h3` | 16px | **700** | 24px | — | 0 |
+| `h4` | 14px | 600 | 16px | — | 0 |
+| `h5` | 12px | **700** | 16px | **UPPERCASE** | 0.3px |
+| `h6` | 10px | 600 | 12.5px | **UPPERCASE** | 0.3px |
+| `subtitle1` | 16px | 400 | 20px | — | 0 |
+| `subtitle2` | 14px | 400 | 20px | — | 0 |
+| `body1` | 16px | 400 | 20px | — | 0 |
+| `body2` | 14px | 400 | 20px | — | 0 |
+| `caption` | 12px | 400 | 16px | — | 0 |
+| `overline` | 12px | 400 | 16px | **UPPERCASE** | 0 |
+| `button` | 0.875rem | 500 | 1.75 | **UPPERCASE** | normal |
+
+<Note>
+  `subtitle1`/`body1` and `subtitle2`/`body2` are **metrically identical** — same size,
+  weight, and line height. They differ only in name. Choose by role so the intent survives
+  a future divergence, but do not expect a visual difference today.
+</Note>
+
+## Choosing a variant
+
+| You need… | Use | Not |
+|---|---|---|
+| The title of a page or a full-screen view | `h1` | `h2` — reserve the step down for sections within the page |
+| The title of a major section, or a dialog title | `h2` | `h1` — one `h1` per view |
+| A subsection heading, or a card title | `h3` | `h2` at a smaller size. The bold weight is what makes `h3` read as a heading at body size. |
+| A dense heading inside a panel or a form group | `h4` | `h3` — 16px bold inside a dense panel overpowers its contents |
+| A group label above a set of fields or a table column cluster | `h5` | `overline` — `h5` is bold and reads as structure; `overline` is regular and reads as metadata |
+| The smallest structural label — a micro-legend, a dense table sub-header | `h6` | `caption` — `caption` is not uppercase and does not read as a label |
+| Default running text | `body2` (14px) | `body1`. 14px is Titan's base; `body1` is the exception, for prominence. |
+| Running text that needs prominence — an intro, a lead paragraph | `body1` (16px) | `subtitle1`. They render identically; `body1` says "this is prose." |
+| A short supporting line under a heading | `subtitle2` | `caption` — captions are metadata, subtitles are content |
+| Helper text, timestamps, counts, metadata | `caption` | `body2` at a lighter color. Size carries the demotion; color alone is a weaker signal and fails more contrast checks. |
+| A standalone category tag above a heading | `overline` | `h5` — see above |
+| Text inside a Button | `button` | Anything else — Button applies it |
+
+## Token reference
+
+<Snippet file="generated/tokens/typography.mdx" />
+
+Three typography values exist as tokens. The variants themselves do not — they are reached
+only through `<Typography>`.
+
+| Token | Value |
+|---|---|
+| `font-family-base` | `Lato, Avenir, Avenir-Book, "Museo Sans", sans-serif` |
+| `font-weight-bold` | `700` |
+| `typography-list-indent` | `0.4rem` |
+
+<Note>
+  **Two values changed when the component was repointed at the token scale (TRI-783):** bold
+  weight moved from 600 to 700, and `mainHeader` line height from 32px to 36px. Designs
+  produced before that change will not match what renders now.
+</Note>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TYP-01** | Text renders through a Typography variant. Never a raw `<p>`, `<span>`, or `<h1>`–`<h6>` with ad-hoc styles. | Storybook publishes three explicit "Do Not Use Raw" stories for this. A raw element inherits browser defaults, not Titan's, and diverges the moment the scale changes. |
+| **TITAN-TYP-02** | Choose a variant by role, not by size. | The scale is not monotonic in size or weight. Picking `h5` because it is "the small one" produces uppercase micro-labels in body copy. |
+| **TITAN-TYP-03** | One `h1` per view. | It is the page title. Two means the page has two subjects and needs splitting — and it breaks the document outline for screen readers. |
+| **TITAN-TYP-04** | Visual variant and semantic heading level are chosen independently. | A card title may look like `h3` and need to be an `<h2>` in the outline. Never reorder headings to get a size. |
+| **TITAN-TYP-05** | Never override `fontSize`, `fontWeight`, or `lineHeight` on a variant. | An overridden variant is a fourteenth variant that no other consumer has and the audit cannot see. If none of the thirteen fit, that is a token proposal. |
+| **TITAN-TYP-06** | Uppercase comes from the variant (`h5`, `h6`, `overline`, `button`), never from `text-transform` or typed capitals. | Typed capitals are read letter-by-letter by some screen readers and cannot be un-cased for locales where the transform is wrong. |
+
+## Accessibility
+
+- **Never use a heading variant to style non-heading text**, and never skip heading levels
+  to get a size. Screen reader users navigate by heading outline; a page whose outline goes
+  `h1 → h4` has two missing levels and no way to tell whether content was skipped.
+- **`h6` is 10px.** That is below the 12px floor most guidance recommends for sustained
+  reading, and it is uppercase, which lowers legibility further. Use it for one- or
+  two-word labels only, never for anything a user must read carefully.
+- **Line heights are tight at the small end.** `h6` is 10px on 12.5px (1.25) and `h4` is
+  14px on 16px (1.14). [WCAG 2.2 Text Spacing (AA)](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html)
+  requires content to survive user-applied line spacing of 1.5× without loss — verify that
+  containers using these variants can grow.
+- Text must remain functional at 200% zoom without horizontal scrolling
+  ([Reflow, AA](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)). Fixed-height
+  containers around `body1` are the usual failure.
+- Contrast is a property of the `text-*` token, not the variant. See
+  [Accessibility](/invoca-design-system/foundations/accessibility#contrast) for the measured table —
+  several status text tokens fail AA on light surfaces.
+
+## Divergences
+
+- [**TITAN-DIV-04**](/invoca-design-system/foundations/divergences#titan-div-04) — three typography surfaces with
+  three different counts: 34 variants defined, 13 wired into the theme, 11 exposed on
+  `<Typography>`. The 11 are the design vocabulary.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-04**](/invoca-design-system/foundations/divergences#titan-div-04) | Divergence | three typography surfaces, three counts |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-18**](/invoca-design-system/foundations/open-decisions#titan-gap-18) | Open decision | typography redundancy and no responsive scale |
+
+## Gaps in the current rules
+
+- **`button` is the one variant not on the shared metrics.** It uses `0.875rem` and a
+  unitless line height of `1.75`, while every other variant is set in explicit `px`.
+  Whether that is deliberate or an unfinished migration is not recorded. It is the one
+  variant whose rendered line height changes with the root font size.
+- **`subtitle1`/`body1` and `subtitle2`/`body2` are metrically identical.** No rule says
+  which to prefer, and nothing distinguishes them at render time.
+- **No responsive type scale exists.** Sizes are fixed across all breakpoints. Whether a
+  24px `h1` is intended for a 1536px viewport is undecided.
+- **Weight non-monotonicity is undocumented upstream.** `h3` at 700 sitting between `h2`
+  at 400 and `h4` at 600 is either a considered emphasis decision or an accident. This
+  page describes the behavior; the intent is not recorded anywhere.
+
+## Related
+
+**19 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Accordion` · `AddList` · `Checkbox` · `Chip` · `DataGrid` · `DatePicker` · `Drawer` · `Dropzone` · `EmptyState` · `Form` · `FormHelperText` · `FormInput` · `Modal` · `Slider` · `Tabs` · `Tile` · `Toast` · `Tooltip` · `Typography`
+
+## Why it works this way
+
+**Small type carries emphasis through weight and case, not size.** Below about 14px, size
+differences stop being legible as hierarchy — 12px and 11px look like the same text
+rendered badly. So the bottom of the scale switches signal: `h5` and `h6` are bold,
+uppercase, and letter-spaced. That reads as a label at any size, which is what those
+variants are for.
+
+**14px is the base, not 16px.** Titan targets dense, data-heavy internal product surfaces
+where a 16px default costs roughly one table row per screen. `body1` at 16px remains
+available for the prose contexts where reading comfort outranks fitting more on screen.
+
+**Thirteen variants, and no fourteenth.** Every variant is a decision a builder makes and
+a reviewer checks. The scale is small enough to hold in your head, which is the property
+that keeps two authors picking the same variant for the same job.

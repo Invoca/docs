@@ -1,0 +1,379 @@
+---
+title: "Button"
+description: "Triggers an action. The action is the point — if the result is navigation to another resource, you want a Link."
+icon: "square-mouse-pointer"
+tag: "Stable"
+keywords: ["primary", "secondary", "tertiary", "cta", "call to action", "submit", "contained", "outlined", "icon button", "filter button"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, status, and adoption on this page are generated from Titan source** by
+  `tools/emit-components.mjs`. Guidance and constraints are authored, and constraints are
+  **Proposed** until signed off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A control that performs an action in place: submitting, confirming, opening, applying,
+deleting. Its visual weight declares how much the interface wants you to press it.
+
+**This page covers the whole button concept** — with a label, with a label and an icon, with
+an icon alone, and the filter control. They are one thing to a reader and several exports in
+the package; the mapping is below.
+
+## Live example
+
+<StorybookFrame story="components-buttons--basic-button" height={200} />
+
+<Note>
+  Story ID `verified` — this is the same embed the previously-published Button page used
+  (see `invoca-design-system/temp/button.mdx` in the repo, not yet reconciled with this
+  page), served from the public Chromatic deployment rather than an internal Storybook.
+</Note>
+
+## Exports
+
+One page, three exports. A designer can read the page as one component; an engineer needs to
+know which to import.
+
+<Snippet file="generated/props/button.mdx" />
+
+<Note>
+  **`ButtonGroup` is documented separately** — see
+  [Button group](/invoca-design-system/components/actions/button-group). It governs the relationship *between*
+  buttons rather than a button itself, which is a different decision.
+
+  This grouping is a documentation choice, not a code change. Why the two structures differ
+  is recorded in [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10).
+</Note>
+
+## Vocabulary
+
+The design team names buttons by **prominence** — how much the interface wants this pressed.
+That is the system's vocabulary, it matches the naming specification's `prominence` axis, and it
+is a variant property of the design library's own Button component with exactly these three
+values. It is not a habit of speech; it is built into the library.
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Primary** | Filled, solid, CTA, contained | **`primary`** | `variant="contained"` |
+| **Secondary** | Outlined, ghost, hollow, bordered | **`secondary`** | `variant="outlined"` |
+| **Tertiary** | Text, flat, borderless, bare | **`tertiary`** | `variant="text"` |
+| Icon-only | Icon button, glyph button | **`icon-only`** | `IconButton` |
+| Unavailable | Greyed out, inactive | **`disabled`** | `disabled` |
+| **Purpose** | Intent, severity, colour | **`purpose`** | `color` |
+| — its two values | Normal / dangerous | **`default`**, **`destructive`** | `color="primary"`, `color="error"` |
+
+**Say primary, secondary, tertiary.** They describe the decision — relative weight — rather
+than the treatment that happens to express it. A borderless button is still tertiary if the
+weight is what you meant.
+
+<Warning>
+  **"Primary" carries three meanings in this system. They are unrelated.**
+
+  | Where you see it | What it means |
+  |---|---|
+  | "a primary button" | **Prominence** — the highest weight. This page's sense. |
+  | `color="primary"` | **Colour intent** — the brand blue. A secondary button can be `color="primary"`. |
+  | `text-primary` | **Text emphasis** — the default body text colour. Nothing to do with buttons. |
+
+  Prominence and colour are independent axes. "Primary, error" is a legitimate combination: the
+  highest-weight button in the destructive colour.
+
+  The reader-facing name for the second axis is **purpose**, and it has two values —
+  *default* and *destructive*. Code exposes the whole colour palette; the system sanctions two.
+  Say "destructive", not "error" or "red".
+</Warning>
+
+<Note>
+  **`tertiary` is specified and never implemented.** The naming specification lists it on the
+  prominence axis, and **no shipped token carries the word** — the treatment exists in code only
+  as `variant="text"`. See [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11).
+</Note>
+
+## Choose Button when
+
+- The control performs an action rather than retrieving a resource — submit, confirm, apply, delete, open a dialog.
+- The result of pressing it is a change in application state.
+- The user would not reasonably want to open the result in a new tab.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Navigate to another page, record, or external resource | [Link](/invoca-design-system/components/actions/link) | Preserves right-click, middle-click, ⌘-click, and copy-URL. A Button that navigates silently removes four affordances users rely on. |
+| Offer three or more related actions from one control | [Menu](/invoca-design-system/components/actions/menu) | Three or more sibling buttons stop reading as a hierarchy and start reading as a list. |
+| Bind several buttons into one segmented control | [Button group](/invoca-design-system/components/actions/button-group) | The relationship between the buttons is the component. |
+| Present two mutually exclusive states | [Switch](/invoca-design-system/components/forms/switch) or [Radio](/invoca-design-system/components/forms/radio) | Buttons do not communicate persistent state. A "Muted"/"Unmuted" toggle button is ambiguous about whether it shows current state or pending action. |
+| Show an action that is currently unavailable | `disabled`, **plus** an adjacent explanation | A disabled control with no reason attached is the single most common accessibility complaint in the product. See [TITAN-BTN-06](#constraints). |
+
+<Note>
+  **Button vs. Link is the fork people get wrong most often.** The test is not appearance — a
+  Link can be styled to look like a button. The test is the result: *does pressing it change
+  state (Button), or does it take me to a resource that has a URL (Link)?* If a URL exists, it
+  must be reachable by right-click.
+</Note>
+
+## Anatomy
+
+<Note>
+  Anatomy diagram `pending` — `/images/components/button-anatomy.png`. The images directory is
+  empty; nothing is published to generate it from yet.
+</Note>
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Label | `children` | Yes — see [TITAN-BTN-04](#constraints) |
+| 2 | Leading icon | `startIcon` | No |
+| 3 | Trailing icon | `endIcon` | No |
+| 4 | Loading indicator | `loading` | No — replaces the leading icon slot |
+
+For an icon-only button the icon **is** the label, which is why it needs an accessible name
+supplied separately — see [Accessibility](#accessibility).
+
+## Variants
+
+Prominence encodes **how much the interface wants this pressed**, not how severe the
+consequence is. A destructive action is frequently the *tertiary* control on the screen.
+
+| Prominence | Weight | Use for | In code |
+|---|---|---|---|
+| **Primary** | Highest | The one action the view exists to enable | `variant="contained"` |
+| **Secondary** | Medium | Real alternatives to the primary action | `variant="outlined"` |
+| **Tertiary** | Lowest | Dismissals, cancels, escapes | `variant="text"` |
+
+<Info>
+  **Border adds to the box.** The three levels carry different border widths, so they do not
+  share internal geometry even at the same size. A row mixing them will not align on the label
+  baseline by default.
+</Info>
+
+### The axes a Button actually has
+
+Five, and naming them is what keeps a review from arguing about two different things at once.
+These are the design library's own variant properties, and each maps to something in code:
+
+| Axis | Values | In code |
+|---|---|---|
+| **Prominence** | Primary · Secondary · Tertiary | `variant` |
+| **Purpose** | Default · Destructive | `color` |
+| **Type** | Text only · Leading icon · Icon only | `startIcon`, or the `IconButton` export |
+| **Size** | Medium · Small | `size` |
+| **State** | Default · Hover · Pressed · Focused · Disabled | interaction, plus `disabled` |
+
+**Two combinations the design library does not publish:**
+
+- **A trailing icon.** The `Type` axis has a leading icon and no trailing one.
+- **An icon-only button below primary prominence.** Icon-only exists at primary, default purpose,
+  and nowhere else.
+
+[TITAN-BTN-11](#constraints) and [TITAN-BTN-12](#constraints) state both as rules, and both need
+confirming. The reasoning holds on its own, but the *evidence* is an absence in a published variant
+set — and a set of five axes has 180 combinations, so a missing one can mean ruled out or can mean
+never built. Ask before citing either as settled.
+
+## What Storybook publishes
+
+<Snippet file="generated/matrix/button.mdx" />
+
+## Edge and failure states
+
+The state everyone designs is a short label on a wide button. These are the others.
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| Label longer than the button | The label does **not** wrap — the button grows in width and pushes on whatever sits beside it. One line is the decision, not a limitation: [TITAN-BTN-14](#constraints) | Shorten the label — see [TITAN-BTN-04](#constraints). Buttons do not truncate; a clipped action label is unreadable and unannounced. |
+| Loading | Indicator replaces the leading icon; the button is disabled and holds its width | Resolves on completion. Width is held so adjacent controls do not move — [TITAN-BTN-07](#constraints). |
+| The action fails | **Undefined.** The Button returns to its resting state and says nothing. | Surface the failure adjacent to the control. The Button does not own error display. |
+| Disabled | Not focusable, announces nothing | Pair with a reachable explanation — [TITAN-BTN-06](#constraints). |
+| Permission denied | Same as disabled — indistinguishable from a bug | State the reason. "You do not have permission" is a different message from "Select a row first". |
+
+<Warning>
+  **Failure is the least-specified state.** Nothing in the component or the token layer
+  expresses "this action failed", so every surface improvises. See
+  [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22).
+</Warning>
+
+## Tokens
+
+<Snippet file="generated/tokens/button.mdx" />
+
+<Warning>
+  **Declared padding is not effective padding.** Button declares `padding: 8px 12px`, but with
+  a fixed `control-height-md` of 36px and a label line box of 24.5px the *effective* vertical
+  padding is roughly 5.75px — the declared value is largely inert.
+
+  Vertical space on a Button comes from the height token, not from the padding declaration. Do
+  not reproduce the declared value in a design spec or in generated code.
+</Warning>
+
+## Composition
+
+**Action group order — trailing-primary.** The primary action sits last (rightmost in LTR),
+with dismissive actions to its left.
+
+```
+[ Cancel ]  [ Save Draft ]  [ Publish ]
+  tertiary     secondary     primary
+```
+
+1. The **primary** button is last.
+2. Dismissive actions (`Cancel`, `Close`) are first, always **tertiary**.
+3. Group separation uses a spacing token on the container, never a margin on the button.
+
+<Tip>
+  Ordering is what compositions get wrong, not component selection. A group built from three
+  correct Buttons in the wrong order is a worse outcome than the wrong variant, because the
+  user's muscle memory is in the position rather than the styling.
+</Tip>
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Verb-first | Save Changes | Changes |
+| Specific over generic | Delete Campaign | OK |
+| Title case — see [TITAN-BTN-13](#constraints) | Save Changes | Save changes |
+| No terminal punctuation | Save Changes | Save Changes. |
+| Match the user's word, not the system's | Publish | Commit |
+
+<Note>
+  **Corrected this pass.** This page previously stated sentence case as the rule and framed
+  the theme's title-case rendering as a bug — backwards. zeroheight's Button page states
+  plainly: *"Label text should be title case"* / *"Label text should not be sentence case."*
+  See [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation) for the
+  corrected, per-content-type casing model, and
+  [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23) for what's left as an actual
+  divergence now that the direction is fixed.
+</Note>
+
+<Warning>
+  **Title case here means headline style, not "every word capitalized."** Lowercase short
+  articles, conjunctions, and prepositions (`a`, `the`, `to`, `of`, `and`) unless one is the
+  first or last word — "Save Changes to Draft," not "Save Changes To Draft." The theme's
+  `textTransform: "capitalize"` doesn't know this exception and capitalizes every word
+  unconditionally; for most short, verb-first labels the two happen to agree, but they
+  diverge on any label containing a function word. See
+  [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23).
+</Warning>
+
+**Confirmation labels restate the action, never "Yes"/"No".** A dialog asking "Delete this
+campaign?" answered by "Yes" forces the user to re-read the question to know what "Yes" does.
+`Delete Campaign` is self-describing at the moment of commitment.
+
+## Accessibility
+
+| Key | Behavior |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the Button. `disabled` Buttons are skipped. |
+| <kbd>Enter</kbd> | Activates |
+| <kbd>Space</kbd> | Activates |
+
+- Renders a native `<button>`. Never apply `role="button"` to a `div`.
+- The accessible name comes from `children`. **An icon-only button has no text, so it requires
+  an explicit accessible name** — without one it is announced as "button" and nothing else.
+- `loading` sets `aria-busy="true"` and disables the control.
+- Label contrast meets WCAG 2.2 AA (4.5:1). A **tertiary** button on a tinted surface is the
+  historical failure case — verify it against the surface it actually sits on, not white.
+
+<Warning>
+  **Focus has no semantic token.** [TITAN-A11Y-04](/invoca-design-system/foundations/accessibility#constraints)
+  requires a visible focus indicator, and the token layer supplies none for the general case —
+  `border-focus` is specified and unimplemented. Button therefore inherits whatever the
+  framework draws. Never remove it. See
+  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+</Warning>
+
+**What this component does not handle:** focus return after a dialog it opened closes,
+announcing the result of the action, and its own error state. Those belong to the composition.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-BTN-01** | At most one **primary** button per view region. | Two competing primaries means the primary action was never decided. The decision gets pushed onto the user, who has less context than the designer did. |
+| **TITAN-BTN-02** | The destructive action is never the **primary** button in a confirmation. | Weight follows intended outcome, not severity. Making "Delete" the most prominent control optimizes the interface for the outcome you least want. See [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation). |
+| **TITAN-BTN-03** | Button labels are verb-first. | "Save Changes", not "Changes". A label that is not a verb phrase describes the object rather than the action, which makes the outcome ambiguous. |
+| **TITAN-BTN-04** | Button labels are 1–3 words. | Past three words the label is describing a task, not naming an action. Buttons do not truncate, so a long label grows the control instead. |
+| **TITAN-BTN-05** | Never more than three Buttons in one action group. | Beyond three, weight stops communicating hierarchy. Collapse the overflow into a [Menu](/invoca-design-system/components/actions/menu). |
+| **TITAN-BTN-06** | A `disabled` Button is always accompanied by a reachable explanation of what would enable it. | Disabled controls are not focusable and announce nothing. A disabled control with no stated cause is indistinguishable from a bug. |
+| **TITAN-BTN-07** | `loading` disables the Button and preserves its rendered width. | A Button that resizes on press moves the controls next to it, producing mis-clicks at exactly the moment the user is committing. |
+| **TITAN-BTN-08** | Never use a Button for navigation that has a URL. | Removes right-click, middle-click, ⌘-click, and copy-link. Use [Link](/invoca-design-system/components/actions/link). |
+| **TITAN-BTN-09** | An icon-only button carries an explicit accessible name. | Without one it announces as "button" with no further information, which is unusable by screen reader and unrecoverable by guessing. |
+| **TITAN-BTN-10** | Size is `small` or `medium`. Never `large`. | Only two sizes are themed. `large` renders at dimensions no token defines and no decision covers. |
+| **TITAN-BTN-11** | An icon sits before the label, never after it. **Needs confirmation.** | One icon position means a row of buttons has one rhythm. A trailing icon also reads as "this opens something", which is a menu's or a link's signal, not a button's. |
+| **TITAN-BTN-12** | An icon-only button is primary prominence and default purpose. **Needs confirmation.** | Stripping the label already removes most of the control's information; taking the weight as well leaves a glyph the eye does not register as pressable. An icon-only destructive control is worse still — the one action needing an unambiguous label has none. |
+| **TITAN-BTN-13** | Button labels are title case: capitalize principal words, lowercase short articles/conjunctions/prepositions unless first or last. | Directly stated in zeroheight's Button page. Corrected this pass — see [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#the-base-style). The shipped theme's naive every-word capitalization is a close but imperfect implementation — [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23). |
+| **TITAN-BTN-14** | A button label occupies one line. It never wraps. | A wrapping label makes one control taller than its neighbours, which breaks the alignment of every row of buttons it appears in. The theme enforces this with `nowrap`, so a label too long to fit widens the button instead — shorten it per [TITAN-BTN-04](#constraints). |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented — Button inherits its focus ring |
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | Documentation groups by concept; the package exports by unit |
+| [**TITAN-DIV-11**](/invoca-design-system/foundations/divergences#titan-div-11) | Divergence | The design vocabulary is prominence; code names the treatment |
+| [**TITAN-DIV-23**](/invoca-design-system/foundations/divergences#titan-div-23) | Divergence | The theme's naive capitalize-every-word doesn't implement title case's function-word exceptions |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | No selection rule where two tokens both apply |
+| [**TITAN-GAP-22**](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component expresses a failed action |
+
+## Gaps in the current rules
+
+- **The `large` size is reachable and undefined.** It is not themed, but nothing prevents
+  passing it. [TITAN-BTN-10](#constraints) is a documentation rule with no enforcement.
+- **`tertiary` exists as a design term and in no token.** The prominence vocabulary is three
+  levels; the token layer names none of them. See
+  [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11).
+- **Icon-only sizing has no rule.** Three icon sizes and two control heights exist; nothing
+  states which pairs.
+- **`FilterButton`'s applied-state treatment is not specified.** It carries a `count` prop and
+  two of its own tokens, and no page states what an active filter should look like.
+- **No rule for buttons inside dense table rows** beyond "use a smaller size", which does not
+  say which size or what happens in a row that already has three actions.
+
+## Why it works this way
+
+**Labels are one line, by construction.** A row of buttons reads as a row because the controls
+share a baseline and a height. Allowing one label to wrap trades that for the ability to write a
+longer label — and the longer label was the thing to fix. The theme holds the line so the decision
+does not depend on every author noticing it.
+
+**Prominence is decoupled from severity.** The most common request is to make destructive
+actions red and prominent so users "can't miss them." Prominence is an invitation. The interface
+should be easy to *escape* and deliberate to *commit* — so the destructive action takes a lower
+prominence and the escape route gets the weight. Severity is carried by the colour intent, the
+copy, and the confirmation step, never by prominence.
+
+**The vocabulary is prominence, not treatment.** "Primary" names the decision — this is the
+action the view exists to enable. "Contained" names one way of drawing it. Naming the decision
+means the rule survives a visual change: if primary buttons stopped being filled tomorrow,
+[TITAN-BTN-01](#constraints) would still say the right thing.
+
+**Trailing-primary ordering** matches the platform conventions users bring from elsewhere, and
+puts the primary action nearest the pointer's resting position for the action taken most often.
+
+**Two sizes, not three.** A third size is another definition to maintain, another row in every
+matrix, and another decision at every call site. Two covers dense contexts and standard ones.
+If a case for a third emerges it gets added to the token source — not by passing an un-themed
+value through.
+
+**One page for several exports.** Someone deciding between a labelled button and an icon-only
+one is making a single decision about emphasis and space. Splitting that across two pages makes
+them read one, decide, and never learn the alternative existed.
+
+## Status
+
+<Snippet file="generated/status/button.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/button.mdx" />
+
+- [Button group](/invoca-design-system/components/actions/button-group) — binding several buttons into one control
+- [Link](/invoca-design-system/components/actions/link) — when the result has a URL
+- [Menu](/invoca-design-system/components/actions/menu) — when there are three or more actions
+- [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) — the pattern that governs delete flows
+- [Color](/invoca-design-system/foundations/color) · [Space](/invoca-design-system/foundations/space-and-density) — the tokens behind the variants

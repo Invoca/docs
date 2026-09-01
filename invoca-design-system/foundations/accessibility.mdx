@@ -1,0 +1,197 @@
+---
+title: "Accessibility"
+description: "Which Titan token pairings meet WCAG 2.2 AA — measured from source, not asserted."
+icon: "accessibility"
+keywords: ["accessibility", "a11y", "WCAG", "contrast", "keyboard", "screen reader", "focus"]
+---
+
+<Note>
+  **Contrast ratios on this page are computed from Titan source** by `tools/emit-tokens.mjs`,
+  using the
+  [WCAG 2.x relative luminance formula](https://www.w3.org/WAI/GL/wiki/Relative_luminance).
+  They are arithmetic on the values that ship. Constraints are **Proposed** and need
+  sign-off.
+</Note>
+
+<Warning>
+  **Several standard pairings fail AA.** The results are reported as measured. Nobody has
+  triaged them, and this page does not know whether they are known and accepted or
+  unnoticed. See [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
+</Warning>
+
+## What it governs
+
+The accessibility properties that live in the token layer: contrast, focus, target size, and
+motion. Component-level behavior — keyboard maps, ARIA roles, focus management — lives on
+each component page.
+
+## Vocabulary
+
+| Term | Means |
+|---|---|
+| `focus` | Appears in the specification as **both** a purpose and a state. `border-focus` is specified — and not implemented. See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02). |
+| `alt` | The alternate state, and the contrast-carrying partner of a status colour. On any surface, status text and icons use it. |
+| `invert` | For content on an inverted surface. Its contrast is *not* guaranteed — see the pairings below. |
+| `disabled` | Exempt from contrast minimums, which is why it must never be the only signal. |
+
+<Note>
+  **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
+  baseline the design language is being built on. This is the vocabulary of record — not
+  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+</Note>
+
+## The conformance target
+
+Titan targets **WCAG 2.2 Level AA**.
+
+WCAG 2.2 is the current W3C Recommendation and a backwards-compatible superset of 2.1:
+anything conforming to 2.2 AA also conforms to 2.1 AA. It adds six AA success criteria over
+2.1 and marks 4.1.1 Parsing obsolete. Targeting 2.1 would not reduce the work — it would
+only remove criteria the token layer already governs.
+
+### What 2.2 adds, and whether the token layer covers it
+
+| Criterion | Level | Bears on | Status |
+|---|---|---|---|
+| [2.4.11 Focus Not Obscured (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html) | AA | The `z-*` ladder, sticky headers, drawers | **Unaddressed.** Nothing prevents a sticky region covering a focused control. |
+| [2.5.7 Dragging Movements](https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html) | AA | Slider, reorderable lists, Dropzone | Component-level, not token-level. |
+| [2.5.8 Target Size (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) | AA | `control-height-*` | **Covered** — see the target size table below. |
+| [3.2.6 Consistent Help](https://www.w3.org/WAI/WCAG22/Understanding/consistent-help.html) | A | Page and view composition | Out of scope for Foundations. |
+| [3.3.7 Redundant Entry](https://www.w3.org/WAI/WCAG22/Understanding/redundant-entry.html) | A | Forms, wizards | Pattern-level. |
+| [3.3.8 Accessible Authentication (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/accessible-authentication-minimum.html) | AA | Login | Out of scope for Foundations. |
+
+Criteria carried over from 2.1 that the token layer governs directly:
+
+| Criterion | Level | Status |
+|---|---|---|
+| [1.4.3 Contrast (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) | AA | **Failing** for four token pairings — see below. |
+| [1.4.11 Non-text Contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html) | AA | **Failing** for `icon-success` and `icon-warning` on light. |
+| [2.4.7 Focus Visible](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html) | AA | No semantic focus token exists — see [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02). |
+| [1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) | AA | Not verified anywhere. |
+| [2.3.3 Animation from Interactions](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) | AAA | No reduced-motion token exists. |
+
+## Contrast
+
+<Snippet file="generated/tokens/contrast.mdx" />
+
+### What to do about the failures
+
+1. **`text-success` and `text-warning` fail on every light surface** — 2.41:1 and 2.74:1,
+   below even the 3:1 large-text floor. Use `text-success-alt` and `text-warning-alt`.
+2. **`text-info` and `text-error` pass on white and fail on the page canvas.**
+   `background-view-background` (`#f5f6fa`) is the more common of the two surfaces. Use the
+   `-alt` variants for body-size status text anywhere.
+3. **White text on the success and warning fills fails badly.** A bold status fill needs dark
+   text, and no token expresses that pairing — see
+   [TITAN-GAP-07](/invoca-design-system/foundations/open-decisions#titan-gap-07).
+
+## Focus
+
+<Warning>
+  **No semantic focus token exists.** Three component-scoped rings ship —
+  `form-field-focus-ring`, `form-field-focus-ring-error`, and `data-grid-focus-ring` — each
+  authored independently against a primitive. Outside a Form field or DataGrid there is no
+  token to reach for, so every component decides for itself.
+
+  [TITAN-A11Y-04](#constraints) requires a visible focus indicator and the token layer does
+  not supply one. This is the most consequential accessibility gap in the system. See
+  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+</Warning>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-A11Y-01** | Text meets 4.5:1, or 3:1 for large text, against every surface it can appear on. | A token that passes on white can fail on the page canvas. Both are surfaces text actually sits on. |
+| **TITAN-A11Y-02** | Status text and icons use the `-alt` variant. | The plain status tokens measure 2.41:1 and 2.74:1 — not a close call. |
+| **TITAN-A11Y-03** | Contrast is verified against `background-view-background`, not only `background-default`. | The page canvas is `#f5f6fa`, not white. Two tokens pass on white and fail on the canvas. |
+| **TITAN-A11Y-04** | Focus is always visible and never removed. | Keyboard users cannot navigate without it. `outline: none` with no replacement removes navigation entirely. |
+| **TITAN-A11Y-05** | Color never carries meaning alone. Pair with icon, text, or both. | Color vision deficiency, monochrome displays, and bright ambient light each remove color as a channel. |
+| **TITAN-A11Y-06** | Every transition respects `prefers-reduced-motion: reduce`. | Vestibular disorders make large-area motion physically painful. See [TITAN-MOT-03](/invoca-design-system/foundations/motion#constraints). |
+| **TITAN-A11Y-07** | Interactive targets are at least 24×24px. | WCAG 2.2 Target Size (Minimum) is an AA criterion. Both shipped control heights clear it; nothing may reduce them further. |
+| **TITAN-A11Y-08** | Opacity is never used to derive a color variant. | Opacity composites against whatever is behind it, so the resulting contrast is unknowable at author time. |
+| **TITAN-A11Y-09** | Visual order matches DOM order. | Reordering with CSS leaves keyboard and screen-reader order unchanged, producing focus that jumps around the screen. |
+| **TITAN-A11Y-10** | Content reflows at 320px equivalent without horizontal scrolling. | This is desktop at 400% zoom, not a phone. A desktop-only product still has to meet it. |
+| **TITAN-A11Y-11** | A focused control is never obscured by a sticky or overlaying region. | WCAG 2.2 adds this at AA. Titan's `z-*` ladder makes it possible to cover a focused element with a sticky header and nothing currently prevents it. |
+
+## What is exempt
+
+These get flagged in review as failures when they are not:
+
+- **Disabled controls** have no contrast requirement. `text-disabled` at 2.42:1 is
+  conformant — which is why disabled state must never be the only signal that something is
+  unavailable.
+- **Purely decorative icons** are exempt from non-text contrast, provided they are hidden
+  from assistive technology and carry no information.
+- **Logos and brand marks** are exempt.
+- **Inactive UI components** — genuinely non-interactive ones — are exempt.
+
+## Testing
+
+| Check | How | When |
+|---|---|---|
+| Token contrast | `emit-tokens.mjs --check` — recomputes every ratio from source | Every docs build |
+| Rendered contrast | axe or Lighthouse against the product | CI, every build |
+| Keyboard | Tab through the whole flow with no mouse | Every component PR |
+| Focus visibility | Confirm a visible indicator on every focusable element | Every component PR |
+| Focus not obscured | Tab through with sticky headers and drawers open | Any PR touching `z-*` or sticky layout |
+| Reduced motion | Toggle the OS setting, confirm transitions collapse | Any PR touching motion |
+| Zoom / reflow | 400% browser zoom, confirm no horizontal scroll | Any PR touching layout |
+| Screen reader | VoiceOver (macOS) or NVDA (Windows) | Any PR touching semantics or ARIA |
+| Forced colors | Windows High Contrast Mode | Any PR relying on shadow or background to convey state |
+
+Automated tooling catches roughly a third of issues. It cannot tell whether an `aria-label`
+is accurate, whether focus order is sensible, or whether an error message is comprehensible.
+The manual checks are not optional.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented |
+| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
+| [**TITAN-GAP-06**](/invoca-design-system/foundations/open-decisions#titan-gap-06) | Open decision | the measured contrast failures are untriaged |
+| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
+| [**TITAN-GAP-09**](/invoca-design-system/foundations/open-decisions#titan-gap-09) | Open decision | Focus Not Obscured is unaddressed |
+| [**TITAN-GAP-10**](/invoca-design-system/foundations/open-decisions#titan-gap-10) | Open decision | no forced-colors guidance exists |
+| [**TITAN-GAP-11**](/invoca-design-system/foundations/open-decisions#titan-gap-11) | Open decision | contrast is not enforced in Titan's own CI |
+
+## Gaps in the current rules
+
+- **The light-mode status failures are untriaged.** Whether they are known and accepted,
+  scoped to non-text uses, or unnoticed is not recorded. See
+  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
+- **`text-error-invert` on `background-error` fails in dark** (2.49:1) and is marginal in
+  light (4.36:1), despite the names implying they pair.
+- **No token expresses dark text on a bold status fill**, which is what conformant
+  light-mode success and warning banners require.
+- **No semantic focus token exists.** See
+  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+- **No reduced-motion implementation exists** in the token layer. See
+  [Motion](/invoca-design-system/foundations/motion#gaps-in-the-current-rules).
+- **No forced-colors / High Contrast Mode guidance exists.**
+- **Focus Not Obscured is unaddressed.** No rule governs the interaction between the `z-*`
+  ladder and focus.
+- **Contrast is checked here, not in Titan.** `emit-tokens.mjs --check` fails the docs build
+  if a ratio changes, but nothing in Titan's own CI blocks a token change that breaks
+  contrast.
+
+## Related
+
+A generated map of which components consume which foundation does not exist yet.
+
+## Why it works this way
+
+**The `-alt` variants exist because saturated status colors do not carry text contrast.** A
+green that reads as "success" at a glance measures roughly 2.4:1 on white — about half of
+what body text requires. Titan keeps the vivid value for fills and supplies a darkened
+`-alt` for text and icons. The cost is that authors must know which is which, which is why
+[TITAN-A11Y-02](#constraints) is a constraint rather than a note.
+
+**Contrast is arithmetic, not review.** A reviewer comparing two swatches cannot estimate a
+ratio. The failures on this page are the evidence: several ship today in a system that has
+had design attention. Computing the ratios from token values catches all of them before
+anyone looks.

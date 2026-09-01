@@ -1,0 +1,202 @@
+---
+title: "DatePicker"
+description: "Picks a single date or a start/end range from a calendar, removing the format ambiguity of typing one."
+icon: "calendar"
+tag: "Stable"
+keywords: ["calendar", "date range", "date range picker", "range selection", "date field"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, status, and adoption on this page are generated from Titan source.**
+  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
+  Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A calendar control for picking a date, or a start/end range, without asking the reader to
+type one. It removes the format ambiguity a typed date carries — the reasoning
+[TITAN-INPUT-07](/invoca-design-system/components/forms/input#constraints) applies to numeric spinners applies here
+too, to a worse-behaved input.
+
+**This page covers single-date and range selection together** — the design library models
+both as one `Display` axis on the same component, not two.
+
+## Live example
+
+<StorybookFrame story="components-datepicker--default" height={400} />
+
+<Note>
+  Story ID `pending`. This session did not have access to
+  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+</Note>
+
+## Exports
+
+<Snippet file="generated/props/date-picker.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Day cell** | Date cell, day tile | **Day cell** |
+| **Trigger field** | Date input | **Trigger field** — the text field showing the chosen value, confirmed in the design library as an `Input Group` paired with the calendar |
+| **Range endpoint** | Start/end date | **Start date** / **End date** |
+
+## Choose DatePicker when
+
+- The value is a calendar date or a date range.
+- The reader benefits from seeing surrounding dates — day of week, proximity to today — to
+  make the choice, rather than recalling one from memory.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Capture a value with no calendar meaning | [Input](/invoca-design-system/components/forms/input) | Browsing a calendar is this component's entire value; forcing it onto non-date data adds interaction cost with no benefit |
+| Capture a duration or a relative offset ("in 2 hours") | [Input](/invoca-design-system/components/forms/input), or a dedicated relative-time control (not modeled — see [Gaps](#gaps-in-the-current-rules)) | Nothing in the design library models a duration or relative-time axis for this component |
+
+## Anatomy
+
+<Note>
+  Anatomy diagram `pending` — `/images/components/datepicker-anatomy.png`. The images
+  directory is empty; nothing is published to generate it from yet.
+</Note>
+
+| # | Part | Required |
+|---|---|---|
+| 1 | Trigger field | Yes in the popover pattern; no in an inline/embedded calendar (confirmed composed inside a Card in the design library — see [Composition](#composition)) |
+| 2 | Calendar header — month/year label and navigation | Yes whenever the calendar renders |
+| 3 | Day grid | Yes |
+| 4 | Range summary display (start – end text) | No — single-selection shows one date only |
+| 5 | Action buttons (confirm/cancel a range) | No — confirmed as a distinct "with buttons" variant in the design library |
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/date-picker.mdx" />
+
+<Info>
+  **Confirmed from the Figma library, not source.** Real axes found:
+
+  - **Mode**: `Display=Single Selection` / `Range Selection` on the picker itself.
+  - **Day-cell state**: `State=Default/Hover/Pressed/Selected/Disabled/Focused` — six states,
+    more than any other Forms component documented so far.
+  - **Day-cell role**: `Display=Start Date/End Date/Within Range/Default` — a range needs to
+    distinguish its two endpoints from the dates between them; `Default` is the single-select
+    case.
+  - **Today marker**: `Today?=True/False`, crossed independently with every state and role
+    above — including `Today?=True` at `State=Selected`, confirming today and "selected" are
+    meant to remain visually distinguishable even when they coincide, not for one to silently
+    override the other.
+  - **Header navigation**: `Navigation=Forward Button/Back Button/None/Back and Forward
+    Buttons`.
+</Info>
+
+## Edge and failure states
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| A day outside the selectable range (before a minimum or after a maximum date) | The `Disabled` day-cell state | Should be paired with a reachable reason per [TITAN-DATEPICKER-04](#constraints) |
+| Range mode with only a start date chosen | **Undefined** how the grid previews the incomplete range | See [Gaps](#gaps-in-the-current-rules) |
+| Today falls in a month the reader has navigated away from | **Undefined** — no "jump to today" control was found among the header's navigation options | See [Gaps](#gaps-in-the-current-rules) |
+| The trigger field's typed value doesn't parse (if typing is allowed at all) | **Undefined**, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) own async/invalid gaps | See [Gaps](#gaps-in-the-current-rules) |
+
+## Tokens
+
+<Snippet file="generated/tokens/date-picker.mdx" />
+
+## Composition
+
+Confirmed directly from the design library's own composed examples:
+
+- **Trigger + popover.** An `Input Group` (the trigger field) paired with a `Card` (the
+  calendar) — the standard pattern of a field that opens a calendar on interaction.
+- **Inline.** The calendar composed directly inside a `Card` with no trigger field, for an
+  always-visible picker.
+- **Modal.** The calendar composed inside a Modal, for a picker that takes over the screen
+  rather than popping over the trigger.
+- **With buttons.** A distinct variant adding a confirm/cancel footer — likely needed for range
+  selection, where a range is provisional until both endpoints are chosen and confirmed,
+  unlike a single date's instant commit on click.
+- **Inside Form.** A composed example placing this component alongside other fields, confirming
+  it pairs with [FieldLabel](/invoca-design-system/components/forms/field-label) the same way
+  [Input](/invoca-design-system/components/forms/input) and [Select](/invoca-design-system/components/forms/select) do.
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| A range's start and end render in the same date format | `3/1/2026 – 3/8/2026` | `3/1 – 3/8/2026` |
+| Follow the system's date format everywhere this component renders one | Per [TITAN-DATE-01](/invoca-design-system/content/dates-and-times#constraints) and [TITAN-DATE-03](/invoca-design-system/content/dates-and-times#constraints) | A picker-specific format that disagrees with the rest of the product |
+
+## Accessibility
+
+| Key | Behavior |
+|---|---|
+| <kbd>↑</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> / <kbd>→</kbd> | Moves one week / one day within the day grid |
+| <kbd>Page Up</kbd> / <kbd>Page Down</kbd> | Moves one month |
+| <kbd>Home</kbd> / <kbd>End</kbd> | Moves to the start / end of the visible week |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Selects the focused day |
+
+- Each day cell announces its full date and any status that applies — today, selected, or
+  disabled — not a bare number.
+- The trigger-plus-popover composition follows the standard disclosure pattern: the trigger
+  reports its expanded state, and focus moves into the calendar on open and returns to the
+  trigger on close.
+
+**What this component does not handle:** validating that a chosen date or range is acceptable
+beyond min/max bounds — that belongs to [Form validation](/invoca-design-system/patterns/form-validation).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DATEPICKER-01** | A date range is captured with this component's own range mode, never with two independent single-date pickers placed side by side. | Two separate pickers can produce a start date after the end date with nothing to prevent it; one component modeling the relationship prevents that class of error by construction. |
+| **TITAN-DATEPICKER-02** | A range's start and end render in the same date format, per [TITAN-DATE-03](/invoca-design-system/content/dates-and-times#constraints). | A range with two different formats on its two ends reads as two unrelated values, not one span. |
+| **TITAN-DATEPICKER-03** | Today's marker remains visible even when today is also the selected date. | Confirmed as a real, modeled combination in the design library — losing the "today" cue the moment it's selected would make it harder to reorient after navigating to a different month and back. |
+| **TITAN-DATEPICKER-04** | A disabled day cell is paired with a reachable reason it can't be chosen, somewhere in the composition. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) — a disabled cell alone announces nothing about why. |
+
+## Known issues
+
+None specific to this component beyond the Forms-group-wide items already tracked — see
+[TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).
+
+## Gaps in the current rules
+
+- **No "jump to today" affordance was found.** The header's navigation axis has forward, back,
+  both, or neither — nothing for returning to the current month directly.
+- **No stated behavior for an in-progress range** — how the grid previews a range after only
+  the start date is chosen is undecided.
+- **No DatePicker-specific tokens exist in the theme snapshot at all.** Every fact on this page
+  is structural, from the design library — none of it is a resolved color, spacing, or motion
+  value. This is a wider gap in this page's grounding than any other Forms page written so
+  far.
+- **No stated minimum or maximum navigable range** for the calendar header.
+
+## Why it works this way
+
+**One component for single and range selection** keeps the trigger, header, and day-grid
+mechanics shared, so a reader who has learned to use this component for one date already knows
+how to use it for a range — the same reasoning behind
+[Input](/invoca-design-system/components/forms/input#why-it-works-this-way) covering single-line and multiline
+together.
+
+**Today gets an independent marker from selection** so the reader can always locate "today" at
+a glance, even deep in a different month than whatever is currently selected — losing that
+anchor would make the calendar harder to reorient in after browsing away from it.
+
+## Status
+
+<Snippet file="generated/status/date-picker.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/date-picker.mdx" />
+
+- [Input](/invoca-design-system/components/forms/input) — the trigger field's own chrome and behavior
+- [FieldLabel](/invoca-design-system/components/forms/field-label) — pairs with this component the same way as any other field
+- [Dates and times](/invoca-design-system/content/dates-and-times) — the format rules this component's display must follow
+- [Form validation](/invoca-design-system/patterns/form-validation) — decides whether a date or range is required or bounded

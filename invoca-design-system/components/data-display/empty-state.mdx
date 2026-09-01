@@ -1,0 +1,255 @@
+---
+title: "EmptyState"
+description: "A centred illustration and message for a region that has nothing to show."
+icon: "component"
+tag: "Draft"
+keywords: ["empty state", "zero state", "no data", "no results", "blank slate", "placeholder", "illustration"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Exports, published variants, adoption, and status on this page are generated from Titan
+  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
+  off. Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+An **empty state** fills a region that has nothing in it with an illustration, a short title, and
+an optional line of supporting text. It replaces the content, not the page: the header, controls,
+and footer stay where they are.
+
+Its name understates its range. The same component carries **no data yet**, **no results**, **a
+failed load**, and **a completed milestone** — the published examples include an error message and
+a congratulations message, and the illustration set includes one for each. What it is really for is
+any moment where a region has no content and the reader needs to know why.
+
+## Live example
+
+<StorybookFrame story="components-empty-states--default" height={380} />
+
+## Exports
+
+<Snippet file="generated/props/empty-state.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Empty state** | Zero state, blank slate, no-data state | **`empty state`** | `EmptyState` |
+| **Zero state** | First run, new account, nothing yet | **`zero state`** | `EmptyState` with a *nothing yet* message |
+| **No results** | No matches, empty search | **`no results`** | `EmptyState` with the `search` illustration |
+| **Title** | Headline, message | **`title`** | `title` |
+| **Supporting line** | Subtitle, description, body | **`supporting line`** | `subTitle` |
+| **Illustration** | Graphic, artwork, image, spot art | **`illustration`** | `illustrationType`, or `customIllustration` |
+
+**"Zero state" and "no results" are different messages, and this is the distinction that matters
+most.** A zero state means the reader has not created anything yet, and the next step is to create
+one. No results means the data exists but the current filter or query excludes it, and the next
+step is to widen it. Telling a new user "no results" reads as a broken product; telling a searching
+user "get started" reads as a lost query.
+
+Product code has already discovered the distinction — the adoption data below includes separately
+named components for *no models*, *no search results for models*, and *no archived models* in the
+same application.
+
+## Choose EmptyState when
+
+- A region that normally holds content has none, and the reader needs to know why.
+- The reason is worth an illustration — the region is large enough that a bare line of text would
+  read as a rendering failure.
+- There is something the reader can do about it, or a reason they can understand.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Report a problem while the content is still there | [Alert](/invoca-design-system/components/feedback/alert) | An alert sits alongside content. An empty state replaces it, so using one throws away what the reader already had. |
+| Show that content is on its way | [Skeleton](/invoca-design-system/components/feedback/skeleton) | Empty and loading are different states. An empty state during a load tells the reader there is nothing, and then contradicts itself. |
+| Report a transient result of an action | [Toast](/invoca-design-system/components/feedback/toast) | An empty state is a place. A toast is a moment. |
+| Fill a small region — a card, a sidebar panel | A line of text | The illustration is 320px wide. In a small region it dominates what it is explaining. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Illustration | `illustrationType` or `customIllustration` | No — one is drawn by default |
+| 2 | Title | `title` | **Yes in practice** — see [TITAN-EMP-01](#constraints) |
+| 3 | Supporting line | `subTitle` | No |
+| 4 | The action that resolves it | *nothing* — composed beside the component | No slot exists |
+
+<Warning>
+  **There is no action slot, in code or in the design library.** Both define an empty state as
+  illustration plus title plus supporting line, and nothing else. An empty state that offers a way
+  out — "Create your first campaign" — is built by placing a [Button](/invoca-design-system/components/actions/button)
+  after the component, inside the same region.
+
+  This matters because rules elsewhere require that action: [TITAN-TBL-04](/invoca-design-system/components/data-display/table#constraints)
+  says an empty table offers the action that resolves it. That rule is satisfied by composition, not
+  by the component.
+</Warning>
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/empty-state.mdx" />
+
+**Fifteen illustrations ship**, and the choice is the component's only real variant axis:
+
+| Illustration | For |
+|---|---|
+| `default` | Nothing more specific applies |
+| `search` | No results for a query or filter |
+| `error` | A failed load |
+| `calls` · `transcripts` · `survey` | The subject of the region, when it is one of these |
+| `comment` · `activeComments` · `inactiveComments` | Comment and annotation regions |
+| `activeTable` · `inactiveTable` | A table with no rows |
+| `congratulations` | A completed milestone |
+| `discover` · `send` · `airBalloon` | Onboarding and first-run moments |
+
+**Pick by meaning, not by decoration.** `search` says "your query matched nothing"; `error` says
+"this failed". Reaching for `airBalloon` because it is the nicest drawing costs the reader the one
+piece of information the illustration was carrying.
+
+**One size.** The illustration is fixed at the `empty-state-illustration-*` dimensions and the
+component centres itself in whatever region contains it. There is no compact variant.
+
+**A custom illustration bypasses the sizing.** `customIllustration` is rendered as given, outside
+the wrapper that applies the size tokens — a published example passes an icon, which renders at
+icon size. If you pass your own, size it yourself to match.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| No `title` and no illustration set | Falls back to **"No Records found!"** | Always pass a title. The fallback is not compliant copy — see [Content](#content). |
+| An `illustrationType` but no `title` | The illustration renders with **no message at all** | A picture with no words does not say why the region is empty. A published example does this; do not copy it. |
+| `title=""` with only a `subTitle` | An empty heading renders, and the message lands in the supporting line | Put the message in `title`. |
+| A very long `subTitle` | It wraps and pushes the region taller; there is no limit | Keep it to one sentence — [TITAN-EMP-04](#constraints). |
+| The region is narrower than the illustration | The illustration does not shrink | Use a line of text instead, or give the region more room. |
+
+## Tokens
+
+<Snippet file="generated/tokens/empty-state.mdx" />
+
+Two component tokens: `empty-state-illustration-width` and `empty-state-illustration-height`. The
+gap between the illustration and the text comes from `spacing-5`, and both lines of text come from
+the type scale.
+
+## Composition
+
+**An empty state replaces the content of a region, not the region.** In a
+[list view](/invoca-design-system/views/list-view) it goes inside `Contents`; the page header, its controls, and its
+footer stay. A reader whose filter matched nothing still needs the filter, in order to change it.
+
+**The resolving action goes after it, in the same region.** One action, and it is the one that
+fixes the state — create the first record, clear the filter, retry the load.
+
+**A table's empty state replaces the rows, not the table.** Keep the column headers: they tell the
+reader what they would have been looking at, and they are what makes an empty table legible as a
+table.
+
+## Content
+
+- **The title says what is not here**, in the reader's words: "No campaigns yet". Not "Empty", not
+  "No data".
+- **The supporting line says what to do about it**, in one sentence: "Create a campaign to start
+  routing calls."
+- **Sentence case, no exclamation marks** — see [Capitalization](/invoca-design-system/content/capitalization-and-punctuation).
+- **Never say "records"** in interface copy. A reader sees campaigns, calls, or rows.
+- **Distinguish the two cases in the words**, not only the illustration: "No campaigns yet" for a
+  zero state, "No campaigns match these filters" for no results.
+- **The action, if there is one, is a link button — never a solid one.** Confirmed from
+  source; see [TITAN-EMPTYCOPY-04](/invoca-design-system/content/empty-state-copy#constraints). Added this pass —
+  this page didn't previously state it.
+
+<Warning>
+  **The default message breaks three of those rules.** With no props, the component renders
+  **"No Records found!"** — title case, an exclamation mark, and the word *records*. Do not rely on
+  the fallback; pass a title. Recorded as an issue against the component, not as guidance.
+</Warning>
+
+## Accessibility
+
+**The title carries the region's message, so it must be text** — not baked into the illustration.
+An illustration with the message drawn into it is invisible to a screen reader.
+
+**The illustration is decorative.** It repeats what the title says, so it needs no description of
+its own; what it must not do is carry information the text omits.
+
+**An empty state that appears in response to an action should be announced.** A reader who applies
+a filter and gets no results needs to know that, and nothing about this component announces
+itself — the announcement belongs to the region that swapped its content.
+
+<Warning>
+  **The supporting line renders as a heading, and it is not one.** `title` renders as an `h3` and
+  `subTitle` renders as an `h6` — skipping two levels, and asserting that a sentence of supporting
+  text is a document heading. This corrupts the heading outline of any page carrying an empty
+  state. See [TITAN-DIV-22](/invoca-design-system/foundations/divergences#titan-div-22).
+</Warning>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-EMP-01** | Always pass an explicit `title`. | Without one the component either says nothing at all or falls back to copy the content rules prohibit. Both leave the reader guessing whether the region is empty or broken. |
+| **TITAN-EMP-02** | A zero state and a no-results state carry different copy. | They have different causes and different next steps. Telling a new user "no results" describes their account as a failed search. |
+| **TITAN-EMP-03** | The illustration matches the meaning: `search` for no results, `error` for a failure. | The illustration is read before the text. One that contradicts the message costs the reader the time it takes to notice. |
+| **TITAN-EMP-04** | The supporting line is one sentence. | It sits under a heading in a centred column. Past a sentence it stops being a caption and becomes a paragraph nobody reads. |
+| **TITAN-EMP-05** | An empty state that a reader can resolve carries exactly one action, placed after it. | More than one action in an empty region is a menu with no context. None at all leaves a dead end where the system knows the next step. |
+| **TITAN-EMP-06** | An empty state never replaces a region that is still loading. | Announcing "nothing here" and then filling the region contradicts itself, and the reader who left already believes the first answer. |
+| **TITAN-EMP-07** | Never put the message only in the illustration. | Screen readers get nothing, and the illustration is the part that changes when someone redesigns it. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-22**](/invoca-design-system/foundations/divergences#titan-div-22) | Divergence | The supporting line renders as an `h6` beneath an `h3` |
+
+**Also true and not yet recorded as either:**
+
+- The default message, **"No Records found!"**, violates the system's own capitalization,
+  punctuation, and word-choice rules.
+- **Five of the fifteen illustrations have no design representation** — `activeComments`,
+  `activeTable`, `error`, `inactiveComments`, and `inactiveTable` exist in code and not in the
+  design library, including the one an error state needs.
+- `IllustrationWrapper` spreads any additional props into its `style` object, so a prop that is not
+  a style property becomes a style key.
+
+## Gaps in the current rules
+
+- **No rule for which illustration belongs to which region.** Fifteen exist, several overlap, and
+  nothing states whether a table's empty state should use `activeTable`, `search`, or `default`.
+- **No small variant.** The illustration is one size, so an empty state inside a card or a panel is
+  either oversized or hand-built.
+- **Nothing states whether the illustration may be omitted.** Passing an empty custom illustration
+  is possible; whether a text-only empty state is sanctioned is undecided.
+- **No rule for the action's prominence.** [TITAN-EMP-05](#constraints) requires one action and
+  does not say whether it is primary or secondary.
+- **Whether an empty state may carry a link to documentation is unstated**, which is the most
+  common request for an onboarding zero state.
+
+## Why it works this way
+
+**The illustration earns its place by carrying the category of the message.** Empty, no results,
+failed, and finished are four different situations, and the drawing distinguishes them before the
+reader has read a word. That is also the whole argument for choosing it by meaning: an illustration
+picked for looks makes the region prettier and slower to understand.
+
+**Replacing content rather than the region keeps the exit available.** The most common empty state
+in a product is a filter that matched nothing, and the reader's next action is to change the
+filter. A pattern that blanked the whole page would take the filter away with it.
+
+## Status and changelog
+
+<Snippet file="generated/status/empty-state.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/empty-state.mdx" />
+
+- [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) — the pattern this composes into
+- [Table](/invoca-design-system/components/data-display/table) — the region that most often has nothing to show
+- [Skeleton](/invoca-design-system/components/feedback/skeleton) · [Alert](/invoca-design-system/components/feedback/alert) — the two states this is confused with
+- [Voice & tone](/invoca-design-system/content/voice-and-tone) · [Empty state copy](/invoca-design-system/content/empty-state-copy)

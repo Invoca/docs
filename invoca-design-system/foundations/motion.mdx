@@ -1,0 +1,171 @@
+---
+title: "Motion"
+description: "Durations and easings, and the rules for applying them."
+icon: "activity"
+keywords: ["motion", "animation", "transition", "duration", "easing", "reduced motion"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+Every transition and animation: how long it takes and how it accelerates. Eleven tokens —
+seven durations and four easings.
+
+<Warning>
+  **Motion is the least-decided foundation.** The eleven values ship and are what renders,
+  but nothing records why these durations and not others, or which interaction each is
+  meant for. The mapping on this page is a proposal.
+
+  Treat that as the cost of change: a color token overturns an Invoca decision, a duration
+  token overturns nothing that has been written down.
+</Warning>
+
+## Vocabulary
+
+<Warning>
+  **The naming specification does not cover motion.** It defines the six naming axes and 64
+  colour definitions; motion appears in neither. The terms used on this page are therefore
+  descriptive rather than decided — see
+  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
+</Warning>
+
+Durations are named by **length** (`shortest` … `complex`) and easings by **curve shape**
+(`ease-in`, `ease-out`, `sharp`). Neither names what the value is *for*, so there is no
+shared way to say how Titan moves — see
+[TITAN-GAP-16](/invoca-design-system/foundations/open-decisions#titan-gap-16).
+
+## Durations
+
+| Token | Value | For |
+|---|---|---|
+| `motion-duration-shortest` | 150ms | State changes on a control already under the pointer — hover, active, focus ring |
+| `motion-duration-shorter` | 200ms | Small elements appearing in place — tooltip, checkbox check, chip removal |
+| `motion-duration-short` | 250ms | Expanding or collapsing in place — accordion, disclosure, inline row expansion |
+| `motion-duration-standard` | 300ms | The default for anything without a more specific reason |
+| `motion-duration-complex` | 375ms | Multi-part transitions where several things move in sequence |
+| `motion-duration-entering-screen` | 225ms | An element arriving from off-screen — drawer opening, menu appearing |
+| `motion-duration-leaving-screen` | 195ms | An element departing — drawer closing, menu dismissing |
+
+**Entering is slower than leaving** (225ms vs 195ms), and that asymmetry is deliberate.
+Arrival needs to be followed; departure needs to get out of the way. A dismissal that takes
+as long as an appearance feels sluggish, because the user has already moved on.
+
+## Easings
+
+| Token | Curve | For |
+|---|---|---|
+| `motion-easing-ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` | The default. Anything that starts and ends on screen. |
+| `motion-easing-ease-out` | `cubic-bezier(0.0, 0, 0.2, 1)` | Elements **entering**. Fast at the start, settling at the end. |
+| `motion-easing-ease-in` | `cubic-bezier(0.4, 0, 1, 1)` | Elements **leaving**. Slow at the start, accelerating off screen. |
+| `motion-easing-sharp` | `cubic-bezier(0.4, 0, 0.6, 1)` | Elements that leave and may return — a temporary panel |
+
+## Choosing a token
+
+| You need… | Duration | Easing |
+|---|---|---|
+| Hover, focus, or active feedback on a control | `shortest` (150ms) | `ease-in-out` |
+| A tooltip or small popover appearing | `shorter` (200ms) | `ease-out` |
+| An accordion or disclosure expanding | `short` (250ms) | `ease-in-out` |
+| A drawer or side panel opening | `entering-screen` (225ms) | `ease-out` |
+| A drawer or side panel closing | `leaving-screen` (195ms) | `ease-in` |
+| A modal appearing | `entering-screen` (225ms) | `ease-out` |
+| A modal dismissing | `leaving-screen` (195ms) | `ease-in` |
+| Anything with no more specific reason | `standard` (300ms) | `ease-in-out` |
+| A sequence where several elements move in turn | `complex` (375ms) | `ease-in-out` |
+
+<Warning>
+  **Pair the easing with the direction.** `ease-out` for entering, `ease-in` for leaving.
+  Reversed, an entrance appears to hesitate and an exit appears to slam. This is the most
+  common motion defect and it is invisible in a static review.
+</Warning>
+
+## Token reference
+
+<Snippet file="generated/tokens/motion.mdx" />
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-MOT-01** | Duration and easing come from tokens. Never a literal `300ms` or an inline `cubic-bezier()`. | A literal is invisible to the audit and cannot be adjusted system-wide. It is also how a 400ms outlier ends up next to a 300ms standard. |
+| **TITAN-MOT-02** | Entering uses `ease-out`; leaving uses `ease-in`. | Reversed easing makes entrances hesitate and exits slam. The asymmetry is what makes motion read as physical. |
+| **TITAN-MOT-03** | Every transition respects `prefers-reduced-motion: reduce`. | Vestibular disorders make large-area motion physically painful. This is a health requirement, not a preference. |
+| **TITAN-MOT-04** | Reduced motion removes movement, not feedback. Substitute an instant state change; never remove the state change. | A user who cannot see that a menu opened is worse off than one who saw it slide. |
+| **TITAN-MOT-05** | Nothing exceeds `motion-duration-complex` (375ms). | Beyond roughly 400ms a transition stops reading as responsive and starts reading as latency. |
+| **TITAN-MOT-06** | Motion never conveys information on its own. | It is unavailable under reduced-motion, invisible to screen readers, and missed entirely by anyone who looked away. |
+| **TITAN-MOT-07** | Nothing animates that the user did not initiate, except loading indicators. | Unprompted motion pulls attention away from the task and cannot be predicted or avoided. |
+
+## Accessibility
+
+**Reduced motion is the whole accessibility story for this foundation**, and it is not
+currently implemented anywhere in the token layer.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+```
+
+- **Substitute, do not delete.** A drawer that slid in should now appear instantly — it
+  should still appear. Removing the transition must never remove the state change.
+- **Large-area movement is the harmful case.** Full-screen slides, parallax, and
+  zoom-on-scroll trigger vestibular symptoms. A 150ms color fade on a button does not.
+  When in doubt, keep opacity, drop transform.
+- **Nothing flashes more than three times per second**
+  ([WCAG 2.2 Three Flashes, AA](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html)).
+  Loading indicators are the usual risk.
+- **Anything that moves for more than five seconds needs a pause control**
+  ([Pause, Stop, Hide, AA](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html)).
+  Indeterminate spinners on long operations are the case to watch.
+- Motion must never be the only indication that something happened. Pair it with a text or
+  state change a screen reader can announce.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
+| [**TITAN-GAP-16**](/invoca-design-system/foundations/open-decisions#titan-gap-16) | Open decision | no design intent is recorded for any motion value |
+
+## Gaps in the current rules
+
+This foundation has more gaps than settled rules. Do not infer answers.
+
+- **No reduced-motion handling exists in the token layer.** No token, no media query, no
+  documented pattern. The constraints above state what should be true; nothing enforces it.
+  This is the most significant gap in Foundations.
+- **No Invoca intent is recorded for any value.** Whether 300ms is right for Titan's
+  surfaces has not been asked.
+- **The duration-to-use mapping on this page is proposed, not transcribed.** Nothing binds
+  a named duration to a component, so which duration a Drawer actually uses is a
+  component-level fact this page cannot assert.
+- **No curve is named for what it does.** The easings are named by shape, not by purpose,
+  so there is no shared vocabulary for "how Titan moves."
+- **No guidance exists on animating layout properties.** Nothing says whether to prefer
+  `transform`/`opacity` over `height`/`top`, which is a performance decision with a visible
+  cost on long tables.
+
+## Related
+
+**2 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Card` · `Dropzone`
+

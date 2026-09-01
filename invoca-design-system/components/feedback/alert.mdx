@@ -1,0 +1,262 @@
+---
+title: "Alert"
+description: "An inline message about the state of the thing on screen, shown alongside it."
+icon: "component"
+tag: "Draft"
+keywords: ["alert", "banner", "inline message", "error", "warning", "success", "info", "severity", "notification"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Exports, published variants, adoption, and status on this page are generated from Titan
+  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
+  off. Contrast figures below are computed from the shipped token values. Disagreements between the
+  design language and the shipped code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+An **alert** is a message about the state of what the reader is looking at, shown in place,
+alongside the content rather than instead of it. It has a severity — error, warning, info, or
+success — and that severity chooses its colour and its icon.
+
+It stays until something changes it. That is what separates it from a
+[toast](/invoca-design-system/components/feedback/toast), which passes on its own, and from a
+[dialog](/invoca-design-system/components/containment/dialog), which stops the reader until they answer.
+
+## Live example
+
+<StorybookFrame story="components-alerts--basic-alerts" height={280} />
+
+## Exports
+
+<Snippet file="generated/props/alert.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Alert** | Inline message, callout, notice | **`alert`** | `Alert` |
+| **Severity** | Status, type, intent, level | **`severity`** | `severity` |
+| — its four values | — | **`error`** · **`warning`** · **`info`** · **`success`** | same |
+| **Dismiss** | Close, hide | **`dismiss`** | `onClose` |
+| **Trailing action** | Action, undo, retry | **`trailing action`** | `action` |
+
+**Severity is the whole vocabulary.** There is no size axis and no prominence axis. The design
+library publishes exactly four alerts — one per severity — each in a single-line and a wrapped
+form, and each dismissible.
+
+<Warning>
+  **`severity` and `color` are separate props, and separating them is a mistake.** A published
+  example sets `severity="success"` with `color="info"`, producing an alert that *is* a success and
+  *looks* like information. The colour is how a reader identifies the severity before reading, so
+  the two must always agree — [TITAN-ALR-03](#constraints).
+</Warning>
+
+## Choose Alert when
+
+- The message is about the content on screen and the content is still there.
+- It should persist — until the reader fixes it, dismisses it, or the state changes.
+- The reader does not have to respond before continuing.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Confirm that an action succeeded, and move on | [Toast](/invoca-design-system/components/feedback/toast) | A success alert that persists becomes furniture; the reader stops seeing it and it is still there tomorrow. |
+| Stop the reader until they decide | [Dialog](/invoca-design-system/components/containment/dialog) | An alert can be ignored by design. If it must not be, it is not an alert. |
+| Say a region has nothing in it | [EmptyState](/invoca-design-system/components/data-display/empty-state) | An empty state replaces content; an alert accompanies it. |
+| Report a problem with one field | [Form validation](/invoca-design-system/patterns/form-validation) | Field-level errors belong at the field. An alert repeating them makes the reader search for which one. |
+| Announce something across the whole product | [Banner](/invoca-design-system/components/feedback/banner) | A page-level alert is about this page. Product-wide messages outlive it. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Severity icon | automatic, from `severity` | Yes |
+| 2 | Message | `children` | Yes |
+| 3 | Dismiss control | `onClose` | No — but the design draws one on every alert |
+| 4 | Trailing action | `action` | No |
+| 5 | Title | `AlertTitle` | No — and no treatment is defined for it |
+
+<Warning>
+  **`action` replaces the dismiss control.** The close button appears only when `onClose` is set
+  *and* `action` is not. To offer both, put both inside `action` — which is what the published
+  transition example does. Nothing in the API signals this.
+</Warning>
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/alert.mdx" />
+
+**Four severities, and one treatment.** The design library publishes a single visual treatment per
+severity: a pale tinted background, a filled severity icon, dark text of the same hue, and a
+dismiss control. That treatment is the `standard` variant, and it is the only one the theme colours
+completely.
+
+| Severity | Use for |
+|---|---|
+| **error** | Something failed, or is invalid, and the reader must act |
+| **warning** | Something will go wrong, or has a consequence worth knowing before acting |
+| **info** | Context the reader did not ask for and benefits from |
+| **success** | Something completed, where a persisting record of it is useful |
+
+**Two content forms:** one line, or wrapped to several. The design publishes both; nothing else
+about the box changes.
+
+<Warning>
+  **Only `standard` is a supported variant. `filled` and `outlined` fail contrast.** Computed from
+  the shipped tokens:
+
+  | Variant | Contrast range across the four severities | AA normal text |
+  |---|---|---|
+  | `standard` | 4.84 : 1 – 9.74 : 1 | **Passes** |
+  | `filled` | 2.16 : 1 – 3.81 : 1 | **Fails** — three of four also fail 3:1 |
+  | `outlined` text | 5.93 : 1 – 12.87 : 1 | Passes |
+  | `outlined` border | 1.19 : 1 – 1.61 : 1 | **Fails** 3:1 — the boundary is invisible |
+
+  Use `standard`, which is also the default. See
+  [TITAN-DIV-21](/invoca-design-system/foundations/divergences#titan-div-21) for the cause and the arithmetic.
+</Warning>
+
+<Warning>
+  **`severity` defaults to `success`.** An alert rendered without an explicit severity is a green
+  success alert — including on an error path, where the message says one thing and the colour says
+  the opposite. Always set it: [TITAN-ALR-02](#constraints).
+</Warning>
+
+**The severity icon is chosen for you**, and every published example overrides it anyway. Take the
+default: it is the one that stays consistent across the product, and each app picking its own is how
+four icons come to mean "error".
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| No `severity` set | Renders as **success** | Set it explicitly, always. |
+| `variant="filled"` | Renders below AA contrast | Use `standard` — [TITAN-DIV-21](/invoca-design-system/foundations/divergences#titan-div-21). |
+| Both `action` and `onClose` set | The dismiss control disappears | Put the dismiss control inside `action`. |
+| A long message | Wraps; the box grows. The icon stays top-aligned to the first line | Fine — the design publishes a wrapped form. Keep it to two sentences. |
+| Several alerts at once | They stack in source order with no spacing of their own | Space them with a `Stack` and a `spacing-*` token, and ask whether they should be one message. |
+| Dismissed by the reader | The alert unmounts; nothing records that it was seen | If the condition persists, it returns on the next render. An alert is not an acknowledgement. |
+
+## Tokens
+
+<Snippet file="generated/tokens/alert.mdx" />
+
+Two component tokens — `alert-padding-y` and `alert-message-padding-y`. Everything else resolves
+through the `-alt` colour family: `background-{severity}-alt`, `text-{severity}-alt`,
+`icon-{severity}-alt`, and `border-{severity}-alt`. That family is the reason the standard variant
+passes contrast and the other two do not: it is designed as dark-text-on-pale-tint, and only the
+standard variant supplies the pale tint.
+
+## Composition
+
+**An alert sits with the thing it is about.** A page-level problem goes at the top of `Contents`,
+above the body. A section-level problem goes inside that section. An alert at the top of a page
+describing a failure three screens down makes the reader hunt.
+
+**Never inside a table row or a list item.** Row-level state belongs in the row — a
+[Tag](/invoca-design-system/components/data-display/tag) or a cell — and an alert inside a repeating structure repeats
+with it.
+
+**A load that failed keeps its content.** Put the alert above the stale rows rather than replacing
+them with an [EmptyState](/invoca-design-system/components/data-display/empty-state): the reader can still read what
+they had, and an empty region is indistinguishable from a successful query with no matches.
+
+**One trailing action, and it resolves the alert** — retry, undo, review. Not a second action, and
+not navigation away from the thing the alert is about.
+
+## Content
+
+- **Say what happened and what to do**, in that order, in one or two sentences.
+- **Name the thing.** "Campaign could not be saved", not "An error occurred".
+- **Sentence case, no exclamation marks** — see [Capitalization](/invoca-design-system/content/capitalization-and-punctuation).
+- **No severity words in the copy.** The alert already says "error" with its colour and icon;
+  starting the sentence with "Error:" spends the reader's attention on something they know.
+- **Never blame the reader.** "That email address is already in use" rather than "You entered an
+  invalid email" — see [Error messages](/invoca-design-system/content/error-messages).
+- **Do not put a period on a single fragment**, and do use one when the message is two sentences.
+
+## Accessibility
+
+**An alert that appears in response to something must be announced.** A visually obvious alert that
+does not reach a screen reader has told half the audience. The framework does not add a live region
+for you: set `role="alert"` for a message the reader must know about now, and `role="status"` for
+one that can wait for a pause.
+
+**Do not set `role="alert"` on an alert that is present at page load.** A live region that already
+has content when the page loads announces nothing, and the role's only effect is to make the message
+interrupt later.
+
+**Colour is never the only carrier of severity.** The icon differs per severity and the message says
+what happened, so the alert survives being read in greyscale — which is also the test for whether
+the copy is doing its job.
+
+**The dismiss control needs a name that says what it dismisses** when more than one alert can be on
+screen. "Close" repeated three times identifies nothing.
+
+**Contrast is arithmetic here, and it has been computed.** The standard variant clears AA on all
+four severities; the other two variants do not — see the table above.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-ALR-01** | Use the `standard` variant. Never `filled` or `outlined`. | They are the two the theme does not colour completely, and both fail WCAG AA — measured, not estimated. The design library publishes neither. |
+| **TITAN-ALR-02** | Always set `severity` explicitly. | It defaults to `success`. An unset severity on an error path renders a green alert whose colour contradicts its message. |
+| **TITAN-ALR-03** | `color` always matches `severity`, or is left unset. | The colour is how the severity is recognised before the message is read. Separating them makes the fastest signal on the alert the wrong one. |
+| **TITAN-ALR-04** | An alert accompanies content; it never replaces it. | Replacing the content throws away what the reader had, and an empty region reads as "nothing here" rather than "this failed". |
+| **TITAN-ALR-05** | At most one trailing action, and it resolves the alert. | Two actions in a message about a problem make the reader choose before they have understood. Navigation away abandons the thing the alert is about. |
+| **TITAN-ALR-06** | Never place an alert inside a table row or list item. | It repeats with the structure. Per-row state belongs in the row. |
+| **TITAN-ALR-07** | A success message that needs no record uses a [Toast](/invoca-design-system/components/feedback/toast). | A persistent success alert becomes part of the furniture and stops being read, while still occupying the space where the next real problem will appear. |
+| **TITAN-ALR-08** | An alert that appears after page load carries a live-region role. | Without one it is invisible to a screen reader, and the reader who needs it most gets no message at all. |
+| **TITAN-ALR-09** | Severity is carried by icon and words as well as colour. | A reader who cannot distinguish the tints gets the severity from the icon and the sentence, or not at all. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-21**](/invoca-design-system/foundations/divergences#titan-div-21) | Divergence | Only the standard variant is colour-complete; filled and outlined fail contrast |
+
+**Also true and not yet recorded as either:** `severity` defaults to `success`, which no design
+decision supports; every published example overrides the severity icon, so the default mapping is
+demonstrated nowhere; and `AlertTitle` is exported with no treatment defined, so a titled alert is
+buildable and unspecified.
+
+## Gaps in the current rules
+
+- **Whether an alert may carry a title is undecided.** `AlertTitle` ships, the design library
+  publishes no titled alert, and nothing states when a message needs a heading.
+- **No rule for how many alerts a page may show at once**, or whether they should merge.
+- **Whether alerts are dismissible by default is unstated.** The design draws a dismiss control on
+  every alert; code makes it opt-in via `onClose`.
+- **No rule for placement precision** beyond "with the thing it is about" — whether a
+  section-level alert goes above the section heading or below it is undecided.
+- **Nothing states what happens to a dismissed alert whose condition persists.** It returns on the
+  next render, and whether that is correct has not been decided.
+
+## Why it works this way
+
+**Severity is the only axis, deliberately.** A size or prominence axis would let a team make an
+error alert quieter, and the reason an alert exists is that the reader needs to know something. The
+severity is the message's importance; there is nothing left to adjust.
+
+**Colour comes from the `-alt` family, which is what makes the contrast work.** Dark text of a hue
+on a pale tint of the same hue keeps the severity readable and the alert quiet enough to sit above
+content without competing with it. The variants that fail are the ones that abandoned that pairing —
+which is why the fix is a decision about whether they are supported at all, not a colour tweak.
+
+## Status and changelog
+
+<Snippet file="generated/status/alert.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/alert.mdx" />
+
+- [Error handling](/invoca-design-system/patterns/error-handling) · [Form validation](/invoca-design-system/patterns/form-validation) — the two patterns that place alerts
+- [Toast](/invoca-design-system/components/feedback/toast) · [Banner](/invoca-design-system/components/feedback/banner) — persistence and scope, the two nearest neighbours
+- [Color](/invoca-design-system/foundations/color) — the `-alt` family and why it exists
+- [Error messages](/invoca-design-system/content/error-messages) — how to write the sentence

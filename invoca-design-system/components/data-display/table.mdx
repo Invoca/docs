@@ -1,0 +1,286 @@
+---
+title: "Table"
+description: "Rows of records of the same kind, scanned and compared, with selection and per-row actions."
+icon: "table"
+tag: "Draft"
+keywords: ["table", "data grid", "datagrid", "grid", "rows", "columns", "cells", "list of records", "sorting", "selection"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Exports, published variants, adoption, and status on this page are generated from Titan
+  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
+  off. Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A **table** shows many records of the same kind as rows, so a reader can scan them, compare them,
+sort them, select some, and act on one or many.
+
+It is the body of a [list view](/invoca-design-system/views/list-view), and it is the system's only table. There is no
+lighter-weight table for simple cases: the system's position, stated in a published guidance story,
+is that a table is built with the grid component rather than assembled from table primitives. That
+is what keeps column behaviour, sorting, selection, and keyboard focus the same on every list page
+in the product.
+
+## Live example
+
+<StorybookFrame story="components-datagrid--multi-row-example" height={420} />
+
+<Warning>
+  **Do not copy this example's props.** Four of them do not exist in the shipped version:
+  `pageSize`, `onPageSizeChange`, and `rowsPerPageOptions` were replaced by `paginationModel` and
+  `pageSizeOptions`, and `unstable_cellSelection` is now `cellSelection`. The demo also declares
+  `DataGridPro` as its subject and renders `DataGridPremium`.
+
+  Verified against the installed package, not inferred. Until the story is corrected, treat the
+  props table it publishes as unreliable and reach for the ones this page documents.
+</Warning>
+
+## Exports
+
+<Snippet file="generated/props/table.mdx" />
+
+## Vocabulary
+
+<Warning>
+  **The system says *table*. Code says `DataGridPro`; the design library says *Data Grid*.**
+  *Table* is what people say in conversation, so it is the word this documentation leads with — and
+  it is the one case where the reader-facing name comes from the team rather than from either
+  artifact. Say **table** in a review and **grid** only when you mean the export. See
+  [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10).
+</Warning>
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Table** | Data grid, grid, datagrid | **`table`** | `DataGridPro` |
+| **Column header** | Header cell, header row | **`column header`** | `columns[].headerName` |
+| **Row** | Record, entry, line, result | **`row`** | `rows[]` |
+| **Cell** | Field, value | **`cell`** | rendered from a column definition |
+| **Toolbar** | Search band, table header, action bar | **`toolbar`** | `GridToolbar` |
+| **Selection bar** | Bulk bar, action bar, contextual header | **`selection bar`** | nothing — [TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19) |
+| **Pinned column** | Frozen column, sticky column, locked column | **`pinned`** | `pinnedColumns` |
+| **Row action** | Overflow menu, kebab, row menu | **`row action`** | `GridActionsCellItem` |
+
+**Say "pinned", not "frozen".** The design library labels the state *Frozen Left* and *Frozen
+Right*; code calls the same thing pinned. Pinned describes what the reader did — held a column in
+place — and frozen suggests the data stopped updating.
+
+**Say "row", not "record", in interface copy.** Record is a data word; a reader sees rows.
+
+## Choose Table when
+
+- The page shows **many instances of one kind of thing**, and the reader's job is to find, compare,
+  or act on them.
+- Every row has the same fields available, so columns mean the same thing all the way down.
+- Scanning down one attribute across records is a real task — which is what a column is for.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show one record's attributes | [Detail view](/invoca-design-system/views/detail-view) | A one-row table is a layout accident. Attributes of a single thing are not a collection. |
+| Show a short set of items with no comparison across attributes | [List](/invoca-design-system/components/data-display/list) | Columns cost horizontal space and only pay for themselves when someone scans down one. |
+| Show records that each need a heading, an image, or a summary | [Card](/invoca-design-system/components/data-display/card) | A row cannot hold a hierarchy. Once a row needs its own internal layout, it is not a row. |
+| Summarise rather than enumerate | [Dashboard](/invoca-design-system/views/dashboard) | A reader who wants the shape of the data does not need every record. |
+| Present grouped settings that happen to align | [Settings view](/invoca-design-system/views/settings-view) | Configuration is not a collection, even when it renders in aligned rows. |
+| Let someone edit many values freely, spreadsheet-style | Nothing — ask first | The system has no sanctioned editable-grid pattern. See [Gaps](#gaps-in-the-current-rules). |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Toolbar | `GridToolbar` or a custom toolbar slot | No |
+| 2 | Column headers | `columns[].headerName` | Yes |
+| 3 | Selection column | `checkboxSelection` | No |
+| 4 | Rows and cells | `rows`, and each column's renderer | Yes |
+| 5 | Row action cell | `GridActionsCellItem` in a column of `type: "actions"` | No |
+| 6 | Pagination footer | the grid's own footer | No — see [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) |
+
+The design library models these as separate components — a header, a row, a column, a cell, and a
+header cell — which is why its vocabulary is more specific than the code's. Its column types are
+**checkboxes, overflow options, icons, chip, text only, link only, icon and text, icon and link**;
+its cell content is **single line or multi line**; and a column can be **pinned left or right**.
+Those are the words to use when specifying a table, and each maps to a column definition in code.
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/table.mdx" />
+
+**What the theme decides**, and the whole of it: the table's surface, the rule under the header and
+between rows, the type of a column header and a cell, the hover and selected row fill, the keyboard
+focus ring on a cell, and the colour of the sort icon.
+
+**Row states:** default, hover, selected, and cell focus.
+
+<Warning>
+  **A hovered row and a selected row are given the same fill.** While the pointer is over the
+  table, "which rows did I select" is unanswerable — which matters most on exactly the pages that
+  have bulk actions. Recorded as [TITAN-DIV-20](/invoca-design-system/foundations/divergences#titan-div-20).
+</Warning>
+
+**Density** is out of scope for this documentation ([TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01)),
+so no compact row height is specified here even though the grid accepts one.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| No rows, because a filter excluded them | The grid renders its own empty overlay | Replace it with an [EmptyState](/invoca-design-system/components/data-display/empty-state) that names the filter and offers to clear it — see [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states). |
+| No rows, because none exist yet | Same overlay, same wording | These are different messages. "No results" tells a new user the product is broken. |
+| Loading | `loading` shows an overlay above the current rows | Use it for a refresh. For a first load use a [Skeleton](/invoca-design-system/components/feedback/skeleton), since an overlay over nothing is a grey box. |
+| Load failed | Nothing. The table looks empty | An empty table is indistinguishable from a successful query with no matches. Show an [Alert](/invoca-design-system/components/feedback/alert) and keep the rows you had — see [Error handling](/invoca-design-system/patterns/error-handling). |
+| More columns than fit | The grid scrolls horizontally | Pin the identifying column so a reader scrolled right still knows which row they are on — [TITAN-TBL-05](#constraints). |
+| A cell's value is longer than its column | The text truncates | Truncate the cell, never the column header, and make the full value reachable — [TITAN-TBL-06](#constraints). |
+| A value is empty for one row | An empty cell | Empty means "no value". If it means zero, write zero — see [Numbers](/invoca-design-system/content/numbers). |
+| Rows selected, then the filter changes | Selection persists for rows no longer visible | State the count, and say what it applies to before a bulk action runs — [TITAN-TBL-08](#constraints). |
+
+## Tokens
+
+<Snippet file="generated/tokens/table.mdx" />
+
+One component token exists — `data-grid-focus-ring`, the ring on a keyboard-focused cell. It is
+deliberately not an elevation shadow. Everything else the table draws comes from the border,
+background, text, and type foundations.
+
+## Composition
+
+**A table fills `Contents` and nothing else shares it.** That is a
+[list view](/invoca-design-system/views/list-view) decision: a page whose body is a table does not also carry a summary
+strip or a chart beside it, because the reader came to find a row.
+
+**Filters and search sit above it.** In the page frame they belong to `Controls`; in the design
+library's table templates they are drawn inside the table's own toolbar band. Both place them
+directly above the columns they narrow — see
+[TITAN-DIV-18](/invoca-design-system/foundations/divergences#titan-div-18) for which owns them.
+
+**Selection turns the toolbar into a selection bar.** In the design library, selecting rows changes
+the toolbar band: it takes the selected fill, shows a count — "4 selected" — keeps search available,
+and reveals the bulk actions. The header checkbox carries a menu with **Select all *n* items**,
+**Select all on page**, and **Deselect all**, which is how the design distinguishes selecting a
+page from selecting a result set. **None of this exists in code** —
+[TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19), and it is the substance of
+[Bulk selection](/invoca-design-system/patterns/bulk-selection).
+
+**Row actions go in a trailing actions column**, one per row, collapsed into a menu past two. A row
+action never duplicates the page's primary action.
+
+## Content
+
+- **Column headers are nouns**, and name the value rather than the type. "Owner", not "Owner
+  name string". Casing is this page's best guess, not confirmed —
+  [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#casing-by-content-type)
+  lists table column headers explicitly as an open gap.
+- **Do not repeat the table's subject in every header.** On a campaigns table, "Name" beats
+  "Campaign name".
+- **Numbers align right, text aligns left**, and a column of numbers uses one precision all the way
+  down — see [Numbers](/invoca-design-system/content/numbers).
+- **Dates use the system format**, `M/D/YYYY`, never a relative string in a sortable column: "2
+  days ago" cannot be compared down a column — see [Dates & times](/invoca-design-system/content/dates-and-times).
+- **A row's first cell identifies the record**, and is the thing that links to it.
+- **State the count with the noun** — "147 campaigns", not "147 results".
+
+## Accessibility
+
+**The table needs an accessible name** describing what it lists, and it needs to be the same thing
+the page title says.
+
+**Sort state must be announced, not only drawn.** A sorted column header carries its direction
+programmatically; a coloured arrow alone is invisible to a screen reader.
+
+**Selection needs a live count.** "4 selected" is the feedback for an action taken with a
+checkbox — without it, a keyboard user selecting rows gets no confirmation anything happened.
+
+**Every checkbox needs a name that identifies its row.** A column of controls all announcing
+"checkbox" cannot be used. The header checkbox is named for its scope, not "select all", because
+what it selects is exactly the decision the design's menu makes explicit.
+
+**A row action's accessible name includes the row.** "Delete" repeated forty times is unusable out
+of context; "Delete Acme campaign" is not.
+
+**Keyboard.** Cells are individually focusable and carry `data-grid-focus-ring` when focused. A
+table with many rows is a large focus surface: provide a way past it, and never make a row action
+the only route to a function.
+
+**Do not use a table for layout.** Column and row semantics tell a screen-reader user that
+position carries meaning. If it does not, the structure is a lie.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TBL-01** | A table is built with the grid export. Never assembled from table primitives. | The system's decisions for sorting, selection, cell focus, and header type live in one theme. A hand-built table inherits none of them and cannot be reviewed against anything. |
+| **TITAN-TBL-02** | Every row in one table is the same kind of thing. | A column means one thing all the way down or it means nothing. Mixed record types make every header a half-truth. |
+| **TITAN-TBL-03** | A table is the whole body of its page. | A summary strip or chart beside it competes with the task the reader came for. A page needing both is a [dashboard](/invoca-design-system/views/dashboard) with a table on it. |
+| **TITAN-TBL-04** | An empty table states **why** it is empty, and offers the action that resolves it. | "No results" for a filter and "nothing here yet" for a new account are different messages. The default overlay says neither, so a new user reads an empty product as a broken one. |
+| **TITAN-TBL-05** | A horizontally scrolling table pins its identifying column. | Scrolled right, an unpinned table shows values with nothing naming the row they belong to, and every cell becomes ambiguous. |
+| **TITAN-TBL-06** | Cells truncate; column headers do not. | A truncated header makes the whole column unreadable rather than one value. Shorten the header instead, and keep the full cell value reachable. |
+| **TITAN-TBL-07** | At most two inline row actions. Past two, collapse into a menu. | A row of controls repeated down the table competes with the data for attention, and the widths stop aligning. |
+| **TITAN-TBL-08** | A bulk action states its count and scope before it runs. | "Delete selected" over a filtered table is ambiguous between the page, the filter, and everything — and the destructive case is unrecoverable. See [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation). |
+| **TITAN-TBL-09** | Sort state is announced programmatically, not only drawn. | A sort arrow is the only feedback that a header press did anything, and it is invisible to a screen reader. |
+| **TITAN-TBL-10** | Never use a table to lay out content that is not tabular. | Row and column semantics assert that position carries meaning. Where it does not, the structure misinforms every assistive technology that reads it. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-19**](/invoca-design-system/foundations/divergences#titan-div-19) | Divergence | The selection bar and its select-all menu are designed and absent from code |
+| [**TITAN-DIV-20**](/invoca-design-system/foundations/divergences#titan-div-20) | Divergence | A hovered row and a selected row are given the same fill |
+| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Three pagination approaches, none confirmed — the templates draw it inside the table |
+| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | No layout tokens, so nothing bounds the table's width on a wide monitor |
+| [**TITAN-GAP-01**](/invoca-design-system/foundations/open-decisions#titan-gap-01) | Open decision | Density is undesigned, so no compact row height is specified |
+
+**Also true and not yet recorded as either**: the published demo uses four props the shipped
+version does not accept, and declares one export while rendering another (see
+[Live example](#live-example)). No product adoption is recorded for the grid export in the
+utilization data, so the adoption figures below cannot yet corroborate any usage guidance on this
+page.
+
+## Gaps in the current rules
+
+- **No column-count limit.** Nothing states when a table has too many columns to be scannable, or
+  what to do about it — pin, hide, or move to a detail view.
+- **No sanctioned editable table.** The demo enables cell selection, and nothing states whether
+  editing in place is supported, what saves it, or how it fails. Treat editable grids as
+  unspecified and ask.
+- **No default page size.** The grid offers a set of options; nothing says which a list page starts
+  on, and the design's templates show one number without stating it as the rule.
+- **No rule for row height or wrapping.** The design library publishes single-line and multi-line
+  cells. Nothing says when a table may use the taller row.
+- **Which grid export is the system's is undecided.** Two ship. The guidance story says "use the
+  grid" without saying which, and the published demo names one and renders the other.
+- **No rule for default sort.** Every table arrives sorted somehow, and nothing states whether that
+  is the newest record, a name, or the server's order.
+
+## Why it works this way
+
+**One table, not a family of them.** The obvious alternative is a lightweight table for simple
+cases and the full grid for complex ones. Every page that starts simple acquires sorting, then
+selection, then pagination, and the migration between the two is a rewrite. Paying the grid's cost
+up front is cheaper than paying it in a rewrite on a page that is already in production.
+
+**Columns are the reason a table exists.** A row of values is a list; a *column* is what lets
+someone compare one attribute across many records. Most rules on this page follow from that — why
+headers must stay readable while cells may truncate, why the identifying column gets pinned, why
+mixed record types break the format.
+
+**Selection is a mode, so it needs its own bar.** Once rows are selected, the reader's next action
+is about the selection rather than about the page, and the actions available change. That is the
+argument for the design's selection bar over a fixed row of bulk buttons: buttons that are
+permanently present but only sometimes meaningful get pressed when they are not.
+
+## Status and changelog
+
+<Snippet file="generated/status/table.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/table.mdx" />
+
+- [List view](/invoca-design-system/views/list-view) — the page this fills
+- [Bulk selection](/invoca-design-system/patterns/bulk-selection) · [Filtering & search](/invoca-design-system/patterns/filtering-and-search) · [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states)
+- [List](/invoca-design-system/components/data-display/list) · [Card](/invoca-design-system/components/data-display/card) — the two nearest neighbours
+- [Pagination](/invoca-design-system/components/navigation/pagination) — and why it has no settled home

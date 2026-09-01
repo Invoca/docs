@@ -1,0 +1,181 @@
+---
+title: "Layout & grid"
+description: "Breakpoints, the grid, and what Titan does and does not decide about page structure."
+icon: "grid-3x3"
+keywords: ["layout", "grid", "breakpoint", "responsive", "columns", "viewport", "container"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+Where things sit on the page and how that changes with viewport width. Two mechanisms —
+breakpoints and a 12-column grid — and no tokens of its own.
+
+## Vocabulary
+
+| Axis | Values | Means |
+|---|---|---|
+| **attribute** | `tablet` `desktop` | The named viewport bands |
+| **size** | `min` `max` | Which bound of the band |
+
+<Note>
+  **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
+  baseline the design language is being built on. This is the vocabulary of record — not
+  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+</Note>
+
+<Warning>
+  **The specification defines breakpoints as tokens; none ship.** It names
+  `breakpoint-tablet-min`, `breakpoint-desktop-min`, and `breakpoint-desktop-max` — three
+  bands. The code has five unnamed numeric breakpoints and no breakpoint tokens at all. The
+  vocabularies do not correspond. See
+  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09) and
+  [TITAN-GAP-12](/invoca-design-system/foundations/open-decisions#titan-gap-12).
+</Warning>
+
+## Breakpoints
+
+Breakpoints are **min-width**: a rule at `md` applies at 900px *and above*. Titan is a
+desktop-first internal product, so in practice most surfaces live at `lg` and `xl`, and
+`xs`/`sm` are rarely exercised. The values are in
+[Token reference](#token-reference) below.
+
+<Warning>
+  **These are not Invoca measurements.** Nothing indicates the breakpoints were checked
+  against how Invoca's users actually size their windows. They are what ships and what to
+  build to, but no design decision stands behind the numbers — see
+  [gaps](#gaps-in-the-current-rules).
+</Warning>
+
+## The grid
+
+A 12-column flexbox grid, driven by per-breakpoint span props.
+
+```jsx
+<Grid container spacing={2}>
+  <Grid size={{ xs: 12, md: 6, lg: 4 }}>…</Grid>
+  <Grid size={{ xs: 12, md: 6, lg: 8 }}>…</Grid>
+</Grid>
+```
+
+<Warning>
+  **The grid's `spacing` prop is not the Titan spacing scale.** It uses a separate 8px
+  multiplier, so `spacing={2}` resolves to 16px through a property that is
+  a **separate 8px multiplier** that maps to no step on the Titan scale.
+
+  Set gaps from a `spacing-*` token instead:
+
+  ```jsx
+  <Box sx={{ display: 'grid', gap: 'var(--titan-tokens-spacing-5)' }}>
+  ```
+
+  See [TITAN-LAY-03](#constraints).
+</Warning>
+
+## Choosing a layout approach
+
+| You need… | Use | Not |
+|---|---|---|
+| A row of items that wrap by viewport width | `Grid` with per-breakpoint spans | A flex row with fixed widths — it will not reflow |
+| Evenly spaced items in one direction | `Stack` (`Components/Stack`) | `Grid` — a 12-column grid for a single row is overhead with no benefit |
+| A page split into a fixed sidebar and a fluid main region | CSS grid with a fixed track and `1fr` | `Grid` spans — a 12-column split cannot express "280px and the rest" |
+| A card that reflows its own contents independent of viewport | A container query | A breakpoint — the viewport does not tell you how wide the card is |
+| Spacing between grid items | `gap` with `var(--titan-tokens-spacing-N)` | `Grid`'s `spacing` prop — it is not the Titan scale |
+
+## Token reference
+
+<Snippet file="generated/tokens/layout.mdx" />
+
+Titan defines no grid specification — no columns-per-breakpoint table, no gutter scale, no
+page margin scale. See [TITAN-DIV-08](/invoca-design-system/foundations/divergences#titan-div-08).
+
+<Note>
+  **There are no layout tokens.** Breakpoints are not part of the token surface, so they are
+  not reachable via `$token`, `theme.vars.tokens[…]`, or `var(--titan-tokens-…)`. Nothing
+  about layout is currently expressible as a token.
+</Note>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-LAY-01** | Layout responds at the defined breakpoints. Never a hardcoded media query. | A literal `@media (min-width: 900px)` is invisible to the audit and silently diverges the moment a breakpoint moves. |
+| **TITAN-LAY-02** | Layout adapts at the defined breakpoints only. No custom intermediate values. | Each additional breakpoint multiplies the states every component must be verified in. Five is already more than most components are checked against. |
+| **TITAN-LAY-03** | Grid gutters and gaps come from a `spacing-*` token via `gap`, not from `Grid`'s `spacing` prop. | `spacing` resolves through a separate 8px multiplier that maps to no step on the Titan scale. |
+| **TITAN-LAY-04** | Content reflows to a single column at `xs`. Never horizontal scrolling. | [WCAG 2.2 Reflow (AA)](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) requires content to work at 320px equivalent without two-dimensional scrolling. |
+| **TITAN-LAY-05** | A component that must adapt to its container, not the viewport, uses a container query. | A card in a sidebar and the same card in a main region are the same viewport and different widths. Breakpoints cannot express that. |
+| **TITAN-LAY-06** | Page structure is a [View](/invoca-design-system/views/overview) decision, not a component one. | A component that assumes its page position cannot be reused. Region layout belongs to the view archetype. |
+
+## Accessibility
+
+- **Reflow to 320px without horizontal scrolling** is the binding requirement
+  ([WCAG 2.2 AA](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)). It is equivalent
+  to a desktop page at 400% zoom, which is how low-vision users actually read — not on a
+  phone. A desktop-only product still has to meet it.
+- **Visual order must match DOM order.** CSS `order`, `row-reverse`, and grid placement can
+  reorder content visually while leaving keyboard and screen-reader order unchanged. The
+  result is a focus ring that jumps around the screen. If the visual order is right, fix
+  the DOM.
+- **Do not hide content at small viewports.** `display: none` at `xs` removes it for
+  everyone, including the zoomed desktop user who is not on a phone.
+- **Text must survive 200% zoom** without clipping. Fixed-height containers around wrapping
+  text are the usual failure.
+- Container queries do not change any of the above — they change *which* layout applies, not
+  whether it must reflow.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-08**](/invoca-design-system/foundations/divergences#titan-div-08) | Divergence | no grid specification |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | no layout tokens exist |
+| [**TITAN-GAP-15**](/invoca-design-system/foundations/open-decisions#titan-gap-15) | Open decision | no page-region model exists |
+
+## Gaps in the current rules
+
+Layout is the least specified foundation in Titan. Do not infer answers to any of these.
+
+- **No layout tokens exist at all.** No container max-width, no page gutter, no column
+  count, no sidebar width. Every one of those is currently a per-view decision with nothing
+  to check it against.
+- **The breakpoint values are unvalidated.** No evidence they were checked against Invoca's
+  viewport distribution, and no decision is recorded for them.
+- **No maximum content width is defined.** On a 2560px monitor a full-width text region
+  produces line lengths far beyond the ~75-character readable maximum. Nothing prevents
+  it.
+- **`Grid`'s off-scale `spacing` prop is not documented as a hazard** anywhere in
+  Titan. [TITAN-LAY-03](#constraints) is this page's proposal, not existing policy.
+- **No guidance exists on breakpoints vs. container queries.** Both are available; nothing
+  says which to reach for.
+- **No published page-region model.** [Views](/invoca-design-system/views/overview) is the tier meant to answer this and
+  is entirely stubs. Until it is written, page structure is undocumented.
+
+## Related
+
+A generated map of which components consume which foundation does not exist yet.
+
+## Why it works this way
+
+**Titan does not decide page layout, and that is a real position** — though currently an
+undocumented one. The system supplies components and the space between them; where regions
+sit belongs to the [View](/invoca-design-system/views/overview) tier. That separation is what lets a Button work
+identically in a wizard and a dashboard.
+
+The cost is that until Views is written, the most consequential layer of any screen has no
+documentation at all. An agent asked to build a settings page makes a View-level decision
+first and a Component-level decision last, and today only the second has an answer.
+
+**Breakpoints are inherited because Titan is desktop-first internal software.** Most
+surfaces render at `lg` and `xl` on a monitor the user cannot resize much. Spending the
+maintenance budget on validating phone breakpoints for a product used at a desk would buy
+very little — but that reasoning is inferred from usage, not recorded anywhere.

@@ -1,0 +1,270 @@
+---
+title: "ComponentName"
+description: "One sentence. What it is and what it is for. No hedging, no 'allows users to'."
+icon: "square"
+tag: "Stable"
+keywords: ["synonyms", "what people call it when they don't know the name"]
+---
+
+{/*
+  COMPONENT PAGE TEMPLATE
+
+  Section order is fixed. Do not reorder, do not omit. A fixed order lets a reader
+  jump to the section they need without scanning, and makes an omission visible —
+  a missing Gaps section is obvious; a page that quietly never had one is not.
+
+  Three registers, and they must stay distinguishable to a reader and to an agent:
+    [REF] code fact      — generated from source. Never hand-write a value.
+    [DEC] design intent  — normative. What to build.
+    [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
+
+  Delete these comment blocks when you author a real page.
+*/}
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, tokens, and changelog on this page are generated from Titan source.**
+  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
+  Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+Two sentences at most. State what the component is and the job it does.
+
+Do not write "The Button component allows users to perform actions." That sentence
+appears in every design system and carries no information. Write what distinguishes
+*this* component from the three neighbors a reader is deciding between.
+
+## Live example
+
+<StorybookFrame story="group-componentname--default" height={160} />
+
+## Exports
+
+{/* [REF] Generated from `tools/component-concepts.json`.
+
+     A doc page covers a CONCEPT — what a reader recognises — which may span several
+     exports. This table is how a designer reads one page while an engineer still
+     learns exactly what to import, and how much Invoca decision each export carries.
+
+     If this page covers one export, the table has one row. Say so rather than
+     omitting the section. See TITAN-DIV-10. */}
+
+<Snippet file="generated/props/componentname.mdx" />
+
+## Vocabulary
+
+{/* [DEC] The system's terms for this component's variants, states, and parts — and
+     the terms it is NOT using.
+
+     This is where two teams silently diverge. "Contained", "primary", "filled",
+     and "solid" are four words for one variant; "selected", "active", and
+     "current" are three for one state. Until the system picks, both teams
+     believe they followed the docs.
+
+     Frontmatter `keywords` covers search synonyms for the component NAME. This
+     table covers everything inside it. */}
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Filled variant | Primary, solid, contained | **`contained`** |
+
+## Choose ComponentName when
+
+{/* [DEC] Positive criteria. Each is a condition, testable against a real screen. */}
+
+- Condition under which this is the right choice.
+- Another condition.
+
+## Choose something else when
+
+{/* [DEC] MANDATORY. Must name a specific alternative and link to it.
+     "Don't use this for the wrong thing" is not an entry. Every row answers
+     a real fork someone hits. This is the entry that stops two components
+     drifting into one. */}
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Do the neighboring thing | [OtherComponent](/invoca-design-system/components/group/other) | The one-line reason the distinction exists |
+
+## Anatomy
+
+{/* Name the parts as the code names them. If the docs call it a "label" and the
+     prop is `children`, a reader following the docs writes the wrong code.
+
+     ⚠ ANATOMY DIAGRAMS MAY LABEL PARTS. THEY MAY NOT CARRY MEASUREMENTS.
+
+     Code is the source of truth, so a hand-drawn diagram is a picture of a code
+     fact — and it does not break when the code changes, it just becomes wrong
+     while still carrying the system's authority.
+
+     Part names are stable across years. Measurements change every release. Put
+     the parts in the diagram; put every number in the generated token table. */}
+
+<Frame caption="ComponentName parts. Measurements live in the token table, not here.">
+  <img src="/images/components/componentname-anatomy.png" alt="Annotated diagram of ComponentName" />
+</Frame>
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Label | `children` | Yes |
+
+## Variants, sizes, and states
+
+{/* [REF] Generated.
+
+     Must flag what the system does not ship. The sizes and variants a component
+     ACCEPTS are wider than the ones the system DECIDED — an un-themed size will
+     render at dimensions no token defines and no decision covers. A reader who
+     sees it render assumes it is offered. Say which are the system's. */}
+
+<Snippet file="generated/matrix/componentname.mdx" />
+
+## Edge and failure states
+
+{/* [DEC] The state everyone designs is the one where everything is present and
+     correct. This section is the other ones, and it is the section most often
+     missing.
+
+     Never let a failure state be the mere absence of a success state. A spinner
+     that never resolves and a blank area where content should be are both
+     decisions nobody made.
+
+     Cover every row that applies. Delete a row only when it genuinely cannot
+     occur, not when it has not been designed yet — that belongs in Gaps. */}
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| No content | | |
+| Content longer than the design assumed | | |
+| Loading | | |
+| Failed to load | | |
+| Disabled | | |
+| Read-only, or permission denied | | |
+
+**Truncation is a decision.** State where text clips, whether the full value stays
+reachable, and what the accessible name carries when the visible label is cut.
+
+## Tokens
+
+{/* [REF] This component's own values, documented HERE rather than in Foundations —
+     a component-scoped token belongs at the altitude where it is used. */}
+
+<Snippet file="generated/tokens/componentname.mdx" />
+
+## Composition
+
+{/* [DEC] What this appears with, and in what order. Agents get ordering wrong far
+     more often than they get component selection wrong. State what may contain
+     this, and what this may contain. */}
+
+## Content
+
+{/* [DEC] Labels, capitalization, length, voice. Bad copy is the most common way a
+     correctly-built component still reads as off-system.
+
+     ─── DO / DON'T: WHICH FORMAT ───────────────────────────────────────────
+     Under code-as-truth, a static Do/Don't image is a picture of a code fact
+     that cannot break loudly. Choose the format by what the guidance turns on:
+
+       Turns on APPEARANCE (which variant, which token, which size)
+         → a live Storybook story. A stale screenshot teaches a wrong value
+           with full confidence.
+           <StorybookFrame story="components-x--dont-competing-primaries" />
+
+       Turns on ORDERING, COMPOSITION, or COPY
+         → a table or a static image is fine. These do not drift when a token
+           changes, and a table cannot go stale at all.
+           | Rule | ✅ Do | ❌ Don't |
+
+     Captions state the RULE, not the image. "Two buttons side by side"
+     describes what is already visible; "Give the destructive action the
+     recessive treatment" transfers to a screen the reader is building.
+     ───────────────────────────────────────────────────────────────────────── */}
+
+## Accessibility
+
+{/* [DEC] State behavior, not a checklist. "Keyboard accessible" tells a reader
+     nothing; a key map tells them what to build and what to test.
+
+     Also state what this component does NOT handle, so the page above it knows
+     what it inherits. */}
+
+| Key | Behavior |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the component |
+
+**What this component does not handle:** name the responsibilities that belong to the
+composition or the page — focus return after close, live-region announcement, heading level.
+
+## Constraints
+
+{/* [DEC] Numbered, falsifiable — someone looks at a screen and says yes or no.
+     One rule per ID. Rationale required; a constraint without a reason gets
+     deleted by the next person who has one.
+
+     ID FORMAT: TITAN-<AREA>-<NN>, where AREA is a short code for this component
+     (TITAN-BTN-01, TITAN-SELECT-01). IDs are permanent — deprecate, never
+     renumber. They get cited in review and by agents. */}
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| TITAN-AREA-01 | A rule someone can look at a screen and check. | Why the rule exists. |
+
+## Known issues
+
+{/* [DIV] One table for both registers, each row labelled by kind:
+
+     Divergence    — code and design intent disagree. /foundations/divergences
+     Open decision — nothing has been decided.        /foundations/open-decisions
+
+     Link them; do not restate them. If none apply, say so — an empty section is a
+     claim, a missing one is silence. */}
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-NN](/invoca-design-system/foundations/divergences) | Divergence | One line. |
+
+## Gaps in the current rules
+
+{/* Genuinely undecided. NOT a to-do list, and not an invitation to resolve them.
+     An agent asked about anything here answers "Titan does not specify this."
+
+     A confident invented answer in the system's voice is the most expensive
+     failure available, because it propagates and nobody can trace its origin. */}
+
+## Why it works this way
+
+{/* [DEC] The tradeoffs. What was ruled out and why. What would have to change
+     for the decision to be revisited. State the mechanism, not the sentiment.
+     This is the section that keeps the constraints above from being quietly
+     deleted in eighteen months. */}
+
+## Status and changelog
+
+{/* [REF] Generated from the package manifest and git history, not hand-maintained.
+     A hand-written changelog is a second record of a fact the repository already
+     holds, and it is the first thing to go stale.
+
+     Carries version, stability, deprecation, and replacement. A system without
+     this cannot be adopted incrementally — every consumer discovers a removal
+     by breaking. */}
+
+<Snippet file="generated/status/componentname.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/componentname.mdx" />
+
+{/* Neighbouring components, the patterns that compose this one, and the Figma
+     mirror. Derive the pattern list from what actually references this component
+     rather than assuming. */}
+
+- **Patterns using this component:** …
+- **In Figma:** mirrored as `ComponentName` in the Titan library, emitted from this source.
+  If the library disagrees with this page, this page is right and the mirror has drifted —
+  [report it](/invoca-design-system/contribute/reporting-drift). The resolution is a re-emission, never an edit
+  to the Figma file.

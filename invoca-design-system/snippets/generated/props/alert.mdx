@@ -1,0 +1,30 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-components.mjs from Titan source. */}
+
+This page covers 2 exports. What each one declares, and what it inherits:
+
+| Export | Implementation | Props it declares | What the system decides |
+|---|---|---|---|
+| `Alert` | Wrapper, adds nothing | **None** — inherited in full | Background, text, icon colour and padding — for the standard variant only |
+| `AlertTitle` | Re-exported directly | — re-exported, no local source | Nothing — no treatment is defined for it |
+
+<Warning>
+  **The accepted surface is wider than the decided one.** Where an export declares no props of
+  its own, it accepts everything its base accepts — including options the system never decided
+  and never gave a value. That something renders is not evidence the system offers it.
+
+  Use the props the pages document. Do not reach for inherited API this documentation does
+  not list.
+</Warning>
+
+### What the system decides
+
+|  | Decided | Reader's takeaway |
+|---|---|---|
+| Colour intents | `success` · `info` · `error` · `warning` | Any other colour value renders with no decision behind it. |
+| Prominence | `outlined` | Weight treatments the system defines. |
+
+<Warning>
+  **Decided is narrower than accepted.** The table above is the surface that carries values and
+  rules. Everything else the props accept still renders — with no token behind it, and no
+  decision recorded. See [TITAN-GAP-21](/invoca-design-system/foundations/open-decisions#titan-gap-21).
+</Warning>

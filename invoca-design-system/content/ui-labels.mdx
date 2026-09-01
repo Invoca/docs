@@ -1,0 +1,84 @@
+---
+title: "UI labels"
+description: "Wording rules shared by every short label in the interface — buttons, fields, options, tabs, and menu items."
+icon: "tag"
+tag: "Stable"
+keywords: ["labels", "microcopy", "button text", "menu items", "naming", "field labels"]
+---
+
+<Warning>
+  **No source exists for this page, and none has been offered.** Unlike
+  [Voice and tone](/invoca-design-system/content/voice-and-tone) and [Error messages](/invoca-design-system/content/error-messages),
+  this is not a transcription. It is a synthesis of labeling rules that were authored
+  independently, per component, on [Button](/invoca-design-system/components/actions/button),
+  [FieldLabel](/invoca-design-system/components/forms/field-label), [Checkbox](/invoca-design-system/components/forms/checkbox),
+  [Radio](/invoca-design-system/components/forms/radio), [Switch](/invoca-design-system/components/forms/switch), and
+  [Select](/invoca-design-system/components/forms/select) — stated once here as shared principles instead of
+  staying duplicated six times. Treat every constraint below as **Proposed**.
+</Warning>
+
+## What counts as a UI label
+
+Short, standalone text that names a control, an option, or a section — as distinct from a
+sentence a reader reads fluently ([Voice and tone](/invoca-design-system/content/voice-and-tone),
+[Error messages](/invoca-design-system/content/error-messages)) or a formatted value
+([Numbers](/invoca-design-system/content/numbers), [Dates and times](/invoca-design-system/content/dates-and-times)). A button's text,
+a field's label, a checkbox's option text, a tab's name, and a table's column header are all
+UI labels in this sense, even though they live on very different components.
+
+## The one decision every label makes: verb, or noun
+
+Every component page written so far lands on one of exactly two grammatical shapes for a
+label, and which one applies follows directly from what the control *does*:
+
+| The control… | Label is a… | Example | Established on |
+|---|---|---|---|
+| Performs an action | **Verb-first imperative phrase** | "Save Changes," "Delete Campaign" | [TITAN-BTN-03](/invoca-design-system/components/actions/button#constraints) |
+| Represents a persistent thing, state, or setting | **Noun phrase** — never a question, never an instruction to act | "Email notifications," "Dark mode," "Routing" | [Checkbox](/invoca-design-system/components/forms/checkbox#content), [Switch](/invoca-design-system/components/forms/switch#constraints), [Radio](/invoca-design-system/components/forms/radio#content), [Tabs](/invoca-design-system/components/navigation/tabs#content) |
+
+<Warning>
+  **This table is a synthesis, not a rule stated anywhere directly.** Six different component
+  pages independently converged on this split while describing their own content rules. No
+  single source states the general principle — this page is what makes it explicit and
+  citable in one place. Needs sign-off before treating it as more than a strong pattern.
+</Warning>
+
+## Rules that already apply everywhere
+
+These were each established on a specific component page and restated here as the general
+form, cited back to where they were established rather than re-argued:
+
+| Rule | Established on |
+|---|---|
+| Prefer the specific word over a generic one ("Delete campaign," not "OK") | [TITAN-BTN](/invoca-design-system/components/actions/button#content) |
+| Use the reader's word for the thing, never the underlying library's internal name | [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) |
+| No terminal punctuation on any label | [TITAN-CASE-04](/invoca-design-system/content/capitalization-and-punctuation#constraints) |
+| Casing follows the per-content-type model — it is not one global rule | [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#casing-by-content-type) |
+| Plain language over jargon or internal acronyms | [TITAN-VOICE-01/02](/invoca-design-system/content/voice-and-tone#constraints) |
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-UILABEL-01** | A label naming an action is a verb-first imperative phrase. | Established directly on [Button](/invoca-design-system/components/actions/button#constraints); restated here as the general form. |
+| **TITAN-UILABEL-02** | A label naming a persistent thing, state, or setting is a noun phrase — never a question, never an instruction to act. | Synthesized from independently-arrived-at rules on Checkbox, Radio, Switch, and Tabs — see the table above. |
+| **TITAN-UILABEL-03** | A label uses the reader's word for the thing it names, never the underlying library's or framework's internal name. | [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) — "Table," not `DataGrid`. |
+| **TITAN-UILABEL-04** | The specific word is preferred over a generic placeholder ("OK," "Submit," "Item") wherever the specific one is knowable at authoring time. | A generic label forces the reader to look elsewhere on the screen to learn what pressing it actually does. |
+
+## Gaps in the current rules
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **No word-count ceiling for non-button labels.** Button has one (1–3 words); no equivalent has been stated for a checkbox option, a tab name, or a column header. | Without one, an unusually long option label is a style choice on one screen and a bug on another. | Open |
+| **No pluralization convention.** Whether a section is named "Setting" or "Settings" is not addressed anywhere. | A small, constant source of inconsistency across a large surface of labels. | Open |
+| **No truncation-safety guidance for translated or localized labels.** Every length guidance so far assumes English. | A label that fits in English at 3 words may run considerably longer in another language. | Open |
+| **The verb/noun table above is inferred, not sourced.** See the warning under [The one decision every label makes](#the-one-decision-every-label-makes-verb-or-noun). | Six pages agreeing independently is strong evidence, not confirmation. | Open |
+
+## Why it works this way
+
+**The verb/noun split mirrors what the reader needs to predict.** A control that performs an
+action needs its label to answer "what happens if I press this" — a verb answers that
+directly. A control that represents a state needs its label to answer "what is this," so the
+reader can recognize it — a noun answers that instead. Labeling an action with a noun ("Save"
+becomes "Confirmation") or a state with a question ("Dark mode" becomes "Enable dark mode?")
+answers the wrong question for what the reader is actually trying to do at that control.

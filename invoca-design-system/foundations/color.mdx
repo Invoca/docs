@@ -1,0 +1,353 @@
+---
+title: "Color"
+description: "How color carries meaning in Titan, and which token to reach for when."
+icon: "palette"
+keywords: ["palette", "swatches", "theme", "contrast", "semantic color", "status"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+<Warning>
+  **Several standard pairings on this page fail WCAG AA** — measured, not estimated. See
+  [Accessibility](/invoca-design-system/foundations/accessibility) for the full table and
+  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03) for what to do about it.
+</Warning>
+
+## What it governs
+
+Every color that renders: surfaces, text, borders, icons, states, and status. Color in Titan
+is not a palette you pick from. It is a set of named intents that resolve to different
+values depending on mode.
+
+Color is the largest foundation — **97 of the 244 tokens on `theme.tokens` are color**, and
+every one is token-bound rather than an untokenised literal.
+
+## Vocabulary
+
+The colour vocabulary is fully specified. Four axes apply.
+
+| Axis | Values | Means |
+|---|---|---|
+| **attribute** | `background` `text` `border` `icon` `link` `overlay` | What is being painted |
+| **purpose** | `success` `info` `error` `warning` `neutral` `default` `destructive` `focus` | What it means |
+| **prominence** | `primary` `secondary` `tertiary` `invert` | How much weight it carries. The design team's button vocabulary — see [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11). |
+| **state** | `default` `alt` `hover` `pressed` `selected` `visited` `disabled` `focus` | Which interaction state |
+
+<Note>
+  **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
+  baseline the design language is being built on. This is the vocabulary of record — not
+  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+</Note>
+
+<Warning>
+  **`alt` is a state, not a shade.** `background-error-alt` is the alternate *state* of the
+  error background — the tinted partner to the bold fill — sitting on the same axis as
+  `hover` and `pressed`. Reading it as "a lighter error" is the most common misuse.
+
+  **`invert` sits on two axes** — a prominence (`text-invert`, for content on an inverted
+  surface) and a state. Read it from position in the name.
+</Warning>
+
+<Note>
+  **Two terms overlap and the spec does not separate them.** `neutral` and `disabled` both
+  appear as purposes, and `background-neutral` and `background-disabled` resolve to the same
+  value — see [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+</Note>
+
+## The model
+
+Titan's colors are authored in three tiers as DTCG JSON, and flattened at build time.
+
+```
+Primitive   color.blue.50                  = #2666f9
+Semantic    tokens.background-selected     = {color.blue.10}
+Component   chip-info-tint                 = {color.blue.20}
+```
+
+**Component code reaches the semantic tier**, which is flat: you write
+`background-selected`, not the alias chain behind it.
+
+```
+JS        theme.vars.tokens["background-selected"]
+CSS       var(--titan-tokens-background-selected)
+SCSS      $background-selected          — legacy surface, frozen
+```
+
+The primitive tier is published as `--titan-color-*` and exists to be aliased, never
+referenced directly. The component tier is where Titan's stated model and its source
+disagree — see [TITAN-DIV-01](/invoca-design-system/foundations/divergences#titan-div-01).
+
+The same name resolves to a different value depending on the active color scheme. That
+resolution is the entire mechanism — there is nothing to configure and nothing to opt into.
+
+<Note>
+  Every color token also ships a `…Channel` companion — `background-selectedChannel` is
+  `"212 224 254"`, the space-separated RGB triplet. They exist so transparency can be
+  applied to a color internally. **Do not use them directly** — deriving a color by applying
+  alpha to a channel is the opacity anti-pattern [TITAN-COLOR-06](#constraints) prohibits.
+</Note>
+
+## The naming pattern
+
+Four families, and two modifiers that appear throughout. Learning the modifiers is most of
+learning the system.
+
+| Family | Applies to |
+|---|---|
+| `background-*` | Surfaces and fills (27 tokens) |
+| `text-*` | Rendered text (17) |
+| `border-*` | Borders, dividers, outlines (18, plus 4 width tokens) |
+| `icon-*` | Icon glyphs (18, including 4 size tokens) |
+
+| Modifier | Means |
+|---|---|
+| *(none)* | The saturated, full-strength value. A **fill** color. |
+| `-alt` | The alternate-weight partner. On a `background`, a **tinted** surface; on `text` or `icon`, a **darkened** value that carries contrast on a light surface. |
+| `-hover`, `-pressed` | Interaction states |
+| `-bold-hover`, `-bold-pressed` | Interaction states for *filled* variants, which move in the opposite direction from tinted ones |
+| `-invert` | For use on an inverted (dark-in-light-mode) surface |
+
+<Warning>
+  **`-alt` is not "a lighter version." It is the contrast-carrying partner**, and its
+  direction depends on the family. `background-success-alt` is a pale tint (`#d5f2de`);
+  `text-success-alt` is nearly black-green (`#0d5400`). They are designed to be used
+  *together*. Reaching for a plain status token where an `-alt` belongs is the most common
+  source of contrast failures in Titan — see [TITAN-COLOR-07](#constraints).
+</Warning>
+
+## Choosing a token
+
+**This is the section to read.** The left column is what you are trying to express — in your
+words, not the system's.
+
+### Surfaces
+
+| You need… | Use | Not |
+|---|---|---|
+| The page canvas | `background-view-background` | `background-default`. The canvas is `#f5f6fa`, not white — and contrast must be checked against it. |
+| A surface sitting on the canvas — card, panel, menu, dialog | `background-default` | A hardcoded white — invisible to the audit and carrying no recorded intent. |
+| A dark, high-emphasis surface — a filled header, an inverted panel | `background-strong` | A dark primitive. Pair with `text-primary-invert`. |
+| A neutral, low-emphasis fill | `background-neutral` | `background-disabled`. They share a value and mean different things — see [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04). |
+| A row or cell under the pointer | `background-hover` | An opacity overlay — opacity composites unpredictably over tinted surfaces |
+| A row or cell being pressed | `background-pressed` | The hover token — pressed must be distinguishable from hover |
+| A selected row that stays selected | `background-selected` | The hover token. Hover is transient; selection persists. |
+| A strongly marked selection — a filled active tab or nav item | `background-selected-alt` | `background-selected` at a heavier weight |
+| An unavailable control | `background-disabled` | Reduced opacity on the normal surface |
+| A modal scrim | `overlay-default` | A black at some alpha — see the [known defect](#gaps-in-the-current-rules) |
+| The backdrop behind a loading state | `overlay-loading` | `overlay-default` — loading is not a modal block |
+
+### Text
+
+| You need… | Use | Not |
+|---|---|---|
+| Body text at full emphasis | `text-primary` | Black. `text-primary` is `#15243e` — a near-black with a blue cast that reads softer at length. |
+| Supporting text, captions, metadata | `text-secondary` | An opacity on primary — opacity produces unpredictable contrast against non-default surfaces |
+| Text with more weight than secondary but less than primary | `text-strong` | Bolding `text-secondary`. Weight and emphasis are separate channels. |
+| Text on a dark or inverted surface | `text-primary-invert` | White. The surface is not guaranteed dark in every mode. |
+| Text in an unavailable control | `text-disabled` | Secondary text. Disabled and de-emphasized are different meanings and must not collide. |
+| Text indicating a selected item | `text-selected` | `text-info` — they differ, and selection is not a status |
+| A link | `link-default` (`link-hover`, `link-visited`) | `text-selected` — links have their own family |
+
+### Borders
+
+| You need… | Use | Not |
+|---|---|---|
+| To separate content within a group | `border-default` | A darker border — too heavy at list scale, turns a list into a grid |
+| To bound a control (input, outlined button) | `border-default` | A subtle tint — the control stops reading as interactive |
+| To emphasize a boundary — an active panel edge | `border-strong` | A thicker default border |
+| The border of a selected control | `border-selected` | `border-info` — selection is not a status |
+| The border of an unavailable control | `border-disabled` | Reduced opacity |
+| A field that failed validation | `border-error` | Red. The token carries the dark-mode value; a raw red does not. |
+
+Border **widths** are separate tokens:
+
+| Token | Value |
+|---|---|
+| `border-width-sm` | 1px |
+| `border-width-md` | 2px |
+| `border-width-lg` | 3px |
+| `border-width-emphasis` | 2px |
+
+<Note>
+  **`border-width-md` and `border-width-emphasis` are both 2px, but they are not the same
+  token.** Source records `border-width-emphasis` as the emphasized width for buttons, filter
+  outlines, and slider thumbs; `border-width-md` records nothing. They also differ
+  structurally — `border-width-md` aliases the primitive scale, while `border-width-emphasis`
+  is a literal `2px` declared at the semantic tier.
+
+  Because the values are identical, the distinction is invisible on screen. See
+  [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+</Note>
+
+### Status
+
+Four statuses. A fifth invented locally is not a status — it is an unmet need, and it
+belongs in a token proposal.
+
+Each status has two complete treatments. **Pick one and use it consistently.**
+
+| Treatment | Surface | Text / icon | Use for |
+|---|---|---|---|
+| **Tinted** (preferred) | `background-{status}-alt` | `text-{status}-alt`, `icon-{status}-alt` | Banners, inline alerts, form validation — anything containing readable text |
+| **Bold fill** | `background-{status}` | `text-invert` | Small, high-attention marks — badges, dots, count chips |
+
+| Status | Means |
+|---|---|
+| `info` | Neutral context the user did not ask for |
+| `success` | An action completed |
+| `warning` | Proceeding is possible but has consequences |
+| `error` | Something failed or is invalid |
+
+<Warning>
+  **The bold-fill treatment fails AA for success and warning.** `text-invert`
+  on `background-success` measures **2.41:1**; on `background-warning`, **2.74:1**. Both are
+  far below the 4.5:1 minimum.
+
+  Use the tinted treatment for anything containing text. Seven of its eight mode
+  combinations pass AA outright. Full measurements in
+  [Accessibility](/invoca-design-system/foundations/accessibility#contrast).
+</Warning>
+
+<Warning>
+  **Color is never the sole carrier of meaning** — see [TITAN-COLOR-03](#constraints). Every
+  status pairs a color with an icon and text. Roughly 1 in 12 men has some form of color
+  vision deficiency; a red-only error state is invisible to them, and to anyone in bright
+  sunlight or on a poorly calibrated display.
+</Warning>
+
+## Token reference
+
+<Snippet file="generated/tokens/color.mdx" />
+
+### The primitive tier
+
+Tier 1 exists and is published — 106 raw ramp values as `--titan-color-*` custom properties.
+Semantic tokens alias into it; component code never touches it.
+
+<Snippet file="generated/tokens/color-primitive.mdx" />
+
+### Every semantic color, with its alias chain
+
+<Snippet file="generated/tokens/color-semantic.mdx" />
+
+## Interaction states
+
+The state tokens, grouped by the state they express. Each is a normal semantic color token —
+there is no separate state mechanism.
+
+<Snippet file="generated/tokens/interaction-states.mdx" />
+
+**Hover is not available on touch.** Never let hover color be the only signal that something
+is interactive — see [TITAN-COLOR-09](#constraints).
+
+## Surface layering
+
+<Warning>
+  **Proposed — not yet signed off.** Titan ships four background tokens that function as
+  surfaces, with no defined order and no rule pairing a border to the surface it sits on.
+  The ordering below is a proposal. See
+  [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07).
+</Warning>
+
+| Level | Surface token | Sits on | Pair borders with |
+|---|---|---|---|
+| Canvas | `background-view-background` | The page | `border-default` |
+| Raised | `background-default` | The canvas | `border-default` |
+| Recessed | `background-neutral` | Either | `border-disabled` |
+| Inverted | `background-strong` | Either | — pairs with `text-primary-invert` |
+
+Titan does not specify what happens below the raised level. A card inside a card has no
+defined surface, and inventing one locally is how a layering model stops being one.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-COLOR-01** | Component code references a color token. Never a hex value, an `rgb()`, or a `…Channel` variable. | A literal is invisible to the audit and carries no recorded intent. Every system-wide color change becomes a search-and-replace. |
+| **TITAN-COLOR-02** | Text meets WCAG 2.2 AA against the surface it sits on. | Four status pairings fail today. Contrast is arithmetic, so it is checkable before review rather than after. |
+| **TITAN-COLOR-03** | Color never carries meaning alone. Pair with an icon, a label, or both. | Color vision deficiency, monochrome displays, and bright ambient light all remove color as a channel. |
+| **TITAN-COLOR-04** | New color needs are met by proposing a token, never by a local override. | A local override is invisible to the audit, to Figma, and to every other consumer. It is how a design system stops being one. |
+| **TITAN-COLOR-05** | Status color comes from the four statuses. A fifth is a token proposal, not a hex value. | Five statuses cannot be reliably distinguished by color, and an ad-hoc fifth has no dark-mode value and no contrast guarantee. |
+| **TITAN-COLOR-06** | Opacity is never used to derive a color variant. | Opacity composites against whatever is behind it, so the resulting contrast is unknowable at author time. Use the token for the intent instead. |
+| **TITAN-COLOR-07** | Status text and icons use the `-alt` variant. Bold fills pair with `text-invert`, and never for success or warning. | The plain status tokens measure 2.41–2.74:1. Mixing the two treatments is the primary source of contrast failures. |
+| **TITAN-COLOR-08** | Contrast is verified against `background-view-background`, not only `background-default`. | The canvas is `#f5f6fa`. `text-info` and `text-error` pass on white and fail on the canvas. |
+| **TITAN-COLOR-09** | Hover color is never the only signal that an element is interactive. | Hover does not exist on touch, and it is unavailable to keyboard navigation. Pair it with an affordance that persists — a cursor, a border, a control shape. |
+
+## Accessibility
+
+Full measured tables live in [Accessibility](/invoca-design-system/foundations/accessibility). The headlines:
+
+- **`text-success` (2.41:1) and `text-warning` (2.74:1) fail AA on all light surfaces.** Use
+  the `-alt` variants.
+- **`text-info` and `text-error` pass on white but fail on the page canvas.**
+- **There is no *semantic* focus token.** Three component-scoped rings ship —
+  `form-field-focus-ring`, `form-field-focus-ring-error`, `data-grid-focus-ring` — each
+  authored independently against a primitive. Nothing supplies a focus ring for the general
+  case, so every other component decides for itself. See
+  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+- Disabled controls are exempt from contrast minimums, which is exactly why disabled state
+  must never be the sole signal.
+- Do not rely on hover color alone to indicate interactivity; it does not exist on touch.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
+| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented |
+| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
+| [**TITAN-DIV-07**](/invoca-design-system/foundations/divergences#titan-div-07) | Divergence | no surface layering model |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-04**](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Open decision | seven groups of tokens share one value with no visible distinction |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-13**](/invoca-design-system/foundations/open-decisions#titan-gap-13) | Open decision | surfaces have no layering order |
+
+## Gaps in the current rules
+
+- **`overlay-default` is malformed** — `rgba(21, / 36, / 62, / 0.3000)` is not
+  valid CSS and browsers will drop the declaration. The dark value is well-formed.
+- **`background-neutral` and `background-disabled` are identical** (`#e7e9eb`). Two names, one
+  value, different meanings — and one of seven such collisions. See
+  [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+- **`link-default` and `link-visited` are identical** (`#1c53e9`), so visited links cannot be
+  identified. See [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+- **`border-width-md` and `border-width-emphasis` are both 2px**, so their recorded distinction is invisible on screen. See [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
+- **No semantic focus token exists.** See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+- **The light-mode status contrast failures are untriaged.** Whether they are known and
+  accepted or unnoticed is not recorded. See
+  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
+- **Surfaces have no defined layering order.** See
+  [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07).
+
+## Related
+
+**34 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Accordion` · `AddList` · `Badge` · `Button` · `ButtonGroup` · `Card` · `Checkbox` · `Chip` · `CircularProgress` · `DataGrid` · `DatePicker` · `Dropzone` · `Footer` · `Form` · `FormInput` · `Header` · `List` · `LoaderOverlay` · `Menu` · `Modal` · `Progress` · `Radio` · `SearchableSelect` · `Select` · `Slider` · `Tabs` · `TextField` · `TextFieldWithSearchIcon` · `TextLink` · `Tile` · `Toast` · `Toggle` · `Tooltip` · `Typography`
+
+## Why it works this way
+
+**Semantic tokens are named for intent, not appearance.** `background-selected` rather than
+`background-light-blue`. Appearance names become lies the moment a second mode exists — and
+they were already lying to the person reading the code, who wants to know *why* the surface
+is that color.
+
+**Two treatments per status, not one.** A single status color cannot serve both a 12px
+badge and a paragraph of error text: what is legible as a small saturated mark is unreadable
+as a text color, and what carries text contrast is too dark to read as "success" at a
+glance. The plain/`-alt` split is that problem solved — provided the pairs stay paired.
+
+**Four statuses, not six.** Systems that add "neutral," "pending," and "in progress" as
+distinct status colors find that no user can distinguish them without reading the label — at
+which point the label is doing the work and the color is decorative. Four is the number that
+survives being squinted at.

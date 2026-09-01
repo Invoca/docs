@@ -1,0 +1,179 @@
+---
+title: "Switch"
+description: "A single, standalone binary setting that takes effect immediately, with no separate submit step."
+icon: "toggle-right"
+tag: "Stable"
+keywords: ["toggle", "on/off", "binary setting", "immediate setting"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, status, and adoption on this page are generated from Titan source.**
+  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
+  Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A control for one binary setting whose change takes effect immediately — no submit step, no
+group. That immediacy is what separates it from [Checkbox](/invoca-design-system/components/forms/checkbox), which
+implies membership in a form the reader submits as a batch.
+
+## Live example
+
+<StorybookFrame story="components-switch--default" height={100} />
+
+<Note>
+  Story ID `pending`. This session did not have access to
+  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+</Note>
+
+## Exports
+
+<Snippet file="generated/props/switch.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Track** | Rail, background | **Track** |
+| **Thumb** | Handle, knob | **Thumb** |
+
+<Warning>
+  **This documentation calls this component Switch. Both the Figma library and Titan's own
+  component tokens call it Toggle.** Confirmed this pass — see
+  [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10). Kept as "Switch" here as an equally
+  common plain-English word, not because either side is wrong. If searching Titan source or
+  the design library directly, look for `Toggle`.
+</Warning>
+
+## Choose Switch when
+
+- The setting is standalone and takes effect the instant it changes — not part of a batch the
+  reader submits together.
+- The choice has exactly two states, with nothing in between.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Capture a setting as part of a form submitted together with other fields | [Checkbox](/invoca-design-system/components/forms/checkbox) | Submission implies deferred effect; Switch implies immediate |
+| Offer more than two states, or one of several mutually exclusive options | [Radio](/invoca-design-system/components/forms/radio) or [Select](/invoca-design-system/components/forms/select) | Switch is binary only |
+| Require confirmation before the change takes effect | A confirmation step around a [Button](/invoca-design-system/components/actions/button) | Immediate, no-confirmation change is exactly what a Switch promises; layering confirmation on top contradicts that promise |
+
+## Anatomy
+
+<Note>
+  Anatomy diagram `pending` — `/images/components/switch-anatomy.png`. The images directory is
+  empty; nothing is published to generate it from yet.
+</Note>
+
+| # | Part | Required |
+|---|---|---|
+| 1 | Track | Yes |
+| 2 | Thumb | Yes |
+| 3 | Control label | No — see [TITAN-SWITCH-03](#constraints) when omitted |
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/switch.mdx" />
+
+<Warning>
+  **Confirmed from the Figma library: `Selected=True/False` × `State=Enabled/Disabled/
+  Focused` — only three states, not the four `Default/Hover/Disabled/Focused` seen on
+  [Checkbox](/invoca-design-system/components/forms/checkbox#variants-sizes-and-states) and
+  [Radio](/invoca-design-system/components/forms/radio#variants-sizes-and-states).** No `Hover` state is
+  demonstrated anywhere in the library for this component, and the resting state is named
+  `Enabled` rather than `Default` — a naming difference from its siblings, not just a missing
+  state. See [Gaps](#gaps-in-the-current-rules).
+</Warning>
+
+## Edge and failure states
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| Hover | **Undefined** — no hover treatment is demonstrated in the design library | See [Gaps](#gaps-in-the-current-rules) |
+| Disabled | One of several uncoordinated disabled-opacity values — see [Tokens](#tokens) | See [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32) |
+| The setting change fails after being applied | **Undefined.** No component expresses a failed action — see [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22). | Surface the failure adjacent to the control and revert it, same reasoning as [Button](/invoca-design-system/components/actions/button#edge-and-failure-states) |
+
+## Tokens
+
+<Snippet file="generated/tokens/switch.mdx" />
+
+## Composition
+
+<Warning>
+  **No labeled composite ("Toggle + Label") was found in the design library**, unlike
+  [Checkbox](/invoca-design-system/components/forms/checkbox#composition) and
+  [Radio](/invoca-design-system/components/forms/radio#composition), both of which have one. Where the label sits
+  relative to the track — leading or trailing — is unconfirmed. Many systems put a Switch's
+  label before the control, opposite Checkbox and Radio's trailing convention, but this page
+  does not have evidence either way for Titan specifically.
+</Warning>
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| The label names the setting, not an instruction to act | Email notifications | Turn on email notifications? |
+| The label reads correctly in both states | Dark mode | Enable dark mode |
+
+## Accessibility
+
+| Key | Behavior |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the Switch |
+| <kbd>Space</kbd> | Toggles the setting |
+
+- Exposed with a switch role distinct from a checkbox role, so assistive technology announces
+  "on"/"off" rather than "checked"/"unchecked" — the state language matches what the control
+  promises (an immediate setting, not a form value).
+- A Switch with no visible label carries an explicit accessible name.
+
+**What this component does not handle:** confirming the change, or reporting whether it
+succeeded — see [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SWITCH-01** | A Switch's change takes effect immediately, without a submit step. Use Checkbox for a form field that's part of a batch submission. | Reusing Switch for a deferred-effect setting tells the reader something already happened when it hasn't. |
+| **TITAN-SWITCH-02** | A Switch expresses exactly two states. More than two, or grouped exclusivity, uses Radio or Select instead. | A Switch with a third state or hidden modes contradicts the on/off promise the control's shape makes. |
+| **TITAN-SWITCH-03** | A Switch with no visible label carries an explicit accessible name. | Without one, a screen reader announces "switch" with no indication of what it controls. |
+| **TITAN-SWITCH-04** | A disabled Switch is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-SWITCH-05** | The label describes the setting as a noun phrase, correct to read in either state. Never a question or an instruction to act. | Because the change is immediate, a label phrased as a pending question ("Turn on dark mode?") continues to read as unanswered after the reader has already acted. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-22**](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component expresses a failed action |
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Multiple independent disabled-opacity values exist across the Forms group |
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | This documentation's "Switch" is the design library's and the token layer's "Toggle" |
+
+## Gaps in the current rules
+
+- **No hover state is demonstrated** for this component in the design library, unlike its
+  siblings. Whether that's intentional (a track/thumb may not need a hover cue the way a
+  clickable icon does) or simply unmodeled is unconfirmed.
+- **No labeled composite exists to confirm label position** — see
+  [Composition](#composition).
+
+## Why it works this way
+
+**Immediate effect is the entire semantic difference from Checkbox.** A Switch that required a
+submit step would be a Checkbox with extra styling; the value of having both controls is that
+their shape alone tells the reader whether an action is pending or already done.
+
+## Status
+
+<Snippet file="generated/status/switch.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/switch.mdx" />
+
+- [Checkbox](/invoca-design-system/components/forms/checkbox) — the batch-submitted counterpart
+- [Radio](/invoca-design-system/components/forms/radio) — for more than two states or grouped exclusivity

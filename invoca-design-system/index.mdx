@@ -1,48 +1,70 @@
 ---
-title: "Invoca Design System"
-description: "Titan components and the intent behind them — when to use each one, when not to, and why."
-icon: "home"
+title: "Titan"
+description: "Invoca's design system: foundations, components, patterns, and views."
+mode: "wide"
 ---
 
-The Invoca Design System documents **Titan**, our React component library, and the design decisions behind it. It exists so that anyone building an Invoca product — a designer, an engineer, or an AI tool generating UI — works from the same understanding of what each component is for.
+# Titan
 
-## What lives here, and what doesn't
+Titan is Invoca's design system. It exists so that a person or an agent building an
+Invoca screen can make the right decision without asking anyone.
 
-These pages answer one question per component: **should I use this, and how do I use it well?**
+## How this documentation is organized
 
-They deliberately do not restate the API. A component's props, its design tokens, and its code examples all have an authoritative home already, and copying them here would create a second version that quietly goes stale. Each page links out instead:
+Four tiers, resolved from the top down. When you are building something new, start at
+View and work inward — the page-level decision constrains everything below it.
 
-| To know… | Go to |
-| --- | --- |
-| Whether this is the right component, and how to use it well | **These pages** |
-| The exact props, types, and defaults | **Storybook** and the exported types |
-| Which design tokens a component consumes | the component's overrides file in **Titan** |
-| A live, interactive example | the **Storybook** embed on each page |
-
-<Info>
-  Titan's code is the source of truth. If code and this documentation ever disagree, code wins — and that's a bug to report, not a decision to make locally.
-</Info>
-
-## Why the intent matters more than the API
-
-An API is discoverable: types, autocomplete and Storybook all describe what a component _accepts_. Nothing in the code describes what a component is _for_, or which of two plausible components is the right one — and that judgement is where most design-system mistakes actually happen.
-
-That is also the part an AI tool cannot infer. Given types alone, a tool will produce something that compiles and is still wrong for the situation. Given intent, it produces something a reviewer recognises. These pages are published in machine-readable form for exactly that reason.
-
-## Sections
-
-<CardGroup cols={2}>
-  <Card title="Components" icon="shapes" href="/invoca-design-system/components/button">
-    When to use each Titan component, when not to, and the rules that make it work.
+<Columns cols={2}>
+  <Card title="Foundations" icon="palette" href="/invoca-design-system/foundations/overview">
+    Design tokens: color, type, space, elevation, motion. What everything else is built from.
   </Card>
-
-  <Card title="Storybook" icon="book-open" href="https://main--64e4dc66838839c721332d22.chromatic.com">
-    Live components, props, and every variant as it actually renders.
+  <Card title="Components" icon="component" href="/invoca-design-system/components/overview">
+    Units that ship as exports from the Titan package, with a props API.
   </Card>
-</CardGroup>
+  <Card title="Patterns" icon="layout-template" href="/invoca-design-system/patterns/overview">
+    Named compositions of two or more components. Rules, but no export.
+  </Card>
+  <Card title="Views" icon="layers" href="/invoca-design-system/views/overview">
+    Full-page archetypes. Which regions exist, and what fills each one.
+  </Card>
+</Columns>
 
-## Who this is for
+## How to read a page
 
-- **Designers and PMs** — decide which component fits, and specify it correctly the first time.
-- **Engineers** — get the intent here and the API from Storybook and the types.
-- **AI tools** — this content is published as an `llms.txt` index, a full-text export, and a docs endpoint, so generated UI is grounded in real components and real constraints rather than guesses.
+Every page carries three layers, and it helps to know which one you are reading.
+
+| Layer | What it is | How to treat it |
+|---|---|---|
+| **Reference** | Props, token values, variants. Generated from Titan source on every build. | Authoritative. If it is wrong, the source is wrong. |
+| **Decision** | "Choose this when", "Choose something else when", and numbered constraints. | Normative. Departures need a reason, in review. |
+| **Rationale** | Why the decision is what it is. | Context. Read it before proposing a change. |
+
+### Constraints have IDs
+
+Normative rules are numbered — `TITAN-BTN-01`, `TITAN-COLOR-03`. The IDs are permanent
+and citable. Use them in design review and in pull requests: "this conflicts with
+TITAN-BTN-01" is a shorter and less personal conversation than describing the rule again.
+
+## Start here
+
+<Columns cols={3}>
+  <Card title="For designers" icon="pen-tool" href="/invoca-design-system/get-started/for-designers">
+    The Figma library, how it relates to code, and what to do when they disagree.
+  </Card>
+  <Card title="For engineers" icon="code" href="/invoca-design-system/get-started/for-engineers">
+    Install, theming, tokens in code, and contributing back.
+  </Card>
+  <Card title="For agents" icon="bot" href="/invoca-design-system/get-started/for-agents">
+    How to consume this documentation programmatically.
+  </Card>
+</Columns>
+
+## One thing worth knowing up front
+
+**Code is the source of truth for Titan.** Tokens are authored as DTCG JSON, built with
+Style Dictionary, and emitted to CSS, to TypeScript, to Figma — and to this site. The
+Figma library is a projection of code, not an authority. A value that exists only in
+Figma is not part of the system.
+
+This matters when you find a disagreement. The answer is not "which one looks right"; it
+is "code is right, and Figma has drifted." [Report it](/invoca-design-system/contribute/reporting-drift).

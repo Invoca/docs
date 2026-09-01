@@ -1,0 +1,172 @@
+---
+title: "Space"
+description: "The spacing scale, control heights, and which step to reach for."
+icon: "ruler"
+keywords: ["spacing", "space", "padding", "margin", "gap", "control height", "scale"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+Every gap, pad, inset, and control height. Two token families do all of it: `spacing-*`
+(11 usable steps) and `control-height-*` (2 steps).
+
+## Vocabulary
+
+| Axis | Values | Means |
+|---|---|---|
+| **attribute** | `spacing` | The scale itself |
+| **level** | `1`–`15` | Position on the scale, not a multiplier |
+| **size** | `min` `max` | Which bound, where a range applies |
+
+<Note>
+  **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
+  baseline the design language is being built on. This is the vocabulary of record — not
+  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+</Note>
+
+<Warning>
+  **The specification stops at `spacing-9`; code ships `spacing-0` through `spacing-10`.**
+  It also records no definition for any spacing step, so which gap each step is *for* is
+  undecided — see [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02) and
+  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+</Warning>
+
+## The scale is ordinal, not arithmetic
+
+This is the thing to internalize before anything else.
+
+| Token | rem | px | Step |
+|---|---|---|---|
+| `spacing-none` / `spacing-0` | `0px` / `0rem` | 0 | — |
+| `spacing-1` | 0.125rem | **2px** | +2 |
+| `spacing-2` | 0.25rem | **4px** | +2 |
+| `spacing-3` | 0.5rem | **8px** | +4 |
+| `spacing-4` | 0.75rem | **12px** | +4 |
+| `spacing-5` | 1rem | **16px** | +4 |
+| `spacing-6` | 1.5rem | **24px** | +8 |
+| `spacing-7` | 2rem | **32px** | +8 |
+| `spacing-8` | 2.5rem | **40px** | +8 |
+| `spacing-9` | 3rem | **48px** | +8 |
+| `spacing-10` | 3.5rem | **56px** | +8 |
+
+<Warning>
+  **The number is a position, not a multiplier.** `spacing-5` is 16px, not 20px.
+  `spacing-10` is 56px, not 40px. The scale accelerates: 2px steps at the bottom, 4px in
+  the middle, 8px at the top.
+
+  If you are computing a value — "I need 20px, so `spacing-5`" — you are using the scale
+  wrong. Pick by role, using the table below.
+</Warning>
+
+## Choosing a token
+
+Left column is what you are trying to express. Right column is the token.
+
+### Space between things
+
+| You need… | Use | Not |
+|---|---|---|
+| To nudge an icon into optical alignment with its label | `spacing-1` (2px) | A negative margin — it breaks at other font sizes and is invisible to the audit |
+| The gap between an icon and the text it labels | `spacing-2` (4px) | `spacing-3` — 8px reads as two separate elements rather than one labelled unit |
+| The gap between tightly related controls in a row | `spacing-3` (8px) | `spacing-5` — related controls at 16px stop reading as a group |
+| Padding inside a control, or between a label and its field | `spacing-4` (12px) | A hardcoded 12px — invisible to the audit and unchangeable system-wide |
+| Padding inside a card, panel, or dialog body | `spacing-5` (16px) | `spacing-4` — 12px inside a large surface reads as an error, not as intent |
+| The gap between distinct form fields | `spacing-5` (16px) | `spacing-3` — fields at 8px read as one control with two inputs |
+| The gap between sections within a page region | `spacing-6` (24px) | A divider plus a smaller gap. Space separates; add a rule only when space alone is ambiguous. |
+| The gap between major page regions | `spacing-7` (32px) | `spacing-6` — region boundaries need to outrank section boundaries |
+| Vertical rhythm around a page header or a hero block | `spacing-8`–`spacing-10` (40–56px) | Anything larger. 56px is the top of the scale; a bigger gap is a layout problem, not a spacing one. |
+| Deliberate zero, where a default would otherwise apply | `spacing-none` | `0` — a literal is invisible to the audit and reads as an omission |
+
+### Control heights
+
+| You need… | Use | Height |
+|---|---|---|
+| A control in a dense context — table row, filter bar, toolbar | `control-height-sm` | 32px |
+| A standard form or page-level control | `control-height-md` | 36px |
+
+<Warning>
+  **There is no large control height.** Titan ships two, `sm` and `md`. A `large` size can
+  still be requested and will render — at a size no Titan token defines and no design
+  decision covers. Two heights is the system's surface; use them.
+</Warning>
+
+## Token reference
+
+<Snippet file="generated/tokens/spacing.mdx" />
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SPC-01** | All spacing comes from a `spacing-*` token. No pixel, rem, or em literals in component styles. | A literal is invisible to the audit and cannot be adjusted system-wide. It is the most common way a component drifts off the scale. |
+| **TITAN-SPC-03** | Pick a spacing token by role, never by arithmetic. | The scale is ordinal. Reasoning "I need 20px so I'll use `spacing-5`" produces a 16px gap and an author who thinks it is 20. |
+| **TITAN-SPC-04** | A component that renders in a table row or filter bar uses `control-height-sm`. Everything else uses `control-height-md`. | Two heights, two contexts. A third height introduces a row-height inconsistency that compounds down a long table. |
+| **TITAN-SPC-05** | Deliberate zero is `spacing-none`, not `0`. | `0` is indistinguishable from a forgotten value. `spacing-none` records that someone decided. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-SPC-02** | Raw CSS uses `var(--titan-tokens-spacing-N)`, never `var(--titan-spacing-N)`. | Superseded by [TITAN-FND-02](/invoca-design-system/foundations/overview#constraints), which states the surface distinction without depending on density. |
+| **TITAN-SPC-06** | Never scale `spacing-1` or `spacing-2` for compact. | Governs density behaviour, which is out of scope — see [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01). Retired, not reversed. |
+
+## Accessibility
+
+- **Both control heights clear the AA target size minimum.** `control-height-sm` is 32px and
+  `control-height-md` is 36px, against the 24×24px of
+  [Target Size (Minimum, AA)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html).
+  Neither reaches the 44×44px of Target Size (Enhanced, AAA). Height is one dimension — an
+  icon-only control must also meet 24px in width.
+- Spacing carries grouping information. Users relying on magnification see a fraction of
+  the screen at a time and rely on proximity more heavily than sighted users at 100%.
+  Keep the gap hierarchy intact: related < grouped < sectioned < region.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-06**](/invoca-design-system/foundations/divergences#titan-div-06) | Divergence | two tokens for zero |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+
+## Gaps in the current rules
+
+- **`spacing-0` (`0rem`) and `spacing-none` (`0px`) are duplicates.** Both ship, neither is
+  marked deprecated. This page recommends `spacing-none` on the grounds that it reads as a
+  decision, but that is an inference, not a documented policy. See
+  [TITAN-DIV-06](/invoca-design-system/foundations/divergences#titan-div-06).
+- **`--titan-spacing-compact-3` (`0.375rem`) exists as a public CSS custom property** but is
+  not a token on any access surface. Treat it as private; it is not documented as such.
+- **A second, older 8px spacing unit is still exposed** alongside the scale. Its
+  relationship to the `spacing-*` steps is unstated, and its multiplier behavior does not
+  correspond to any step on this page.
+
+## Related
+
+**30 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Accordion` · `AddList` · `Alert` · `Button` · `ButtonGroup` · `Card` · `Checkbox` · `Chip` · `DatePicker` · `Drawer` · `Dropzone` · `EmptyState` · `Footer` · `Form` · `FormInput` · `Header` · `List` · `Modal` · `Radio` · `SearchableSelect` · `Select` · `Tabs` · `TextField` · `TextFieldWithSearchIcon` · `TextLink` · `Tile` · `Toast` · `Toggle` · `Tooltip` · `Typography`
+
+## Why it works this way
+
+**The scale accelerates because perception does.** The difference between 2px and 4px is
+large and meaningful; the difference between 48px and 50px is not visible. A linear scale
+wastes its middle on distinctions nobody can see and runs out of room at the top. Steps of
+2, then 4, then 8 give roughly even *perceptual* increments.
+
+**Eleven steps is deliberately few.** Every additional step is a decision a builder has to
+make and a reviewer has to check. A scale with 20 values does not produce more precise
+layouts; it produces layouts where no two authors picked the same gap for the same job.
+

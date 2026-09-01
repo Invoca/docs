@@ -1,0 +1,481 @@
+---
+title: "Views overview"
+description: "The page frame: which regions a page has, what fills each, and what a page view is expected to do."
+icon: "layers"
+keywords: ["view", "page", "layout", "header", "footer", "region", "page frame", "structure", "tabs", "tab strip", "tab panel", "sections"]
+---
+
+<Note>
+  **The Exports table and adoption figures are generated from Titan source** by
+  `tools/emit-components.mjs`. Region names, slot rules, and constraints are authored, and
+  constraints are **Proposed** until signed off. Code issues found while writing this page are
+  recorded in [Divergences](/invoca-design-system/foundations/divergences) and
+  [Open decisions](/invoca-design-system/foundations/open-decisions) rather than here.
+</Note>
+
+## What Views govern
+
+A **view** is a full page: which regions it has, what fills each, and what the page is
+expected to do for someone arriving at it. It is the first decision, and it constrains every
+decision below it — a component chosen without knowing its region is chosen without knowing
+its constraints.
+
+Every Titan page is built from one **page frame**. This page documents the frame. The
+archetypes below describe what fills it for a particular kind of page.
+
+## The page frame
+
+Regions, in the order they appear:
+
+```
+Page
+├── Header                      identity and page-level actions
+│   ├── Left                    Breadcrumb · Title · Status · Information
+│   ├── Right                   Actions
+│   └── second row              a tab bar, or filters — never both
+├── PageDivider                 closes the header — the second row's own rule replaces it
+├── Controls                    filters and view controls, when the header is not carrying them
+├── Contents                    the page body
+│   └── TabPanel                one tab's contents, when the body is tabbed
+└── Footer                      page-level commit and cancel
+```
+
+**Header is two slots, not one.** `Left` carries what the page *is*; `Right` carries what you
+can *do* to it. That split is the frame's central decision — it is why a page-level action
+never sits next to the title, and why a status chip never sits with the buttons.
+
+**The header has a second row, and it holds one thing.** A page whose body has sections carries
+its tab bar there; a page that is filtered rather than sectioned carries its filters there
+instead. Whichever occupies it, that row's own underline becomes the header's bottom edge.
+
+**One row, two candidates, so they compete.** The design library's `Header` has a single `Type`
+property — `Default`, `Tabs`, or `Filters` — so a tabbed page cannot also put filters in its
+header and has to put them in the body instead, which is what the table page template does.
+
+<Warning>
+  **The exclusivity needs confirming with the design team before it is treated as settled.** It is
+  read from a variant property, and a variant property is how the design tool models a fixed set of
+  choices — a header that could hold both would be built with two independent toggles instead, and
+  the choice between those two structures can be a modelling decision rather than a design one.
+  What ships either way: the frame has one `Controls` region below the header, so a page can
+  currently show both. [TITAN-VIEW-17](#constraints) is the design's *apparent* rule, and the
+  question to ask is whether a page with sections and header filters was ruled out or just never
+  built.
+</Warning>
+
+## Region vocabulary
+
+The frame's terms, and the words it is not using. These are the names to say in a review.
+
+| Region | Also called | The system uses | Holds |
+|---|---|---|---|
+| Page | Wrapper, shell, container | **`Page`** | The surface everything sits on |
+| Header | Masthead, page head, title bar, top bar | **`Header`** | Identity and page-level actions |
+| Leading slot | Left side, title block, header info | **`Left`** | Breadcrumb, title, status, supporting detail |
+| Trailing slot | Right side, action bar, header options | **`Right`** | Page-level actions |
+| Title | Page name, heading, H1 | **`Title`** | The name of the thing this page is about |
+| Breadcrumb | Ancestry, trail, path | **`Breadcrumb`** | Where this page sits in the hierarchy |
+| Status | Badge, state, pill | **`Status`** | State of the thing the page is about |
+| Information | Metadata, subtitle, detail | **`Information`** | Supporting detail beside the title |
+| Actions | Page actions, CTA row, toolbar | **`Actions`** | Actions on the whole page |
+| Tab bar | Tab strip, section nav, sub-nav | **`Tabs`** | One tab per section of the body, in the header's second row |
+| Tab | Tab item, tab button | **`Tab`** | One section |
+| Tab panel | Tab contents, tab body, pane | **`TabPanel`** | The active tab's contents, inside `Contents` |
+| Controls | Filter bar, toolbar, view controls | **`Controls`** | Filters and view switches for the body |
+| Contents | Body, main, page content, slot | **`Contents`** | The page's actual content |
+| Footer | Action bar, button bar, sticky footer | **`Footer`** | Commit and cancel, and a backward action in a sequence |
+
+<Warning>
+  **"Header" is the page header, not the site header.** The application chrome around it is a
+  different thing that the frame does not own and this documentation does not cover. A page has
+  exactly one `Header`; the chrome is outside it.
+
+  The design library's page template draws that chrome as two regions — a **site header** carrying
+  the logo, the account selector, global search and the account menu, and a **left nav** rail of
+  labelled icons. Both are deliberately out of scope here, and the boundary matters in one
+  direction: `Contents` sizes itself by measuring the site header at runtime, so a page frame
+  dropped into a shell that does not identify itself gets the wrong height. See
+  [TITAN-GAP-23](/invoca-design-system/foundations/open-decisions#titan-gap-23).
+</Warning>
+
+<Note>
+  **`Controls` and `Actions` are easy to confuse.** `Actions` acts on the *page* — save, publish,
+  delete. `Controls` changes what the *body shows* — filter, sort, switch view. An action changes
+  data; a control changes your view of it.
+</Note>
+
+## What fills each region
+
+<Snippet file="generated/props/overview.mdx" />
+
+### Header — Left
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Breadcrumb | `Breadcrumb` | At most one. Omit it at the top level of a section. |
+| Title | `Title` | **Required.** Exactly one per page. |
+| Status | `Status` | At most one. Only for the state of the page's subject. |
+| Information | `Information` | Supporting detail only — never an action. |
+
+### Header — Right
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Actions | `Actions` | At most one **primary** button — see [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). Three actions maximum; collapse the rest into a [Menu](/invoca-design-system/components/actions/menu). |
+
+### Header — Tab bar
+
+A tab bar divides the page's body into **sections of the same subject**, and it belongs to the
+header rather than sitting between the header and the body. Its presence depends on the shape of
+the body rather than the shape of the page: a page either has sections or it does not.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Tab bar | `Tabs` | At most one per page, in the header's second row. Inset to the header's gutter. |
+| A tab | `Tab` | A section of *this* page's subject. Never an action, filter, or step. |
+| A tab's body | `TabPanel` | One per tab, inside `Contents`. Exactly one visible at a time. |
+
+The header's second row has three states, and they are exclusive:
+
+| Header holds | Reader-facing name | What goes there | In code |
+|---|---|---|---|
+| Nothing | **Default** | The header row alone | `Header` + `PageDivider` |
+| Sections | **Tabs** | A tab bar | `Tabs`, composed outside `Header` — [TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16) |
+| Filters | **Filters** | A filter row | `Controls`, a separate region — [TITAN-DIV-18](/invoca-design-system/foundations/divergences#titan-div-18) |
+
+**A tabbed header does not also carry a `PageDivider`.** The bar's underline is the header's
+lower edge, so pass `hidePageDivider` and let it close the region.
+
+**Each tab is addressable** — selecting one changes the URL, so a section can be linked,
+reloaded, and reached with the back button ([TITAN-VIEW-14](#constraints)). A tab switches which
+section you are looking at; a control narrows what that section shows; an action changes the
+subject. Those are three regions, and a tab that filters or saves is in the wrong one.
+
+```jsx
+{/* The header owns the bar, so the header's own rule is off */}
+<Header hidePageDivider>
+  <Left>
+    <Title>Campaign</Title>
+  </Left>
+  <Right>
+    <Actions>
+      <Button variant="contained">Save</Button>
+    </Actions>
+  </Right>
+</Header>
+
+{/* Renders outside Header today — see TITAN-DIV-16. Inset it to the header's gutter. */}
+<Tabs
+  value={tab}
+  onChange={onTabChange}
+  aria-label="Campaign sections"
+  sx={{ px: theme.vars.tokens["spacing-6"] }}
+>
+  <Tab label="Overview" id="campaign-tab-0" aria-controls="campaign-panel-0" />
+  <Tab label="Routing" id="campaign-tab-1" aria-controls="campaign-panel-1" />
+</Tabs>
+
+<Contents>
+  {/* The panel's own id and label default to a tab that does not exist — override both */}
+  <TabPanel value={tab} index={0} id="campaign-panel-0" aria-labelledby="campaign-tab-0">…</TabPanel>
+  <TabPanel value={tab} index={1} id="campaign-panel-1" aria-labelledby="campaign-tab-1">…</TabPanel>
+</Contents>
+```
+
+<Warning>
+  **`Header` cannot hold the bar today, so the composition above is a workaround.** The header puts
+  every child into one row, so a `Tabs` passed as a child lands beside `Left` and `Right` rather
+  than beneath them. Rendering it as a sibling reproduces the appearance and not the structure: the
+  header no longer owns its bottom edge, and the bar arrives with no gutter. See
+  [TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16).
+</Warning>
+
+**At the component level**, see [Tabs](/invoca-design-system/components/navigation/tabs) for the bar's own behaviour —
+the states a tab carries, the id pairing the shipped `TabPanel` gets wrong
+([TITAN-DIV-14](/invoca-design-system/foundations/divergences#titan-div-14),
+[TITAN-DIV-15](/invoca-design-system/foundations/divergences#titan-div-15)), what "tab bar" and "tab" name on each
+side, and the vertical orientation, which is a navigation rail rather than a tab bar
+([TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29)).
+
+### Controls
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Filters, search, view switches | `Controls` | Changes what the body shows, never what the data *is*. |
+| — when the header has a tab bar | `Controls` | The header's second row is taken, so filters go **below** it. They filter the active section, not the choice of section. |
+| — when the header has no tab bar | — | Design intent puts the filters **in the header**; code has no second row, so `Controls` is where they land. See [TITAN-DIV-18](/invoca-design-system/foundations/divergences#titan-div-18). |
+
+### Contents
+
+| Slot | Use | Constraint |
+|---|---|---|
+| The page body | `Contents` | One per page. Tabbed bodies wrap each tab in `TabPanel`. |
+
+<Warning>
+  **The frame has no region for pagination.** There is nothing between `Contents` and `Footer`,
+  which is where a paged list conventionally puts its controls. Three approaches exist in the
+  product and none is the system's — including two applications that independently built their
+  own pagination bar. See [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27).
+</Warning>
+
+### Footer
+
+The footer has **two slots**, and which you use depends on whether the page is a step in a
+sequence or a single unit of work.
+
+| Arrangement | Slots | Use for |
+|---|---|---|
+| **Trailing only** — the default | Commit and cancel, right-aligned | A page that is one unit of work. Save, Cancel. |
+| **Leading and trailing** | A backward action left, commit and cancel right | A **step in a multi-step flow** — a wizard, a guided setup, anything with a previous step to return to. |
+
+```jsx
+{/* Default — trailing only */}
+<Footer>
+  <Button variant="text">Cancel</Button>
+  <Button variant="contained">Save</Button>
+</Footer>
+
+{/* A step in a sequence — backward action on the left */}
+<Footer stackProps={{ justifyContent: "space-between" }}>
+  <Button variant="text">Back</Button>
+  <Box>
+    <Button variant="text">Cancel</Button>
+    <Button variant="contained">Continue</Button>
+  </Box>
+</Footer>
+```
+
+**The leading slot is for moving backward through a sequence, and nothing else.** Not a
+secondary action, not a destructive one, not help. Its position carries the meaning: left is
+where you came from. Putting anything else there costs you that.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Leading — backward | `Button` **tertiary** | At most one. Only in a multi-step flow. Never destructive. |
+| Trailing — commit and cancel | `Button` | Trailing-primary order. At most one primary — [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). |
+
+<Note>
+  **The leading slot is a convention, not a prop.** It is produced by setting
+  `justifyContent: "space-between"` and wrapping the trailing buttons so they group as one child.
+  The footer does not have a named slot for it, which means nothing enforces "one backward action,
+  tertiary, leftmost" — see [TITAN-GAP-25](/invoca-design-system/foundations/open-decisions#titan-gap-25).
+</Note>
+
+<Warning>
+  **Wrapping the trailing group costs you the footer's gap.** The footer spaces its *direct*
+  children using `spacing-3`. Once the trailing buttons are wrapped to make space-between work,
+  that gap no longer applies between them, and the group has to supply its own. The published
+  example uses a margin on a button to do it — which is exactly what
+  [TITAN-VIEW-08](#constraints) says not to do.
+
+  Use a `Stack` with a `spacing-*` token for the trailing group rather than a bare wrapper with
+  margins.
+</Warning>
+
+<Note>
+  **A left-aligned footer also exists** — every action pushed left, via
+  `justifyContent: "flex-start"`. Nothing states when a page should use it, and it conflicts with
+  trailing-primary order. Treat it as unspecified.
+</Note>
+
+## What a page view is expected to do
+
+The frame is structure. These are the expectations that make a page feel like a Titan page,
+and they hold across every archetype.
+
+| Expectation | What it means |
+|---|---|
+| **The page says what it is, immediately** | A title, and a breadcrumb when the page has ancestry. A reader arriving from a link knows where they are without reading the body. |
+| **State is visible, not inferred** | If the subject has a state that changes what you can do to it — draft, paused, archived — it is on the page as `Status`, not implied by which buttons are enabled. |
+| **One obvious next action** | At most one primary action per page. If two feel equally primary, the decision has not been made yet and is being handed to the reader. |
+| **The body is the page's job** | Header, controls, and footer exist to serve `Contents`. When chrome competes with the body for attention, the balance is wrong. |
+| **Commitment is deliberate, escape is easy** | The primary action sits last, dismissal is lightest and first. A page that is easy to leave and deliberate to submit — see [TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints). |
+| **A sequence can be walked backward** | Any page that is a step in a flow offers a way back to the previous step, in the footer's leading slot. Forward progress is never the only direction available. |
+| **Nothing important is only in a sticky region** | Sticky regions are a convenience for long pages, not a place to hide the only route to an action. |
+
+## Accessibility
+
+The view tier owns the page-level accessibility decisions, and it is the only tier that can. A
+component cannot know it is the only `main`; a pattern cannot know the heading outline.
+
+**Landmarks.** Each region should map to a landmark role so a screen-reader user can jump
+between them:
+
+| Region | Expected landmark |
+|---|---|
+| Header | `banner` |
+| Tabs | none — `tablist`, from the bar itself |
+| Controls | `search` when it is primarily search, otherwise none |
+| Contents | `main` — exactly one per page |
+| Footer | `contentinfo` |
+
+<Warning>
+  **The frame does not currently supply these.** `Footer` declares `role="navigation"`, which is
+  not what a page footer is; `Header` and `Contents` declare no role at all. Until that is fixed,
+  **set the landmark yourself** on the region wrapper. Recorded as
+  [TITAN-DIV-12](/invoca-design-system/foundations/divergences#titan-div-12).
+</Warning>
+
+**Heading outline.** `Title` renders the page's `h1`. One per page, and the body's headings
+descend from it without skipping. Visual size and heading level are chosen independently. **A
+tab label is not a heading** — the section it reveals still needs one, because a screen-reader
+user outlining the page sees tab labels only if they are in the tab bar's own semantics.
+
+**The tab bar needs a name and a wired pair.** Give `Tabs` an `aria-label` describing what it
+divides — "Campaign sections", not "Tabs". Then each tab needs an `id` and an `aria-controls`
+pointing at its panel, and each panel an `aria-labelledby` pointing back. The frame does not do
+this for you and the shipped panel guesses wrong ([TITAN-DIV-14](/invoca-design-system/foundations/divergences#titan-div-14)).
+
+**Focus order.** Region order in the DOM matches visual order: header row, tab bar, controls, body,
+footer. Provide a skip link to `Contents` when the header and site chrome together exceed a few
+tab stops. A tab bar is one tab stop, not one per tab — arrow keys move between tabs, so a bar of
+nine sections does not cost nine stops on the way to the body.
+
+**Sticky regions must not obscure a focused element**
+([WCAG 2.2 Focus Not Obscured, AA](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html)).
+Both `Header` and `Footer` can be sticky, and both can cover a focused control in a long body.
+See [TITAN-GAP-09](/invoca-design-system/foundations/open-decisions#titan-gap-09).
+
+**Reflow.** The frame works at 320px equivalent without two-dimensional scrolling — a desktop
+page at 400% zoom, not a phone.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-VIEW-01** | Every page is built from the page frame. Never a bespoke page shell. | A hand-built shell has no region vocabulary, so nothing about it is reviewable and nothing it does is reusable. |
+| **TITAN-VIEW-02** | Exactly one `Title` per page, and it is the page's `h1`. | Two titles mean two subjects, which means the page needs splitting. It also breaks the document outline for screen-reader navigation. |
+| **TITAN-VIEW-03** | Page-level actions go in `Right`. Never beside the title. | `Left` says what the page is, `Right` says what you can do. Mixing them removes the distinction that makes the header scannable. |
+| **TITAN-VIEW-04** | At most one primary action per page. | Two competing primaries hand the decision to the reader, who has less context than the designer did. |
+| **TITAN-VIEW-05** | `Controls` changes the view; `Actions` changes the data. | Putting a destructive action in the filter bar puts it where the reader is exploring rather than committing. |
+| **TITAN-VIEW-06** | Exactly one `Contents` per page, and it carries the `main` landmark. | It is the page's purpose. More than one means the regions are not what they claim to be. |
+| **TITAN-VIEW-07** | A region dropped at a narrow viewport is never the only route to a function. | Dropping is a layout decision. Removing the only path to an action is a functional one. |
+| **TITAN-VIEW-09** | A page that is a step in a sequence offers a backward action in the footer's leading slot. | A flow you can only go forward through forces a restart to correct an earlier step. The cost of the mistake becomes the whole sequence. |
+| **TITAN-VIEW-10** | The footer's leading slot holds a backward action and nothing else. | Its position is the affordance. A secondary or destructive action there reads as "previous" and gets pressed by people who meant to go back. |
+| **TITAN-VIEW-08** | Region spacing comes from the frame, never from margins on the contents. | A margin on the body makes the frame's rhythm depend on what is inside it, which is how two pages stop matching. |
+| **TITAN-VIEW-17** | The header's second row holds a tab bar or a filter row, never both. **Needs confirmation** — see below. | It is one row, so two occupants means one of them moved somewhere unstated. A page that needs both puts sections in the header and filters in the body, where a filter sits next to what it filters. |
+| **TITAN-VIEW-11** | At most one tab bar per page, and it sits inside the header, below the header row. | Two bars are two navigation axes on one page, and the reader has to work out which one moved. Below the body's top edge it competes with the body's own structure; in the header it reads as part of the page's identity, which is what a section is. |
+| **TITAN-VIEW-12** | A header with a tab bar passes `hidePageDivider`. | The bar's underline is already the header's bottom edge. A second rule below it reads as a gap in the page rather than a boundary. |
+| **TITAN-VIEW-13** | The tab bar is inset to the header's gutter, `spacing-6`. | The bar has no gutter of its own, so left alone its labels start outside the edge the title and the body share, and the header's contents no longer align down the left. |
+| **TITAN-VIEW-14** | Selecting a tab changes the URL. | A section that exists only in local state cannot be linked, cannot survive a reload, and is lost to the back button — which is the control a reader reaches for first. |
+| **TITAN-VIEW-15** | A tab is a section of the page's subject. Never an action, a filter, or a step. | Each of those has a place already — `Actions`, `Controls`, the footer's leading slot. A tab that acts puts a button in the one place a reader has been taught is navigation. |
+| **TITAN-VIEW-16** | Exactly one `TabPanel` is visible at a time, and each tab has one. | A tab bar is a promise that the sections are alternatives. Two visible panels break it; a tab with no panel is a dead control. |
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing has
+been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-12**](/invoca-design-system/foundations/divergences#titan-div-12) | Divergence | The frame's regions carry wrong or missing landmark roles |
+| [**TITAN-DIV-13**](/invoca-design-system/foundations/divergences#titan-div-13) | Divergence | A sticky header and a sticky footer sit 1090 stacking steps apart |
+| [**TITAN-DIV-14**](/invoca-design-system/foundations/divergences#titan-div-14) | Divergence | `TabPanel` names a tab that nothing exported produces, with ids that collide |
+| [**TITAN-DIV-15**](/invoca-design-system/foundations/divergences#titan-div-15) | Divergence | `TabPanel` wraps whatever it is given in a text element, and discards the inactive section |
+| [**TITAN-DIV-16**](/invoca-design-system/foundations/divergences#titan-div-16) | Divergence | The header has no tab-bar slot, so a tabbed page composes one outside it |
+| [**TITAN-DIV-17**](/invoca-design-system/foundations/divergences#titan-div-17) | Divergence | The page divider floats clear of the header instead of closing it |
+| [**TITAN-DIV-18**](/invoca-design-system/foundations/divergences#titan-div-18) | Divergence | Filters are a header row in design and a separate region in code |
+| [**TITAN-GAP-09**](/invoca-design-system/foundations/open-decisions#titan-gap-09) | Open decision | Focus Not Obscured is unaddressed |
+| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | No layout tokens exist — no page gutter, no maximum content width |
+| [**TITAN-GAP-23**](/invoca-design-system/foundations/open-decisions#titan-gap-23) | Open decision | The frame measures its own layout from the DOM at runtime |
+| [**TITAN-GAP-25**](/invoca-design-system/foundations/open-decisions#titan-gap-25) | Open decision | The footer's leading slot is a convention, not a named slot |
+| [**TITAN-GAP-26**](/invoca-design-system/foundations/open-decisions#titan-gap-26) | Open decision | No step indicator exists for multi-step flows |
+| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Pagination has no home in the frame, and three implementations |
+| [**TITAN-GAP-29**](/invoca-design-system/foundations/open-decisions#titan-gap-29) | Open decision | Vertical tabs are a navigation rail with no region and no archetype |
+| [**TITAN-GAP-30**](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | A tab can show an error in design and cannot in code |
+| [**TITAN-GAP-24**](/invoca-design-system/foundations/open-decisions#titan-gap-24) | Open decision | The region layer largely bypasses the spacing scale |
+
+## Gaps in the current rules
+
+- **No archetype is fully documented.** [List view](/invoca-design-system/views/list-view) has its frame composition
+  written and nothing else; the other six pages are stubs. Which frame regions each archetype
+  requires, and what fills them, is undecided per archetype.
+- **No maximum content width.** On a wide monitor nothing stops a full-width text body from
+  running far past a readable line length. See
+  [TITAN-GAP-12](/invoca-design-system/foundations/open-decisions#titan-gap-12).
+- **No rule for when a page gets a `Footer`.** This page proposes "when the page is a single
+  unit of work"; nothing upstream states it.
+- **Pagination has no region.** A paged list has nowhere in the frame to put its controls, and
+  three unreconciled implementations exist. See
+  [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27).
+- **No step indicator exists.** A multi-step flow can offer a backward action but has no way to
+  show which step you are on or how many remain. See
+  [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26).
+- **When the leading slot applies is stated here and nowhere upstream.** "A step in a sequence"
+  is this page's proposal.
+- **No maximum number of tabs.** The design library's tab component publishes slots for nine, and
+  the page templates show five. Neither is a stated limit, and nothing says at what count a bar
+  should have been a side rail or a set of pages.
+- **Whether a tab bar and `Controls` may both appear is settled in design and not in code.** The
+  page templates show a tabbed table with a filter row and a search field beneath the header, which
+  is the order documented above. What the templates do *not* settle is whether those filters belong
+  to the page or to the table — in the template they are drawn inside the data grid, not in a page
+  region.
+- **Sub-tabs have a themed appearance and no rule.** The rail's indented mode exists in the theme,
+  so a nested level is buildable. Nothing states when nesting is right, or how deep it may go.
+- **Tab addressability is stated here and nowhere upstream.** Two approaches ship side by side —
+  a bar of links, and a bar driven by local state with `TabPanel`. TITAN-VIEW-14 picks the
+  first; that pick has not been signed off.
+- **`Information` has no content rule.** It is a growth slot with no stated limit, which is how a
+  header accumulates a paragraph.
+- **The site header is out of scope and undocumented.** The frame stops at the page. What sits
+  above it, and how a page coexists with it, is not covered anywhere.
+
+## The archetypes
+
+Each describes what fills the frame for one kind of page. [List view](/invoca-design-system/views/list-view) has its
+frame composition written; the rest are stubs — and a stub means unwritten, not unconstrained.
+
+<Columns cols={2}>
+  <Card title="List view" icon="table" href="/invoca-design-system/views/list-view">
+    A collection you scan, filter, and act on.
+  </Card>
+  <Card title="Detail view" icon="file-text" href="/invoca-design-system/views/detail-view">
+    One record, its attributes, and its related data.
+  </Card>
+  <Card title="Settings view" icon="settings" href="/invoca-design-system/views/settings-view">
+    Configuration grouped into sections.
+  </Card>
+  <Card title="Dashboard" icon="layout-dashboard" href="/invoca-design-system/views/dashboard">
+    Multiple summaries read at a glance.
+  </Card>
+  <Card title="Wizard" icon="list-ordered" href="/invoca-design-system/views/wizard">
+    A sequence with a defined beginning and end.
+  </Card>
+  <Card title="Split view" icon="columns-2" href="/invoca-design-system/views/split-view">
+    A list and a detail pane side by side.
+  </Card>
+  <Card title="Full-page form" icon="square-pen" href="/invoca-design-system/views/full-page-form">
+    A single unit of work, committed once.
+  </Card>
+</Columns>
+
+## Related
+
+<Snippet file="generated/utilization/overview.mdx" />
+
+- [Button](/invoca-design-system/components/actions/button) — what fills `Actions` and `Footer`
+- [Tabs](/invoca-design-system/components/navigation/tabs) — the bar itself: variants, states, and the vertical orientation
+- [SideNav](/invoca-design-system/components/navigation/side-nav) — the neighbouring question the vertical orientation raises
+- [Layout & grid](/invoca-design-system/foundations/layout-and-grid) — breakpoints, and what the frame does not decide
+- [Space](/invoca-design-system/foundations/space-and-density) — the scale region spacing should come from
+- [Elevation](/invoca-design-system/foundations/elevation) — the stacking ladder sticky regions use
+
+## Why it works this way
+
+**The frame is a vocabulary, not a layout engine.** `Left` and `Right` do very little — a width
+ceiling, an alignment. Their value is that two people building two pages reach for the same two
+words and get the same structure. A more opinionated frame would be easier to use once and
+harder to use for the twentieth page.
+
+**The tab bar belongs to the header, not to the body.** The design library makes this a property
+of the header itself — one `Type` property, whose values are a plain header row, a header with a
+tab bar, or a header with filters. A bar placed between two regions instead has to be re-justified
+on every page, and a reader who learned the arrangement in one place has to relearn it in the
+next. The cost of putting it in the header is that a page with sections and a page without differ
+in one visible way, the header's rule, and that is smaller than the bar moving.
+
+**Two header slots rather than a row of components.** The alternative is a header that accepts
+children and lets each page arrange them. That produces pages where the title is sometimes left
+of the actions and sometimes above them, and no reviewer can say which is right. Naming the
+slots makes the arrangement a system decision instead of a per-page one.

@@ -1,0 +1,137 @@
+---
+title: "Capitalization and punctuation"
+description: "Which UI text is title case and which is sentence case, and Invoca's grammar exceptions to AP style."
+icon: "case-sensitive"
+tag: "Stable"
+keywords: ["title case", "sentence case", "capitalization", "punctuation", "AP style", "oxford comma", "grammar"]
+---
+
+<Warning>
+  **This page has no official source and is authored, not transcribed.** Unlike
+  [Numbers](/invoca-design-system/content/numbers), [Dates and times](/invoca-design-system/content/dates-and-times), [Voice and
+  tone](/invoca-design-system/content/voice-and-tone), and [Error messages](/invoca-design-system/content/error-messages), no
+  zeroheight page exists for capitalization specifically. What follows is built from: the one
+  confirmed grammar rule below, the casing evidence already found while auditing components
+  against Figma and zeroheight this pass, common practice across other design systems, and
+  this documentation's own existing pages. Treat every constraint here as **Proposed** and
+  more provisional than usual until reviewed.
+</Warning>
+
+## The base style
+
+Invoca's writing follows **AP Stylebook** conventions, with one confirmed exception: **Invoca
+uses the Oxford comma**, where AP style omits it. This is the one rule on this page transcribed
+from a direct statement rather than inferred — everything else follows from applying it and
+from resolving what AP style itself leaves unspecified for interface text.
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Use a comma before the final item in a list of three or more | Calls, texts, and chats | Calls, texts and chats |
+
+## Casing by content type
+
+**The central finding of this page.** Casing is not one rule — it is a per-content-type
+decision, and this documentation previously got one of them wrong. This table is the
+correction and the reference going forward.
+
+| Content type | Case | Confirmed by |
+|---|---|---|
+| **Button labels** | Title case | zeroheight's Button page, directly — see [TITAN-CASE-01](#constraints) and [TITAN-BTN-13](/invoca-design-system/components/actions/button#constraints) |
+| **Error messages, helper text, and other full-sentence messaging** | Sentence case | zeroheight's Error Messaging page, directly — "Use sentence-case for all messaging" |
+| **Field labels** | Sentence case | **Proposed** — not directly sourced; assumed consistent with the sentence-case default below until confirmed otherwise |
+| **Empty-state title and body** | Sentence case | **Proposed** — carried from the earlier EmptyState page, not stated in the Empty States zeroheight page itself |
+| **Page titles, headings, table column headers, menu and option labels, tab labels** | **Unconfirmed** | See [Gaps](#gaps-in-the-current-rules) |
+
+<Warning>
+  **This documentation previously stated the opposite rule for buttons.** An earlier pass of
+  [Button](/invoca-design-system/components/actions/button) asserted sentence case as the rule and framed the
+  theme's title-case rendering as a bug to work around
+  ([TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23), now corrected). zeroheight states
+  plainly: **"Label text should be title case,"** with an explicit **"Label text should not
+  be sentence case"** don't. That correction is reflected here and on the Button page.
+</Warning>
+
+## Two casing systems, and where each one applies
+
+**Title case** (headline style): capitalize the principal words. Lowercase articles (`a`,
+`an`, `the`), coordinating conjunctions (`and`, `or`, `but`), and short prepositions (`in`,
+`on`, `to`, `of`, `for`) — unless one of them is the first or last word.
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Lowercase short function words mid-phrase | Save Changes to Draft | Save Changes To Draft |
+| Capitalize the first and last word regardless | Turn Notifications On | turn Notifications on |
+
+<Warning>
+  **This is not what the shipped theme currently does.** [Button's](/invoca-design-system/components/actions/button#content)
+  theme applies `textTransform: "capitalize"`, which capitalizes *every* word with no
+  exception for short function words. For a short, verb-first label ("Save changes," "Publish
+  campaign") the two rarely disagree — most button labels don't contain an article or
+  preposition long enough to notice. They would disagree on a label like "Save Changes to
+  Draft," which the theme would render "Save Changes To Draft." This is a smaller, more
+  precise version of what [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23) tracks now.
+</Warning>
+
+**Sentence case**: capitalize only the first word and proper nouns. This is the default for
+anything meant to be read as a sentence rather than scanned as a label — error messages,
+helper text, empty-state copy, body text generally.
+
+## Terminal punctuation
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Labels and short action text carry no terminal punctuation | Save changes | Save changes. |
+| Full-sentence messages do carry normal sentence punctuation | Enter a valid email address. | Enter a valid email address |
+
+This already matches [TITAN-BTN-04](/invoca-design-system/components/actions/button#constraints)'s "no terminal
+punctuation" content rule and the "verb-first" logic behind it — a label is a name for an
+action, not a sentence describing one, and names don't end in periods.
+
+## Glossaries
+
+Cited here rather than duplicated — three exist, at different scopes, and none of them is
+this documentation's authority on UI terminology specifically:
+
+| Glossary | Scope |
+|---|---|
+| The Big Invoca Glossary and Synonyms (Google Sheets) | Broadest — anything related to work at Invoca |
+| Invoca Development Glossary (Confluence) | Platform and development-process terms |
+| Customer-facing Glossary (docs repo, GitHub) | Terms used across Invoca's public documentation |
+
+<Note>
+  **None of these is scoped to product UI copy specifically.** Where a term's everyday name
+  differs from its technical one — the running example in this documentation is *table* vs.
+  `DataGrid`, see [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) — the reader-facing
+  word is this documentation's own call, not something to look up in any of these three.
+</Note>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-CASE-01** | Button labels are title case: capitalize principal words, lowercase short function words unless first or last. | Directly stated in zeroheight's Button page. |
+| **TITAN-CASE-02** | Error messages and other full-sentence UI copy are sentence case. | Directly stated in zeroheight's Error Messaging page. |
+| **TITAN-CASE-03** | The Oxford comma is used in any list of three or more items. | Directly stated in source. |
+| **TITAN-CASE-04** | Labels and short action text carry no terminal punctuation. Full-sentence messages do. | A label names an action; a message describes a situation. Names don't take periods. |
+| **TITAN-CASE-05** | Field labels are sentence case. **Proposed**, pending confirmation — see [Gaps](#gaps-in-the-current-rules). | Assumed consistent with the sentence-case default until a source states otherwise for this specific content type. |
+
+## Gaps in the current rules
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **No casing rule for page titles, headings, table column headers, menu items, or tab labels.** Confirmed for exactly two content types (buttons, error messages); everything else is inferred or unconfirmed. | The most common failure mode for a casing rule is not having one — every other content type in the product needs one of these, whether the answer is title case, sentence case, or something else. | Open |
+| **Field labels' casing is Proposed, not confirmed.** | If a real source states otherwise, [TITAN-CASE-05](#constraints) and [FieldLabel's](/invoca-design-system/components/forms/field-label#constraints) content rule both need to change together. | Open |
+| **No stated rule for ellipsis on actions that open a further step** (e.g., "Export…"). Common in other design systems, not confirmed for Titan. | A missing rule here means every author decides independently whether "Export" needs the ellipsis. | Open |
+| **AP style's other conventions are assumed, not verified.** The source states exactly one exception (Oxford comma); whether every other AP convention (number spelling, quotation punctuation, etc.) is actually followed in shipped product copy hasn't been checked against real screens. | An assumed baseline is only as good as the one exception anyone has bothered to write down — there could be more that nobody's documented. | Open |
+
+## Why it works this way
+
+**Title case for buttons, sentence case for messages, tracks a real distinction rather than
+being an arbitrary split.** A button label names an action — closer to a headline or a proper
+noun than to a sentence — and headline style is what most editorial conventions use for
+exactly that kind of short, scannable text. An error message or a line of helper text is meant
+to be read fluently, the way a sentence is read, and sentence case is what makes prose read as
+prose rather than as a row of scattered emphases. The split isn't Invoca-specific; it shows up
+across most design systems that distinguish action labels from body copy, which is part of why
+it survived unnoticed as "sentence case" here for as long as it did — it looks plausible
+because the *pattern* is common, even where this documentation had the *assignment* backwards.

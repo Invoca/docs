@@ -1,0 +1,185 @@
+---
+title: "Radio"
+description: "Chooses exactly one option from a small, fully visible set of mutually exclusive choices."
+icon: "circle-dot"
+tag: "Stable"
+keywords: ["radio button", "single select", "mutually exclusive", "option group", "radio group"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, status, and adoption on this page are generated from Titan source.**
+  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
+  Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A control for choosing exactly one option from a small, fully visible set of mutually
+exclusive choices. Selecting one Radio in a group always deselects whichever was previously
+selected — the group holds exactly one truth at a time, which is what separates it from
+[Checkbox](/invoca-design-system/components/forms/checkbox).
+
+## Live example
+
+<StorybookFrame story="components-radio--default" height={140} />
+
+<Note>
+  Story ID `pending`. This session did not have access to
+  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+</Note>
+
+## Exports
+
+<Snippet file="generated/props/radio.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Radio group** | Option set, radio list | **Radio group** |
+
+<Info>
+  **Radio's own property naming is internally consistent, unlike Checkbox's.** Both the bare
+  `Radio` component and the `Radio + Label` composite use `Selected=true/false` in the Figma
+  library — no split between a `Checked` atom and a `Selected` composite the way
+  [Checkbox](/invoca-design-system/components/forms/checkbox#vocabulary) has.
+</Info>
+
+## Choose Radio when
+
+- The set of options is small — roughly five or fewer — and showing every option helps the
+  reader compare them directly, the same threshold [Select](/invoca-design-system/components/forms/select#choose-select-when)
+  draws the opposite fork at.
+- Exactly one option must be true.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Offer more than roughly five options | [Select](/invoca-design-system/components/forms/select) | Past that count, the space every option takes up outweighs the benefit of seeing them all at once |
+| Let any number of options be true, including all or none | [Checkbox](/invoca-design-system/components/forms/checkbox) group | Radio enforces exclusivity; Checkbox expresses independence |
+| Capture a single, standalone, immediately-applied setting | Switch | A two-option case needs no group; Switch is the lighter control for exactly one binary decision |
+
+## Anatomy
+
+<Note>
+  Anatomy diagram `pending` — `/images/components/radio-anatomy.png`. The images directory is
+  empty; nothing is published to generate it from yet.
+</Note>
+
+| # | Part | Required |
+|---|---|---|
+| 1 | Circle control | Yes |
+| 2 | Control label | No — see [TITAN-RADIO-03](#constraints) when omitted |
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/radio.mdx" />
+
+<Info>
+  **Confirmed from the Figma library, not source.** `Selected=true/false` × `State=Default/
+  Hover/Disabled/Focused` — 8 combinations, on both the bare control and the
+  `Radio + Label` composite.
+</Info>
+
+## Edge and failure states
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| No visible label | The circle alone | Must still carry an explicit accessible name — see [TITAN-RADIO-03](#constraints) |
+| A group with only one option | **Undefined.** A choice of one isn't a choice — see [TITAN-RADIO-05](#constraints). | See [Gaps](#gaps-in-the-current-rules) |
+| Disabled and selected | Renders at the disabled opacity applied over the selected fill | No dedicated disabled-selected colour exists as its own token — the two compose |
+| A mandatory group with nothing selected on load | **Undefined** whether a default selection is required | See [TITAN-RADIO-06](#constraints) and [Gaps](#gaps-in-the-current-rules) |
+
+## Tokens
+
+<Snippet file="generated/tokens/radio.mdx" />
+
+## Composition
+
+Pairs with a control label immediately trailing it (LTR) — see
+[FieldLabel's control-label vocabulary](/invoca-design-system/components/forms/field-label#vocabulary). A group of
+Radios is exposed as a set with its own group name, distinct from any individual option's
+label — see [TITAN-RADIO-02](#constraints).
+
+<Info>
+  **A Radio group is a real, decided container, not an ad hoc wrapper.** The
+  `form-input-radio-group-offset` token (`-0.5rem`) applies specifically to a group's
+  container, trimming the group's outer edge so an individual Radio's own padding doesn't
+  push the group past a sibling field's edge. A token existing for this implies the group
+  wrapper is a modeled part of the system, not just a convenient `<div>`.
+</Info>
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Each option label names the choice, not a question | Email | Do you want email? |
+| The group itself carries an instruction or question as its own group label | "Preferred contact method" | A group with no name of its own |
+
+## Accessibility
+
+| Key | Behavior |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the group as one stop — not to each Radio individually |
+| <kbd>↑</kbd> / <kbd>↓</kbd> or <kbd>←</kbd> / <kbd>→</kbd> | Moves the selection among the group's options |
+
+- Renders native `<input type="radio">` elements sharing one `name`, which is what makes them
+  mutually exclusive at the platform level.
+- The group is announced as a set (a fieldset with a legend, or the equivalent grouping role)
+  with its own accessible name, separate from any individual option's label.
+
+**What this component does not handle:** deciding whether a selection is required — that
+belongs to [Form validation](/invoca-design-system/patterns/form-validation).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-RADIO-01** | Radio expresses mutual exclusivity. Use Checkbox when options are independent. | Radio and Checkbox read as interchangeable at a glance; using the wrong one tells the reader the wrong thing about whether multiple answers are allowed. |
+| **TITAN-RADIO-02** | A Radio group is exposed as a set with its own name, separate from any individual option's label. | Without a group name, a reader navigating by label alone cannot tell that "Email" and "Phone" belong to the same "Preferred contact method" decision. |
+| **TITAN-RADIO-03** | A Radio with no visible label carries an explicit accessible name. | Without one, a screen reader announces "radio button" and nothing else. |
+| **TITAN-RADIO-04** | A disabled Radio is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-RADIO-05** | A Radio group never has exactly one option. | A single option offers no actual choice; the control communicates a decision that doesn't exist. |
+| **TITAN-RADIO-06** | A Radio group backing a required field ships with a default selection. **Needs confirmation** — reasonable as a default, but unverified against Titan source or the design library, which shows every state without asserting which one loads first. | An unselected mandatory group forces the reader to make a choice with no starting point to react to, which is harder than adjusting a pre-selected default. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Multiple independent disabled-opacity values exist across the Forms group, with no rule for which applies |
+
+## Gaps in the current rules
+
+- **No stated default-selection rule** for a mandatory Radio group — see
+  [TITAN-RADIO-06](#constraints).
+- **No rule for a group with only one option** beyond [TITAN-RADIO-05](#constraints) saying it
+  shouldn't happen — what to do if it does (render anyway, warn, fall back to something else)
+  is unstated.
+
+## Why it works this way
+
+**Exclusivity is the entire point of Radio**, and the group container being a real, tokened
+part of the system (not an assumed wrapper) is what lets that exclusivity extend to layout —
+a group renders as one visual unit with one edge, not a loose row of independently-positioned
+circles that happen to share a `name` attribute.
+
+**A single-option group is disallowed** because a choice with one answer isn't a choice; if a
+option set can shrink to one at runtime, the composition needs to decide what replaces the
+Radio group at that point rather than rendering a Radio group that offers nothing to decide.
+
+## Status
+
+<Snippet file="generated/status/radio.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/radio.mdx" />
+
+- [FieldLabel](/invoca-design-system/components/forms/field-label) — the control-label pairing every Radio uses
+- [Checkbox](/invoca-design-system/components/forms/checkbox) — the independent-choice counterpart
+- [Select](/invoca-design-system/components/forms/select) — the collapsed alternative once the option count grows
+- [Form validation](/invoca-design-system/patterns/form-validation) — decides whether a selection is required

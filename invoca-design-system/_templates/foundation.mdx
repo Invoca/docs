@@ -1,0 +1,160 @@
+---
+title: "Foundation name"
+description: "What this foundation governs, in one sentence."
+icon: "palette"
+---
+
+{/*
+  FOUNDATION PAGE TEMPLATE
+
+  Section order is fixed. It makes an omission visible, which is the point.
+  Sections marked (where applicable) may be dropped when they genuinely do not
+  apply — a foundation with no interaction states has none. Everything else stays.
+
+  Three registers, and they must stay distinguishable to a reader and to an agent:
+    [REF] code fact      — generated from Titan source. Never hand-write a value here.
+    [DEC] design intent  — normative. What to build.
+    [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
+
+  The section that matters most is "Choosing a token". A scale table tells a reader
+  what EXISTS. It does not tell them what to REACH FOR. The useful artifact is a
+  mapping from intent to token.
+
+  Delete these comment blocks when you author a real page.
+*/}
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+{/* [DEC] Scope, one paragraph. What decisions belong to this page and which belong elsewhere. */}
+
+## Vocabulary
+
+{/* [DEC] The terms this foundation owns, and the terms it is NOT using.
+
+     Distinct from the naming grammar below: the grammar explains how names are
+     STRUCTURED, this explains what they MEAN. "Selected", "active", and "current"
+     are three words for one concept; "strong", "bold", and "emphasis" are three
+     for another. A design language that has not chosen between them does not yet
+     exist.
+
+     Name the chosen term so it can be cited, and list the rejected ones so a
+     search lands.
+
+     The naming specification is the vocabulary of record — cite it rather than
+     inferring from token names, which gets the shape right and the categories wrong.
+     Where the spec does not cover this foundation, say so and link TITAN-GAP-03. */}
+
+| Term | Also called | The system uses | Means |
+|---|---|---|---|
+| Selected | Active, current, highlighted | **`selected`** | Persists after the interaction ends |
+
+## The naming grammar
+
+{/* [DEC] How to predict a name in this category, so a reader can derive rather than search.
+     The six axes come from the naming specification, not from reading token names. State
+     which apply to THIS foundation and which collapse. Verify against the real names and
+     report exceptions — a grammar that is 90% true is worse than none, because the 10%
+     fails silently. */}
+
+```
+<attribute>-<purpose>-<prominence>-<state>-<size>-<level>
+```
+
+Axes that do not apply collapse out. Values per axis are on
+[Foundations overview](/invoca-design-system/foundations/overview#the-naming-grammar).
+
+## The model
+
+{/* [DEC] The mental model a reader needs before the tables mean anything. Every real
+     foundation page has one, under whatever name fits: "The scale is ordinal, not
+     arithmetic", "Shadow is directional", "The scale is a role map, not a size ramp".
+
+     Name it for the insight, not the category. A reader who skips this section will
+     misuse the scale in a way no amount of reference table prevents. */}
+
+## Choosing a token
+
+{/* [DEC] THE MOST IMPORTANT SECTION ON THE PAGE.
+     Map intent to token. Left column is what the reader is trying to express,
+     in their words. Right column is the token. Never the reverse.
+     The third column names what NOT to reach for and why — "don't use the wrong
+     thing" is not an entry. */}
+
+| You need… | Use | Not |
+|---|---|---|
+| Plain-language description of the intent | `tokens.the-token` | `color.primitive-40` — primitives never appear in component code |
+
+## Token reference
+
+{/* [REF] Generated. Emits per-mode values and the alias chain — the chain is the most
+     useful thing a semantic token table communicates, and the resolved value alone
+     cannot convey it. */}
+
+<Snippet file="generated/tokens/foundation-name.mdx" />
+
+## Layering & pairing
+
+{/* [DEC] (where applicable — color, elevation) Which value sits on which, and what pairs
+     with it. A set of surfaces with no defined order is not a layering model. */}
+
+## Interaction states
+
+{/* [DEC] (where applicable) Which token expresses each of hover, pressed, selected,
+     disabled, focus. Name the state that has no token, if any. */}
+
+## Accessibility
+
+{/* [REF]+[DEC] What this foundation contributes to WCAG 2.2 AA conformance, and which
+     criteria it bears on. Measured values are generated, not asserted. */}
+
+## Constraints
+
+{/* [DEC] One rule per ID. Falsifiable — someone looks at a screen and says yes or no.
+     Rationale required; a constraint without a reason gets deleted by the next person
+     who has one.
+
+     ID FORMAT: TITAN-<AREA>-<NN>, where AREA is a short code for this foundation
+     (TITAN-COLOR-01, TITAN-SPC-01, TITAN-TYP-01).
+
+     IDs are permanent. Deprecate, never renumber — they get cited in review and
+     by agents. */}
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| TITAN-AREA-01 | Testable rule. | Why. |
+
+## Known issues
+
+{/* [DIV] One table for both registers, each row labelled by kind:
+
+     Divergence   — code and design intent disagree. /foundations/divergences
+     Open decision — nothing has been decided.       /foundations/open-decisions
+
+     Link them; do not restate them. If none apply, say so — an empty section is a
+     claim, a missing one is silence. */}
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-NN](/invoca-design-system/foundations/divergences) | Divergence | One line. |
+
+## Gaps in the current rules
+
+{/* Genuinely undecided. NOT a to-do list, and not an invitation to resolve them.
+     An agent asked about anything here answers "Titan does not specify this." */}
+
+## Related
+
+{/* Components that consume this foundation, and sibling foundations. Derive the
+     component list from actual token usage rather than assuming it. */}
+
+## Why it works this way
+
+{/* [DEC] Rationale. State the mechanism, not the sentiment. Read before proposing a
+     change to a constraint. */}

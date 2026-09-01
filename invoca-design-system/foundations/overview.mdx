@@ -1,0 +1,265 @@
+---
+title: "Foundations overview"
+description: "The Titan token system: how tokens are named, how you reach them, and how to choose one."
+icon: "compass"
+keywords: ["tokens", "design tokens", "theme", "naming", "census"]
+---
+
+<Note>
+  **Values on this page are generated from Titan source.** Every token table under
+  Foundations is emitted by `tools/emit-tokens.mjs` from the DTCG token sources and
+  `token-manifest.json` in the Titan checkout, and re-emitting is gated by
+  `emit-tokens.mjs --check`. Prose figures on this page are derived from the same data.
+
+  Constraints are **Proposed** and need sign-off before anyone cites them as policy. Where
+  the design language and the shipped code disagree, the disagreement is recorded in
+  [Divergences](/invoca-design-system/foundations/divergences) rather than resolved silently in either direction.
+</Note>
+
+## What Foundations governs
+
+Everything below the component line: the 244 named values that components are built from,
+and the rules for reaching them. If you are choosing a color, a size, a duration, or a
+shadow, the answer is a token, and this section says which one.
+
+## Where the decisions are, and are not
+
+Not every foundation carries the same weight of decision behind it. Knowing which is which
+tells you how much a change costs to propose.
+
+| Foundation | Decided for Invoca |
+|---|---|
+| **Color** | Yes — the whole surface and the four statuses |
+| **Typography** | Yes — every variant, sized and paired deliberately |
+| **Space** | Partly — the scale exists; only one step records what it is for |
+| **Elevation** | Partly — five levels and four directions, none defined |
+| **Radius** | Partly — five values, none defined |
+| **Iconography** | Partly — four sizes and the color pairings, largely undefined |
+| **Motion** | **No** — the values ship, but no record says why these and not others |
+| **Layout & grid** | **No** — breakpoints exist; no grid specification does |
+
+A value with a decision behind it has a reason on its page and changing it is a
+conversation. A value without one is still what renders, and still what to build to — but
+proposing a change to it is a smaller conversation, because nothing is being overturned.
+
+## The token census
+
+<Warning>
+  **`theme.tokens` has 338 keys, but only 244 are tokens you choose.** The other 94 are
+  machine-generated `…Channel` companions — every color token gets one, holding its value as
+  a bare RGB triplet (`background-infoChannel` is `"38 102 249"`) so transparency can be
+  applied to it internally. They are not colors and nothing should reference one directly.
+  Every count on this page excludes them.
+</Warning>
+
+Two surfaces, two counts. Naming which one you mean matters.
+
+| Surface | Tokens | With `…Channel` | What it is |
+|---|---|---|---|
+| `theme.tokens` | **244** | 338 | What component code reaches. The `--titan-tokens-*` namespace. |
+| CSS custom properties | **523** | 617 | Everything the build emits, including the primitive tier. 190 primitive, 238 semantic, 95 component. |
+
+The 244 on `theme.tokens`, grouped by what they name:
+
+| Group | Count |
+|---|---|
+| Component-scoped (`chip-*`, `modal-*`, `form-*`, `toggle-*`, …) | 97 |
+| `background-*` | 27 |
+| `shadow-*` | 24 |
+| `border-*` | 18 |
+| `icon-*` | 18 |
+| `text-*` | 17 |
+| `spacing-*` | 12 |
+| `motion-*` | 11 |
+| `z-*` | 8 |
+| `radius-*` | 5 |
+| `link-*` | 3 |
+| `control-height-*` | 2 |
+| `overlay-*` | 2 |
+
+Every value on this page and throughout Foundations is the **light color scheme at
+comfortable density**. Titan ships a dark scheme and a compact density; neither carries a
+design decision yet, and this documentation does not define them — see
+[TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
+
+## The naming grammar
+
+Token names are **composed, not arbitrary**. Six axes, in fixed order. Learning them means
+you can usually derive the name you need rather than search for it.
+
+```
+<attribute>-<purpose>-<prominence>-<state>-<size>-<level>
+```
+
+Not every axis applies to every token; the ones that do not apply collapse out.
+`background-error-alt` is attribute + purpose + state. `spacing-5` is attribute + level.
+
+| Axis | Answers | Values |
+|---|---|---|
+| **attribute** | What is being painted or measured | `background` `text` `border` `icon` `link` `overlay` `spacing` `corner` |
+| **purpose** | What it means | `success` `info` `error` `warning` `neutral` `default` `destructive` `focus` |
+| **prominence** | How much weight it carries | `primary` `secondary` `tertiary` `invert` |
+| **state** | Which interaction state | `default` `alt` `hover` `pressed` `selected` `visited` `disabled` `focus` `invert` |
+| **size** | Which bound, where a range applies | `min` `max` |
+| **level** | Which step on a scale | `0`–`100` by tens for ramps; `1`–`15` for spacing |
+
+<Note>
+  **This grammar comes from Invoca's design-token naming specification**, not from reading
+  the shipped names. It is the baseline the design language is being built on. The
+  transcription lives in `tools/spec-vocabulary.json` and is diffable.
+</Note>
+
+<Warning>
+  **`alt` is a state, not a weight.** This is the axis most often misread. `background-error-alt`
+  is the *alternate state* of the error background — the tinted partner to the bold fill — in
+  the same axis as `hover` and `pressed`. It is not a size, a shade, or a lighter variant.
+
+  Likewise **`invert` appears on two axes**: as a prominence (`text-invert`, for content on an
+  inverted surface) and as a state. Read it from position.
+</Warning>
+
+Three things the grammar does not cover, and how to recognise them:
+
+- **Primitive ramps** — `color.blue.50`. Attribute is the ramp name and level is the step.
+  These are Tier 1 and never appear in component code.
+- **Component tokens** — `chip-success-tint`, `modal-width-lg`. Prefixed by component rather
+  than by attribute, and they sit outside this grammar by design.
+- **Data visualisation** — `categorical`, `sequential`, `diverging` reuse the axes with their
+  own vocabulary (`compare`, `threshold`, `trendline`).
+
+<Warning>
+  **The specification and the shipped tokens have diverged substantially** — 215 specified
+  names never shipped, 190 shipped names were never specified, and only 54 appear in both.
+  Use this grammar to *understand and name* tokens; use the
+  [token reference](/invoca-design-system/foundations/color#token-reference) to know what actually exists. See
+  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+</Warning>
+
+## Reaching a token
+
+Three surfaces, one token — but they are not equal, and one of them is closed.
+
+| Where you are | How you reach it | Example | Reaches |
+|---|---|---|---|
+| JS / `sx` / styled | `theme.vars.tokens["token-name"]` | `theme.vars.tokens["spacing-5"]` | All 244 |
+| Raw CSS | `var(--titan-tokens-token-name)` | `var(--titan-tokens-spacing-5)` | All 244 |
+| SCSS | `$token-name` | `$spacing-5` | **82 only** — frozen |
+
+<Warning>
+  **Use `theme.vars.tokens[…]`, not `theme.tokens[…]`.** Both resolve, but only
+  `theme.vars` emits a `var()` reference that stays live; `theme.tokens[…]` holds the value
+  baked at render. Inside `components/core`, the plain form is rejected by lint.
+</Warning>
+
+<Warning>
+  **The SCSS surface is frozen.** `$token-name` reaches 48 semantic + 10 spacing + 24
+  shadow names — 82 of the 244. The list is pinned in `legacy-surface-inventory.json` and
+  asserted by a test; new tokens never appear there. A token missing from SCSS is not a bug.
+  See [TITAN-DIV-05](/invoca-design-system/foundations/divergences#titan-div-05).
+</Warning>
+
+<Warning>
+  **`--titan-tokens-*` and `--titan-*` are different surfaces.** The `--titan-tokens-` prefix
+  is the token API; the bare `--titan-` prefix is the primitive layer beneath it. They hold
+  the same value for many tokens today, so reaching for the wrong one looks correct.
+  See [TITAN-FND-02](#constraints).
+</Warning>
+
+## Choosing where to look
+
+<Columns cols={2}>
+  <Card title="Color" icon="palette" href="/invoca-design-system/foundations/color">
+    Surfaces, text, borders, icons, and the four statuses.
+  </Card>
+  <Card title="Typography" icon="type" href="/invoca-design-system/foundations/typography">
+    Eleven variant names, and why `h5` is smaller than `body1`.
+  </Card>
+  <Card title="Space" icon="ruler" href="/invoca-design-system/foundations/space-and-density">
+    The spacing scale, and choosing a step by role.
+  </Card>
+  <Card title="Elevation" icon="layers" href="/invoca-design-system/foundations/elevation">
+    Directional shadows and the z-index ladder.
+  </Card>
+  <Card title="Radius" icon="square" href="/invoca-design-system/foundations/radius">
+    Five corner values and when each applies.
+  </Card>
+  <Card title="Motion" icon="activity" href="/invoca-design-system/foundations/motion">
+    Durations and easings, and what each is for.
+  </Card>
+  <Card title="Iconography" icon="shapes" href="/invoca-design-system/foundations/iconography">
+    154 icons, four sizes, and the color tokens that pair with them.
+  </Card>
+  <Card title="Layout & grid" icon="grid-3x3" href="/invoca-design-system/foundations/layout-and-grid">
+    Breakpoints and page structure.
+  </Card>
+  <Card title="Accessibility" icon="accessibility" href="/invoca-design-system/foundations/accessibility">
+    Which token pairings meet AA, measured.
+  </Card>
+  <Card title="Divergences" icon="git-compare-arrows" href="/invoca-design-system/foundations/divergences">
+    Where intent and code disagree, and which to follow.
+  </Card>
+</Columns>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-FND-01** | Component code references a token. Never a hex value, a pixel literal, or a primitive. | A literal is invisible to the audit and carries no recorded intent. Every system-wide change becomes a search-and-replace instead of one edit. |
+| **TITAN-FND-02** | In raw CSS, use the `--titan-tokens-*` prefix. Never `--titan-*`. | `--titan-tokens-*` is the token API; `--titan-*` is the primitive layer. They hold the same value for many tokens, so the wrong one looks correct. |
+| **TITAN-FND-06** | In JS, reach tokens through `theme.vars.tokens[…]`. Never `theme.tokens[…]`. | `theme.vars` emits a live `var()`; `theme.tokens` holds the value baked at render. Lint enforces this inside `components/core`. |
+| **TITAN-FND-04** | A new value need is met by proposing a token, never by a local override. | A local override is invisible to the audit, to Figma, and to every other consumer. It is how a design system stops being one. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-FND-03** | A token belongs to the color axis or the density axis, never both. | Governs mode behaviour, which is out of scope — see [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01). The rule still holds in code. |
+| **TITAN-FND-05** | Density is set by `data-density` attribute, never by swapping a theme. | Same. Retired, not reversed — IDs are never reused. |
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
+| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | the SCSS token surface is frozen at 82 names |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+
+## Gaps in the current rules
+
+Genuinely undecided. Do not infer answers to these.
+
+- **`spacing-0` and `spacing-none` are duplicates** — `0rem` and `0px` respectively. Both
+  ship. Neither is documented as preferred, and nothing indicates which is deprecated.
+- **`--titan-spacing-compact-3` is a leaked internal.** It exists as a public
+  custom property but is not a token in any of the three access surfaces above. Treat it as
+  private; it is not documented as such.
+- **The stacking ladder does not cover every layer.** Drawers and toasts stack at values no
+  token expresses. See [Elevation](/invoca-design-system/foundations/elevation#the-ladder-has-holes).
+- **`overlay-default` is malformed on the JS surface** — the light value is
+  `rgba(21, / 36, / 62, / 0.3000)`, which is not valid CSS. The defect is scoped: the legacy
+  SCSS and CDN CSS outputs de-mangle it at build time, so only `theme.tokens` and
+  `--titan-tokens-overlay-default` carry the broken string. Reported, unresolved.
+- **Motion, breakpoints, and the z-index ladder have no recorded intent.** The values ship
+  and are what renders, but nothing states why these and not others, or which interaction
+  each is meant for.
+
+## Related
+
+A generated map of which components consume which foundation does not exist yet.
+
+## Why it works this way
+
+**Tokens are named for intent, not appearance.** `background-selected`, not
+`background-light-blue`. Appearance names become lies the moment a second mode exists —
+and they were already lying to the person reading the code, who wants to know *why* the
+surface is that color.
+
+**Decision effort went where identity lives.** Color and type carry Invoca's identity and
+got the most attention: every value chosen, both modes resolved, contrast considered.
+Motion and layout got the least. That is a defensible allocation, but it means the pages in
+this section are not equally authoritative — and each one says which kind it is.

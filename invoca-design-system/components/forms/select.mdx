@@ -1,0 +1,219 @@
+---
+title: "Select"
+description: "Chooses one or more values from a fixed, enumerable list, collapsed behind a trigger until opened."
+icon: "chevron-down"
+tag: "Stable"
+keywords: ["dropdown", "picker", "multi-select", "options list", "combobox"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, status, and adoption on this page are generated from Titan source.**
+  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
+  Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A control that chooses from a fixed, enumerable set of options, collapsed behind a trigger
+until the reader opens it. The collapse is the point — it is the right choice once showing
+every option at once, as [Radio](/invoca-design-system/components/forms/radio) does, would cost more space than it
+returns.
+
+**This page covers single-select and multi-select together**, since choosing between them is
+one decision about the same field.
+
+## Live example
+
+<StorybookFrame story="components-select--default" height={160} />
+
+<Note>
+  Story ID `pending`. This session did not have access to
+  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+</Note>
+
+## Exports
+
+<Snippet file="generated/props/select.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Trigger** | Closed state, control | **Trigger** |
+| **Option** | Item, choice | **Option** |
+| **Option group** | Section, category | **Option group** |
+| **Autocomplete** | Searchable, typeahead, filterable | **Autocomplete** — a mode of Select, not a separate component. See warning below. |
+
+<Warning>
+  **This page previously pointed to a separate, undocumented "Combobox" for typing to filter
+  options — that was wrong.** The Figma library's `Select Input` component has an
+  `Autocomplete` variant (`false`/`true`), applied to the *same* component as everything else
+  on this page, not a different one. There is no `Combobox` page or component anywhere in the
+  library's 49 pages. Titan's actual code structure for this is unconfirmed without a
+  checkout, so treat "Select has an autocomplete mode" as library-evidenced and
+  **needs sign-off**, not yet settled — see [Known issues](#known-issues).
+</Warning>
+
+## Choose Select when
+
+- The set of valid answers is fixed and enumerable, and long enough — roughly more than five —
+  that showing every option at once would cost more space than it returns.
+- The reader mainly needs to see the chosen value, not compare every option side by side.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Offer fewer than roughly five mutually exclusive options | Radio | At that count, showing every option costs little and removes a click just to see them |
+| Let the reader type to find a match among dozens or more options | Select with `Autocomplete` on | Confirmed as a mode of Select itself in the design library, not a separate component — see [Vocabulary](#vocabulary) |
+| Keep every choice visible even when several are selected | [Checkbox](/invoca-design-system/components/forms/checkbox) group | Select's trigger collapses the current selection; a checkbox list keeps every choice visible at once |
+| Capture a single, immediately-applied binary setting | Switch | Two options is Select's least useful case, and Switch is the lighter control for exactly two |
+
+## Anatomy
+
+<Note>
+  Anatomy diagram `pending` — `/images/components/select-anatomy.png`. The images directory is
+  empty; nothing is published to generate it from yet.
+</Note>
+
+| # | Part | Required |
+|---|---|---|
+| 1 | Trigger — shows the current value or a placeholder | Yes |
+| 2 | Field label | Yes — see [TITAN-FLD-01](/invoca-design-system/components/forms/field-label#constraints) |
+| 3 | Option list | Yes, rendered on open |
+| 4 | Option group header (the library's "Category" type) | No |
+| 5 | Option divider | No |
+| 6 | Sub-option, nested one level under a parent option | No |
+| 7 | Clear action | No |
+
+<Info>
+  **Options nest one level.** The Figma library's option-list component names two option
+  kinds, `Menu Item` and `Menu Sub-Item`, each carrying the same state set (`Default` ·
+  `Hover` · `Focused` · `Pressed` · `Disabled`) and each combinable with a divider and a
+  selected mark. This is a real structural axis this page did not previously account for —
+  see [TITAN-SELECT-08](#constraints).
+</Info>
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/select.mdx" />
+
+<Info>
+  **Confirmed from the Figma library, not source.** The trigger has `Type` (`Default` ·
+  `Error`) and `State` (`Default` · `Focused` · `Filled` · `Disabled`) axes, plus
+  `Autocomplete` (`false`/`true`) — see [Vocabulary](#vocabulary). `Filled` here means "has a
+  value," distinct from the empty default — a state this page did not previously name.
+</Info>
+
+## Edge and failure states
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| No options available | **Undefined.** See [Gaps](#gaps-in-the-current-rules). | Should likely disable the trigger with a reachable explanation, matching [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints)'s reasoning |
+| An option's label is longer than the list is wide | **Undefined** whether it wraps or truncates | See [Gaps](#gaps-in-the-current-rules) |
+| A very long option list | **Undefined** cutover to Autocomplete or virtualization | See [TITAN-SELECT-01](#constraints) and [Gaps](#gaps-in-the-current-rules) |
+| Many options selected (multi-select) | **Undefined** trigger summary format — a count, chips, or a truncated list | See [Gaps](#gaps-in-the-current-rules) |
+| Options loading asynchronously | **Undefined.** No affordance found, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) same gap. | See [Gaps](#gaps-in-the-current-rules) |
+| Disabled | Renders at the disabled tokens shared with [Input](/invoca-design-system/components/forms/input#tokens) | Pair with a reachable explanation |
+
+## Tokens
+
+<Snippet file="generated/tokens/select.mdx" />
+
+## Composition
+
+The closed trigger renders through the same field chrome as
+[Input](/invoca-design-system/components/forms/input#tokens) — border, focus ring, and control height are shared,
+not re-declared. Always paired with [FieldLabel](/invoca-design-system/components/forms/field-label) above it. The
+open option list's items are named `Menu Item` / `Menu Sub-Item` in the design library — the
+same vocabulary [Menu](/invoca-design-system/components/actions/menu) uses — suggesting shared overlay
+implementation. Unconfirmed against source; treat as likely, not settled.
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Options render in a stated, meaningful order — alphabetical, frequency, or a domain sequence | Country list sorted alphabetically | Options in whatever order the source data happened to list them |
+| The trigger's placeholder is an instruction, never a selectable option itself | "Choose a region" | "Choose a region" appearing as a real row in the option list |
+| Group headers describe a category, not an instruction | Region · Product line | "Select one" as a group header |
+
+## Accessibility
+
+| Key | Behavior |
+|---|---|
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Opens the list; on an option, selects it |
+| <kbd>↑</kbd> / <kbd>↓</kbd> | Moves through options |
+| Typing a character | Jumps to the next option starting with it |
+| <kbd>Esc</kbd> | Closes the list without changing the selection |
+
+- The accessible name comes from [FieldLabel](/invoca-design-system/components/forms/field-label), not from the
+  currently-shown value.
+- The trigger and list follow the standard listbox interaction pattern: the trigger reports its
+  expanded state, and the currently highlighted option is announced as focus moves through the
+  list without moving actual DOM focus off the trigger.
+
+**What this component does not handle:** validating that a selection was made, or deciding
+whether the field is required — both belong to
+[Form validation](/invoca-design-system/patterns/form-validation).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SELECT-01** | Select is for a fixed, enumerable set of options. Past a certain list length, turn on Autocomplete rather than reaching for a different component. | A collapsed list the reader can only scroll, not filter, becomes the slower control past a certain length — Autocomplete exists for exactly that case, as a mode of this component per the design library. |
+| **TITAN-SELECT-02** | Options render in a stated, meaningful order — never left to incidental source order. | An unordered list forces the reader to scan every option to find the one they want, every time. |
+| **TITAN-SELECT-03** | The trigger's placeholder is an instruction to choose, and is never itself a selectable option. | An option whose text matches the placeholder is indistinguishable from "nothing selected yet." |
+| **TITAN-SELECT-04** | Option group headers are not selectable. | A header that responds to a click as if it were an option produces a selection with no corresponding visible option. |
+| **TITAN-SELECT-05** | Multi-select's trigger summarizes the current selection rather than growing unbounded with every chosen label. | An unbounded trigger competes with the layout around it for space in exactly the way [Button](/invoca-design-system/components/actions/button#why-it-works-this-way) avoids by holding its width. |
+| **TITAN-SELECT-06** | A disabled Select is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-SELECT-07** | Choosing an option closes the trigger for single-select. For multi-select, the list stays open until the reader dismisses it. | Closing after every pick in multi-select would force reopening the list once per selection, which is the interaction cost Select exists to avoid. |
+| **TITAN-SELECT-08** | A sub-option is nested exactly one level under a parent option, never deeper. **Needs confirmation** — evidenced by the library's `Menu Sub-Item` type, but no third level was found to confirm the limit is one rather than simply "as deep as this file happened to model." | An option list deeper than one level stops being scannable at a glance, which is most of Select's value over a nested menu. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-24**](/invoca-design-system/foundations/divergences#titan-div-24) | Divergence | The trigger's error focus ring is a third red, unaliased to the semantic error tokens — inherited from the field chrome it shares with Input |
+| — | Needs sign-off | Autocomplete is modeled as a mode of Select in the design library, not a separate Combobox component — see [Vocabulary](#vocabulary). Titan's actual code structure is unconfirmed. |
+
+## Gaps in the current rules
+
+- **No decided behavior for zero available options.**
+- **No truncation rule for a long option label**, in either the trigger or the list.
+- **No decided threshold for turning Autocomplete on** — the design library shows it as a
+  binary mode, not a rule tied to option count.
+- **Multi-select's trigger summary format is undecided** — a count, chips, and a truncated
+  label list all satisfy [TITAN-SELECT-05](#constraints) without choosing between them.
+- **Whether the option-list overlay shares implementation with Menu** — the shared naming is suggestive, not confirmed against source.
+
+## Why it works this way
+
+**The collapse is the trade the fork with Radio is drawn around.** Below roughly five options,
+showing all of them costs little and saves the reader a click; above that, the space a visible
+list would take outweighs the convenience, which is why [Choose something else
+when](#choose-something-else-when) draws the line there rather than at some other count.
+
+**Option order matters more here than in a visible list**, because a reader scanning a Radio
+group can notice a strange ordering before interacting with it. A Select's options are hidden
+until opened, so a confusing order is discovered mid-interaction — a worse moment to lose the
+reader's confidence in the control.
+
+**A summarized multi-select trigger** exists for the same reason [Button](/invoca-design-system/components/actions/button#why-it-works-this-way)
+holds its width while loading: a control that grows every time the reader acts on it moves
+whatever sits next to it, at the exact moment the reader is mid-task.
+
+## Status
+
+<Snippet file="generated/status/select.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/select.mdx" />
+
+- [FieldLabel](/invoca-design-system/components/forms/field-label) — every Select composes with one
+- [Input](/invoca-design-system/components/forms/input) — shares the closed trigger's field chrome
+- [Checkbox](/invoca-design-system/components/forms/checkbox) — the always-visible alternative for multi-select
+- [Form validation](/invoca-design-system/patterns/form-validation) — decides whether a selection is required
