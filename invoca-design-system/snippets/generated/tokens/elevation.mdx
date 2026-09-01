@@ -1,0 +1,65 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+### Shadows
+
+| Token | Value | Definition | From |
+|---|---|---|---|
+| `shadow-down-0` | `0.0px 0.0px 0.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-down-1` | `0.0px 2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-down-2` | `0.0px 4.0px 8.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-down-3` | `0.0px 8.0px 16.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-down-4` | `0.0px 12.0px 24.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-down-main` | `0.0px 2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-left-0` | `0.0px 0.0px 0.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-left-1` | `-2.0px 2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-left-2` | `-4.0px 4.0px 8.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-left-3` | `-8.0px 8.0px 16.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-left-4` | `-12.0px 12.0px 24.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-left-main` | `-2.0px 2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-right-0` | `0.0px 0.0px 0.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-right-1` | `2.0px 2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-right-2` | `4.0px 4.0px 8.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-right-3` | `8.0px 8.0px 16.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-right-4` | `12.0px 12.0px 24.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-right-main` | `2.0px 2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-up-0` | `0.0px 0.0px 0.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-up-1` | `0.0px -2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-up-2` | `0.0px -4.0px 8.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-up-3` | `0.0px -8.0px 16.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-up-4` | `0.0px -12.0px 24.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+| `shadow-up-main` | `0.0px -2.0px 4.0px 0px rgba(12, 0, 51, 0.2)` | — | — |
+
+Each `-main` token aliases its `-1` sibling.
+
+<Warning>
+  **Definition coverage: 0 of 24 shadow tokens.** Nothing
+  records which surface each level is for, so the mapping on the elevation page is a proposal. See
+  [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
+</Warning>
+
+### Z-index
+
+| Token | Value | Definition | From |
+|---|---|---|---|
+| `z-base` | `1` | — | — |
+| `z-sticky` | `10` | — | — |
+| `z-overlay` | `1000` | Value-level alias: Invoca's overlay layer sits at 1000, which the -first Tier-1 scale names mobile-stepper | code |
+| `z-loader` | `1038` | — | — |
+| `z-app-bar` | `1100` | App-bar layer | code |
+| `z-modal` | `1300` | — | — |
+| `z-tooltip` | `1500` | — | — |
+| `z-loader-overlay` | `9999` | — | — |
+
+<Warning>
+  **This ladder does not cover every layer that stacks.** Drawers and toasts take their
+  stacking from the underlying component library, not from a token, so a Titan surface at
+  `z-overlay` can sit *below* them. See
+  [Elevation](/invoca-design-system/foundations/elevation#the-ladder-has-holes).
+</Warning>
+
+<Note>
+  **Default mode only.** Values above are the light color scheme at comfortable density.
+  Of these tokens, **16** hold a different value in the dark color scheme. Those modes ship in code but carry no
+  design decision, so this documentation does not define them — see
+  [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
+</Note>

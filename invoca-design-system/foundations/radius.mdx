@@ -1,0 +1,142 @@
+---
+title: "Radius"
+description: "Five corner values, and which one a surface gets."
+icon: "square"
+keywords: ["radius", "border radius", "corner", "rounding", "pill", "circle"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+
+  This page is new — radius has real tokens but had no page in the original IA.
+</Note>
+
+## What it governs
+
+Corner rounding on every surface: controls, cards, dialogs, chips, avatars. Five tokens.
+
+## Vocabulary
+
+<Warning>
+  **The naming specification does not cover the radius scale.** It defines the six naming axes and 64
+  colour definitions; the radius scale appears in neither. The terms used on this page are therefore
+  descriptive rather than decided — see
+  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
+</Warning>
+
+The specification names corner *kinds* — `corner`, `hard-corner`, `soft-corner`, `round` —
+which do not correspond to the shipped tokens (`radius-sm`, `radius-base`, `radius-md`,
+`radius-pill`, `radius-circle`). Two vocabularies for one concept, and neither is mapped to
+the other. See [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+
+## The scale
+
+| Token | Value | For |
+|---|---|---|
+| `radius-sm` | 2px | Nested elements inside an already-rounded container |
+| `radius-base` | **3px** | The default. Controls, cards, panels, dialogs — nearly everything. |
+| `radius-md` | 4px | Larger surfaces where 3px reads as insufficiently intentional |
+| `radius-pill` | 100px | Fully rounded ends — chips, tags, badges, toggle tracks |
+| `radius-circle` | 50% | Perfect circles — avatars, dots, circular icon buttons |
+
+<Note>
+  **3px is a deliberate choice, not a default.** It is one of the few structural values
+  Titan sets rather than inherits, which makes it a decision worth preserving — a component
+  that rounds to 4px is not making a small refinement, it is opting out of the system.
+</Note>
+
+`radius-pill` uses 100px rather than a percentage deliberately. A large fixed radius clamps
+to exactly half the height on any element shorter than 200px, producing true semicircular
+ends at every control height. `50%` on a non-square element produces an ellipse instead.
+
+## Choosing a token
+
+| You need… | Use | Not |
+|---|---|---|
+| Any control — button, input, select, textarea | `radius-base` | `radius-md`. 3px is the system default; 4px on one control makes it the odd one out. |
+| A card, panel, tile, or dialog | `radius-base` | `radius-pill` — large radii on large surfaces read as decorative, not structural |
+| A menu, popover, or dropdown surface | `radius-base` | A larger radius to make it feel "floaty." Elevation does that job — see [Elevation](/invoca-design-system/foundations/elevation). |
+| An element nested inside an already-rounded container | `radius-sm` | `radius-base` — matching the parent's radius makes the inner corner appear to bulge |
+| A chip, tag, badge, or status pill | `radius-pill` | `radius-md` — the pill shape is what distinguishes a chip from a small button |
+| A toggle or switch track | `radius-pill` | A computed half-height — the pill token already clamps correctly |
+| An avatar, a status dot, a circular icon button | `radius-circle` | `radius-pill` — pill produces an ellipse on a non-square element |
+| A larger surface where the default reads as too tight | `radius-md` | An arbitrary value. If 4px is genuinely needed, it is a token, not a literal. |
+
+<Warning>
+  **Nested radii do not match.** An element inside a rounded container needs a *smaller*
+  radius, not the same one. Equal radii on concentric corners make the inner corner look
+  like it bulges outward — the visible gap between the two curves narrows toward the
+  corner. `radius-sm` inside `radius-base` is the intended pairing.
+</Warning>
+
+## Token reference
+
+<Snippet file="generated/tokens/radius.mdx" />
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-RAD-01** | Corner rounding comes from a `radius-*` token. Never a literal. | Five values exist precisely so that "slightly rounder" is not a per-component decision. A literal is invisible to the audit. |
+| **TITAN-RAD-02** | A nested rounded element uses a smaller radius than its container. | Equal concentric radii make the inner corner appear to bulge. This is an optical fact, not a preference. |
+| **TITAN-RAD-03** | Fully rounded ends use `radius-pill`, never a computed half-height. | `radius-pill` clamps correctly at every control height. A computed half-height has to be recomputed for each one and will be wrong on at least one of them. |
+| **TITAN-RAD-04** | Circles use `radius-circle`, and only on square elements. | `50%` on a non-square element produces an ellipse. If the element is not square, the bug is the dimensions. |
+| **TITAN-RAD-05** | Radius never indicates state or meaning. | Corner rounding is an identity property of a surface type. A chip that squares off when selected reads as a different component, not a different state. |
+
+## Accessibility
+
+Radius carries no direct accessibility requirement — it is not a contrast, target-size, or
+semantic property. Two indirect effects:
+
+- **Radius reduces effective hit area at the corners.** Negligible at 3px; real at
+  `radius-pill` on a small control, where the corners of the bounding box are outside the
+  visible shape. Keep the target at the full control height rather than relying on the
+  visible pill.
+- **Shape is a weak but real differentiator** for users who cannot rely on color. A pill
+  chip and a square button being visually distinct is a small assist. It is not sufficient
+  on its own and never substitutes for a label — see
+  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+
+## Gaps in the current rules
+
+- **`radius-base` (3px) vs `radius-md` (4px) has no selection rule.** A 1px difference is
+  at the edge of perceptibility, and nothing documents which surfaces get which. The
+  mapping on this page is a proposal.
+- **Why 3px is not recorded.** The choice is deliberate; the reasoning is not written down.
+- **No nesting guidance exists upstream.** [TITAN-RAD-02](#constraints) is this page's
+  proposal.
+- **No `radius-lg`.** Whether large decorative surfaces are meant to use `radius-md` or
+  something larger is undecided.
+
+## Related
+
+**10 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Badge` · `Button` · `CircularProgress` · `DatePicker` · `Dropzone` · `Progress` · `Select` · `Slider` · `TextField` · `TextFieldWithSearchIcon`
+
+## Why it works this way
+
+**Five values, and three of them are special cases.** `radius-sm`, `radius-base`, and
+`radius-md` are a scale; `radius-pill` and `radius-circle` are shapes. That split is what
+keeps the scale small — a system that expresses "pill" as "radius-9" ends up with a dozen
+steps nobody can choose between.
+
+**The default is small.** 3px reads as *finished* rather than as *styled*. Titan's surfaces
+are dense, data-heavy, and numerous — a 12px radius on every cell, chip, and control in a
+table produces visual noise that competes with the data. Rounding is meant to soften an
+edge, not to be noticed.

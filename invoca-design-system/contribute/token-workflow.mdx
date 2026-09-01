@@ -1,0 +1,185 @@
+---
+title: "Token workflow"
+description: "How a token gets proposed, added, defined, and shipped — and what the build checks before it lands."
+icon: "git-pull-request"
+tag: "Draft"
+keywords: ["token", "workflow", "propose", "add token", "definition", "DTCG", "style dictionary"]
+---
+
+<Note>
+  **The mechanism on this page is verified against Titan source**; the approval path is not.
+  Who signs off a token change, and when, is not recorded anywhere — see
+  [TITAN-GAP-20](/invoca-design-system/foundations/open-decisions#titan-gap-20). Constraints are **Proposed**.
+</Note>
+
+## What it governs
+
+Adding a token, changing one, and defining what it is for. Not *which* token to use when
+building — that is [Foundations](/invoca-design-system/foundations/overview).
+
+## Before you propose
+
+Three different problems that look alike. Resolve which one you have first, because the fix
+differs:
+
+| You think… | That is | Do this |
+|---|---|---|
+| The value I need does not exist | **A token gap** | This page. Propose one. |
+| A token exists but I cannot tell which to use | **A definition gap** | Still this page — the fix is a definition, not a new token. See [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02). |
+| The value in code is wrong | **A change proposal** | Not a new token. [Report it](/invoca-design-system/contribute/reporting-drift#proposing-a-change). |
+| Figma shows something else | **Drift** | [Reporting drift](/invoca-design-system/contribute/reporting-drift). Resolution is re-emission. |
+
+<Warning>
+  **A missing token is never resolved with a literal.** A hardcoded value is invisible to the
+  audit, carries no recorded intent, and turns every future system-wide change into a
+  search-and-replace. If nothing expresses what you need, that is the proposal.
+</Warning>
+
+## Which tier
+
+Titan authors tokens in three tiers. Adding to the wrong one is the most common mistake.
+
+| Tier | File | Holds | Example |
+|---|---|---|---|
+| **Primitive** | `primitives.tokens.json` | Raw values with no meaning attached | `color.blue.50` |
+| **Semantic** | `semantic.tokens.json` | Meaning. What component code reaches for. | `background-info` |
+| **Component** | `component.tokens.json` | One component's own geometry or colour | `chip-success-tint` |
+
+**Add at the semantic tier unless you have a reason not to.** A primitive is a value nobody
+can choose by intent; a component token is reachable only by that component.
+
+<Warning>
+  **Component tokens currently alias primitives, not semantics.** That contradicts the stated
+  model and is deliberate — see
+  [TITAN-DIV-01](/invoca-design-system/foundations/divergences#titan-div-01). When adding a *new* component token,
+  prefer a semantic alias and state a reason if you skip it. Do not "fix" the existing ones.
+</Warning>
+
+## The mechanism
+
+<Steps>
+  <Step title="Author it in the DTCG source">
+    Edit the tier file under `components/core/src/theme/tokens/`. A token is a `$type`, a
+    `$value`, and — see below — a `$description`.
+
+    ```json
+    "background-info": {
+      "$type": "color",
+      "$value": "{color.blue.50}",
+      "$description": "Background for informative outcomes"
+    }
+    ```
+
+    **Alias, never inline.** `{color.blue.50}` records where the value came from; `#2666f9`
+    records nothing.
+  </Step>
+
+  <Step title="Define it in the same commit">
+    `$description` says what the token is **for**, not what it is made of. "Background for
+    informative outcomes" is a definition. "Blue 50 tint" is a restatement of the value.
+
+    This is the single highest-leverage line in the change. 112 of 244 shipped tokens have
+    no definition, which is why so much guidance on this site is a proposal rather than a
+    fact.
+  </Step>
+
+  <Step title="Build">
+    ```bash
+    pnpm --filter @invoca/titan-core tokens:build
+    ```
+
+    Regenerates the CSS, TypeScript, the token manifest, and the legacy outputs. **Never edit
+    a generated file** — the build overwrites it and the edit disagrees with the package until
+    someone notices.
+  </Step>
+
+  <Step title="Let the guardrails run">
+    Thirteen test files gate the token layer. The ones that most often catch a new token:
+
+    | Test | Catches |
+    |---|---|
+    | `token-manifest.test.ts` | The manifest contract broke |
+    | `legacy-outputs.test.ts` | The frozen SCSS surface changed |
+    | `token-guardrails.lint.test.ts` | A token was reached the wrong way |
+    | `theme-baseline.test.ts` | An existing value moved unintentionally |
+    | `semantic-tokens.test.ts` · `primitive-tokens.test.ts` | Tier rules |
+
+    ```bash
+    pnpm --filter @invoca/titan-core tokens:coverage:check
+    ```
+
+    Compares against a committed baseline, so a drop in coverage fails rather than passing
+    quietly.
+  </Step>
+
+  <Step title="Re-emit the documentation">
+    ```bash
+    node tools/emit-tokens.mjs --titan /path/to/Titan
+    ```
+
+    Every token table on this site is generated. `--check` exits non-zero if the committed
+    output no longer matches source — that is the drift gate, and it is what stops the docs
+    and the package disagreeing.
+  </Step>
+</Steps>
+
+## What a new token does not get
+
+Three surfaces a new token will **not** appear on. None of these is a bug.
+
+| Surface | Why |
+|---|---|
+| **SCSS `$name`** | Frozen at 82 names by `legacy-surface-inventory.json` and asserted by test. New tokens never join it. See [TITAN-DIV-05](/invoca-design-system/foundations/divergences#titan-div-05). |
+| **A dark or compact value** | Those axes are out of scope for the design language — [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01). The build accepts an extension; nothing in this documentation defines one. |
+| **Lifecycle metadata** | There is no `status`, `since`, or `deprecated` field. See [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation). |
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TOK-01** | A token is authored in DTCG source. Never added directly to a generated file. | Generated files are overwritten on the next build. The edit disappears, or worse, survives long enough to be trusted. |
+| **TITAN-TOK-02** | A token's value is an alias, not an inline literal, wherever a suitable value already exists. | The alias records where the value came from. A leaf hex records nothing, and the relationship it had is unrecoverable. |
+| **TITAN-TOK-03** | Every new token ships with a `$description` stating what it is for. | A token whose only guide is its name is a token two people will use differently. This is the rule that stops [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02) growing. |
+| **TITAN-TOK-04** | A new component token aliases the semantic tier, or states why it does not. | Skipping the tier duplicates a decision the semantic layer already made, and severs the relationship between the two. |
+| **TITAN-TOK-05** | A missing value is a token proposal, never a literal in component code. | A literal is invisible to the audit and cannot participate in any system-wide change. |
+| **TITAN-TOK-06** | Documentation is re-emitted in the same change that adds the token. | The drift gate makes an un-emitted change fail; re-emitting after the fact means the docs were wrong in between. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
+| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | The SCSS token surface is frozen at 82 names |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | The naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
+| [**TITAN-GAP-20**](/invoca-design-system/foundations/open-decisions#titan-gap-20) | Open decision | No approval path is recorded for a token change |
+
+## Gaps in the current rules
+
+- **No approval path is documented.** Who decides a token should exist, who reviews the
+  value, and whether design sign-off is required before merge — none of it is recorded. The
+  mechanism on this page is the technical path only.
+- **No naming review step.** A new token can be named anything the author chooses; nothing
+  checks it against the [naming grammar](/invoca-design-system/foundations/overview#the-naming-grammar).
+- **No rule for when a value earns a token.** One use, three uses, any use — undecided.
+- **No deprecation path**, so the workflow is add-only. See
+  [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation).
+
+## Related
+
+- [Foundations overview](/invoca-design-system/foundations/overview) — the naming grammar and how to reach a token
+- [Reporting drift](/invoca-design-system/contribute/reporting-drift) — when code and a mirror disagree
+- [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation) — what happens after it ships
+- [Open decisions](/invoca-design-system/foundations/open-decisions) — what has not been decided
+
+## Why it works this way
+
+**The build is the gate, not review.** Thirteen guardrail tests and two coverage checks run
+on every change, which means a broken tier rule or a moved baseline value fails before anyone
+looks at it. Review is for the decision — whether the token should exist and what it means —
+not for catching mechanical mistakes a human reads past.
+
+**The `$description` requirement is new and deliberate.** Two thirds of the existing tokens
+predate it, which is why this site carries so many proposals in place of facts. Requiring it
+per token is the only thing that stops the same gap reappearing for every token added from
+here.

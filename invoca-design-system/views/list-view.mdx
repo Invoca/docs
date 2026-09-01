@@ -1,0 +1,182 @@
+---
+title: "List view"
+description: "A page whose body is one table of objects of the same kind, scanned and acted on."
+icon: "table"
+tag: "Draft"
+keywords: ["list view", "table", "data grid", "collection", "index page", "rows"]
+---
+
+<Warning>
+  **Placeholder.** Only the frame composition below is written — which regions this archetype
+  uses, and what fills the body. Everything marked *Not written* is unwritten, and a rule that
+  is not here is not a rule. Author the rest from `_templates/view.mdx`.
+
+  Do not remove this warning until the Decision layer is complete — a stub that looks finished
+  is worse than a stub that admits it. A reader, and an agent, cannot tell a considered omission
+  from an unwritten page.
+</Warning>
+
+<Note>
+  **Region names and slot rules on this page are design intent**, not generated. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped code
+  are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A page whose body is **one table of objects of the same kind** — campaigns, numbers, calls,
+integrations — that a reader scans, narrows, and acts on. It is the page a section's navigation
+lands on, and usually the page a [detail view](/invoca-design-system/views/detail-view) is reached from.
+
+You are building one if the body answers "which of these?" A page that answers "what about this
+one?" is a detail view.
+
+## Region vocabulary
+
+This archetype adds no regions. It uses the [page frame](/invoca-design-system/views/overview#the-page-frame) as
+published, and the frame's vocabulary is the vocabulary here.
+
+| Region | Also called | The system uses |
+|---|---|---|
+| Page body | Table area, results, grid | **`Contents`** |
+| Filter bar | Search bar, toolbar, controls | **`Controls`** |
+
+## Choose this view when
+
+- The page's subject is a **collection**, and the reader's job is to find or compare members of it.
+- Every row is the same kind of object, with the same columns available.
+- Acting on a row means either navigating to it or applying an operation to one or many.
+
+## Choose something else when
+
+| If the page also needs to… | Use | Why |
+|---|---|---|
+| Show one record's attributes and related data | [Detail view](/invoca-design-system/views/detail-view) | A list answers "which one"; a detail answers "what about it". Doing both makes each half cramped. |
+| Keep the list visible while working in a record | [Split view](/invoca-design-system/views/split-view) | Repeated navigation back to the list is the signal — the two panes belong side by side. |
+| Summarise the collection rather than enumerate it | [Dashboard](/invoca-design-system/views/dashboard) | A reader who wants the shape of the data, not its members, does not need rows. |
+| Group heterogeneous settings into sections | [Settings view](/invoca-design-system/views/settings-view) | Configuration is not a collection, even when it renders as rows. |
+
+## Regions
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| `Header` — `Left` | Yes | `banner` | `Title` naming the collection. `Breadcrumb` when the section has ancestry. |
+| `Header` — `Right` | Yes | — | `Actions` — the action that creates a new member of the collection. |
+| `Tabs` | No | `tablist` | Inside the header. Sections of the same collection, when it has them. |
+| `Controls` | Yes | `search` when primarily search | Search, filters, view switches. |
+| `Contents` | Yes | `main` | The table, and nothing else. |
+| `Footer` | No | `contentinfo` | Not written — a list has no single commit, so whether it ever has a footer is undecided. |
+
+## What fills each region
+
+### Contents — the table
+
+**A table is the data grid.** The system states this in source, in a published guidance story:
+tables are built with the grid component, not assembled from table primitives. That decision is
+what makes column behaviour, selection, sorting, and keyboard focus consistent across every
+list page.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| The table | [Table](/invoca-design-system/components/data-display/table) | One per page. Assembling a table from table primitives instead is out of the system. |
+| No results | [EmptyState](/invoca-design-system/components/data-display/empty-state) | Not written — which empty state, and how it differs from "no data yet", is undecided. See [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states). |
+| Loading | [Skeleton](/invoca-design-system/components/feedback/skeleton) | Not written. See [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons). |
+
+What the system already decides about the grid, from the theme: the surface, the rule between
+rows, the type of a column header and a cell, the keyboard focus ring on a cell, and the
+selected-row treatment.
+
+### Controls — narrowing the list
+
+Not written. The composition is [Filtering & search](/invoca-design-system/patterns/filtering-and-search); what this
+archetype requires of it — whether search is always present, whether applied filters must be
+visible as a set, whether the count of results is stated — is undecided.
+
+### Header — Right
+
+Not written. The likely rule is "one primary action, and it creates a member of the collection",
+which follows [TITAN-VIEW-04](/invoca-design-system/views/overview#constraints).
+
+**Bulk actions are not header actions.** The design library puts them in a selection bar that
+appears in the table's own toolbar when rows are selected — see
+[TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19) and
+[Bulk selection](/invoca-design-system/patterns/bulk-selection).
+
+## Responsive and density behavior
+
+Not written.
+
+| Breakpoint | Collapses | Stacks | Dropped |
+|---|---|---|---|
+| — | — | — | — |
+
+## Accessibility
+
+The page-level decisions are the frame's, and they apply unchanged — see
+[Views overview → Accessibility](/invoca-design-system/views/overview#accessibility). One `main`, one `h1` on the
+`Title`, region order matching visual order.
+
+What is **specific to this archetype and not written**: the accessible name of the table, how
+sort state is announced, how row selection is announced, whether the row count is available to a
+screen-reader user without traversing the rows, and what a row-level action's accessible name
+must include to be unambiguous out of context.
+
+## Constraints
+
+Not written. Rules that would live here — one table per page, the table is the whole body, a row
+action never duplicates the primary action — are candidates, not constraints, until they are
+signed off with IDs.
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| — | — | — |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Three pagination implementations, none confirmed — though the page templates draw it inside the grid |
+| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | No layout tokens exist, so nothing bounds the table's width on a wide monitor |
+| [**TITAN-DIV-16**](/invoca-design-system/foundations/divergences#titan-div-16) | Divergence | A tabbed list composes its tab bar outside the header, because the header has no slot for it |
+| [**TITAN-DIV-19**](/invoca-design-system/foundations/divergences#titan-div-19) | Divergence | Bulk actions belong in a selection bar that code does not provide |
+| [**TITAN-DIV-20**](/invoca-design-system/foundations/divergences#titan-div-20) | Divergence | A hovered row and a selected row are given the same fill |
+
+**Observed in source and not yet recorded**, so not yet citable: the grid's own footer container has
+its top rule removed, which matters because that is where its built-in pagination renders — see
+[TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27). And no product adoption is recorded for
+the grid export, so the figures on the [Table](/invoca-design-system/components/data-display/table) page cannot yet
+corroborate any usage guidance.
+
+## Gaps in the current rules
+
+- **Whether a list page ever has a `Footer`.** A list has no single commit, so the frame's footer
+  rule does not obviously apply, and no published example shows one.
+- **Whether the result count is required**, and whether it belongs to the title, the controls, or
+  the table.
+- **What a row's primary interaction is.** Whether the whole row navigates, or only a link in a
+  designated column, is undecided — and the two produce different keyboard behaviour.
+- **Nothing bounds column count.** No rule states when a table has too many columns to be a list
+  and should become a detail view or a configurable set.
+- **Two grid exports ship, and nothing picks one.** `DataGridPro` and `DataGridPremium` are both
+  in the package. The guidance story says "use the grid" without saying which, so a list page
+  chooses by whichever it saw first.
+
+## Composed example
+
+Not written. A composed example must be a real screen or a live embed — a static image of a
+composed page goes stale in every release.
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame this archetype fills
+- [Table](/invoca-design-system/components/data-display/table) — what fills the body
+- [Detail view](/invoca-design-system/views/detail-view) · [Split view](/invoca-design-system/views/split-view) — where a row leads
+- [Filtering & search](/invoca-design-system/patterns/filtering-and-search) · [Bulk selection](/invoca-design-system/patterns/bulk-selection) · [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states)
+
+## Why it works this way
+
+**The table is the whole body.** The reason to state that early is that a list page attracts
+additions — a summary strip above the rows, a chart beside them, a panel of recent activity —
+and each one is defensible on its own. The composite is a page with no single job, and the
+reader who came to find one row now scans three regions to do it. A page that needs those
+things is a [dashboard](/invoca-design-system/views/dashboard) with a table on it, and that is a different archetype.

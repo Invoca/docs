@@ -1,0 +1,582 @@
+---
+title: "Open decisions"
+description: "What the design language has not decided yet, with stable IDs so it can be worked through."
+icon: "circle-help"
+keywords: ["gaps", "open questions", "undecided", "backlog", "roadmap", "decisions"]
+---
+
+This page is the system's own list of what it has not decided. Each entry has a stable
+`TITAN-GAP-<NN>` so it can be cited, tracked, and closed.
+
+<Warning>
+  **This is not a to-do list you may resolve by inference.** Asked about anything here, the
+  answer is "Titan does not specify this" plus a pointer to the entry. A confident invented
+  answer in the system's voice is the most expensive failure available, because it propagates
+  and nobody can trace where it came from.
+</Warning>
+
+## How this differs from Divergences
+
+| | Holds | Resolution |
+|---|---|---|
+| [**Divergences**](/invoca-design-system/foundations/divergences) | Code and design intent disagree | Pick one, or change the code |
+| **Open decisions** (this page) | Nobody has decided | Make the decision |
+
+A divergence has two answers competing. A gap has none.
+
+## How to use it
+
+1. **Do not fill the gap.** Say it is unspecified and cite the ID.
+2. Where a page's guidance is a **proposal** rather than a decision, it says so and links here.
+3. Closing an entry means recording a decision, not deleting the row — entries stay with a
+   resolution note so the reasoning survives.
+
+---
+
+# Deferred by decision
+
+## TITAN-GAP-01
+
+**Color scheme and density are out of scope for now.**
+
+| | |
+|---|---|
+| **What's undecided** | Everything about how Titan looks in a dark color scheme or at compact density: which values change, what the contrast targets are, when a surface should be compact, and what the design intent is for either. |
+| **What ships today** | Both axes are live in code. 117 of 244 tokens hold a different value in the dark scheme; 10 change at compact density. They work; nothing designed them. |
+| **Why it matters** | Documentation that defined these would be documenting engineering defaults as design decisions. Documentation that ignored them silently would claim the package is smaller than it is. This page is the third option. |
+| **Deliberate** | Yes. This is a scoping choice, not an oversight — the design language is being built up to these. |
+| **Surfaces on** | Every generated token table carries a note stating how many of its tokens move and pointing here. |
+
+Until this closes, **every value in this documentation is the light color scheme at
+comfortable density**, and no page states intent for any other mode.
+
+---
+
+# Definitions and vocabulary
+
+## TITAN-GAP-02
+
+**112 of 244 tokens have nothing recorded about what they are for.**
+
+| | |
+|---|---|
+| **What's undecided** | What each token means, and therefore which one to reach for. |
+| **What ships today** | Names and values. 52% of tokens now carry a definition that states intent — 34% from Titan source, 18% recovered from the naming specification. 46% carry nothing at all. |
+| **Why it matters** | This is the gap that makes every "Choosing a token" table on this site a **proposal** rather than a transcription. Where source records intent, the docs can state it as fact; where it does not, someone is inferring from the name. |
+| **Direction** | Two steps, in order. **1.** Carry the 44 specification definitions into `$description` in Titan source, so they survive independently of this documentation. **2.** Author definitions for the 112 tokens neither source defines — starting with `shadow-*` (0 of 24), `motion-*` (0 of 11), and `radius-*` (0 of 5), which are whole foundations with nothing recorded. |
+| **Surfaces on** | [Color](/invoca-design-system/foundations/color), [Space](/invoca-design-system/foundations/space-and-density), [Elevation](/invoca-design-system/foundations/elevation), [Radius](/invoca-design-system/foundations/radius), [Motion](/invoca-design-system/foundations/motion), [Iconography](/invoca-design-system/foundations/iconography) |
+
+The coverage is **inverted** from what you would expect: the component-scoped tokens are
+well documented, while the foundations everything is built on are not.
+
+### Step 1 — move the recovered definitions into code
+
+**44 definitions currently reach the documentation only through this transcription.** Design
+recorded them; implementation never carried them across. While that stays true, the definitions
+depend on a snapshot of a spreadsheet rather than on the package.
+
+| | |
+|---|---|
+| **Change** | Add `$description` to 44 tokens in `components/core/src/theme/tokens/semantic.tokens.json` and `component.tokens.json`. |
+| **Text to use** | The `definitions` map in `tools/spec-vocabulary.json`, which records each one verbatim from the specification. |
+| **Why it is worth doing** | A definition in source travels with the token. It reaches every consumer of the package, not only this site, and it survives a docs rewrite. It also removes a transcription from the trust chain. |
+| **Done when** | The coverage table below reports **0** definitions sourced from the specification and 127 from Titan source. That is a generated figure, so it is self-verifying — nobody has to remember to update a count. |
+| **Not this repo** | This is a change to Titan, not to the documentation. Raise it there. |
+
+<Note>
+  **The mechanism for proposing a token change belongs on
+  [Token workflow](/invoca-design-system/contribute/token-workflow)**, which is unwritten. Until it is, treat this
+  entry as the record of *what* to do and find *how* by asking.
+</Note>
+
+### Step 2 — define what neither source defines
+
+The remaining 112 have no definition in code and none in the specification. Four token families
+are entirely undefined and are the place to start, because they are what everything else is
+built from:
+
+| Foundation | Defined |
+|---|---|
+| `shadow-*` | 0 of 24 |
+| `motion-*` | 0 of 11 |
+| `radius-*` | 0 of 5 |
+| `link-*` | 0 of 3 |
+
+Writing these is a design decision each time, not a transcription — which is why this step is
+second and larger than the first.
+
+<Snippet file="generated/tokens/definition-coverage.mdx" />
+
+## TITAN-GAP-03
+
+**The vocabulary is specified but was never surfaced.**
+
+| | |
+|---|---|
+| **What's undecided** | Nothing, at the vocabulary level. The naming specification defines six axes and their permitted values, and the owner confirms it as the baseline. |
+| **What ships today** | The vocabulary existed only in a spreadsheet. No page stated it, so readers inferred the grammar from token names — and inferring gets the shape right and the categories wrong. |
+| **Why it matters** | This was recorded as "the system has not adjudicated its contested terms." It had. `alt` is a **state**, not a weight; `primary`/`secondary`/`tertiary` are a **prominence** axis that reading names does not reveal. A reader guessing from names will misclassify both. |
+| **Direction** | Largely closed: the grammar is now on [Foundations overview](/invoca-design-system/foundations/overview#the-naming-grammar) and each foundation carries a Vocabulary section. What remains is deciding the terms the spec does *not* cover — component-token naming, and the `neutral` vs `disabled` overlap. |
+| **Surfaces on** | [Foundations overview](/invoca-design-system/foundations/overview), and every foundation page's Vocabulary section |
+
+<Note>
+  **This entry is a correction.** It previously claimed the terms were unadjudicated. They
+  were adjudicated and undocumented, which is a much cheaper problem. Kept rather than
+  deleted, because the reason the docs inferred a grammar is worth remembering.
+</Note>
+
+## TITAN-GAP-04
+
+**Seven groups of distinct tokens resolve to one value, with no stated distinction.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether these are deliberate shared values or unintended collisions — and if deliberate, what distinguishes them in use. |
+| **What ships today** | Within a single role family, these resolve identically: |
+| **Why it matters** | Two tokens with different names and one value cannot be told apart on screen. The reader picks by name and gets no visual difference, so the distinction exists only in the code. |
+| **Surfaces on** | [Color](/invoca-design-system/foundations/color) |
+
+| Value | Tokens that share it |
+|---|---|
+| `#d4e0fe` | `background-hover` ≡ `background-info-alt` ≡ `background-primary-pressed` ≡ `background-selected` |
+| `#e7e9eb` | `background-disabled` ≡ `background-neutral` |
+| `#d0d3d8` | `background-disabled-alt` ≡ `background-neutral-pressed` |
+| `#fdbbbc` | `background-error-alt` ≡ `background-error-pressed` |
+| `2px` | `border-width-emphasis` ≡ `border-width-md` |
+| `#2666f9` | `icon-info` ≡ `icon-selected` |
+| `#1c53e9` | `link-default` ≡ `link-visited` |
+
+<Warning>
+  **Two of these have visible consequences today.**
+
+  `background-hover` and `background-selected` are the same color, so **a hovered row and a
+  selected row are indistinguishable** — the hover feedback on a selected row communicates
+  nothing.
+
+  `link-default` and `link-visited` are the same color, so **visited links cannot be
+  identified**. Same-role collisions across `background`/`border`/`icon`/`text` are expected
+  and correct — a status color used in four roles is one decision. These seven are within a
+  single role.
+</Warning>
+
+## TITAN-GAP-05
+
+**Where two tokens both apply, nothing says which to pick.**
+
+| | |
+|---|---|
+| **What's undecided** | The selection rule between adjacent values on the same scale. |
+| **What ships today** | `radius-base` (3px) and `radius-md` (4px) with no rule; five shadow levels with no surface mapping; eleven spacing steps with no role mapping; three glyph variants for several icons; seven durations with no interaction mapping. |
+| **Why it matters** | An unspecified choice between two valid options is where consistency is actually lost — not in whether to use a token, but in which one. |
+| **Surfaces on** | [Radius](/invoca-design-system/foundations/radius), [Elevation](/invoca-design-system/foundations/elevation), [Space](/invoca-design-system/foundations/space-and-density), [Iconography](/invoca-design-system/foundations/iconography), [Motion](/invoca-design-system/foundations/motion) |
+
+---
+
+# Accessibility
+
+## TITAN-GAP-06
+
+**The measured contrast failures are untriaged.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether the failures are known and accepted, scoped to non-text uses, or simply unnoticed. |
+| **What ships today** | `text-success` at 2.41:1 and `text-warning` at 2.74:1 on every surface — below even the 3:1 large-text floor. `icon-success` and `icon-warning` fail the 3:1 non-text minimum. |
+| **Why it matters** | The docs state the arithmetic and the workaround, but not whether anyone has accepted the risk. See [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03) for the workaround. |
+| **Surfaces on** | [Accessibility](/invoca-design-system/foundations/accessibility), [Color](/invoca-design-system/foundations/color) |
+
+## TITAN-GAP-07
+
+**No token expresses dark text on a bold status fill.**
+
+| | |
+|---|---|
+| **What's undecided** | What a conformant success or warning banner uses for its text. |
+| **What ships today** | `text-invert` (white), which fails against the success and warning fills. |
+| **Why it matters** | The conformant pairing is not expressible, so anyone building one must go outside the token layer. |
+| **Surfaces on** | [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+## TITAN-GAP-08
+
+**Reduced motion is unimplemented in the token layer.**
+
+| | |
+|---|---|
+| **What's undecided** | What each transition becomes under `prefers-reduced-motion: reduce`. |
+| **What ships today** | Seven durations, none with a reduced variant. |
+| **Why it matters** | [TITAN-A11Y-06](/invoca-design-system/foundations/accessibility#constraints) requires respecting the preference, and nothing in the token layer supplies the value to respect it with. |
+| **Surfaces on** | [Motion](/invoca-design-system/foundations/motion), [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+## TITAN-GAP-09
+
+**Focus Not Obscured is unaddressed.**
+
+| | |
+|---|---|
+| **What's undecided** | Any rule preventing a sticky region from covering a focused element. |
+| **What ships today** | A `z-*` ladder that makes the failure possible, and sticky regions that use it. |
+| **Why it matters** | [WCAG 2.2 2.4.11](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html) is an AA criterion. Only the page-archetype tier can prevent it, and that tier is unwritten. |
+| **Surfaces on** | [Accessibility](/invoca-design-system/foundations/accessibility), [Elevation](/invoca-design-system/foundations/elevation) |
+
+## TITAN-GAP-10
+
+**No forced-colors guidance exists.**
+
+| | |
+|---|---|
+| **What's undecided** | How the system behaves in Windows High Contrast Mode, which strips `box-shadow` and overrides colors. |
+| **What ships today** | Nothing. Any surface distinguished by shadow alone disappears. |
+| **Why it matters** | [TITAN-ELV-04](/invoca-design-system/foundations/elevation#constraints) already assumes it by requiring a scrim with a shadow, but no page states the mode's behavior. |
+| **Surfaces on** | [Elevation](/invoca-design-system/foundations/elevation), [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+## TITAN-GAP-11
+
+**Contrast is not enforced in Titan's own CI.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether a token change that breaks contrast should fail a build. |
+| **What ships today** | `emit-tokens.mjs --check` fails the docs build if a ratio changes. Nothing blocks the change upstream. |
+| **Why it matters** | A regression is caught after it ships, in the documentation, rather than before it ships, in the package. |
+| **Surfaces on** | [Accessibility](/invoca-design-system/foundations/accessibility) |
+
+---
+
+# Structure and layout
+
+## TITAN-GAP-12
+
+**No layout tokens exist at all.**
+
+| | |
+|---|---|
+| **What's undecided** | Container max-width, page gutter, column count per breakpoint, sidebar width, page margin. |
+| **What ships today** | Breakpoints (unvalidated) and a 12-column grid. Nothing else. |
+| **Why it matters** | Every page-level measurement is a per-view improvisation with nothing to check it against. On a wide monitor, nothing prevents line lengths far past readable. |
+| **Surfaces on** | [Layout & grid](/invoca-design-system/foundations/layout-and-grid), and [TITAN-DIV-08](/invoca-design-system/foundations/divergences#titan-div-08) |
+
+## TITAN-GAP-13
+
+**Surfaces have no layering order.**
+
+| | |
+|---|---|
+| **What's undecided** | Which surface sits on which, and what border or field pairs with each. |
+| **What ships today** | Four background tokens that function as surfaces, unordered. |
+| **Why it matters** | A card inside a card has no defined surface. The layering proposal on the color page is marked **Proposed** for this reason. |
+| **Surfaces on** | [Color](/invoca-design-system/foundations/color), and [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07) |
+
+## TITAN-GAP-14
+
+**The stacking ladder does not cover every layer.**
+
+| | |
+|---|---|
+| **What's undecided** | Where drawers and toasts belong on Titan's ladder, and whether `z-overlay` is meant to sit below a drawer. |
+| **What ships today** | Eight `z-*` tokens. Drawers and toasts stack at values no token expresses. `z-loader` is 1038, a number with no recorded reasoning. |
+| **Why it matters** | A scrim at `z-overlay` does not cover a drawer, and no token expresses "above a drawer, below a dialog." |
+| **Surfaces on** | [Elevation](/invoca-design-system/foundations/elevation) |
+
+## TITAN-GAP-15
+
+**The page-region model exists in code and was undocumented.**
+
+| | |
+|---|---|
+| **What's undecided** | Not the frame. What remains undecided is *per archetype* — which regions a list view requires versus a dashboard, and what fills them. |
+| **What ships today** | A complete page frame: `Page`, `Header` with `Left`/`Right` slots, `Title`, `Breadcrumb`, `Status`, `Information`, `Actions`, `Controls`, `Contents`, `TabPanel`, `Footer`, `PageDivider`, `Logo`. Fifteen exports, with tests and stories. |
+| **Why it matters** | This entry previously read "no page-region model exists; the Views tier is entirely unwritten." The *documentation* was unwritten; the model was not. Anyone acting on the old wording would have built a bespoke page shell alongside a frame that already existed. |
+| **Direction** | Largely closed: the frame, its vocabulary, and its expectations are on [Views overview](/invoca-design-system/views/overview). What remains is the seven archetypes, still stubs. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Layout & grid](/invoca-design-system/foundations/layout-and-grid) |
+
+<Note>
+  **This entry is a correction.** Kept rather than deleted, because "we looked and found nothing"
+  and "we did not look in the right place" are different failures and the second one recurs.
+</Note>
+
+## TITAN-GAP-23
+
+**The frame measures its own layout from the DOM at runtime.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether region height is a layout decision or a runtime measurement. |
+| **What ships today** | `Contents` computes its minimum height by querying the live DOM for `#titan-header`, `#titan-footer`, `#titan-audio-player`, and `[data-nav='primary-header']` — two of which live outside the design system entirely. |
+| **Why it matters** | The body's height depends on elements being present with exact ids, including ids the system does not own. A page that renames one, or renders without it, gets a silently wrong body height. It also means the frame cannot be reasoned about statically. |
+| **Direction** | Decide whether the frame should express this as layout — a grid with a body track that fills — rather than as measurement. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview) |
+
+## TITAN-GAP-24
+
+**The region layer largely bypasses the spacing scale.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether the frame is exempt from the token rules that govern components. |
+| **What ships today** | Across the thirteen page-structure exports there are **two** token references. The rest use a separate spacing helper, or literals — `maxWidth: "75%"` and `marginLeft: "1rem"`. `PageDivider` reaches for the render-time token form rather than the live one. |
+| **Why it matters** | [TITAN-SPC-01](/invoca-design-system/foundations/space-and-density#constraints) requires spacing to come from a token, and the layer that positions every page is where it holds least. Region rhythm cannot be adjusted system-wide, and [TITAN-VIEW-08](/invoca-design-system/views/overview#constraints) cannot be enforced. |
+| **Direction** | Move region spacing onto the scale, or state that the frame is deliberately exempt and why. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Space](/invoca-design-system/foundations/space-and-density) |
+
+## TITAN-GAP-25
+
+**The footer's leading slot is a convention, not a named slot.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether a backward action deserves a first-class slot on the footer. |
+| **What ships today** | The arrangement works, and is demonstrated in a published story: set `justifyContent: "space-between"` and wrap the trailing buttons so they group as one child. There is no prop for it and no name for the slot. |
+| **Why it matters** | Two costs. Nothing enforces "one backward action, tertiary, leftmost" — the arrangement accepts anything in that position. And wrapping the trailing group means the footer's `spacing-3` no longer separates those buttons, so the group supplies its own gap; the published example uses a margin on a button, which [TITAN-VIEW-08](/invoca-design-system/views/overview#constraints) prohibits. |
+| **Direction** | Give the footer a named leading slot that keeps the gap token applied to both groups. That removes the wrapper, removes the margin, and makes the rule enforceable. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview) |
+
+<Note>
+  **The convention itself is right.** Left is where you came from, and that reading is worth
+  preserving. The gap is that the frame expresses it by arrangement rather than by name, so the
+  meaning lives in a story instead of in the API.
+</Note>
+
+## TITAN-GAP-26
+
+**No step indicator exists for multi-step flows.**
+
+| | |
+|---|---|
+| **What's undecided** | How a sequence communicates where you are and how much is left. |
+| **What ships today** | **In code, nothing** — no stepper, no step progress indicator, no step component anywhere in the package. **In design, one exists**: the page templates carry a `Timeline` header type, a numbered step row with a descriptor under each step, paired with a `Workflow` template type. So a flow can be designed with visible progress and cannot be built with it. |
+| **Why it matters** | A sequence without visible progress is a sequence a user cannot judge. It removes the information needed to decide whether to start, continue, or abandon — and abandonment mid-flow is the expensive outcome. |
+| **Direction** | The design has answered *what it looks like* and *where it goes* — in the header, in place of a tab bar. What remains undecided is whether it becomes a component, a pattern built from existing parts, or a property of the header alongside the tab bar. Until one is built, the templates describe a page nobody can ship. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Wizard](/invoca-design-system/views/wizard) |
+
+## TITAN-GAP-27
+
+**Pagination has no home in the page frame, and three unreconciled implementations.**
+
+| | |
+|---|---|
+| **What's undecided** | Which of the three existing approaches is the system's, and whether the frame needs a region at all. |
+| **What ships today** | Three, none decided. **1.** `Pagination`, `TablePagination`, and `usePagination` are re-exported with **no theme overrides anywhere and no tokens**. **2.** `DataGrid` carries its own built-in pagination. **3.** Two applications have built their own `PaginationBar` from Footer, Button, Stack, and Typography — `ai-model-management` and `signal-validation`, independently. |
+| **Why it matters** | The frame has no region between `Contents` and `Footer`, which is where pagination conventionally sits. So a list page either puts it inside the body, invents a place, or uses the grid's. Two teams reaching the same conclusion separately is the measurable cost — that is the system failing to answer a question every list page asks. |
+| **Direction** | The design library answers the first question: in every table page template, pagination is drawn **inside the data grid**, at the bottom of the table, above the page footer — rows-per-page, a range, and previous/next. That points at approach **2**, the grid's own. What remains is confirming that as the system's answer, retiring the two locally-built bars, and deciding whether the un-themed pagination exports should be themed or withdrawn. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Pagination](/invoca-design-system/components/navigation/pagination) |
+
+<Note>
+  **Local reimplementation is the signal worth acting on.** Neither app built a `PaginationBar`
+  because it wanted a bespoke one. Both built one because nothing in the system covered the case,
+  and the second team could not discover that the first had already solved it.
+</Note>
+
+## TITAN-GAP-29
+
+**Vertical tabs are a navigation rail with no region and no archetype.**
+
+| | |
+|---|---|
+| **What's undecided** | What the vertical orientation *is* in the system — a tab strip turned sideways, or the side navigation — and where it sits on a page. |
+| **What ships today** | A fully themed rail: a minimum row width, a selected row with a fill and a leading edge marker, a rule down its trailing side, an icon-plus-label row structure with truncation, and an indented sub-row mode for a nested level. Three Tier-3 tokens carry its dimensions. What does not exist is any statement of where it goes, what it navigates, or how it relates to the page frame — the frame has no left rail. |
+| **Why it matters** | A rail is a page region: it changes what the rest of the page is, competes with the page header for the top-left of the screen, and raises the question of whether its rows are page navigation or in-page sections. Documented as an orientation of a tab strip, it reads as a styling choice, and the region-level decisions never get made. The [SideNav](/invoca-design-system/components/navigation/side-nav) page is a stub, so nothing else answers this either. |
+| **Direction** | Decide whether the rail is the system's side navigation or a second tab presentation. If it is navigation, it needs a region in the frame and a rule for which archetypes have one. If it is a tab presentation, it needs a stated threshold for choosing it over a horizontal strip. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Tabs](/invoca-design-system/components/navigation/tabs), [SideNav](/invoca-design-system/components/navigation/side-nav) |
+
+## TITAN-GAP-30
+
+**A tab can show an error in design and cannot in code.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether a section of a page can advertise that something inside it needs attention, and what that means. |
+| **What ships today** | The design library's tab component has a `Display` axis of `Unselected`, `Selected`, and **`Error`**, across all four interaction states. Code themes selected and interaction states and has no error treatment for a tab at all. So the design can express "the Routing section has a problem" and the code cannot. |
+| **Why it matters** | It is the missing half of a tabbed form. Submit a form whose invalid field sits on a tab you are not looking at, and without a per-tab signal the page reports a failure with no route to its cause — the reader opens each section in turn to find it. It is also the case that makes tab addressability load-bearing ([TITAN-VIEW-14](/invoca-design-system/views/overview#constraints)), since a section that has a URL can be linked to from the error summary. |
+| **Direction** | Decide what a tab error means before styling one — invalid input inside the section, a failed load, or a server-side problem are three different messages. Then decide whether the tab shows a count, a marker, or a colour change, and whether the page-level error summary stays as well. |
+| **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Tabs](/invoca-design-system/components/navigation/tabs), [Form validation](/invoca-design-system/patterns/form-validation) |
+
+<Note>
+  **The design library also carries two unreconciled notes on tabs**, written by whoever built it:
+  hover and pressed states were added for consistency with other components and flagged for review
+  on the code side, and 2px of padding was removed and flagged for parity. Neither is recorded
+  anywhere in code, and both disappear when the library is rebuilt. They are listed here so the
+  questions survive the file.
+</Note>
+
+## TITAN-GAP-31
+
+**The most-used loading primitive carries no design decisions at all.**
+
+| | |
+|---|---|
+| **What's undecided** | Everything about how a skeleton looks and moves: its colour, its animation, its corner radius, and whether the system provides composed skeleton screens. |
+| **What ships today** | `Skeleton`, with **no theme overrides, no tokens, and no representation in the design library** — checked against the component's own directory, the twenty-six components that do carry overrides, the token set, the shared package, and the legacy stylesheets. Its grey, its animation, and its radius all come from the framework with nothing recorded about them. It is simultaneously the most heavily used component in this area — **132 usages across 13 applications** at the time of writing, per the CI-refreshed utilization data. |
+| **Why it matters** | Three costs, in order of how soon they bite. The skeleton grey is the one grey in the product that no palette governs, so it cannot be checked and will not follow a scheme change. Two animations ship and both are in use, so loading looks different from screen to screen. And because no composed screens exist, applications write their own — three of them carry what appears to be the same `TabLoadingSkeleton`, at 21 instances each. |
+| **Direction** | Decide the colour and radius as tokens first, since those are cheap and unblock a scheme. Then pick one animation. Then decide whether skeleton screens for a table, a card, and a form belong in the library — the duplication says they do. Reduced motion should be handled at the same time; it is currently ignored. |
+| **Surfaces on** | [Skeleton](/invoca-design-system/components/feedback/skeleton), [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons), [Motion](/invoca-design-system/foundations/motion) |
+
+<Note>
+  **Adoption is the argument here, not novelty.** This is not a missing component; it is a shipped
+  one that 13 applications depend on and that the system has never made a decision about. The
+  duplicated loading files are the measurable cost, and they are the same signal as the two
+  independently built pagination bars in [TITAN-GAP-27](#titan-gap-27).
+</Note>
+
+---
+
+# Per-foundation
+
+## TITAN-GAP-16
+
+**No design intent is recorded for any motion value.**
+
+| | |
+|---|---|
+| **What's undecided** | Why these durations and easings, which interaction each is for, and what the system's movement should feel like. |
+| **What ships today** | Four easings and seven durations, named by shape and length rather than purpose. |
+| **Why it matters** | Motion is the least-decided foundation. The duration mapping on its page is a proposal, and no curve is named for what it does, so there is no shared vocabulary for how Titan moves. |
+| **Surfaces on** | [Motion](/invoca-design-system/foundations/motion) |
+
+## TITAN-GAP-17
+
+**Iconography has no meaning registry and no proposal process.**
+
+| | |
+|---|---|
+| **What's undecided** | Which glyph means what, which variant to use where several ship, and how a new icon gets added. |
+| **What ships today** | An icon index, three variants of several glyphs, and no selection rule. |
+| **Why it matters** | Without a meaning registry the same concept gets two glyphs across the product, and with no process a needed icon gets drawn locally. |
+| **Surfaces on** | [Iconography](/invoca-design-system/foundations/iconography) |
+
+## TITAN-GAP-18
+
+**Typography has unresolved redundancy and no responsive scale.**
+
+| | |
+|---|---|
+| **What's undecided** | Which of `subtitle1`/`body1` to prefer when they are metrically identical, whether the `button` variant should join the shared metrics, and whether type should change with viewport. |
+| **What ships today** | 34 variants of which 11 are reachable, two identical pairs, one variant on different metrics, and one fixed scale at every breakpoint. |
+| **Why it matters** | Identical variants mean the choice carries intent that never renders, and a fixed scale means a 24px page title on a phone-width viewport. |
+| **Surfaces on** | [Typography](/invoca-design-system/foundations/typography), and [TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04) |
+
+---
+
+# Contribution process
+
+## TITAN-GAP-19
+
+**Tokens have no lifecycle metadata and no deprecation path.**
+
+| | |
+|---|---|
+| **What's undecided** | How a token stops being current without breaking the consumers using it. |
+| **What ships today** | Nothing. Verified: no token in any of the four DTCG source files carries a deprecation marker, and every manifest entry is `name`, `tier`, `axis`, `$type`, `values` — no `status`, `since`, `deprecated`, or `replacedBy`. |
+| **Why it matters** | A token can be added or deleted, with no state in between. Deleting is a breaking change with no warning; keeping it is permanent. It is also why [TITAN-GAP-04](#titan-gap-04) has no safe resolution — consolidating duplicate tokens means deleting names consumers may be using, with no way to warn them first. |
+| **Direction** | Add lifecycle fields to the token schema and surface them in the manifest, then define what "deprecated" obliges — a warning period, a migration mapping, a removal release. |
+| **Surfaces on** | [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation), [Token workflow](/invoca-design-system/contribute/token-workflow) |
+
+<Note>
+  **The cost of this gap grows.** Every token added without a lifecycle field is another one
+  that can only be removed abruptly. Adding the field costs roughly the same today as it will
+  next year; not having it costs more each time the token count rises.
+</Note>
+
+## TITAN-GAP-20
+
+**No approval path is recorded for a token change.**
+
+| | |
+|---|---|
+| **What's undecided** | Who decides that a token should exist, who reviews its value and name, and whether design sign-off is required before it merges. |
+| **What ships today** | A verified technical path — author in DTCG source, build, thirteen guardrail tests, a coverage check, re-emit the docs. The build gates mechanical correctness completely and judgment not at all. |
+| **Why it matters** | [Token workflow](/invoca-design-system/contribute/token-workflow) can tell someone *how* to add a token but not *whether they may*. Nothing checks a new name against the [naming grammar](/invoca-design-system/foundations/overview#the-naming-grammar), and nothing states when a value has earned a token rather than being a one-off. |
+| **Direction** | Record the approval path, and decide whether naming review is a human step or a lint rule. The grammar is specified, so it is checkable. |
+| **Surfaces on** | [Token workflow](/invoca-design-system/contribute/token-workflow) |
+
+
+---
+
+
+## TITAN-GAP-21
+
+**Un-themed API is reachable and nothing prevents it.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether the system should restrict the surface it inherits, and how. |
+| **What ships today** | Most core components are thin wrappers that declare no props of their own, so they accept everything their base accepts. Two sizes are decided, `small` and `medium`; `size="large"` still renders, at dimensions no token defines. Two colours are decided, `primary` and `error`; the others render with no decision behind them. |
+| **Why it matters** | Every "do not use API the documentation does not list" rule is currently documentation-only. Nothing in types, lint, or runtime enforces it, so the rule holds exactly as long as someone reads the page. |
+| **Direction** | Decide whether to narrow the exported prop types, add a lint rule, or accept the wider surface and document it per component. |
+| **Surfaces on** | [Button](/invoca-design-system/components/actions/button), and every passthrough component |
+
+## TITAN-GAP-22
+
+**No component expresses a failed action.**
+
+| | |
+|---|---|
+| **What's undecided** | What a control does when the action behind it fails. |
+| **What ships today** | A loading state and a disabled state. Nothing between "in progress" and "resting" expresses failure, and no token names an error state for a control. |
+| **Why it matters** | Every surface improvises it — inline text, a toast, a banner, or nothing. The state most likely to need explaining is the one the system says least about. |
+| **Direction** | Decide whether failure is a control-level concern or belongs entirely to the composition around it, then document the chosen answer once. |
+| **Surfaces on** | [Button](/invoca-design-system/components/actions/button) |
+
+## TITAN-GAP-32
+
+**At least four independent disabled/dimmed-opacity values exist across the Forms group, with no rule for which applies where.**
+
+| | |
+|---|---|
+| **What's undecided** | Whether a disabled form control's opacity comes from Titan's own token, the interaction layer's separate disabled treatment, or a component-specific value, and what should happen when more than one could apply to the same element. |
+| **What ships today** | `form-input-disabled-opacity` resolves to `0.5` — a Titan token, named for exactly this purpose and implied to govern Input, Select, Radio, and Checkbox alike. `action-disabledOpacity`, on the interaction layer, is `0.38` and is not an alias of it. [Switch](/invoca-design-system/components/forms/switch#tokens) adds two more of its own: `opacity-switchTrackDisabled` at `0.12`, and `opacity-switchTrack` at `0.38` — matching `action-disabledOpacity`'s figure exactly, which may be the same underlying value reused or may be coincidence. |
+| **Why it matters** | Different opacities on the same kind of disabled control is a visible, checkable rendering difference — not a rounding error. Which one a given control shows depends on which layer it renders the disabled state through, and nothing states which that is. |
+| **Direction** | Decide the one disabled-opacity value for form controls, alias the others to it or retire them, and confirm which layer each component actually renders through. |
+| **Surfaces on** | [Checkbox](/invoca-design-system/components/forms/checkbox), [Input](/invoca-design-system/components/forms/input), [FieldLabel](/invoca-design-system/components/forms/field-label), [Switch](/invoca-design-system/components/forms/switch) |
+
+## TITAN-GAP-33
+
+**No mixed/indeterminate state exists for showing a partially-checked group.**
+
+| | |
+|---|---|
+| **What's undecided** | How a select-all checkbox communicates that some, but not all, of the group it controls is checked. |
+| **What ships today** | Checked directly against the Figma library's `Checkbox` component and its `Checkbox + Label` composite — both are exhaustively enumerated (`Checked`/`Selected` × `Default`/`Hover`/`Disabled`/`Focused`) with no third value on either axis. Nothing in the library renders a mixed state. |
+| **Why it matters** | A select-all control over a partially-checked group has no way to say so — it can only show fully checked or fully unchecked, either of which misrepresents the actual state of the group underneath it. |
+| **Direction** | Decide whether Checkbox gains a third visual state or whether partial selection is communicated some other way (a count, a label change) that doesn't require one. |
+| **Surfaces on** | [Checkbox](/invoca-design-system/components/forms/checkbox), [Bulk selection](/invoca-design-system/patterns/bulk-selection) |
+
+<Note>
+  **Found from Figma, not source.** This session had the design library's variant structure but
+  not the Titan checkout, so absence in the library is confirmed; absence in code is inferred,
+  not verified directly.
+</Note>
+
+
+# Known defects
+
+Not decisions — bugs. Listed here so they are not mistaken for open questions.
+
+| Defect | Detail |
+|---|---|
+| `overlay-default` is malformed | The light value is `rgba(21, / 36, / 62, / 0.3000)`, which is not valid CSS. Scoped to the JS token surface; the legacy CSS outputs de-mangle it at build time. Reported, unresolved. |
+| `--titan-spacing-compact-3` is a leaked internal | It exists as a public custom property but is not a token on any access surface. Treat as private; it is not documented as such. |
+| `form-label-font-weight` carries a `px` unit | The captured value is the literal string `700px`. A `px` unit on `font-weight` is invalid CSS; a browser consuming it directly would ignore the declaration and fall back to the inherited weight rather than rendering bold. Unconfirmed whether this is the value as authored in source or an artifact of the capture method — see [FieldLabel](/invoca-design-system/components/forms/field-label#tokens). Reported, unresolved. |
+
+---
+
+# Closed
+
+A closed entry stays on this page with a resolution note, and the release it landed in when there
+is one — deleting it loses the reason the system looks the way it does.
+
+## TITAN-GAP-28
+
+**Where the tab bar sits, and who supplies its gutter — closed by the design library.**
+
+| | |
+|---|---|
+| **Was undecided** | Whether a tabbed page's bar is part of the frame, and who is responsible for aligning it. |
+| **Decided** | The bar belongs to the **header**, below the header row, inset to the header's gutter, and its underline is the header's lower edge. The design library's page template carries it as a `Header Type` property, and the header grows to accommodate the bar rather than the bar sitting outside it. |
+| **Where it lives now** | [Views overview](/invoca-design-system/views/overview), under *Header — Tab bar*, as [TITAN-VIEW-11](/invoca-design-system/views/overview#constraints) through [TITAN-VIEW-13](/invoca-design-system/views/overview#constraints). |
+| **What replaced it** | [TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16) — the code has no such slot, so the arrangement is composed by hand. The question is no longer open; the implementation is behind it. |
+
+<Note>
+  **This entry was opened on incomplete evidence.** It was written from the code and the published
+  story alone, before the design library's page templates were read. The templates answer it
+  directly, which is why it closed as a divergence rather than a decision.
+</Note>

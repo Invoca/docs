@@ -1,0 +1,62 @@
+{/* Sourced from the theme snapshot captured 2026-08-11 (`.titan-snapshot/`), not from a live
+     run of `tools/emit-tokens.mjs` — no Titan checkout is available this pass. Re-verify
+     against source once a checkout exists. See `.titan-snapshot/README.md`. */}
+
+| Token | Comfortable | Compact |
+|---|---|---|
+| `control-height-md` | `36px` | `32px` |
+| `control-height-sm` | `32px` | `28px` |
+| `form-field-border-width` | `1px` | Density-constant |
+| `form-field-input-padding-y` | `0.375rem` (6px) | Density-constant |
+| `form-field-multiline-padding-y` | `0.275rem` (≈4.4px) | Density-constant — the multiline (`textarea`) variant |
+| `form-input-disabled-opacity` | `0.5` | Density-constant |
+
+<Warning>
+  **These do not resolve to a clean box.** `form-field-border-width` (1px × 2) plus
+  `form-field-input-padding-y` (6px × 2) is 14px of border and padding at `control-height-md`'s
+  36px, leaving 22px for the text line box — close to `body2`'s 20px line-height but not an
+  exact match. Unlike [Button](/invoca-design-system/components/actions/button#tokens), this session could not
+  measure the rendered box directly, so treat 22px as an estimate, not a verified effective
+  value. Confirm against a live render before citing a specific number.
+</Warning>
+
+## Colour
+
+All values below are the **light** scheme, per this site's documented scope
+([TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01)) — dark is shown only where needed
+to explain [TITAN-DIV-24](/invoca-design-system/foundations/divergences#titan-div-24), below.
+
+<Color variant="table">
+  <Color.Row title="Border, error">
+    <Color.Item name="tokens.border-error" value={{ light: "#e4131b", dark: "#ed3036" }} />
+  </Color.Row>
+  <Color.Row title="Border, error, alt">
+    <Color.Item name="tokens.border-error-alt" value={{ light: "#fdbbbc", dark: "#b3000b" }} />
+  </Color.Row>
+  <Color.Row title="Border, disabled">
+    <Color.Item name="tokens.border-disabled" value={{ light: "#d0d3d8", dark: "#445065" }} />
+  </Color.Row>
+  <Color.Row title="Text, disabled">
+    <Color.Item name="tokens.text-disabled" value={{ light: "#a1a7b2", dark: "#8a919e" }} />
+  </Color.Row>
+  <Color.Row title="Background, disabled">
+    <Color.Item name="tokens.background-disabled" value={{ light: "#e7e9eb", dark: "#445065" }} />
+  </Color.Row>
+</Color>
+
+| Token | Value |
+|---|---|
+| `form-field-focus-ring` | `0 0 0.25rem #2666f9` |
+| `form-field-focus-ring-error` | `0 0 0.25rem #ed3036` — see warning below |
+| `opacity-inputPlaceholder` | `0.42` |
+| `opacity-inputUnderline` | `0.42` — the legacy underline variant only |
+
+<Warning>
+  **`form-field-focus-ring-error`'s light-mode value (`#ed3036`) exactly matches
+  `border-error`'s *dark*-mode value**, not its light one (`#e4131b`). One of two things is
+  true: either the focus ring intentionally uses a different red than the border for contrast
+  reasons and the match to dark's `border-error` is coincidence, or the focus-ring token is
+  reading the wrong colour scheme. See
+  [TITAN-DIV-24](/invoca-design-system/foundations/divergences#titan-div-24) — direction is to check the lookup,
+  not to guess.
+</Warning>

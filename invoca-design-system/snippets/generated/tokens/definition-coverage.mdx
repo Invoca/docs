@@ -1,0 +1,76 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+Every consumable token, grouped by prefix, against whether anything in source records what
+it is *for*.
+
+| Group | Tokens | States intent | Implementation note only | Nothing recorded |
+|---|---|---|---|---|
+| `shadow-*` | 24 | **0** | 0 | **24** |
+| `chip-*` | 19 | **1** | 0 | **18** |
+| `modal-*` | 13 | **2** | 0 | **11** |
+| `spacing-*` | 12 | **1** | 2 | **9** |
+| `motion-*` | 11 | **0** | 0 | **11** |
+| `z-*` | 8 | **2** | 0 | **6** |
+| `icon-*` | 18 | **13** | 0 | **5** |
+| `radius-*` | 5 | **0** | 0 | **5** |
+| `loader-*` | 5 | **0** | 0 | **5** |
+| `border-*` | 18 | **14** | 0 | **4** |
+| `drawer-*` | 3 | **1** | 0 | **2** |
+| `control-*` | 2 | **0** | 2 | 0 |
+| `tooltip-*` | 2 | **0** | 0 | **2** |
+| `alert-*` | 2 | **0** | 0 | **2** |
+| `toast-*` | 2 | **0** | 0 | **2** |
+| `empty-*` | 2 | **0** | 0 | **2** |
+| `background-*` | 27 | **26** | 0 | **1** |
+| `text-*` | 17 | **16** | 0 | **1** |
+| `tabs-*` | 3 | **2** | 1 | 0 |
+| `badge-*` | 2 | **1** | 0 | **1** |
+| `typography-*` | 1 | **0** | 0 | **1** |
+| `form-*` | 10 | **10** | 0 | 0 |
+| `toggle-*` | 7 | **7** | 0 | 0 |
+| `select-*` | 5 | **5** | 0 | 0 |
+| `slider-*` | 4 | **4** | 0 | 0 |
+| `link-*` | 3 | **3** | 0 | 0 |
+| `overlay-*` | 2 | **2** | 0 | 0 |
+| `font-*` | 2 | **2** | 0 | 0 |
+| `filter-*` | 2 | **2** | 0 | 0 |
+| `progress-*` | 2 | **2** | 0 | 0 |
+| `dropzone-*` | 2 | **2** | 0 | 0 |
+| `color-*` | 1 | **1** | 0 | 0 |
+| `opacity-*` | 1 | **1** | 0 | 0 |
+| `button-*` | 1 | **1** | 0 | 0 |
+| `appbar-*` | 1 | **1** | 0 | 0 |
+| `accordion-*` | 1 | **1** | 0 | 0 |
+| `card-*` | 1 | **1** | 0 | 0 |
+| `searchable-*` | 1 | **1** | 0 | 0 |
+| `data-*` | 1 | **1** | 0 | 0 |
+| `circular-*` | 1 | **1** | 0 | 0 |
+
+|  | Count | Share |
+|---|---|---|
+| **States intent** | 127 | 52% |
+|   → from Titan source | 83 | 34% |
+|   → from the naming specification | 44 | 18% |
+| Implementation note only | 5 | 2% |
+| **Nothing recorded** | 112 | 46% |
+| Total consumable tokens | 244 | 100% |
+
+<Note>
+  **Two sources, and the difference matters.** A definition marked `code` comes from a
+  `$description` in Titan source, written alongside the implementation. One marked `spec`
+  comes from the naming specification, authored by design and confirmed as the baseline.
+  Where both exist, source wins — it is closer to what ships.
+
+  **44 tokens are defined only by the specification**, meaning the intent exists but
+  was never carried into the code. Contributing those back into `$description` would make
+  them survive independently of this transcription.
+</Note>
+
+<Note>
+  **Three states, not two.** *States intent* means one of the two sources records what the
+  token is for. *Implementation note* means something was recorded, but it describes build
+  mechanism rather than purpose. *Nothing recorded* means the name is the only guide.
+
+  Counting the middle group as documented would overstate coverage by
+  2 points.
+</Note>

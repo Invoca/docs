@@ -1,0 +1,146 @@
+---
+title: "Reporting drift"
+description: "What to do when Figma and code disagree — and how to change the system when you think code is wrong."
+icon: "git-compare-arrows"
+tag: "Stable"
+keywords: ["drift", "figma", "out of sync", "mismatch", "source of truth", "propose a change"]
+---
+
+## Code is the source of truth
+
+Titan tokens are authored as DTCG JSON. Components and their intent live in code. Style
+Dictionary builds from that source and emits CSS, TypeScript, this documentation — and
+the Figma library.
+
+**Figma is an emission target, not an authority.** A value that exists only in Figma is
+not part of the system.
+
+<Note>
+  This is a statement about **where values live**, not about **who decides**. Design
+  authority over what the system *should* do is unchanged — see
+  [Proposing a change](#proposing-a-change) below. What changed is that a decision is only
+  real once it lands in source.
+</Note>
+
+## Three kinds of disagreement
+
+"Drift" is used for three different situations, and only one of them has a mirror. Identify
+which you have before reaching for a fix, because the resolutions are not the same.
+
+| Between | What it means | Resolution | Recorded in |
+|---|---|---|---|
+| **Code ↔ Figma** | The mirror is stale | Re-emit. Always. | This page |
+| **Specification ↔ code** | Two authored sources disagree | A decision, per token | [Divergences](/invoca-design-system/foundations/divergences) |
+| **Design intent ↔ code** | The docs say one thing, the package does another | Follow the register's verdict | [Divergences](/invoca-design-system/foundations/divergences) |
+
+<Warning>
+  **Only the first is a mirror problem.** The other two have no downstream side — both halves
+  were authored by someone who meant it, so "re-emit" is not available and picking the
+  better-looking one is not a resolution. Those get recorded and decided, not fixed in place.
+
+  The largest example today: the naming specification and the shipped tokens overlap by only
+  54 of 244 names. See [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+</Warning>
+
+## Code and Figma: drift has a direction
+
+When Figma and code disagree, the question is not "which one is right?" It is **"how far
+has the mirror drifted?"** The answer is always the same:
+
+```
+Code (DTCG JSON + component source)
+        │  Style Dictionary
+        ▼
+   CSS · TypeScript · Docs · Figma library
+```
+
+Resolution is **always** re-emission. Never edit the token to match the Figma file, and
+never hand-fix the Figma variable to match code — a hand-fix looks like a resolution and
+leaves the sync broken, so the same drift returns on the next publish with no record that
+anyone noticed.
+
+<Warning>
+  The instinct when two things disagree is to look at both and pick the better-looking
+  one. That instinct is the thing this page exists to interrupt. "Figma looks more
+  correct" is a reason to **propose a change to source**, not a reason to treat Figma as
+  the answer.
+</Warning>
+
+## Reporting drift
+
+<Steps>
+  <Step title="Identify what disagrees">
+    Name the token, component, or variant, and both values — the code value and what Figma
+    shows. Screenshots help a human triage, but they are not the evidence. **A screenshot
+    confirms a script ran; it does not confirm accuracy.**
+  </Step>
+  <Step title="Check whether it is drift or a gap">
+    Two different problems with different fixes:
+
+    - **Drift** — the value exists in code and Figma shows something else. The mirror is stale. Re-emit.
+    - **Gap** — the value exists in *neither*, and what renders has no token behind it at all. Not drift. It needs a token added to source. See [Token workflow](/invoca-design-system/contribute/token-workflow).
+
+    Gaps are the more common finding, and they are invisible without a systematic diff.
+    An audit run this way on Titan surfaced roughly 20 discrepancies, none visible by eye.
+  </Step>
+  <Step title="File it">
+    Include the token or component name, the code value, the Figma value, and which
+    tier and axis it touches — primitive/semantic/component, and whether a mode is
+    involved (light/dark, comfortable/compact).
+  </Step>
+  <Step title="Resolution is a re-emission, not an edit">
+    The fix runs the sync. If the sync produces the wrong result, the sync is the bug.
+  </Step>
+</Steps>
+
+## Proposing a change
+
+**Reporting drift and proposing a change are different actions.** Confusing them is how
+"code is the source of truth" gets misheard as "designers do not get a say."
+
+| You think… | That is | Do this |
+|---|---|---|
+| Figma shows something different from code | **Drift** | Report it. Resolution is re-emission. |
+| The value in code is the wrong value | **A change proposal** | [Propose it](/invoca-design-system/contribute/propose-a-component). It gets decided, then it lands in source. |
+| The value I need does not exist anywhere | **A token gap** | [Token workflow](/invoca-design-system/contribute/token-workflow). Do not work around it with a literal. |
+| The documentation and the package disagree | **A divergence** | Check [Divergences](/invoca-design-system/foundations/divergences) for a `TITAN-DIV-<NN>`. If it is not recorded, report it — do not pick a side. |
+| Nothing anywhere decides this | **An open decision** | Check [Open decisions](/invoca-design-system/foundations/open-decisions). Cite the `TITAN-GAP-<NN>`; never resolve it by inference. |
+
+A designer changing a value in Figma is not authoring. A designer **deciding** a value
+absolutely is — the decision simply has to land in source to become real, the same way an
+engineer's decision does. Nobody's judgment is downstream here. Only the file format is.
+
+## What not to do
+
+**Do not hand-edit generated output.** Not the emitted CSS, not the TypeScript, not the
+files under `snippets/generated/`. A hand-edit does not fix anything; it creates a value
+that disagrees with source and survives until someone notices.
+
+**Do not resolve drift with a local override.** An override is invisible to the audit, to
+Figma, and to every other consumer. It is how a design system stops being one.
+
+**Do not resolve a divergence by editing the documentation to match the code.** That is the
+non-mirror case, and quietly rewriting the intent destroys the decision. Record it in
+[Divergences](/invoca-design-system/foundations/divergences) instead.
+
+**Do not treat the legacy library as evidence.** The "IDS – Core Components" Figma file
+may be referenced for *design intent* — it carries real direction about how things were
+meant to feel — but it is not a source for values, for variant models, or for Code
+Connect mappings. It is history, not input.
+
+## Related
+
+- [Token workflow](/invoca-design-system/contribute/token-workflow) — how a missing value becomes a token
+- [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation) — what happens when one is removed
+- [Divergences](/invoca-design-system/foundations/divergences) — where code and intent disagree, and which to follow
+- [Open decisions](/invoca-design-system/foundations/open-decisions) — what has not been decided
+
+## The health metric
+
+Titan tracks **generated-to-merged delta**: how much a human changes what the tools
+generate before it merges.
+
+A rising delta does not mean generation got worse. It means the mirror or the Code Connect
+mappings went stale — which is drift, measured before anyone reports it. That makes it the
+one number worth watching, and it is why documentation coverage is *not* the metric. A
+fully documented system whose mirror has drifted produces confidently wrong output.

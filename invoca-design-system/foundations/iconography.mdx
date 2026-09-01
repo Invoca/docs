@@ -1,0 +1,206 @@
+---
+title: "Iconography"
+description: "154 icons, four sizes, and the color tokens that pair with them."
+icon: "shapes"
+keywords: ["icon", "icons", "Material Icons", "size", "icon color", "IconButton"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+The icon set, the four sizes icons render at, and the 13 color tokens that apply to them.
+Icons are the one foundation with both a *fixed inventory* and a *token surface* — you
+pick from a closed list, then color and size it with tokens.
+
+## Vocabulary
+
+| Axis | Values | Means |
+|---|---|---|
+| **attribute** | `icon` `icon-overlay` | The glyph, and a glyph over a surface |
+| **purpose** | `success` `info` `error` `warning` `neutral` `default` | What the icon signals |
+| **state** | `default` `alt` `disabled` `invert` | Which state |
+| **level** | `xs` `sm` `md` `lg` | Size step |
+
+<Note>
+  **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
+  baseline the design language is being built on. This is the vocabulary of record — not
+  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+</Note>
+
+<Note>
+  **The specification defines `icon-neutral` and `icon-neutral-alt`; neither ships.** The
+  `neutral` purpose exists in the vocabulary and not in the token set — see
+  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+</Note>
+
+## The set
+
+**154 icons**, exported from the Titan package. The set is predominantly
+[Material Icons](https://fonts.google.com/icons) — `Add`, `Check`, `Close`, `ChevronRight`,
+`ExpandMore`, `Delete`, `Search` — plus a small number of Invoca-specific additions such
+as `AgentManagementIcon` and `DomainIcon`.
+
+<Note>
+  **The inventory is closed.** If the icon you need is not among the 154, the answer is a
+  proposal, not an inline SVG. See [TITAN-ICO-01](#constraints).
+</Note>
+
+<Warning>
+  **Naming is inconsistent across the set.** Most icons carry no suffix — `Add`, `Check`,
+  `Close`. A minority carry `Icon` — `AssignmentIcon`, `ClearIcon`, `ErrorIcon`,
+  `FavoriteIcon`, `InputIcon`, `FindInPageIcon`. There is no rule distinguishing them; the
+  suffix does not indicate origin, variant, or anything else observable. Check the export
+  name against the Storybook index rather than guessing.
+</Warning>
+
+The full inventory renders live:
+
+<Note>
+  Browse the complete set at
+  `internal-docs.invocadev.com/Titan/core/?path=/docs/components-icons--docs`.
+</Note>
+
+## Sizes
+
+Four sizes, each paired to a type size rather than chosen freely.
+
+| Token | Value | For |
+|---|---|---|
+| `icon-xs` | 14px | Inline with `caption` or `h6`; decorative marks inside dense table cells |
+| `icon-sm` | 16px | Inline with `body2` (the base size) — the most common choice |
+| `icon-md` | 20px | Inline with `body1` or `h3`; standalone icons in toolbars and buttons |
+| `icon-lg` | 24px | Standalone interactive targets, empty-state and status graphics |
+
+**Match the icon to the text it sits with, not to the space available.** An icon optically
+matched to its label is the entire job of this scale:
+
+| Alongside… | Use |
+|---|---|
+| `h6` (10px), `caption` (12px), `h5` (12px) | `icon-xs` (14px) |
+| `body2` (14px), `subtitle2` (14px), `h4` (14px) | `icon-sm` (16px) |
+| `body1` (16px), `subtitle1` (16px), `h3` (16px) | `icon-md` (20px) |
+| `h2` (20px), `h1` (24px) | `icon-lg` (24px) |
+
+<Note>
+  The icon is always slightly larger than the type it accompanies — 16px icon beside 14px
+  text. Glyphs sit within their cap height, while an icon uses its full box. Matching the
+  numbers makes the icon look small.
+</Note>
+
+## Choosing a color token
+
+13 semantic icon colors. All flip on light/dark.
+
+| You need… | Use | Not |
+|---|---|---|
+| An icon carrying no independent meaning — a chevron, a drag handle | `icon-default` | `text-secondary`. Icon and text optical weights differ at the same value; the icon tokens are tuned for solid shapes. |
+| An icon in a selected or active state | `icon-selected` | `background-selected` — that is a surface token |
+| An icon in an unavailable control | `icon-disabled` | Reduced opacity. Opacity composites against whatever is behind it, so contrast becomes unknowable. |
+| An icon on a filled or dark surface | `icon-invert` | White. The surface is not guaranteed dark in every mode. |
+| An informational status icon | `icon-info` on bold fills, `icon-info-alt` on tinted surfaces | The `text-*` equivalents |
+| A success status icon | `icon-success` / `icon-success-alt` | Green |
+| A warning status icon | `icon-warning` / `icon-warning-alt` | Orange |
+| An error status icon | `icon-error` / `icon-error-alt` | Red |
+
+<Warning>
+  **The plain and `-alt` status tokens are not interchangeable.** The plain token is the
+  saturated fill color; the `-alt` token is the darkened variant that carries contrast on a
+  light surface. On a light background, `icon-success` (`#2cbf58`) measures **2.41:1**
+  against white — well under the 3:1 minimum for
+  [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
+  `icon-success-alt` (`#0d5400`) measures 9.19:1.
+
+  Use `-alt` for icons on light surfaces. See
+  [Accessibility](/invoca-design-system/foundations/accessibility#contrast) for the measured table.
+</Warning>
+
+## Token reference
+
+<Snippet file="generated/tokens/iconography.mdx" />
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-ICO-01** | Icons come from the Titan set. Never an inline SVG, an icon font, or a third-party icon package. | An outside icon has no size token, no color token, and no contrast guarantee. It is also the way a curated set becomes an unsearchable one. |
+| **TITAN-ICO-02** | Icon size comes from an `icon-*` size token, matched to accompanying type. | An icon sized to fill available space rather than to match its label is the most visible inconsistency in a dense UI. |
+| **TITAN-ICO-03** | Icon color comes from an `icon-*` color token. Never a `text-*` token, a hex value, or opacity. | The icon tokens are tuned separately from text because solid shapes read heavier than glyph strokes at the same value. |
+| **TITAN-ICO-04** | Status icons use the `-alt` variant. | The plain status tokens fail the 3:1 non-text contrast minimum — `icon-success` measures 2.41:1 against white. |
+| **TITAN-ICO-05** | An icon that is the sole content of an interactive control has an accessible name. | An unlabeled icon button is unusable with a screen reader and unidentifiable to anyone who does not recognize the glyph. |
+| **TITAN-ICO-06** | A decorative icon is hidden from assistive technology (`aria-hidden="true"`). | A chevron announced as "chevron right" next to text that already says "Next" is noise that makes the real content harder to find. |
+| **TITAN-ICO-07** | One meaning per icon, system-wide. Never reuse a glyph for two concepts. | Icons are learned. A glyph meaning "filter" on one page and "settings" on another has to be re-learned on every page, which means it is carrying no information. |
+| **TITAN-ICO-08** | An icon never carries meaning alone unless it is a universally learned convention (close, search, expand). | Icon comprehension without a label is far lower than designers estimate, and it is worst for new users — the ones who need the affordance most. |
+
+## Accessibility
+
+- **Decorative vs. meaningful is the first decision.** An icon beside a text label is
+  decorative — hide it with `aria-hidden="true"`. An icon that *is* the control needs
+  `aria-label`, and the label states the action, not the picture: `aria-label="Delete
+  campaign"`, never `aria-label="trash icon"`.
+- **Non-text contrast is 3:1, not 4.5:1**
+  ([WCAG 2.2 AA](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)) —
+  but it applies to any icon that conveys information or indicates state. Purely decorative
+  icons are exempt. The plain status tokens fail this on light surfaces.
+- **Hit target, not icon size.** A 16px icon inside a 32px `control-height-sm` button has a
+  32px target. The icon token sizes the glyph; the control token sizes the target. Never
+  let a bare 14px icon be the clickable area.
+- **Status icons pair with text.** Color plus glyph is still two visual channels and no
+  textual one. See [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Icons must survive forced-colors mode. Icons drawn with `currentColor` adapt; icons with
+  baked fills do not.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-17**](/invoca-design-system/foundations/open-decisions#titan-gap-17) | Open decision | iconography has no meaning registry |
+
+## Gaps in the current rules
+
+- **The `Icon` suffix is unexplained.** Six of 154 exports carry it. No rule distinguishes
+  `ErrorIcon` from `Error`, and both `ErrorIcon`, `ErrorOutline`, and `ErrorRounded` ship.
+- **Three variants of several glyphs ship with no selection rule** — `CheckCircle`,
+  `CheckCircleOutlineIcon`, and `CheckCircleRounded`; `Info`, `InfoOutlined`, and
+  `InfoRounded`. Nothing says when filled, outlined, or rounded is correct, so the set is
+  effectively three overlapping sets.
+- **No process is documented for proposing a new icon**, though
+  [TITAN-ICO-01](#constraints) requires one.
+- **`icon-with-tooltip-max-width` (300px) is a component token in the icon namespace.** It
+  belongs to `IconWithTooltip`, not to the foundation.
+- **No icon-to-meaning registry exists.** [TITAN-ICO-07](#constraints) requires one glyph
+  per meaning, but there is no published mapping to check against.
+
+## Related
+
+**5 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Badge` · `Chip` · `FormInput` · `SearchableSelect` · `TextFieldWithSearchIcon`
+
+## Why it works this way
+
+**A closed set of 154 is the point.** The value of an icon system is recognition — a glyph
+means the same thing everywhere. That property is destroyed by growth, not by absence. A
+set that anyone can extend inline becomes a set nobody can search, with four trash cans
+that differ by two pixels.
+
+**Icons are sized to type, not to space.** The alternative — sizing icons to their
+container — produces an interface where the same action appears at four sizes depending on
+where it sits, and the icon stops reading as the same thing.
+
+**Icon color is a separate token family from text color** because equal luminance does not
+mean equal apparent weight. A solid 20px glyph at `text-secondary` reads noticeably heavier
+than 14px text at the same value. Separate families let each be tuned to look right rather
+than to measure the same.

@@ -218,17 +218,200 @@
           "dark": "#00b388"
         },
         "description": "",
-        "pages": [
-          "invoca-design-system/index",
+        "tabs": [
           {
-            "group": "components",
-            "pages": [
-              "invoca-design-system/components/alert",
-              "invoca-design-system/components/button",
-              "invoca-design-system/components/chip",
-              "invoca-design-system/components/modal",
-              "invoca-design-system/components/tooltip",
-              "invoca-design-system/components/typography"
+            "tab": "Get started",
+            "icon": "rocket",
+            "groups": [
+              {
+                "group": "Get started",
+                "pages": [
+                  "invoca-design-system/index",
+                  "invoca-design-system/get-started/for-designers",
+                  "invoca-design-system/get-started/for-engineers",
+                  "invoca-design-system/get-started/for-agents",
+                  "invoca-design-system/get-started/changelog"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Foundations",
+            "icon": "palette",
+            "groups": [
+              {
+                "group": "Foundations",
+                "root": "invoca-design-system/foundations/overview",
+                "directory": "card",
+                "pages": [
+                  "invoca-design-system/foundations/color",
+                  "invoca-design-system/foundations/typography",
+                  "invoca-design-system/foundations/space-and-density",
+                  "invoca-design-system/foundations/elevation",
+                  "invoca-design-system/foundations/radius",
+                  "invoca-design-system/foundations/motion",
+                  "invoca-design-system/foundations/iconography",
+                  "invoca-design-system/foundations/layout-and-grid",
+                  "invoca-design-system/foundations/accessibility",
+                  "invoca-design-system/foundations/divergences",
+                  "invoca-design-system/foundations/open-decisions"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Components",
+            "icon": "shapes",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": ["invoca-design-system/components/overview"]
+              },
+              {
+                "group": "Actions",
+                "pages": [
+                  "invoca-design-system/components/actions/button",
+                  "invoca-design-system/components/actions/link",
+                  "invoca-design-system/components/actions/button-group",
+                  "invoca-design-system/components/actions/menu"
+                ]
+              },
+              {
+                "group": "Forms",
+                "pages": [
+                  "invoca-design-system/components/forms/input",
+                  "invoca-design-system/components/forms/select",
+                  "invoca-design-system/components/forms/checkbox",
+                  "invoca-design-system/components/forms/radio",
+                  "invoca-design-system/components/forms/switch",
+                  "invoca-design-system/components/forms/date-picker",
+                  "invoca-design-system/components/forms/file-upload",
+                  "invoca-design-system/components/forms/form",
+                  "invoca-design-system/components/forms/field-label"
+                ]
+              },
+              {
+                "group": "Data display",
+                "pages": [
+                  "invoca-design-system/components/data-display/table",
+                  "invoca-design-system/components/data-display/list",
+                  "invoca-design-system/components/data-display/card",
+                  "invoca-design-system/components/data-display/tag",
+                  "invoca-design-system/components/data-display/badge",
+                  "invoca-design-system/components/data-display/avatar",
+                  "invoca-design-system/components/data-display/empty-state"
+                ]
+              },
+              {
+                "group": "Navigation",
+                "pages": [
+                  "invoca-design-system/components/navigation/tabs",
+                  "invoca-design-system/components/navigation/breadcrumb",
+                  "invoca-design-system/components/navigation/pagination",
+                  "invoca-design-system/components/navigation/side-nav",
+                  "invoca-design-system/components/navigation/top-nav"
+                ]
+              },
+              {
+                "group": "Feedback",
+                "pages": [
+                  "invoca-design-system/components/feedback/alert",
+                  "invoca-design-system/components/feedback/toast",
+                  "invoca-design-system/components/feedback/banner",
+                  "invoca-design-system/components/feedback/progress-bar",
+                  "invoca-design-system/components/feedback/spinner",
+                  "invoca-design-system/components/feedback/skeleton"
+                ]
+              },
+              {
+                "group": "Containment",
+                "pages": [
+                  "invoca-design-system/components/containment/dialog",
+                  "invoca-design-system/components/containment/drawer",
+                  "invoca-design-system/components/containment/popover",
+                  "invoca-design-system/components/containment/tooltip",
+                  "invoca-design-system/components/containment/accordion",
+                  "invoca-design-system/components/containment/panel"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Patterns",
+            "icon": "clipboard-list",
+            "groups": [
+              {
+                "group": "Patterns",
+                "root": "invoca-design-system/patterns/overview",
+                "directory": "card",
+                "pages": [
+                  "invoca-design-system/patterns/destructive-confirmation",
+                  "invoca-design-system/patterns/form-validation",
+                  "invoca-design-system/patterns/empty-and-zero-states",
+                  "invoca-design-system/patterns/loading-and-skeletons",
+                  "invoca-design-system/patterns/error-handling",
+                  "invoca-design-system/patterns/filtering-and-search",
+                  "invoca-design-system/patterns/bulk-selection",
+                  "invoca-design-system/patterns/inline-editing",
+                  "invoca-design-system/patterns/progressive-disclosure",
+                  "invoca-design-system/patterns/notifications"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Views",
+            "icon": "table-columns",
+            "groups": [
+              {
+                "group": "Views",
+                "root": "invoca-design-system/views/overview",
+                "directory": "card",
+                "pages": [
+                  "invoca-design-system/views/list-view",
+                  "invoca-design-system/views/detail-view",
+                  "invoca-design-system/views/settings-view",
+                  "invoca-design-system/views/wizard",
+                  "invoca-design-system/views/dashboard",
+                  "invoca-design-system/views/split-view",
+                  "invoca-design-system/views/full-page-form"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Content",
+            "icon": "font",
+            "groups": [
+              {
+                "group": "Content",
+                "pages": [
+                  "invoca-design-system/content/voice-and-tone",
+                  "invoca-design-system/content/ui-labels",
+                  "invoca-design-system/content/error-messages",
+                  "invoca-design-system/content/empty-state-copy",
+                  "invoca-design-system/content/capitalization-and-punctuation",
+                  "invoca-design-system/content/numbers",
+                  "invoca-design-system/content/dates-and-times"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Contribute",
+            "icon": "code-pull-request",
+            "groups": [
+              {
+                "group": "Contribute",
+                "pages": [
+                  "invoca-design-system/contribute/governance",
+                  "invoca-design-system/contribute/propose-a-component",
+                  "invoca-design-system/contribute/token-workflow",
+                  "invoca-design-system/contribute/versioning-and-deprecation",
+                  "invoca-design-system/contribute/figma-sync",
+                  "invoca-design-system/contribute/reporting-drift"
+                ]
+              }
             ]
           }
         ]

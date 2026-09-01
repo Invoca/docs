@@ -1,0 +1,228 @@
+---
+title: "Skeleton"
+description: "A placeholder in the shape of the content that is loading."
+icon: "component"
+tag: "Draft"
+keywords: ["skeleton", "loading", "placeholder", "shimmer", "pulse", "wave", "spinner alternative"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Exports, published variants, adoption, and status on this page are generated from Titan
+  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
+  off. Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A **skeleton** is a grey shape that stands where content will be, in roughly the shape of the
+content, until it arrives. It tells the reader that something is coming and approximately what.
+
+It is the loading state for **content whose shape you already know** — a table's rows, a card's
+lines, a chart's box. For work whose duration and outcome are unknown, use a
+[Spinner](/invoca-design-system/components/feedback/spinner).
+
+<Warning>
+  **Nothing about this component is designed.** It has no theme overrides, no tokens, and no
+  representation in the design library — verified across the component's own directory, the
+  twenty-six components that do carry overrides, the token set, and the shared and legacy packages.
+  Its colour, its animation, and its corner radius are all whatever the framework supplies.
+
+  It is also **the most heavily used component in this area** — see the generated adoption figures at
+  the foot of this page. So the system's most-used loading primitive is the one it has decided least
+  about. See [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31).
+</Warning>
+
+## Live example
+
+<StorybookFrame story="components-skeleton--variants" height={260} />
+
+## Exports
+
+<Snippet file="generated/props/skeleton.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Skeleton** | Placeholder, shimmer, ghost, loading state | **`skeleton`** | `Skeleton` |
+| **Shape** | Variant, type | **`shape`** | `variant` |
+| **Animation** | Shimmer, pulse, wave | **`animation`** | `animation` |
+| **Skeleton screen** | Loading layout, ghost page | **`skeleton screen`** | a composition, not an export |
+
+**Say "skeleton" for one shape and "skeleton screen" for the assembly of them.** Almost every real
+use is the second: product code builds named compositions —
+`TabLoadingSkeleton`, `CallListItemSkeleton`, `FormConfigurationLoadingSkeleton` — from many
+instances of this one component.
+
+## Choose Skeleton when
+
+- The shape of the incoming content is known before it arrives.
+- The wait is long enough to notice and short enough to wait through — roughly a second to a few.
+- The region is large enough that a blank space would read as a failure.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show work whose shape or duration is unknown | [Spinner](/invoca-design-system/components/feedback/spinner) | A skeleton promises a shape. Promising the wrong one is worse than promising nothing. |
+| Show measurable progress | [ProgressBar](/invoca-design-system/components/feedback/progress-bar) | A skeleton says "waiting"; a progress bar says "how much longer". |
+| Say a region has nothing to show | [EmptyState](/invoca-design-system/components/data-display/empty-state) | Loading and empty are different answers, and a skeleton that resolves into an empty state has told the reader two things. |
+| Cover a region during a refresh of content already on screen | The data component's own loading overlay | Replacing visible content with grey shapes takes away what the reader was reading. |
+| Fill a wait under about a second | Nothing | A skeleton that flashes and vanishes reads as a glitch. |
+
+## Anatomy
+
+One element per shape. A skeleton screen is many of them arranged to match the layout they stand in
+for — same widths, same line count, same spacing as the real content.
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/skeleton.mdx" />
+
+**Four shapes:**
+
+| Shape | For |
+|---|---|
+| `text` | A line of type. The default, and it takes the height of the type around it |
+| `rectangular` | A block — an image, a chart, a media area |
+| `rounded` | A block with corners — a card, a tile |
+| `circular` | An avatar or a round icon |
+
+**Three animations:** `pulse` (the default), `wave`, and `false` for none.
+
+**Nothing chooses between them.** `pulse` and `wave` are both available, the product uses both, and
+no decision is recorded — [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31). Until one is
+chosen, use the default and stay consistent within a screen: two animations in one region read as
+two different systems loading.
+
+**Size comes from `width` and `height`, or from the content it wraps.** There is no size scale, so a
+skeleton is sized against the thing it replaces — which is the point, and also why a skeleton screen
+has to be maintained alongside the layout it mirrors.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| The data arrives almost immediately | The skeleton flashes | Do not show one under about a second. A flash of grey costs more attention than the wait it covered. |
+| The load never resolves | The skeleton animates forever | Time out and show an [Alert](/invoca-design-system/components/feedback/alert). An indefinite skeleton is a hang the interface is hiding. |
+| The load fails | Same — it keeps animating | A failed load must replace the skeleton with a message. Nothing does this automatically. |
+| The result is empty | The skeleton resolves into blank space | Resolve to an [EmptyState](/invoca-design-system/components/data-display/empty-state), not to nothing. |
+| The skeleton's shape does not match what arrives | The layout jumps on load | Match the real widths and line count. A jump undoes the reason for using a skeleton. |
+| The reader has reduced-motion set | The animation runs anyway | See the accessibility note below. |
+
+## Tokens
+
+<Snippet file="generated/tokens/skeleton.mdx" />
+
+**No tokens exist for this component.** Its colour and animation come from the framework with no
+decision behind them, and a `rounded` skeleton's corner radius does not come from the
+[radius](/invoca-design-system/foundations/radius) scale. That is the substance of
+[TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31), and it means a skeleton is currently the
+one grey in the product that no palette governs.
+
+## Composition
+
+**A skeleton screen mirrors the layout it replaces.** Same number of lines, same widths, same
+spacing — built with the same `spacing-*` tokens as the real content, so the two are the same height
+and nothing moves when the data lands.
+
+**Only the region that is loading.** Page chrome stays: the header, the controls, and the footer are
+already correct, and greying them out claims they are not.
+
+**In a table**, the rows are the skeleton — column headers stay, because they are known. See
+[Table](/invoca-design-system/components/data-display/table).
+
+**Do not animate a skeleton screen's pieces independently.** Many elements pulsing out of phase in
+one region reads as noise; the framework's animation is synchronised across instances by default,
+and staggering it by hand is a decision nobody has asked for.
+
+**Product code builds these as named components** — and three applications ship a `TabLoadingSkeleton`
+with 21 instances each, which is the same file three times. If a skeleton screen is worth naming, it
+is worth sharing; see [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons).
+
+## Content
+
+A skeleton carries no text. Never put words in one, and never label it "Loading…" — the shape is the
+message, and a label in a placeholder gets read as content.
+
+## Accessibility
+
+**A skeleton is not a status message.** It is decorative: it should be hidden from assistive
+technology, and the *region* should announce its loading state instead — a `busy` state on the region
+that is loading, and an announcement when it finishes. A screen-reader user given a list of grey
+boxes has been told nothing.
+
+**Announce completion, not the wait.** The reader who cannot see the skeleton needs to know when the
+content is ready, which is the announcement most loading states omit.
+
+**Reduced motion is unhandled.** The animation does not respond to
+`prefers-reduced-motion`, and the reader who has asked for less movement gets a pulsing region
+anyway. Where a screen shows many skeletons at once, pass `animation={false}` under that preference
+until the component handles it — [TITAN-SKL-05](#constraints).
+
+**A skeleton must not be the only indication a load failed.** Something that never resolves reads as
+a slow network, and a reader will wait far longer than they should before concluding otherwise.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SKL-01** | A skeleton matches the shape of the content it replaces — line count, widths, and spacing. | Its whole value is preparing the reader for a layout. One that does not match makes the page jump on load, which is worse than a blank region. |
+| **TITAN-SKL-02** | Use a skeleton only where the shape is known. Otherwise use a [Spinner](/invoca-design-system/components/feedback/spinner). | A skeleton is a promise about what is coming. Guessing at it misleads the reader for the whole duration of the wait. |
+| **TITAN-SKL-03** | A skeleton is never the end state. It resolves to content, an empty state, or an error. | An indefinite skeleton is a hang the interface is hiding, and the reader keeps waiting because it still looks like progress. |
+| **TITAN-SKL-04** | One animation per screen. | Two animations in one view read as two systems loading at different speeds. Nothing chooses between `pulse` and `wave`, so the default is the consistent answer. |
+| **TITAN-SKL-05** | Respect `prefers-reduced-motion`: pass `animation={false}` where the preference is set. | The component does not honour it. A region of pulsing shapes is exactly the movement that preference exists to remove. |
+| **TITAN-SKL-06** | A skeleton is hidden from assistive technology, and the loading region announces itself instead. | Grey shapes carry no information to a screen reader; the announcement has to come from the region that knows it is loading. |
+| **TITAN-SKL-07** | Skeleton screens do not replace content that is already on screen during a refresh. | Taking away readable content to say "updating" costs the reader more than the update gains them. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-31**](/invoca-design-system/foundations/open-decisions#titan-gap-31) | Open decision | The component has no tokens, no theme overrides, and no design representation |
+| [**TITAN-GAP-01**](/invoca-design-system/foundations/open-decisions#titan-gap-01) | Open decision | Modes are undesigned, so no dark-scheme skeleton colour is specified |
+
+**Also true and not yet recorded as either:** the animation does not respond to
+`prefers-reduced-motion`, and three applications carry what appears to be the same
+`TabLoadingSkeleton` file.
+
+## Gaps in the current rules
+
+- **No colour decision.** The skeleton grey comes from the framework and no token names it, so it is
+  the one grey in the product outside the palette.
+- **`pulse` or `wave` is undecided.** Both ship, both are used, and neither is recorded as the
+  system's.
+- **No radius decision.** `rounded` does not use the [radius](/invoca-design-system/foundations/radius) scale.
+- **No duration threshold.** "Do not show one under about a second" is this page's proposal;
+  nothing upstream states when a skeleton is warranted.
+- **No sanctioned skeleton screens.** A table, a card, and a form all have knowable skeletons and
+  the system provides none, which is why applications keep writing their own.
+- **Whether a skeleton may be reused as a disabled or placeholder state is unstated**, and it is a
+  common misuse.
+
+## Why it works this way
+
+**A skeleton buys patience by being specific.** A spinner says "wait"; a skeleton says "wait, and
+here is what is coming" — which is why matching the real layout matters more than the animation
+does, and why using one for content of unknown shape gives up the only advantage it has.
+
+**It is decorative on purpose.** The temptation is to make it announce itself, since it is the most
+visible sign of loading. But the shapes carry no information, and a screen reader reading out a
+dozen placeholders is noise. The loading state belongs to the region; the skeleton is only how it
+looks.
+
+## Status and changelog
+
+<Snippet file="generated/status/skeleton.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/skeleton.mdx" />
+
+- [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) — the pattern, and where the shared screens should live
+- [Spinner](/invoca-design-system/components/feedback/spinner) · [ProgressBar](/invoca-design-system/components/feedback/progress-bar) — the other two waits
+- [EmptyState](/invoca-design-system/components/data-display/empty-state) — what a skeleton resolves to when there is nothing
+- [Motion](/invoca-design-system/foundations/motion) — the foundation this component does not use

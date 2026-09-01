@@ -1,0 +1,183 @@
+---
+title: "Elevation"
+description: "Directional shadows, the stacking ladder, and where the ladder runs out."
+icon: "layers"
+keywords: ["shadow", "elevation", "z-index", "depth", "layering", "overlay", "stacking"]
+---
+
+<Note>
+  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
+  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
+  **Proposed** and need sign-off. Disagreements between the design language and the shipped
+  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it governs
+
+Two separate things that are easy to conflate:
+
+- **Shadow** — the visual impression that a surface floats above another. 24 tokens.
+- **Stacking order** — which element actually renders on top. 8 tokens.
+
+A shadow does not put an element in front of anything, and a `z-index` does not make it
+look raised. Most layering bugs come from setting one and expecting the other.
+
+## Vocabulary
+
+<Warning>
+  **The naming specification does not cover shadow or stacking order.** It defines the six naming axes and 64
+  colour definitions; shadow or stacking order appears in neither. The terms used on this page are therefore
+  descriptive rather than decided — see
+  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
+</Warning>
+
+The terms used here — *level*, *direction*, and the eight `z-*` rungs — are this page's
+description of what ships, not a decided vocabulary. `shadow-*-main` in particular has no
+recorded meaning distinct from `shadow-*-1`, which it aliases.
+
+## Shadow is directional
+
+Titan's shadow scale has a second axis most systems do not have: **direction**. Four
+directions × five levels, plus a `main` alias per direction.
+
+| Level | `shadow-down-*` | Offset | Blur |
+|---|---|---|---|
+| 0 | none | 0 | 0 |
+| 1 (= `main`) | subtle | 2px | 4px |
+| 2 | moderate | 4px | 8px |
+| 3 | pronounced | 8px | 16px |
+| 4 | maximum | 12px | 24px |
+
+The same five levels exist as `shadow-up-*`, `shadow-left-*`, and `shadow-right-*`, with
+the offset pushed along that axis. `shadow-right-2` is `4px 4px 8px`; `shadow-left-2` is
+`-4px 4px 8px`; `shadow-up-2` is `0 -4px 8px`.
+
+<Note>
+  **Direction names where the shadow falls, not where the light is.** `shadow-down-2` casts
+  downward, which is the default for a surface lifted off the page. `shadow-up-*` is for
+  elements anchored to the bottom of the viewport — a sticky footer or action bar — whose
+  content sits above them.
+</Note>
+
+## Choosing a token
+
+| You need… | Use | Not |
+|---|---|---|
+| A card, tile, or panel resting on the page | `shadow-down-1` | `shadow-down-2` — level 2 in a grid of cards makes every card compete |
+| A surface that has been picked up — a dragged item, a hovered card | `shadow-down-2` | A transform. Scale changes layout; shadow does not. |
+| A menu, dropdown, or popover opened from a control | `shadow-down-3` | `shadow-down-1` — a transient surface needs to separate clearly from what it covers |
+| A modal or dialog | `shadow-down-4` | A shadow alone. Modals also need a scrim — see [`overlay-default`](/invoca-design-system/foundations/color). |
+| A sticky header, above content that scrolls beneath it | `shadow-down-1` | `shadow-down-3` — a persistent shadow at that weight is visual noise on every scroll |
+| A sticky footer or bottom action bar | `shadow-up-1` | `shadow-down-1` — a downward shadow on a bottom-anchored bar casts onto nothing |
+| A left-hand drawer or side nav, over page content | `shadow-right-2` | `shadow-down-2` — the drawer's edge is vertical; the shadow should fall away from it |
+| A right-hand drawer or inspector panel | `shadow-left-2` | `shadow-right-2` — mirror the direction |
+| To explicitly remove a shadow a default would apply | `shadow-down-0` | `none` — a literal is invisible to the audit and reads as an omission |
+
+## Token reference
+
+<Snippet file="generated/tokens/elevation.mdx" />
+
+## The ladder has holes
+
+Titan's stacking ladder covers eight layers:
+
+| Token | Value | For |
+|---|---|---|
+| `z-base` | 1 | Lifting an element out of static flow |
+| `z-sticky` | 10 | Sticky headers and pinned columns |
+| `z-overlay` | 1000 | Scrims and backdrops |
+| `z-loader` | 1038 | Inline loading states |
+| `z-app-bar` | 1100 | The application bar |
+| `z-modal` | 1300 | Dialogs |
+| `z-tooltip` | 1500 | Tooltips |
+| `z-loader-overlay` | 9999 | Full-page blocking loaders |
+
+<Warning>
+  **Two common layers have no token: drawers and toasts.** They stack at 1200 and 1400 —
+  values that come from the underlying component library, not from a Titan decision. Both
+  sit *above* `z-overlay` (1000) and below `z-modal` (1300).
+
+  The practical consequence: a surface placed at `z-overlay` will be covered by a drawer.
+  If you need something above a drawer and below a dialog, no token expresses it, and
+  picking a number locally puts it outside the ladder entirely.
+</Warning>
+
+**Use the `z-*` tokens for everything they cover.** Where they do not cover a case, that is
+a gap to report rather than a number to invent.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-ELV-01** | Stacking order comes from a `z-*` token. Never a numeric literal. | An ad-hoc `z-index: 9999` wins today and collides with the next one tomorrow. The ladder only works if everything is on it. |
+| **TITAN-ELV-02** | Shadow direction matches the direction the surface is anchored from. Bottom-anchored uses `shadow-up-*`; left-anchored uses `shadow-right-*`. | A shadow that falls toward the element's own anchor edge casts onto nothing and reads as a rendering artifact. |
+| **TITAN-ELV-03** | At most one elevation level per stacking context. Nested raised surfaces do not add levels. | A card at level 1 containing a card at level 1 reads as one surface. Stacking shadows to express nesting produces mud, not depth. |
+| **TITAN-ELV-04** | A surface that traps focus (modal, dialog) pairs its shadow with a scrim. | Shadow communicates depth to sighted users at a glance; the scrim communicates that the content beneath is inert. Depth alone does not say "blocked." |
+| **TITAN-ELV-05** | Never use shadow to indicate state — selection, error, or focus. | Selection and error have dedicated tokens (`background-selected`, `border-error`). Focus does not — see [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02) — but shadow is not the answer to that either. Shadow is spatial; overloading it makes both meanings unreadable. |
+| **TITAN-ELV-06** | Deliberate absence of shadow is `shadow-*-0`, not `none`. | Records a decision rather than an omission. A bare `none` is indistinguishable from a forgotten value. |
+
+## Accessibility
+
+- **Elevation is never the only signal.** Windows High Contrast Mode and forced-colors
+  modes strip box-shadow entirely. A dialog distinguished from the page by shadow alone
+  disappears in those modes — pair it with a border, a scrim, and correct
+  `role="dialog"` / `aria-modal`.
+- **Stacking order is not focus order.** A `z-*` token controls paint order only. Keyboard
+  order follows the DOM. A popover rendered at the end of `<body>` but triggered from
+  mid-page needs its focus managed explicitly.
+- Shadow is decorative and carries no contrast requirement, but the *edge* it implies often
+  substitutes for a border. If a surface relies on shadow to separate from its background,
+  give it a `border-*` token too — that edge is what survives forced-colors.
+- `overlay-default` is the modal scrim. It must be dark enough to signal inertness without
+  hiding the content beneath, which users rely on for context.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-14**](/invoca-design-system/foundations/open-decisions#titan-gap-14) | Open decision | the stacking ladder does not cover every layer |
+
+## Gaps in the current rules
+
+- **`overlay-default` is malformed.** The emitted value is `rgba(21, / 36, / 62, / 0.3000)` —
+  stray slashes, not valid CSS. Browsers drop the declaration entirely. Reported, unresolved.
+- **No token exists for the drawer or toast layers.** They stack at 1200 and 1400, which
+  no Titan token expresses, so their order relative to a Titan surface is not something the
+  design system controls.
+- **Whether `z-overlay` (1000) is meant to sit below a drawer is not recorded.** As
+  shipped it does, which means a scrim does not cover a drawer.
+- **`z-loader` (1038) is an unexplained number.** It corresponds to no round step and no
+  stated reasoning.
+- **`shadow-*-main` aliases `shadow-*-1`** in every direction. No rule says when to use the
+  alias rather than the numbered token.
+
+## Related
+
+**6 core components consume this foundation** — derived from token usage in
+`components/core/src/components`, not assumed:
+
+`Footer` · `Header` · `LoaderOverlay` · `Tile` · `Toggle` · `Tooltip`
+
+## Why it works this way
+
+**Direction exists because Titan's surfaces are anchored, not floating.** Most elevation
+scales assume a card in the middle of a page with light from directly above. A product
+surface is mostly drawers pinned to an edge, sticky headers, and bottom action bars. For
+those, a downward shadow is wrong — it falls toward the edge the element is already
+attached to. Four directions cost four times the tokens and remove the need for every
+author to hand-roll a `box-shadow` for a side panel.
+
+**Five levels, deliberately.** A long elevation scale guarantees two authors pick different
+values for the same job, because nobody can distinguish step 11 from step 12. Five levels
+map to five real situations: flat, resting, lifted, floating, and modal.
+
+**The z-index ladder is sparse on purpose.** Wide gaps — 1, 10, 1000, 1100, 1300, 1500 —
+leave room to insert a layer without renumbering. The ladder's value is that it is
+complete; a single literal `z-index` anywhere in the codebase breaks the guarantee it
+provides.

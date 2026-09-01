@@ -1,0 +1,31 @@
+{/* Sourced from the theme snapshot captured 2026-08-11 (`.titan-snapshot/`), not from a live
+     run of `tools/emit-tokens.mjs` — no Titan checkout is available this pass. Re-verify
+     against source once a checkout exists. See `.titan-snapshot/README.md`. */}
+
+| Token | Value | Renders as |
+|---|---|---|
+| `form-control-label-min-height` | `28px` | The height of the row pairing the box with its label — shared with [FieldLabel](/invoca-design-system/components/forms/field-label#tokens). |
+| `form-input-disabled-opacity` | `0.5` | Applied to a disabled checkbox, whatever its checked state. |
+| `icon-selected` | `#2666f9` | The checked-state fill. Matches [Input](/invoca-design-system/components/forms/input#tokens)'s focus ring blue — the one place in this token set two different controls' "active" colour agree exactly. |
+| `icon-disabled` | `#a1a7b2` | Unchecked, disabled. |
+
+<Info>
+  **No token is declared for the checked-and-disabled combination specifically.** The 0.5
+  opacity from `form-input-disabled-opacity` applies over whatever fill the checked state
+  already has, rather than a dedicated disabled-checked colour existing on its own. This
+  composes correctly but nothing states it as a decision.
+</Info>
+
+| Token | Value | What it is |
+|---|---|---|
+| `action-selectedOpacity` | `0.08` | The state layer under a hovered or pressed checkbox. Adopted; no design decision is recorded for this value. |
+| `action-disabledOpacity` | `0.38` | A second, independent disabled treatment on the interaction layer, distinct from `form-input-disabled-opacity` above. Adopted; no design decision is recorded for this value. |
+
+<Warning>
+  **Two disabled opacities exist for one control and neither states which wins.**
+  `form-input-disabled-opacity` (0.5) is Titan's own token; `action-disabledOpacity` (0.38) is
+  the framework's independent disabled treatment on the interaction layer. Which is visible
+  depends on which layer a disabled checkbox actually renders through, and this session could
+  not confirm that without source. See
+  [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).
+</Warning>

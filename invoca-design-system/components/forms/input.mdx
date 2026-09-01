@@ -1,0 +1,193 @@
+---
+title: "Input"
+description: "A field the reader types a value into directly, as one line or several. The default for free text — a constrained set of valid answers is something else."
+icon: "text-cursor-input"
+tag: "Stable"
+keywords: ["text field", "text input", "textarea", "multiline", "number input", "password", "search field"]
+---
+
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
+
+<Note>
+  **Props, variants, status, and adoption on this page are generated from Titan source.**
+  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
+  Disagreements between the design language and the shipped code are recorded in
+  [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+A field the reader types a value into directly — a single line, or several as multiline.
+Input is the default for free text and numbers with no fixed set of valid answers; the moment
+the answer comes from an enumerable set, that is a different decision.
+
+**This page covers the single-line and multiline variants together**, since choosing between
+them is one decision about the same field, not two components.
+
+## Live example
+
+<StorybookFrame story="components-input--default" height={160} />
+
+<Note>
+  Story ID `pending`. This session did not have access to
+  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
+</Note>
+
+## Exports
+
+<Snippet file="generated/props/input.mdx" />
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Multiline** | Textarea, text area | **Multiline** |
+| **Placeholder** | Ghost text, watermark | **Placeholder** — see warning |
+| **Search bar** | Search field, search box | **Search bar** — a configuration of this component, confirmed as its own named variant in the design library, not a separate component |
+
+<Warning>
+  **Placeholder is not a label.** It disappears the moment the field has a value or focus in
+  some implementations, and is not reliably announced as a label by assistive technology. See
+  [TITAN-FLD-01](/invoca-design-system/components/forms/field-label#constraints).
+</Warning>
+
+## Choose Input when
+
+- The value is free text or a number the reader types, with no fixed set of valid answers.
+- The expected answer is short enough to read within the field for a single line, or longer
+  for multiline.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Offer a fixed, enumerable set of options | [Select](/invoca-design-system/components/forms/select), Radio, or Checkbox | A constrained choice removes both the need to validate freeform text and the possibility of a typo the system has to catch |
+| Capture a single setting that takes effect immediately | Switch | Input implies entry-then-submission; a Switch's change is immediate and needs no submit step |
+| Capture a date | DatePicker | Typed dates are among the most error-prone freeform entries — format ambiguity a picker removes entirely |
+| Capture a file rather than text | FileUpload | A different input modality, not a text variant |
+
+## Anatomy
+
+<Note>
+  Anatomy diagram `pending` — `/images/components/input-anatomy.png`. The images directory is
+  empty; nothing is published to generate it from yet.
+</Note>
+
+| # | Part | Required |
+|---|---|---|
+| 1 | Field label | Yes — see [TITAN-FLD-01](/invoca-design-system/components/forms/field-label#constraints) |
+| 2 | Left icon | No — confirmed in the design library as a named `Left Icon` variant, not just decoration |
+| 3 | Trailing adornment (icon, clear action, unit) | No — see [TITAN-INPUT-04](#constraints) |
+| 4 | Placeholder | No |
+| 5 | Helper or error text | No — owned by [FieldLabel](/invoca-design-system/components/forms/field-label) |
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/input.mdx" />
+
+<Info>
+  **Confirmed from the Figma library, not source.** Real axes on this component: `Type`
+  (`Default` · `Error`), `State` (`Default` · `Focused` · `Filled` · `Disabled`), `Multiline`,
+  `Search bar`, and `Left Icon` — each boolean and independently combinable. `Filled` means
+  "has a value," a named state distinct from empty, which this page did not previously call
+  out. `Search bar` is a real, named configuration of this same component — not a separate
+  search component.
+</Info>
+
+## Edge and failure states
+
+| Situation | What renders | Recovery |
+|---|---|---|
+| Empty | Placeholder shows if one is set; otherwise blank. The library names this the `Default` state, distinct from `Filled`. | Placeholder is not a substitute for the label |
+| Value longer than the field (single-line) | Scrolls horizontally within the field; text does not wrap | Use multiline if values routinely exceed the field's width |
+| Value being validated asynchronously | **Undefined.** No loading affordance was found for this component. | See [Gaps](#gaps-in-the-current-rules) |
+| Disabled | Renders at the disabled tokens, not focusable | Pair with a reachable explanation, same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) |
+| Read-only | **Undefined whether visually distinguished from disabled.** See [TITAN-INPUT-02](#constraints) for what it should do; unconfirmed whether Titan does. | See [Gaps](#gaps-in-the-current-rules) |
+| Invalid | Border and focus ring switch to error tokens; error text replaces helper text | See [FieldLabel](/invoca-design-system/components/forms/field-label#edge-and-failure-states) |
+
+## Tokens
+
+<Snippet file="generated/tokens/input.mdx" />
+
+## Composition
+
+Always paired with [FieldLabel](/invoca-design-system/components/forms/field-label) above it. Multiple Inputs
+stack vertically inside [Form](/invoca-design-system/components/forms/form) — no vertical-rhythm token between
+stacked fields was found in the snapshot; see [Gaps](#gaps-in-the-current-rules).
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Placeholder shows a format example, not an instruction | `(555) 555-0100` | Enter your phone number |
+| Placeholder never repeats the label | *(blank, if the label already suffices)* | "Email address" placeholder under an "Email address" label |
+| Helper text answers a real question the label doesn't | We'll send confirmations here | Email |
+
+## Accessibility
+
+| Behavior |
+|---|
+| Renders a native `<input>` or `<textarea>`. |
+| The accessible name comes from the associated [FieldLabel](/invoca-design-system/components/forms/field-label), not from `placeholder`. |
+| `aria-invalid="true"` and `aria-describedby` accompany an error, in addition to the visible colour and text change — see [TITAN-INPUT-05](#constraints). |
+| A read-only field stays focusable and keyboard-selectable; a disabled one does not. This is a platform default, not a Titan decision — see [TITAN-INPUT-02](#constraints). |
+
+**What this component does not handle:** validating its own value or deciding when an error
+should show — both belong to [Form validation](/invoca-design-system/patterns/form-validation).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-INPUT-01** | Input is for free text or numeric values with no fixed set of valid answers. A fixed set uses [Select](/invoca-design-system/components/forms/select), Radio, or Checkbox instead. | Freeform entry against a constrained answer set forces validation that a constrained control makes unnecessary. |
+| **TITAN-INPUT-02** | A read-only Input remains focusable, and its value stays selectable and copyable. It is never styled identically to a disabled Input. | Read-only means "here is the value, not editable right now" — a different message from disabled's "this control isn't available." Collapsing them into one visual treatment loses that distinction for the reader. |
+| **TITAN-INPUT-03** | A disabled Input is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) — a disabled control announces nothing on its own. |
+| **TITAN-INPUT-04** | The trailing adornment slot carries at most one element: decoration, or a single action (clear, reveal password, unit). Never both without a stated exception. | Two competing affordances in one slot leaves the reader guessing which is interactive. |
+| **TITAN-INPUT-05** | An invalid Input signals it through the border and focus-ring colour **and** through error text — never colour alone. | [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints): colour never carries meaning alone. |
+| **TITAN-INPUT-06** | A multiline Input specifies a fixed or minimum row count. It never renders at the platform's native default. | Native textarea defaults vary across browsers; an undeclared row count makes the same field a different height depending on where it renders. |
+| **TITAN-INPUT-07** | Numeric entry is validated typed text, not the browser's native increment/decrement spinner. | The native spinner's scroll-to-change behavior is a well-documented source of accidental edits on a field that merely has focus, and its target size is inconsistent across browsers. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-24**](/invoca-design-system/foundations/divergences#titan-div-24) | Divergence | The error focus ring is a third red, unaliased to the semantic error tokens |
+
+## Gaps in the current rules
+
+- **No loading affordance for asynchronous validation.** A field being checked against a
+  server has no stated visual treatment.
+- **Read-only's visual treatment is unconfirmed.** [TITAN-INPUT-02](#constraints) states what
+  it should do; whether Titan's implementation matches was not verifiable this pass.
+- **No vertical-rhythm token between stacked fields inside a form** was found in the token
+  snapshot.
+
+## Why it works this way
+
+**Numeric fields trade the native spinner for typed entry** because the spinner's usability
+problems — accidental scroll-edits, inconsistent cross-browser sizing — outweigh the
+convenience of clicking to increment. A reader who wants to change a number by a fixed step
+can still type the new value directly.
+
+**Multiline never inherits the platform default row count** for the same reason
+[Button](/invoca-design-system/components/actions/button#why-it-works-this-way) holds its width while loading: an
+undeclared dimension makes identical markup render at different sizes depending on the
+browser, which is a layout bug waiting to be noticed rather than a design decision anyone
+made.
+
+**Read-only and disabled stay visually distinct** because they answer different questions —
+"can I change this" versus "does this even apply right now" — and a reader who cannot tell
+which one they're looking at cannot tell whether the fix is theirs to make.
+
+## Status
+
+<Snippet file="generated/status/input.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/input.mdx" />
+
+- [FieldLabel](/invoca-design-system/components/forms/field-label) — every Input composes with one
+- [Select](/invoca-design-system/components/forms/select) — the constrained-choice counterpart
+- [Form validation](/invoca-design-system/patterns/form-validation) — decides when and how an Input shows invalid
+- [Numbers](/invoca-design-system/content/numbers) · [Dates and times](/invoca-design-system/content/dates-and-times) — formatting rules for what a reader types

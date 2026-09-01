@@ -1,0 +1,26 @@
+{/* Sourced from the theme snapshot captured 2026-08-11 (`.titan-snapshot/`), not from a live
+     run of `tools/emit-tokens.mjs` — no Titan checkout is available this pass. The snapshot is
+     a point-in-time capture of a running theme, not a source of truth; re-verify against
+     source once a checkout exists. See `.titan-snapshot/README.md`. */}
+
+| Token | Value | Renders as |
+|---|---|---|
+| `form-label-font-weight` | `700px` | See warning below — this is the captured value verbatim. |
+| `form-control-label-min-height` | `28px` | The height of the row when a label sits inline next to a control. Does not apply to a label stacked above a field — see [Vocabulary](#vocabulary). |
+| `text-disabled` | `#a1a7b2` | A disabled field's label. |
+| `text-error` | `#e4131b` | — not used directly on label or helper text; see next row. |
+| `text-error-alt` | `#87000b` | Error and helper-error text. [TITAN-COLOR-07](/invoca-design-system/foundations/color#constraints) requires the `-alt` variant for status text — the plain `text-error` measures under 3:1 against a light surface. |
+
+<Warning>
+  **`form-label-font-weight`'s captured value is `700px` — a `px` unit on `font-weight`, which
+  is invalid CSS.** A browser consuming this value directly would ignore the declaration and
+  render the inherited weight instead of bold. It is unconfirmed whether `700px` is the value
+  as authored in source or an artifact of the capture method. See
+  [Known defects](/invoca-design-system/foundations/open-decisions#known-defects).
+</Warning>
+
+<Info>
+  No component-scoped spacing token was found for the gap between a label and its field, or
+  between a field and its helper/error text. Both currently render at whatever the framework
+  defaults to. See [Gaps](#gaps-in-the-current-rules).
+</Info>

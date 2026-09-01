@@ -1,0 +1,132 @@
+---
+title: "Versioning & deprecation"
+description: "How the system records its own change — what has a retirement path, and what does not."
+icon: "history"
+tag: "Draft"
+keywords: ["version", "deprecation", "retire", "lifecycle", "changelog", "breaking change"]
+---
+
+<Note>
+  **Verified against Titan source.** The absences on this page were checked, not assumed: no
+  token in any of the four DTCG source files carries a deprecation marker, and the token
+  manifest has no lifecycle field. Constraints are **Proposed**.
+</Note>
+
+## What it governs
+
+How something in this system stops being current — a constraint, a token, a component — and
+how a consumer finds out.
+
+<Warning>
+  **A system that cannot record its own change cannot be adopted incrementally.** Every
+  consumer discovers a removal by breaking. That is the failure this page exists to prevent,
+  and at the token layer Titan cannot currently prevent it.
+</Warning>
+
+## What has a retirement path
+
+### Constraint IDs — retire, never renumber
+
+Normative rules carry permanent IDs. When a rule stops applying it is **retired**, which
+means it stays visible with its original wording and a reason.
+
+| Do | Do not |
+|---|---|
+| Move the row to a **Retired** table on the same page | Delete the row |
+| Keep the original wording | Reword it to fit the new position |
+| State why it was retired, and what supersedes it | Reuse the number for a new rule |
+
+A missing number therefore means a retired rule, not an error. Four are retired today:
+
+| ID | Was | Why |
+|---|---|---|
+| `TITAN-FND-03` | A token belongs to the color axis or the density axis, never both | Governs mode behaviour, out of scope — [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01) |
+| `TITAN-FND-05` | Density is set by `data-density`, never by swapping a theme | Same |
+| `TITAN-SPC-02` | Raw CSS uses `var(--titan-tokens-spacing-N)` | Superseded by [TITAN-FND-02](/invoca-design-system/foundations/overview#constraints) |
+| `TITAN-SPC-06` | Never scale `spacing-1` or `spacing-2` for compact | Governs density behaviour, out of scope |
+
+**Retired is not reversed.** Each of those rules still describes what the code does. They
+stopped being *documentation policy* because the subject moved out of scope.
+
+### Packages — versioned by CI
+
+App and component package versions and changelogs are updated by CI, not by hand. A
+hand-written changelog is a second record of something the repository already holds, and it
+is the first thing to go stale.
+
+### The legacy SCSS surface — frozen, which is a deprecation of a kind
+
+`legacy-surface-inventory.json` pins exactly 48 semantic, 10 spacing, and 24 shadow names,
+and a test asserts the emitted files match. New tokens never join it.
+
+That is the closest thing Titan has to a deprecation: the surface is closed, existing
+consumers keep working, and nothing new arrives. It is not marked as deprecated anywhere —
+it is simply frozen. See [TITAN-DIV-05](/invoca-design-system/foundations/divergences#titan-div-05).
+
+## What has no retirement path
+
+<Warning>
+  **Tokens cannot be deprecated.** This was verified, not assumed:
+
+  - **No token carries a deprecation marker.** Zero matches across `primitives`, `semantic`,
+    `component`, and `typography` source files.
+  - **The token manifest has no lifecycle field.** Each entry is `name`, `tier`, `axis`,
+    `$type`, and `values` — no `status`, no `since`, no `deprecated`, no `replacedBy`.
+
+  So a token can be added and it can be deleted. There is no state in between, which means no
+  way to say "this still works, stop using it, here is what to use instead." Deleting it is a
+  breaking change with no warning period; leaving it is permanent.
+
+  See [TITAN-GAP-19](/invoca-design-system/foundations/open-decisions#titan-gap-19).
+</Warning>
+
+This is why [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04) — seven groups of tokens
+sharing one value — has no obvious resolution. Consolidating them would mean deleting names
+that consumers may use, with no mechanism to warn first.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-VER-01** | A constraint ID is never renumbered or reused. | IDs get cited in reviews, PRs, and agent output. Reusing a number silently changes what every past citation meant. |
+| **TITAN-VER-02** | A rule that stops applying is retired with its original wording and a stated reason. | Deleting it loses the reason the code looks the way it does, and the next person re-litigates a settled question. |
+| **TITAN-VER-03** | A changelog is generated from the repository, never hand-written. | A hand-maintained record of a fact the repository already holds is the first thing to go stale. |
+| **TITAN-VER-04** | Removing a token is a breaking change and is announced as one. | With no deprecation state available, removal is the only exit — so it carries the full cost and must be treated accordingly. |
+| **TITAN-VER-05** | A token is not deleted to resolve a duplicate until a deprecation path exists. | Consumers cannot be warned today. Consolidation without warning breaks them silently. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | The SCSS token surface is frozen at 82 names |
+| [**TITAN-GAP-04**](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Open decision | Seven groups of tokens share one value, and cannot be consolidated safely |
+| [**TITAN-GAP-19**](/invoca-design-system/foundations/open-decisions#titan-gap-19) | Open decision | Tokens have no lifecycle metadata and no deprecation path |
+
+## Gaps in the current rules
+
+- **No token deprecation mechanism exists.** No field, no marker, no convention. See
+  [TITAN-GAP-19](/invoca-design-system/foundations/open-decisions#titan-gap-19).
+- **No component deprecation convention is documented** either, though the component pages
+  carry a `tag` in frontmatter that could hold one.
+- **No breaking-change policy.** What counts as breaking at the token layer — a value change,
+  a rename, a removal — is not stated.
+- **No supported-version window.** How long a consumer can stay behind is undecided.
+- **No migration-guide convention.** When a name changes, nothing says where the old-to-new
+  mapping is published.
+
+## Related
+
+- [Token workflow](/invoca-design-system/contribute/token-workflow) — how a token gets added in the first place
+- [Reporting drift](/invoca-design-system/contribute/reporting-drift) — when a mirror disagrees with source
+- [Open decisions](/invoca-design-system/foundations/open-decisions) — the full list of what is undecided
+
+## Why it works this way
+
+**Constraint IDs got a retirement path because they are cited.** A rule referenced in a PR
+from eighteen months ago has to still resolve to the thing it meant. That pressure produced a
+convention. Tokens have not had the same pressure yet — they are referenced in code rather
+than in prose, and a compiler catches a missing one — which is most of why the gap exists.
+
+**The gap will get more expensive, not less.** Every token added without a lifecycle field is
+another one that can only be removed abruptly. The cost of adding the field is roughly
+constant; the cost of not having it grows with the token count.

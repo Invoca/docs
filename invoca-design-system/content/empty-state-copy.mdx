@@ -1,0 +1,99 @@
+---
+title: "Empty state copy"
+description: "How to write the title, body text, and action for a region that has nothing to show."
+icon: "inbox"
+tag: "Stable"
+keywords: ["empty state", "zero state", "no data", "no results", "blank slate"]
+---
+
+<Info>
+  **Source: the zeroheight IDS documentation** (`Empty States`). The rules below are
+  transcribed from the existing design system documentation and are `verified` against it,
+  except where marked otherwise. They have been reformatted into constraints with IDs.
+</Info>
+
+## What an empty state is
+
+A moment in the product where there is no data to display. Most common the first time a
+reader interacts with a product or page, but also used when data has been deleted or is
+unavailable.
+
+## The three cases
+
+The source names three distinct situations this content type covers, and the copy job differs
+across them:
+
+| Type | Use case | Goal | When to use |
+|---|---|---|---|
+| **No data** | First time use — no data yet | The reader understands what will populate the page and how to add data themselves. | Simpler situations, or secondary features where a bite-sized message is enough. |
+| **User action** | Feedback after something the reader did — no results from a filter, confirmation of a completed process | The reader understands how to adjust their search or filter, or that their action succeeded. | Whenever feedback is needed after an interaction. |
+| **Error management** | Permissions, system, or configuration issue | The reader understands the problem and, if a corrective action exists, what it is. | Something is wrong and troubleshooting is needed — this case wants more detail and specificity than the other two. |
+
+<Warning>
+  **These three cases need different copy, not just different illustrations.** "No campaigns
+  yet" (no data) and "No campaigns match these filters" (user action) describe genuinely
+  different situations, and using the first for the second tells the reader to go create
+  something that already exists. See [TITAN-EMPTYCOPY-03](#constraints).
+</Warning>
+
+## Anatomy of the copy
+
+| Part | What it does |
+|---|---|
+| **Graphic** | A non-interactive image relating to the situation. Neutral or humorous in tone; consistent with the brand. |
+| **Title header** | A short, concise statement — written positively where possible, rather than as a bare status word. |
+| **Body text** | Explains the next action clearly. May also explain why the space is empty and what the reader gains from acting. |
+
+The primary action, when there is one, is presented one of three ways: a button beneath the
+copy, a link inside the copy itself, or a pointer to the relevant control elsewhere on the
+screen — the source does not state when to choose among the three.
+
+## Do and don't
+
+| Do | Don't |
+|---|---|
+| If the empty state has an action, style it as a **link button**, not a solid one. | Use a solid button for an empty-state action. |
+| Respect a maximum width and height for the empty-state container. | Scale the graphic, or apply ad hoc bounds instead of the container's own constraint. |
+
+<Warning>
+  **The max-width/max-height values are from a legacy source and need re-verification.** The
+  zeroheight page cites `$empty-state-max-width: 320px` and `$empty-state-max-height: 220px`
+  from a pre-Titan SCSS token file
+  (`Invoca/web/client/shared/design_system/tokens.scss`). This predates Titan's
+  `--titan-tokens-*` custom-property system used everywhere else in this documentation, and
+  this session could not confirm whether a current Titan equivalent exists or what its value
+  is. See [Gaps](#gaps-in-the-current-rules).
+</Warning>
+
+<Note>
+  **The link-button rule is new information this component's own page did not have.**
+  [EmptyState's](/invoca-design-system/components/data-display/empty-state#content) existing Content section did
+  not previously state that an action should be a link button rather than a solid one — that
+  page should be updated to cite this. See [Known issues](#known-issues).
+</Note>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-EMPTYCOPY-01** | The title states what is missing, phrased positively where possible — not a bare status word like "Empty." | "No campaigns yet" tells the reader what to expect; "Empty" only tells them something is absent. |
+| **TITAN-EMPTYCOPY-02** | Body text explains the concrete next action, in a sentence or two. | Matches [Error messages'](/invoca-design-system/content/error-messages#constraints) "helps solve the problem" reasoning — an empty state is not a failure, but the copy job is structurally the same: tell the reader what to do next. |
+| **TITAN-EMPTYCOPY-03** | A zero-state ("no data yet") and a no-results state ("nothing matches your filters") are worded differently, even when the visual layout is the same. | Confirmed by the source's own three-case model — see [Warning](#the-three-cases) above. |
+| **TITAN-EMPTYCOPY-04** | An empty-state action, when present, renders as a link button, never a solid one. | Directly stated in source. |
+| **TITAN-EMPTYCOPY-05** | Empty-state copy names the real thing that's missing — campaigns, calls, contacts — never a generic technical noun like "records." **Proposed**, carried over from this component's earlier page, not directly stated in the source fetched for this page. | A reader thinks in terms of what they see in the product, not the database table behind it. |
+| **TITAN-EMPTYCOPY-06** | Empty-state copy is sentence case, with no exclamation marks. **Proposed** — inherited from the general UI-copy default on [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation), not stated in this component's own source. | Matches [Error messages](/invoca-design-system/content/error-messages#constraints)' sentence-case default for non-button UI text. |
+
+## Known issues
+
+| Kind | What |
+|---|---|
+| Update needed | [EmptyState](/invoca-design-system/components/data-display/empty-state#content)'s Content section should cite [TITAN-EMPTYCOPY-04](#constraints) (link button, not solid) — it did not exist when that page was written. |
+
+## Gaps in the current rules
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **No length or character guidance** for the title or body text. | Left to individual judgment, which is where "positive and concise" stops being checkable. | Open |
+| **No rule for choosing among the three action presentations** (button, inline link, pointer to another control). | Three legitimate options with no criteria for choosing between them is a coin flip repeated across every empty state in the product. | Open |
+| **The max-width/height reference is unconfirmed against current Titan tokens.** | See the warning above — this may be stale by a full design-system generation. | Open |
+| **"Higher level of detail and specificity" for error-management empty states is not actionable as written.** The source names the goal without a rule that produces it. | Two writers reading "more detail" can land on very different word counts. | Open |

@@ -1,0 +1,135 @@
+---
+title: "Dates and times"
+description: "How dates, times, date filters, and relative timestamps are formatted across Invoca products."
+icon: "calendar"
+tag: "Stable"
+keywords: ["date format", "time format", "timestamp", "relative time", "date range", "date filter", "am pm"]
+---
+
+<Info>
+  **Source: the zeroheight IDS documentation.** The rules and tables on this page are
+  transcribed from the existing design system documentation and are `verified` against it.
+  They have been reformatted into constraints with IDs — the substance is unchanged.
+
+  Where the legacy rules contradict each other or run out, that is called out in
+  [Gaps in the current rules](#gaps-in-the-current-rules) rather than resolved silently.
+</Info>
+
+## Dates
+
+The format is `M/D/YYYY`. Single-digit months and days do **not** carry a leading zero.
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| No leading zero on single-digit months or days | `2/1/2020` | `02/01/2020` |
+
+## Filtering of dates
+
+When a user filters data by date, the filter's displayed label is not always the same
+as the option they selected. Six of the eleven presets display their own name; the
+"Current" presets display as "This".
+
+| Selection | Display for filter |
+|---|---|
+| Today | Today |
+| Yesterday | Yesterday |
+| Last 7 Days & Today | Last 7 Days & Today |
+| Last 7 Days | Last 7 Days |
+| Last 30 Days & Today | Last 30 Days & Today |
+| Last 30 Days | Last 30 Days |
+| **Current Month** | **This Month** |
+| Last Month | Last Month |
+| **Current Quarter** | **This Quarter** |
+| Last Quarter | Last Quarter |
+| This Year | This Year |
+| Custom Date Range | `[START DATE] - [END DATE]`<br/>Ex) `12/12/2020 - 12/15/2020` |
+
+<Note>
+  **"Current" in the picker becomes "This" in the filter label** — for Month and Quarter,
+  but not for Year, which is already "This Year" in both. The asymmetry is in the source
+  documentation and is preserved here. If it is unintentional, fix the picker rather than
+  this table.
+</Note>
+
+## Times
+
+The format is `h:mmam` / `h:mmpm` — no space before the meridiem, lowercase, no leading
+zero on the hour.
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Lowercase `am` and `pm` | `11:30am` | `12:20AM` |
+| No leading zero on single-digit hours | `1:30am` | `02:20pm` |
+
+## Timestamps
+
+When a comment is posted, a timestamp shows how long ago it happened.
+
+| Timeframe | Text to display |
+|---|---|
+| Less than 1 minute ago | Less than 1 minute ago |
+| Less than 1 hour ago | 2 minutes – 59 minutes ago |
+| Less than 1 day ago | 1 hour – 23 hours ago |
+| Less than 1 week ago | 1 day – 6 days ago |
+| More than 1 week ago | `[DATE]`<br/>Ex) `12/12/2020` |
+
+<Warning>
+  **This table is transcribed exactly, and it does not mean what it appears to mean.**
+
+  The right-hand column is labeled "Text to display," but rows 2–4 contain *ranges*
+  rather than display strings. No interface renders the literal string
+  "2 minutes – 59 minutes ago."
+
+  Read as intended, the right-hand column describes the **bucket boundary** and the
+  actual output is a count plus a unit:
+
+  | Elapsed | Renders as |
+  |---|---|
+  | < 1 minute | `Less than 1 minute ago` |
+  | 1–59 minutes | `{n} minutes ago` |
+  | 1–23 hours | `{n} hours ago` |
+  | 1–6 days | `{n} days ago` |
+  | ≥ 7 days | The date, `M/D/YYYY` |
+
+  **That reconstruction is an inference, not the source.** It needs confirmation against
+  shipped behavior before it becomes the documented rule — in particular whether the
+  singular forms read "1 minute ago" or "1 minutes ago," which the source does not say.
+</Warning>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DATE-01** | Dates render as `M/D/YYYY` with no leading zero on month or day. | Consistency; leading zeros add width without adding information. |
+| **TITAN-DATE-02** | Date filter labels use the "Display for filter" column, not the picker's option text. | The picker says "Current Month"; the applied filter reads "This Month". |
+| **TITAN-DATE-03** | Custom ranges render as `[START] - [END]` using the same `M/D/YYYY` format on both ends. | A range with two different formats reads as two unrelated values. |
+| **TITAN-TIME-01** | Meridiem is lowercase, with no space before it. | `11:30am`, not `11:30 AM`. |
+| **TITAN-TIME-02** | Times have no leading zero on single-digit hours. | Matches TITAN-DATE-01. |
+| **TITAN-TIME-03** | Relative timestamps switch to an absolute date at 7 days. | Past a week, "43 days ago" requires the reader to do arithmetic to place the event. |
+
+## Gaps in the current rules
+
+These are unanswered by the legacy documentation. Each is a real decision someone —
+or an agent — will otherwise make ad hoc and inconsistently.
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **Timezone.** No guidance on whether times render in the user's zone, the account's zone, or UTC — or whether the zone is ever labeled. | Invoca's data is call activity across US timezones. A timestamp with no zone is ambiguous by up to three hours, and the current rules do not permit displaying one. | Open |
+| **Localization.** `M/D/YYYY` is US-only, and `2/1/2020` reads as 1 February to most of the world. | Determines whether the format is a locale default or a hard rule. | Open |
+| **Singular units.** "1 minutes ago" vs "1 minute ago" is not specified. | Every relative timestamp implementation hits this in its first hour. | Open |
+| **Timestamp scope.** The rules are written for comments specifically. | Unclear whether call records, exports, and audit logs follow the same rules or use absolute times. | Open |
+| **Seconds.** No format given. | Call duration is a core Invoca concept and needs a rule. | Open |
+| **Year omission.** No rule on whether the current year may be dropped (`12/12` vs `12/12/2020`). | Affects table column width, where it matters most. | Open |
+| **Date ranges spanning years.** No rule. | `12/12/2020 - 1/5/2021` vs an abbreviated form. | Open |
+
+## Why it works this way
+
+**No leading zeros** trades a small amount of column alignment for reduced visual noise.
+It is the right trade in an interface where dates appear inline in prose and in dense
+tables; it is the wrong trade in a fixed-width export. If date columns need to align, the
+alignment belongs to the table cell, not to the format.
+
+**Relative timestamps stop at a week** because relative time is only useful while the
+reader can convert it without effort. "3 hours ago" is immediately meaningful. "43 days
+ago" is arithmetic, and worse, it decays — the same comment reads differently every day,
+which makes it unquotable in a support ticket.
