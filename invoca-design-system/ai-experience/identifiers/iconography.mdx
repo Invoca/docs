@@ -1,0 +1,114 @@
+---
+title: "Identifiers: Iconography"
+description: "Whether an agentic feature needs its own identity glyph, and why that glyph must not also mean 'generating' or 'uncertain.'"
+icon: "shapes"
+keywords: ["ai iconography", "ai identity", "agent icon", "signal ai", "identifiers"]
+---
+
+<Warning>
+  **No visual identity has been decided for any Invoca agentic feature yet.** This page
+  proposes a framework for making that decision — it is not the decision itself. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it governs
+
+Whether an AI feature uses a dedicated glyph to identify itself as AI — separate from any
+glyph used to show it is generating, or any glyph used to flag uncertainty. It governs only
+the **identity glyph**: the one that answers "is this AI," not the ones that answer "is it
+working" or "should I trust this."
+
+It does not govern [Foundations: Iconography](/invoca-design-system/foundations/iconography)
+itself — the closed 154-icon set, the four size tokens, and the color pairings every icon in
+the product already draws from, including any identity glyph this page eventually adopts.
+
+## Vocabulary
+
+Three glyphs get confused for one because they can all sit in the same corner of the same
+card. This page owns exactly one of them.
+
+| Term | Answers | Owned by |
+|---|---|---|
+| **Identity glyph** | "Is this AI?" | This page |
+| **State glyph** | "Is it working right now?" — a spinner, a generating indicator | [Governors](/invoca-design-system/ai-experience/governors/stream-of-thought) |
+| **Confidence glyph** | "Should I trust this?" — a caveat or warning mark | [Trust builders](/invoca-design-system/ai-experience/trust-builders/caveat) |
+
+## Choosing a value
+
+| If you need to… | Use | Not this, because |
+|---|---|---|
+| Mark a surface as AI-made with a small, consistent icon | An icon from Titan's existing 154-icon set that fits, or a formal proposal to add one | An inline SVG or an ad hoc mark outside the closed set — `TITAN-ICO-01` already forbids this for every other icon in the product |
+| Show the AI is actively generating | An outcome-state treatment on the relevant pattern page, per [Governors](/invoca-design-system/ai-experience/governors/stream-of-thought) | Reusing the identity glyph to also mean "in progress." One glyph now carries two meanings, which `TITAN-ICO-07` already prohibits for every other icon |
+| Flag that an answer is uncertain | The [Trust builders](/invoca-design-system/ai-experience/trust-builders/caveat) Caveat pattern | Overloading the identity glyph for this too — the same one-meaning problem, with higher stakes, since a user who can't tell "AI" from "AI, and I'm not sure" is the confident-and-wrong case the whole section exists to prevent |
+| Render AI output before any glyph has been decided | A text label only | A placeholder icon — an icon reads as a decision the moment it renders, even an unofficial one |
+
+## Reference
+
+Nothing is decided or shipped. No identity glyph exists for any Invoca agentic feature today.
+This section will be generated from a real decision once one exists.
+
+## Relationships
+
+An identity glyph, if adopted, comes from
+[Foundations: Iconography](/invoca-design-system/foundations/iconography)'s closed set —
+`TITAN-ICO-01` — or from a formal proposal to extend it, exactly like any other icon in the
+product. It also inherits that page's color rules: an identity glyph is colored with an
+`icon-*` token, never a hex value or a text-color token, and if it carries a status-adjacent
+meaning it uses the `-alt` variant per `TITAN-ICO-04`.
+
+It pairs with [Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color) —
+if a color treatment is decided, the glyph and the treatment are the icon-plus-color pairing
+`TITAN-COLOR-03` requires everywhere else — and with
+[Identifiers: Avatar](/invoca-design-system/ai-experience/identifiers/avatar), since a small
+identity glyph is one of the plausible shapes an AI mark could take.
+
+## Accessibility
+
+- An icon-only identity mark has an accessible name stating what it is — "AI-generated," not
+  a description of the glyph — the same requirement `TITAN-ICO-05` places on every icon-only
+  control.
+- A decorative use of the glyph (appearing beside text that already discloses AI content) is
+  hidden from assistive technology with `aria-hidden="true"`, per `TITAN-ICO-06`.
+- The glyph is never the sole carrier of the AI disclosure. Pair it with text, per
+  `TITAN-ICO-08` and the overview's disclosure requirement.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AIICO-01** | An identity glyph, if used, comes from Titan's existing 154-icon set or a formal proposal to it — never an inline SVG or an ad hoc mark. | Mirrors `TITAN-ICO-01`. An icon outside the closed set has no size token, no color token, and no contrast guarantee. |
+| **TITAN-AIICO-02** | An identity glyph carries exactly one meaning — "this is AI" — and is never reused to also mean "generating" or "uncertain." | Mirrors `TITAN-ICO-07`. Those are separate glyphs owned by Governors and Trust builders respectively; reusing one glyph for two meanings makes both unreadable. |
+| **TITAN-AIICO-03** | An identity glyph is never the sole signal that content is AI-generated. Pair with text — the feature's stated name. | Matches `TITAN-ICO-08` and the overview's disclosure requirement — icon comprehension without a label is low, and worst for the users who need the disclosure most. |
+| **TITAN-AIICO-04** | An icon-only identity mark carries an accessible name stating what it is, not what it looks like. | Mirrors `TITAN-ICO-05` — a screen reader user needs the fact, not a shape description. |
+| **TITAN-AIICO-05** | Where no identity glyph has been decided, AI-touched surfaces render with a text label only, never a placeholder icon. | An icon reads as a decision the instant it renders, even when nobody intended it as one. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether a glyph vocabulary is needed at all, given that Name and Color together might
+  disclose AI content sufficiently on their own, is undecided.
+- Whether one identity glyph serves all of Invoca's agentic surfaces or each needs its own is
+  the same per-feature-or-once question flagged on the
+  [overview](/invoca-design-system/ai-experience/overview#gaps).
+
+## Related
+
+[Identifiers: Avatar](/invoca-design-system/ai-experience/identifiers/avatar) ·
+[Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color) ·
+[Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name) ·
+[Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality) ·
+[AI Experience overview](/invoca-design-system/ai-experience/overview) ·
+[Foundations: Iconography](/invoca-design-system/foundations/iconography)
+
+## Why it works this way
+
+Icons are learned, not read — `TITAN-ICO-07`'s one-meaning-per-icon rule exists because a
+glyph that means two different things on two different screens has to be relearned every
+time, which means it is carrying no information at all. That problem gets worse, not better,
+under an identity glyph, because the three candidate meanings — is this AI, is it working,
+should I trust it — are exactly the three questions a confused user is most likely to be
+asking at the same moment. Splitting them into three glyphs owned by three different
+categories is what keeps any one of them answerable at a glance.

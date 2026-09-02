@@ -1,0 +1,244 @@
+---
+title: "Summarize"
+description: "A human-readable synopsis of a call, surfaced by Signal AI from the call's transcript."
+icon: "file-text"
+keywords: ["signal ai", "transcript summary", "call summary", "transcript analysis api", "synopsis"]
+---
+
+<Warning>
+  **Partially real — most of this page is still proposal.** The transcript-summary
+  capability itself is shipped, named, and documented: it is
+  [Signal AI](/invoca-design-system/ai-experience/overview#why-this-isnt-a-pattern)'s
+  Transcript Analysis API, described accurately in the [Reference](#reference) section
+  below. Everything *around* that summary — how the outcome states are handled, how the
+  user is told it's AI-generated, how they'd check or correct it — is not built. That part
+  is proposal, exactly like the rest of this section. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+A user looking at a call record often wants to know what happened on the call without
+listening to the recording or reading the full transcript. Signal AI's transcript summary
+answers that: a short, human-readable synopsis attached to the call, generated from its
+transcript.
+
+This is the one job in this section with a real, shipped backend. The Transcript Analysis
+API returns a `transcript_summary` field for a call record when one is available. It is the
+only pattern in Invoca's AI Experience documentation with an external contract that already
+exists and is publicly documented.
+
+What is not real is everything a user would experience around that field: whether it's
+labeled as AI-generated at the point of display, what happens when it's wrong, how someone
+checks it against the actual call, and how they'd correct it. None of that surrounding
+experience is built. This page proposes it, while stating plainly what is and is not
+verified.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The user needs to find calls matching a criterion, not summarize one they've already located | [Search](/invoca-design-system/ai-experience/actions/search) | Summarize starts from one already-identified call record. Finding the call is a different job. |
+| The user needs to produce something new from the call — a follow-up email, a note | [Draft](/invoca-design-system/ai-experience/actions/draft) | A summary describes what happened. A draft is a new artifact meant to go somewhere. |
+| The situation requires full fidelity — compliance review, a dispute, anything where "the gist" isn't enough | The full transcript or call recording | A summary is lossy by design. Where the cost of missing something is high, read or listen to the source. |
+
+## Agency tier
+
+**Suggests.** The summary surfaces information; it doesn't act on the call record and
+doesn't require the user to do anything with it. This is the tier the proposal design below
+targets — the shipped API itself has no tier, since an API response isn't an interaction. The
+tier applies to the product surface that would eventually display this field.
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────────┐
+│  [Card]                                            │
+│   [Tag: AI summary]                                │
+│   "The customer was looking to purchase a new      │
+│    vehicle."                                       │
+│                                                     │
+│   [Link: View full transcript]                     │
+│                                                     │
+│  (no summary available: "No summary available      │
+│   for this call.")                                  │
+└───────────────────────────────────────────────────┘
+```
+
+- [Card](/invoca-design-system/components/data-display/card) — contains the summary,
+  attached to the call record it describes.
+- [Tag](/invoca-design-system/components/data-display/tag) — labels the text as AI-generated,
+  distinguishing it from a human-written note on the same record.
+- [Link](/invoca-design-system/components/actions/link) — back to the transcript or
+  recording, the one real check available.
+
+## Outcome states
+
+The real API is a single synchronous response with two shapes — summary present, or absent.
+It carries no concept of streaming, refusal, or degradation. Everything below states which
+outcome states have a real basis and which are entirely proposed.
+
+| State | Treatment |
+|---|---|
+| Working | Not documented whether generation happens before or after the API is called, or how long it takes. If a product surface polls for a summary, it needs a working state; the API contract gives no basis for one today. |
+| Streaming / partial | N/A. The API returns `transcript_summary` as one complete field, never a partial string. |
+| Confident and right | The easy case: the summary matches what happened on the call. |
+| Confident and wrong | See below. |
+| Uncertain | N/A per the API — no confidence value is returned. A future [Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) treatment would need the API to expose one first. |
+| Refused | N/A. The API never refuses; it either includes the field or omits it. |
+| Empty | Real and documented: the response omits `transcript_summary` entirely when none is available. See [Reference](#reference). |
+| Interrupted | N/A. A single GET request has nothing to interrupt mid-run. |
+| Degraded | Not documented. Whether summary generation ever falls back to a simpler method is unknown from the API contract. |
+| Rate-limited / over budget | Not documented for this endpoint specifically. |
+| Stale | Not documented whether a summary is regenerated if the call's transcript is later corrected or reprocessed. |
+
+**Confident and wrong**, in detail: a summary that misstates what happened on the call —
+says the caller purchased when they cancelled, or reverses who said what — has no visible
+seam. The text reads exactly like a correct summary; nothing in the response or the proposed
+anatomy above flags a wrong one differently from a right one. The only way a user catches
+this today would be noticing a contradiction against something else they already know (a
+CRM record that doesn't match, a colleague's account of the call) or going back to listen to
+or read the full transcript. There is no proposed mechanism in this section, or anywhere
+documented for the shipped API, that surfaces a wrong summary on its own — which is exactly
+why [Disclosure & recourse](#disclosure--recourse) item 4 below is the only real recourse
+available.
+
+## Disclosure & recourse
+
+1. **Does the user know this is AI?** Proposed, not observed: the summary should be labeled
+   at the point of display (the Tag in [Anatomy](#anatomy)), not only in a settings page or
+   a footnote. Whether any actual downstream product surface does this today is unknown from
+   what's documented.
+2. **What did it use?** The call's transcript, explicitly — this is stated in the API's own
+   name and behavior. Nothing in the documented contract says it also draws on other calls,
+   CRM data, or any record beyond the one transcript tied to that `call_record_id`.
+3. **How sure is it?** Unknown. The API returns no confidence value. Proposal: don't display
+   one until the API provides it — see [TITAN-SUMMARIZE-03](#constraints).
+4. **How does the user check it?** Link back to the full transcript or the call recording for
+   the same call. This is the only check available, since the summary doesn't cite which
+   part of the transcript it drew from.
+5. **How does the user correct it?** No correction mechanism exists — the API is read-only.
+   Whether a future correction workflow would edit the display only, or feed back into
+   anything, is undecided; see [Gaps](#gaps).
+6. **How does the user get out?** Ignore the summary and read the transcript or listen to the
+   recording directly. There is no "AI mode" toggle to turn off, since the summary is one
+   field in a record view, not a running feature.
+
+## Reference
+
+This is the one Reference section in this batch grounded in a real, shipped contract.
+
+| Fact | Value |
+|---|---|
+| Endpoint | `GET https://mynetwork.invoca.net/call/transcript_analysis/<call_record_id>` |
+| Auth | OAuth token in the `Authorization` header |
+| Response, summary available | `200` — `{"call_record_id": "...", "transcript_summary": "..."}` |
+| Response, no summary available | `200` — `{"call_record_id": "..."}` (the `transcript_summary` key is omitted, not returned empty or null) |
+| Source | [Transcript Analysis API](/en/latest/api_documentation/call_api/transcript_analysis_api) |
+
+Beyond that contract, nothing is publicly documented: **no model identifier, no prompt or
+template text, no latency figure (typical or tail), and no cost per invocation** is stated
+anywhere accessible for this endpoint. The external contract — what comes back and when the
+field is present — is known. The internals that produce it are not. Treat any claim about
+how the summary is generated as unverified.
+
+## Evaluation
+
+Not evaluated from what is available. No eval set, score, or named failure-class list is
+documented anywhere accessible for this capability — real and shipped as it is.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| Summary label | "AI summary" | No label at all |
+| Framing the source | "Based on the call transcript" | "What the caller said" (implies verbatim quotation) |
+| No summary available | "No summary available for this call." | A blank space where the summary would be |
+| Linking to the source | "View full transcript" | "Learn more" |
+
+## Accessibility
+
+- If a product surface polls for the summary, completion is announced to a live region once,
+  not incrementally — the API returns the text as a whole, so there is no legitimate reason
+  to announce it token by token.
+- An indeterminate wait for a summary needs a text equivalent ("Loading summary…"), not a
+  spinner alone.
+- The AI-generated label pairs an icon or text with any visual treatment — never color alone,
+  per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- If a future "regenerate summary" control exists, where focus goes and what gets announced
+  on completion is undecided; see [Gaps](#gaps).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SUMMARIZE-01** | The summary is labeled as AI-generated at the point of display. | Matches [TITAN-AI-04](/invoca-design-system/ai-experience/overview#constraints) — disclosure that requires the user to already suspect something isn't disclosure. |
+| **TITAN-SUMMARIZE-02** | The summary always links to the full transcript or recording for the same call. | It is the only real check available, per Disclosure & recourse item 4. |
+| **TITAN-SUMMARIZE-03** | No confidence figure is displayed unless and until the API provides one. | Matches [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints) — inventing a number the source doesn't supply is worse than omitting it. |
+| **TITAN-SUMMARIZE-04** | The UI distinguishes "no summary available" from a request failure. | The real API returns `200` for both a present and an absent summary — conflating an absent field with an error would hide a genuine outage behind a normal, documented case. |
+| **TITAN-SUMMARIZE-05** | No model identifier, prompt text, or latency/cost figure is stated in product copy for this capability. | None is publicly documented; asserting one would be an invented fact, per [TITAN-AI-05](/invoca-design-system/ai-experience/overview#constraints). |
+| **TITAN-SUMMARIZE-06** | The summary is never presented as a verbatim quotation from the call. | It is a generated synthesis, not a transcript excerpt; presenting it as a quotation misstates what it is. |
+
+## Divergences
+
+This is the one page in this batch where a real divergence could eventually be recorded —
+it is the only pattern with a shipped contract to diverge from. None is recorded today,
+because the surrounding experience this page proposes isn't built anywhere yet: there is no
+shipped labeling, disclosure, or correction behavior to compare against the proposal above.
+The proposal and the shipped API's contract don't currently conflict; they simply don't
+overlap much yet. If a product surface is built that displays this field, this section is
+where any disagreement between what it actually does and what this page proposes belongs.
+
+## Gaps
+
+- Whether the API response distinguishes "not yet processed" from "will never have a
+  summary" is unknown — both cases produce the identical omitted-field response.
+- No confidence signal is documented anywhere for this capability.
+- No correction or feedback workflow is documented.
+- Whether a summary is regenerated if the underlying transcript is corrected or reprocessed
+  is undocumented.
+- No model, prompt, latency, or cost figure is documented for this endpoint.
+- Whether any current downstream product surface labels this field as AI-generated today is
+  unknown from what's accessible here.
+
+## Volatility
+
+This page's Reference section depends on the Transcript Analysis API's documented contract
+and should be reverified if that API's response shape changes — a new field (confidence,
+model version, timestamp) would change several rows in [Reference](#reference) and
+[Outcome states](#outcome-states) at once. The proposal sections depend on nothing shipping
+yet; they should be reverified the moment any product surface actually displays this field,
+since at that point several "not documented" rows above become checkable facts instead of
+gaps. Written 2026-09-02.
+
+## Related
+
+<Columns cols={2}>
+  <Card title="AI Experience overview" icon="sparkles" href="/invoca-design-system/ai-experience/overview">
+    Where Signal AI's summary is named as the one shipped capability in this section.
+  </Card>
+  <Card title="Search" icon="search" href="/invoca-design-system/ai-experience/actions/search">
+    Finding the call this summary describes.
+  </Card>
+  <Card title="Draft" icon="pencil-line" href="/invoca-design-system/ai-experience/actions/draft">
+    Producing a new artifact from a call, rather than a synopsis of one.
+  </Card>
+  <Card title="Trust builders: Caveat" icon="handshake" href="/invoca-design-system/ai-experience/trust-builders/caveat">
+    Where an uncertainty signal would live, if the API ever provides one to show.
+  </Card>
+  <Card title="Card" icon="credit-card" href="/invoca-design-system/components/data-display/card">
+    The container the summary is proposed to render inside.
+  </Card>
+  <Card title="Transcript Analysis API" icon="file-text" href="/en/latest/api_documentation/call_api/transcript_analysis_api">
+    The real, shipped contract this page's Reference section is grounded in.
+  </Card>
+</Columns>
+
+## Why it works this way
+
+Separating the shipped contract from the proposed experience is the point of this page, not
+an incidental disclaimer. A reader who needs to build against the real API gets an accurate
+Reference section with nothing invented in it. A reader designing what a user sees gets a
+proposal clearly marked as one, instead of a page that quietly presents both as equally
+settled. Blurring the two would make this the most dangerous page in the section, precisely
+because it is the one page where a claim can sound verified and be partly true.

@@ -88,6 +88,31 @@ flowchart TD
   copy and the friction, not by making the dangerous control the most attractive one.
 </Warning>
 
+<Note>
+  **A cascade adds one line to the body — never a second structure.** When the object being
+  deleted has dependents, the body states what else is affected, alongside the object's own
+  consequence:
+
+  ```
+  ┌─────────────────────────────────────────────┐
+  │  Delete "Q3 Paid Search"?                   │
+  │                                             │
+  │  This campaign has 1,284 calls attributed   │
+  │  to it. Reporting for those calls will no   │
+  │  longer be available.                       │
+  │                                             │
+  │  It also has 3 routing rules that exist     │
+  │  only for this campaign. Deleting it        │
+  │  deletes those rules too.                   │
+  │                                             │
+  │  This cannot be undone.                     │
+  │                  [ Cancel ]  [ Delete ]     │
+  └─────────────────────────────────────────────┘
+  ```
+
+  See [TITAN-DESTROY-10](#constraints).
+</Note>
+
 ## Three tiers of friction
 
 Match friction to consequence. Using tier 3 everywhere is the same failure as using tier 1
@@ -130,6 +155,7 @@ everywhere — it just takes longer to show up.
 | Success | Dialog closes, [Toast](/invoca-design-system/components/feedback/toast) confirms with the object's name |
 | Failure | Dialog stays open, [Alert](/invoca-design-system/components/feedback/alert) appears inside it. **Never close a dialog on failure** — closing discards the user's context and they cannot tell whether it worked. |
 | Object changed while dialog was open | Re-fetch on confirm. If it changed, show the change and require re-confirmation. |
+| Object has dependents | The body states what else is affected — deleted with it, or orphaned instead — alongside the object's own consequence. See [TITAN-DESTROY-10](#constraints). |
 
 ## Constraints
 
@@ -144,6 +170,8 @@ everywhere — it just takes longer to show up.
 | **TITAN-DESTROY-07** | Typed confirmation is reserved for unrecoverable or externally-visible actions. | Its effectiveness is a function of its rarity. |
 | **TITAN-DESTROY-08** | Never stack a second confirmation on a confirmation. | Two dialogs do not double the protection. They teach the user that dismissing dialogs is the normal path. |
 | **TITAN-DESTROY-09** | On failure, the dialog stays open and shows the error inline. | Closing on failure discards context and leaves the user unable to determine what happened. |
+| **TITAN-DESTROY-10** | A cascading delete's confirmation names what else is affected alongside the primary object — deleted with it, or orphaned instead — not just the object the reader selected. | The consequence must be stated in outcomes per [TITAN-DESTROY-03](#constraints), and a cascade's consequence includes objects the reader didn't select. |
+| **TITAN-DESTROY-11** | Where a cascade orphans a dependent rather than deleting it, the dialog states which of the two happens, for which dependent. | "Deleted" and "orphaned" leave the product in different states — an orphaned object still exists and may need separate cleanup; a deleted one does not. |
 
 ## Constraints Titan should enforce
 
@@ -159,6 +187,7 @@ everywhere — it just takes longer to show up.
 | Body | This campaign has 1,284 calls attributed to it. Reporting for those calls will no longer be available. This cannot be undone. | This action is permanent. |
 | Confirm | Delete campaign | Yes, I'm sure |
 | Cancel | Cancel | No |
+| Cascade line | It also has 3 routing rules that exist only for this campaign. Deleting it deletes those rules too. | This will also affect related data. |
 
 **Do not apologize and do not soften.** "We're sorry, but this will permanently remove…"
 adds words at the exact moment the user should be reading carefully. State the consequence
@@ -181,7 +210,9 @@ is about the outcome. Someone who is sure they selected the right row, but didn'
 
 | Variation | When | Change |
 |---|---|---|
-| Bulk destructive | Multiple objects selected | Title states the count; body names the highest-consequence item; a single confirmation covers the batch |
+| Bulk destructive | Multiple objects selected | Title states the count; body names the highest-consequence item; a single confirmation covers the batch. See [Bulk selection](/invoca-design-system/patterns/bulk-selection#variations), which routes into this variation rather than confirming per row. |
+| Cascade deletes dependents | Dependents have no independent purpose — a routing rule built only for this campaign | Body states they're deleted too. See [TITAN-DESTROY-10](#constraints). |
+| Cascade orphans dependents | Dependents can exist without the parent — a tag also applied elsewhere | Body states they're kept but disconnected, not deleted. See [TITAN-DESTROY-11](#constraints). |
 | Destructive with a safer alternative | Archive exists alongside delete | Offer Archive as the `outlined` action and demote Delete to `text` |
 | Scheduled destructive | Deletion happens after a grace period | No confirmation dialog. State the deletion date and offer cancellation until then. |
 
@@ -206,3 +237,16 @@ operating on the wrong row after a sort order changed underneath the user.
 recoverable deletion, so it gets chosen. It protects against mis-clicks and not against
 mistakes — the user who confidently deletes the wrong campaign passes the dialog without
 hesitating. Where the data matters, build the recovery.
+
+**A cascade delete whose dialog only names the primary object.** The reader discovers what
+else disappeared only after confirming — see [TITAN-DESTROY-10](#constraints).
+
+**Treating "orphaned" and "deleted" as the same outcome in the dialog copy.** They leave the
+product in different states, and the reader needs to know which one they're choosing — see
+[TITAN-DESTROY-11](#constraints).
+
+## Related
+
+[CRUD overview](/invoca-design-system/patterns/crud/overview), for how this pattern is the
+whole answer to CRUD's Delete operation — there is no separate Delete page. [Bulk selection](/invoca-design-system/patterns/bulk-selection),
+which routes into this page's bulk-destructive variation rather than confirming per row.

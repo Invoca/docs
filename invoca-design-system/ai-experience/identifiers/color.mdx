@@ -1,0 +1,119 @@
+---
+title: "Identifiers: Color"
+description: "Whether AI-generated or AI-touched content gets a distinguishing color treatment, and why that treatment must not become a new status."
+icon: "swatch-book"
+keywords: ["ai color", "ai identity", "agent color treatment", "signal ai", "identifiers"]
+---
+
+<Warning>
+  **No visual identity has been decided for any Invoca agentic feature yet.** This page
+  proposes a framework for making that decision — it is not the decision itself. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it governs
+
+Whether content that is AI-generated, or a surface that contains AI-generated content mixed
+with other content, gets a distinguishing color treatment — a tinted background, a colored
+border, a highlighted region — so a user can tell a model produced it. It governs the
+decision to add such a treatment and the rules it must follow if one is added.
+
+It does not govern [Foundations: Color](/invoca-design-system/foundations/color) itself —
+the surface, text, border, and status token model that already exists and that any AI color
+treatment must be built from, never around.
+
+## Vocabulary
+
+| Term | Means |
+|---|---|
+| **AI-generated content** | The entire surface's content came from a model — a summary card, a drafted reply |
+| **AI-touched content** | Some AI content sits alongside human- or system-authored content on the same surface — one comment in a thread is AI-drafted, the rest are not |
+| **Distinguishing treatment** | A color signal meaning "this is AI" — an identity signal |
+
+**"Distinguishing treatment" is not a status.** Titan's four statuses — `info`, `success`,
+`warning`, `error` — answer "what happened." An AI color treatment answers "who made this."
+Conflating the two means an AI answer that is also an error has nowhere to put the error.
+
+## Choosing a value
+
+| If you need to… | Use | Not this, because |
+|---|---|---|
+| Mark AI-generated text as visually distinct from human-authored text on the same page | An existing informational surface and border pairing from [Foundations: Color](/invoca-design-system/foundations/color) — for example `background-info-alt` with `border-default` — plus a persistent icon or label | Inventing a new hue for "AI." Titan's status model already rejects a fifth status color for the same reason: it cannot be reliably distinguished, has no dark-mode value, and no contrast guarantee |
+| Signal that a summary is uncertain | The [Trust builders](/invoca-design-system/ai-experience/trust-builders/caveat) Caveat pattern | Recoloring the surface based on confidence — that is a different signal answering a different question, and layering it onto the identity color makes both illegible |
+| Show a streaming or working state | A [Governors](/invoca-design-system/ai-experience/governors/stream-of-thought) treatment | Assigning the identity color a fixed meaning for "in progress" too — state color belongs to interaction states, not to identity |
+| Render AI output before any treatment has been decided | Titan's ordinary component tokens, no special tint | A default tint chosen ad hoc for this page — an undecided treatment presented as if it were decided |
+
+## Reference
+
+Nothing is decided or shipped. This section will be generated from a real decision once one
+exists.
+
+## Relationships
+
+An AI-touched surface still uses [Foundations: Color](/invoca-design-system/foundations/color)'s
+status and prominence tokens — it does not invent a new hue. If a treatment is eventually
+decided, it is decided as a specific pairing from the existing token set (a background token,
+a border token, an `-alt` variant where text is involved), documented the same way Color's own
+["Choosing a token"](/invoca-design-system/foundations/color#choosing-a-token) table documents
+every other pairing.
+
+It also sits beside [Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography):
+per `TITAN-COLOR-03`, color never carries meaning alone, so any color treatment this page
+eventually adopts needs an icon or text partner from that page or from
+[Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name).
+
+## Accessibility
+
+- Color is never the only signal that content is AI-generated — this is
+  [Foundations: Color](/invoca-design-system/foundations/color)'s `TITAN-COLOR-03` applied
+  to a new case, not a new rule. Pair any treatment with text or an icon.
+- If the treatment carries text (a tinted card with a summary inside it), that text meets
+  WCAG 2.2 AA against the surface it sits on, exactly as `TITAN-COLOR-02` already requires
+  for every other surface.
+- A treatment that reads correctly in light mode but has no stated dark-mode value is not a
+  complete decision — see [Gaps](#gaps).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AICOLOR-01** | An AI color treatment reuses an existing semantic or component token. It never introduces a new hue or literal for "AI." | Mirrors `TITAN-COLOR-04` and `TITAN-COLOR-05` — a new meaning met by a new hex is exactly what Titan's status model forbids, and an "AI purple" carries the same distinguishability problem at higher stakes. |
+| **TITAN-AICOLOR-02** | Color is never the only signal that content is AI-generated. Pair with text or an icon. | Restates `TITAN-COLOR-03` for this case: color vision deficiency and forced-colors contexts remove color as a channel entirely. |
+| **TITAN-AICOLOR-03** | An AI color treatment never reuses a status color (`info`, `success`, `warning`, `error`) to mean "this is AI." | The four statuses are load-bearing everywhere else in the product. If an informational tint also means "AI wrote this," the two meanings collide the first time an AI answer needs to show a real status too. |
+| **TITAN-AICOLOR-04** | Where no AI color treatment has been decided for a feature, its output renders with Titan's ordinary component tokens and no special tint. | An undecided treatment should render as undecided, not as a silent default that reads as a choice. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether AI content needs a color signal at all, or whether text and the Name identifier
+  are sufficient on their own, is undecided.
+- Whether a shared treatment applies to all of Invoca's agentic surfaces or each needs its
+  own is the same per-feature-or-once question flagged on the
+  [overview](/invoca-design-system/ai-experience/overview#gaps).
+- No treatment has a stated dark-mode or forced-colors value, since none has been decided at
+  all yet.
+
+## Related
+
+[Identifiers: Avatar](/invoca-design-system/ai-experience/identifiers/avatar) ·
+[Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography) ·
+[Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name) ·
+[Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality) ·
+[AI Experience overview](/invoca-design-system/ai-experience/overview) ·
+[Foundations: Color](/invoca-design-system/foundations/color)
+
+## Why it works this way
+
+Color is the fastest channel a person reads, and identity and status both want to use it
+first. Titan already resolved that competition once, by capping status at four colors and
+requiring every one of them to pair with an icon or label rather than stand alone. An AI
+color treatment that skipped this and invented its own hue would relearn that lesson from
+scratch, with the added risk that "AI" and "error" are exactly the two meanings most likely
+to need to render on the same card at once.
+
+Keeping the treatment inside the existing token set — rather than granting Identifiers its
+own palette — is the same discipline `TITAN-FND-04` applies everywhere else: a new need is
+met by a proposal, never by a local override.

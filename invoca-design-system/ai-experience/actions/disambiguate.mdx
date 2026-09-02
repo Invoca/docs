@@ -1,0 +1,227 @@
+---
+title: "Disambiguate"
+description: "Asking before acting, when a request or an observed signal has more than one plausible reading that would lead to a materially different result."
+icon: "split"
+keywords: ["disambiguation", "clarify", "which did you mean", "ambiguous intent", "confirm interpretation", "multiple readings"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  today. Nothing below is code fact or measured behavior — it is a proposal offered for
+  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+A marketer types "show me calls about billing" into a search over call data. That phrase has
+at least three non-overlapping readings: calls attributed to the *Billing* campaign, calls
+tagged with a *Billing* [Signal](/invoca-design-system/ai-experience/actions/summarize), or
+calls whose transcript summary happens to mention billing. Each reading returns a different
+set of calls. Guessing one and running with it means the marketer either gets a plausible-looking
+result that is quietly the wrong scope, or gets nothing and has no idea why. Disambiguate is the
+system stopping to ask which reading is right before it runs anything.
+
+The same job recurs inside [Signal AI](/invoca-design-system/ai-experience/actions/summarize)
+itself. A transcript contains a caller who says "I want to cancel" partway through a call about
+a billing dispute — cancel the service, cancel the pending charge, or cancel the callback that
+was just scheduled are all live readings, and Signal AI's own intent extraction can land on any
+one of them. Disambiguate applies there too: when the extracted intent is genuinely split
+between readings that would produce different Signals, the pattern is to surface the split to a
+human reviewer rather than let one reading win silently.
+
+Disambiguate is not a general uncertainty indicator and not a way to soften a single guess. It
+exists only where there are two or more **discrete, nameable** candidate readings and picking
+the wrong one would send the user somewhere they didn't intend to go — not where the system is
+simply unsure about one answer.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The system has only one candidate reading, just held with low confidence | [Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) | There is nothing to choose between. Stating the uncertainty is the honest move; inventing a second candidate to justify a question is worse than picking the one reading and flagging it. |
+| The system has a specific next step to propose, not a request to interpret | [Recommend](/invoca-design-system/ai-experience/actions/recommend) | Recommend is forward-looking and proposes an action from what it observed; Disambiguate is backward-looking and resolves what was already asked. |
+| None of the candidate readings return anything | [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state) | A true no-results moment isn't an ambiguity to resolve — there's nothing to choose between if every reading is empty. |
+| The user is choosing a scope or filter proactively, with no AI interpretation involved | [Filtering and search](/invoca-design-system/patterns/filtering-and-search) | An ordinary filter picker is a deterministic control, not a response to an ambiguous request — it carries no disclosure obligation. |
+| The ambiguity is in phrasing only, and a plain restatement of the single best reading is enough to let the user object | [Governors: Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) | Showing the reasoning and letting the user interrupt it costs less than blocking with a question, when the readings aren't truly discrete outcomes. |
+
+## Agency tier
+
+**Suggests.** Disambiguate proposes candidate readings; it never proceeds on any of them until
+the user picks one, and rejecting all of them (see [Outcome states](#outcome-states),
+Interrupted) costs nothing. This is the tier by construction, not by convention — the pattern's
+entire job is to stop short of acting.
+
+This differs from [Recommend](/invoca-design-system/ai-experience/actions/recommend), which is
+also Suggests-tier: Recommend proposes doing something new, and Disambiguate proposes a reading
+of something the user already asked for. Escalating either past Suggests — for example, having
+the system silently proceed on its best guess after a timeout — is a tier change that needs to
+be recorded, not a fallback that ships unremarked.
+
+## Anatomy
+
+```
+┌─────────────────────────────────────────────┐
+│  ◆ Which "billing" did you mean?             │
+│                                               │
+│   ○ The Billing campaign                     │
+│   ○ Calls tagged with the Billing Signal     │
+│   ○ Calls whose summary mentions billing     │
+│                                               │
+│           [ None of these — rephrase ]       │
+└─────────────────────────────────────────────┘
+```
+
+| # | Part | Component | Required |
+|---|---|---|---|
+| 1 | Container | [Card](/invoca-design-system/components/data-display/card) | Yes |
+| 2 | AI identifier mark | See [Identifiers](/invoca-design-system/ai-experience/identifiers/avatar) | Yes — see [Disclosure & recourse](#disclosure-recourse) |
+| 3 | The disambiguation question, naming the term that split | Text content, no component | Yes |
+| 4 | One row per candidate reading | [Menu](/invoca-design-system/components/actions/menu) or a stack of [Button](/invoca-design-system/components/actions/button) `outlined` controls | Yes — at least two |
+| 5 | Escape route back to free text | [Button](/invoca-design-system/components/actions/button) `text`, or [Link](/invoca-design-system/components/actions/link) | Yes — see [TITAN-DISAMBIG-05](#constraints) |
+
+Each candidate row states the reading in the user's words, not the underlying field name — "the
+Billing campaign," not `campaign_id = 4`. Per [TITAN-COLOR-01](/invoca-design-system/foundations/color#constraints)
+and the vocabulary rules on the [overview](/invoca-design-system/ai-experience/overview), no
+row is styled to look more "correct" than another with color alone; if one reading is more
+likely, say so in the row's own text.
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Brief; a [Spinner](/invoca-design-system/components/feedback/spinner) or inline "Checking what you meant…" while candidate readings are generated, before the question renders. |
+| Streaming / partial | **Not applicable.** Candidate readings are shown as a complete, discrete set. A partially-listed set of options is not choosable — the question does not render until all candidates are ready. |
+| Confident and right | **Not applicable to this page.** Disambiguate exists specifically for the cases the system is *not* confident enough to skip. A confidently correct single reading never reaches this pattern — it's [Search](/invoca-design-system/ai-experience/actions/search) or [Summarize](/invoca-design-system/ai-experience/actions/summarize) running normally. |
+| Confident and wrong | **The pattern's central failure mode: the system skipped asking.** It picked one reading silently instead of surfacing the split. The user notices only indirectly — a result set that's smaller, larger, or differently shaped than expected, or a Signal that doesn't match what the transcript actually shows on replay. Nothing in the interface flags this at the moment it happens, which is exactly why [TITAN-DISAMBIG-01](#constraints) exists. |
+| Uncertain | This is the pattern's normal operating state, not an edge case — the question itself *is* how uncertainty is communicated. Ranking candidates by likelihood, when the system has a basis for it, is stated in the row text, never only in row order. |
+| Refused | More candidate readings exist than can be shown usefully (see [TITAN-DISAMBIG-06](#constraints)). The system states that the request is too broad and asks the user to narrow it, rather than listing an unusable number of options. |
+| Empty | **Not applicable at this stage.** A reading that itself returns nothing is the invoked action's [Empty](/invoca-design-system/ai-experience/actions/welcome-empty-state) state, once the user has picked one. |
+| Interrupted | The user closes the question or navigates away without choosing. No reading is acted on, and no default is silently applied. Returning to the same request shows the question again. |
+| Degraded | The system falls back to a simple keyword match instead of full interpretation, and disambiguation is skipped entirely. This must be disclosed — see [TITAN-DISAMBIG-07](#constraints) — not discovered only when results look off. |
+| Rate-limited / over budget | Generating candidate readings is itself a model call; if it can't complete in budget, the system states that plainly and offers the literal keyword search as a fallback rather than guessing silently. |
+| Stale | **Not applicable.** The candidates are generated at the moment of the request and answered immediately; nothing here persists long enough to go stale. |
+
+## Disclosure & recourse
+
+1. **Does the user know this is AI, at the moment it matters?** Yes — the question only exists
+   because a model-driven interpretation split; the identifier mark is on the question itself.
+2. **What did it use?** The request text, and — for Signal AI's own intent case — the specific
+   transcript segment that produced the split. State which, next to the question.
+3. **How sure is it, and does that change behavior?** The split itself is the confidence signal:
+   there was no single reading confident enough to act on alone. If one candidate is markedly
+   more likely, its row says so in words; likelihood is never conveyed by position or color
+   alone.
+4. **How does the user check it?** Each row is specific enough to verify against what the user
+   actually meant — "the Billing campaign" is checkable; "option 1" is not.
+5. **How does the user correct it?** Picking a different row corrects it immediately, before
+   anything runs. The choice does not persist as a standing preference unless the product
+   deliberately offers to remember it — see [Gaps](#gaps).
+6. **How does the user get out?** The escape route (see [Anatomy](#anatomy)) returns to free
+   text with no reading applied. Dismissing the question entirely is equivalent to never having
+   asked.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+
+## Evaluation
+
+Not evaluated. No eval set exists for this pattern, and none exists yet for Signal AI's intent
+extraction either.
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Question | Which "billing" did you mean? | I found multiple matches. |
+| Candidate row | The Billing campaign | Option 1: campaign_id=4 |
+| Candidate row (Signal AI intent case) | Cancel the pending charge | Cancel |
+| Escape control | None of these — rephrase | Cancel |
+
+Name the specific term that split, in the question itself — "billing," not "your request." A
+candidate row states the reading concretely enough that picking the wrong one on purpose would
+be obviously wrong. Follows [Voice and tone](/invoca-design-system/content/voice-and-tone):
+plain language, no apology for asking.
+
+## Accessibility
+
+- The question is announced via a polite live region when it replaces the loading state —
+  announced once, on completion, not per candidate as the list renders.
+- An indeterminate wait before the candidates are ready needs a non-visual equivalent to a
+  spinner: accessible status text, not only a visual animation.
+- If one reading is more likely than the others, that likelihood is stated in the row's visible
+  and accessible text — never conveyed by row order or color alone, per
+  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Initial focus lands on the first candidate row, not on the escape control — the common path
+  is picking a reading, not rephrasing.
+- Selecting a candidate and dismissing the question both need to visibly and programmatically
+  remove the question from the page; a reader using a screen reader should not encounter a
+  disambiguation question for a request that has already been resolved.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DISAMBIG-01** | When two or more candidate readings would produce materially different results, the system asks rather than silently choosing one. | Skipping the question is this pattern's characteristic failure — the user gets a plausible-looking result that is quietly the wrong scope, with nothing to signal it. |
+| **TITAN-DISAMBIG-02** | Each candidate reading is stated in the user's own vocabulary, never as an internal field name or code. | "The Billing campaign" is checkable against what the user meant; `campaign_id = 4` is not. |
+| **TITAN-DISAMBIG-03** | Likelihood between candidates, when the system has a basis for it, is stated in words. It is never conveyed only by row order or color. | Matches [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints) — a signal carried only by position or color is invisible to a reader who can't perceive it or isn't looking closely. |
+| **TITAN-DISAMBIG-04** | Choosing a candidate takes effect immediately; nothing runs before the user chooses. | The entire value of asking is lost if the system also acts on a default while waiting. |
+| **TITAN-DISAMBIG-05** | An escape route back to free-text rephrasing is always present alongside the candidate list. | A user whose actual intent matches none of the offered readings needs a way out that isn't "pick the closest wrong one." |
+| **TITAN-DISAMBIG-06** | More than a handful of candidate readings is a refusal to narrow, not a longer list. | A list long enough to require scanning defeats the point of asking instead of guessing — it just moves the guessing to the user with worse information. |
+| **TITAN-DISAMBIG-07** | If the system is running on a fallback that skips interpretation (plain keyword matching), that is disclosed, not silently substituted for disambiguation. | A user who expects to be asked and instead gets an unflagged literal match will misread a bad result as a resolved ambiguity. |
+
+## Divergences
+
+Not applicable — nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether a user's chosen reading should be remembered as a standing preference for future,
+  similarly-worded requests is undecided.
+- How many candidate readings is "too many" (see [TITAN-DISAMBIG-06](#constraints)) has no
+  stated number — it is a judgment call pending a real product case to test it against.
+- Whether Signal AI's own intent-disambiguation case surfaces to the call reviewer synchronously
+  (blocking further analysis of that call) or asynchronously (queued for later review) is
+  undecided.
+- Whether ranked candidates should ever be pre-selected (with an easy override) rather than
+  presented as an unranked choice is undecided — pre-selection risks reintroducing the silent
+  guess this pattern exists to avoid.
+
+## Volatility
+
+This page's guidance depends on the system being able to produce discrete, nameable candidate
+readings rather than a single fuzzy score — if intent extraction can only ever produce one
+ranked guess with no real alternative to name, this pattern doesn't apply and
+[Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) is the
+right pattern instead. Dated 2026-09-02; revisit on the first real implementation of
+disambiguation in either a search surface or Signal AI's intent extraction.
+
+## Related
+
+- [AI Experience overview](/invoca-design-system/ai-experience/overview) — vocabulary, agency
+  tiers, and the six disclosure questions this page answers
+- [Recommend](/invoca-design-system/ai-experience/actions/recommend) — the forward-looking
+  counterpart: proposing a next step instead of resolving a request
+- [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state) —
+  what renders once a chosen reading turns out to match nothing
+- [Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) — for a
+  single uncertain reading with nothing to choose between
+- [Governors: Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) —
+  an alternative to blocking, when showing reasoning is enough
+- [Card](/invoca-design-system/components/data-display/card), [Menu](/invoca-design-system/components/actions/menu),
+  [Button](/invoca-design-system/components/actions/button), [Link](/invoca-design-system/components/actions/link) —
+  the components this pattern composes
+
+## Why it works this way
+
+**Naming the readings is what makes the question answerable.** A vague "did you mean this?"
+gives the user nothing to check against; a concrete "the Billing campaign, or calls tagged with
+the Billing Signal" lets them recognize their own intent in one of the options, the same
+mechanism [destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)
+relies on when it names the specific object rather than asking "are you sure?"
+
+**Blocking on discrete readings, rather than guessing and flagging the guess, is a deliberate
+trade of a small amount of friction against a failure mode that has no visible seam.** A wrong
+guess that isn't flagged looks identical to a right one until the user notices something is
+off — often much later, and by then the cost of the wrong reading has already compounded into
+a report or a decision built on it.

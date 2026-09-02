@@ -1,12 +1,278 @@
 ---
 title: "Detail view"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "layers"
+description: "One record, its attributes, and its related data."
+icon: "file-text"
 tag: "Draft"
+keywords: ["detail view", "record", "attributes", "related data", "single object", "profile page"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+  page — Titan's design library was not available while writing it. It is built from general
+  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+  [CRUD: Read](/invoca-design-system/patterns/crud/read), [CRUD: Update](/invoca-design-system/patterns/crud/update),
+  and [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) already
+  establish. Treat every constraint below as a starting point to check against real product
+  screens, not as a rule already enforced.
 </Warning>
+
+## What it is
+
+A page whose subject is **one record** — one campaign, one number, one routing rule — shown in
+full: its own attributes, and the data attached to it. It is where [CRUD: Read](/invoca-design-system/patterns/crud/read)'s
+decision tree lands when a reader needs the object's full context, possibly to act on it next,
+and where [List view](/invoca-design-system/views/list-view) sends a reader who has already
+found the one row they wanted.
+
+You are building one if the page answers "what about this one?" A page that answers "which of
+these?" is a [list view](/invoca-design-system/views/list-view).
+
+## Region vocabulary
+
+This archetype adds no regions. It uses the [page frame](/invoca-design-system/views/overview#the-page-frame) as
+published, and the frame's vocabulary is the vocabulary here — including the header's second
+row, which this archetype is the primary user of for a tab bar.
+
+| Region | Also called | The system uses |
+|---|---|---|
+| Page body | Attribute panel, profile, record view | **`Contents`** |
+| Section tabs | Detail tabs, record sections | **`Tabs`**, in the header's second row |
+
+## Choose this view when
+
+- The reader already knows which record they want, and needs everything about it — not a
+  subset — per [CRUD: Read](/invoca-design-system/patterns/crud/read#choosing-a-surface)'s
+  "full context, possibly to act on it" case.
+- The record has enough attributes or related data that a preview surface would cramp it — see
+  [CRUD: Read](/invoca-design-system/patterns/crud/read)'s own tree for what falls short of
+  this (inline expansion, Drawer preview).
+- Losing sight of the list the reader came from is an acceptable cost, because the record is
+  now the whole job.
+
+## Choose something else when
+
+| If the page also needs to… | Use | Why |
+|---|---|---|
+| Find or compare members of a collection | [List view](/invoca-design-system/views/list-view) | "Which of these" is a different job than "what about this one" — see that page's own [Choose this view when](/invoca-design-system/views/list-view#choose-this-view-when). |
+| Show enough, without losing the list behind it | [Drawer preview](/invoca-design-system/patterns/crud/read#choosing-a-surface) or [Split view](/invoca-design-system/views/split-view) | A reader who needs to keep checking rows against the list should not pay for a full page navigation each time. |
+| Show one or two more fields on a row already on screen | [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) | A glance does not need a surface change at all. |
+| Author a record that does not exist yet | [CRUD: Create](/invoca-design-system/patterns/crud/create) | Nothing to show a full context for until the record exists. |
+
+## Regions
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| `Header` — `Left` | Yes | `banner` | `Title` naming the record itself. `Breadcrumb` back to the list it came from. `Status` for the record's own state, when it has one. |
+| `Header` — `Right` | Yes | — | `Actions` — page-level actions on this specific record: edit, and delete. |
+| `Tabs` | No | `tablist` | Inside the header. Sections of this record's own data, when there are enough of them. |
+| `Controls` | No | — | Absent by default. A detail view's body is not filtered the way a collection is — see [Header — Tabs versus a scrolling page](#header-tabs-versus-a-scrolling-page). |
+| `Contents` | Yes | `main` | Attribute groups and the record's related data — the whole record, in one region. |
+| `Footer` | No | `contentinfo` | Absent by default. Present only when the whole page is inline-editable as a unit — see [Footer](#footer). |
+
+## What fills each region
+
+### Header — Left
+
+`Title` is the record's own name or identifier — the actual campaign name, the actual phone
+number — never a generic label like "Campaign Detail." A reader arriving from a link, a search
+result, or the list's own row action should see the same name they clicked.
+
+`Breadcrumb` points back to the collection this record belongs to — the list view it was most
+likely reached from. `Status` appears only when the record itself has a state that changes what
+can be done to it — draft, active, paused — following [Views overview](/invoca-design-system/views/overview#header-left)'s
+own rule that `Status` is for the page's subject, never implied by which actions are enabled.
+
+### Header — Right
+
+**Page-level actions on this specific record go here**, per
+[TITAN-VIEW-03](/invoca-design-system/views/overview#constraints). This is the surface [CRUD:
+Update](/invoca-design-system/patterns/crud/update) and [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)
+attach to:
+
+- An **Edit** action opens whatever surface [CRUD: Update](/invoca-design-system/patterns/crud/update#choosing-a-surface-revisited)
+  selects for this record's object type — a Drawer, a full page, or inline editing on individual
+  fields. **Which surface that is is Update's decision, not this archetype's** — the same
+  relationship [List view](/invoca-design-system/views/list-view#header-right) already
+  establishes between itself and [CRUD: Create](/invoca-design-system/patterns/crud/create#choosing-a-surface).
+- A **Delete** action opens [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s
+  dialog, at whichever tier that page's own decision tree selects for this record's
+  consequences.
+
+At most one primary action, per [TITAN-VIEW-04](/invoca-design-system/views/overview#constraints).
+Collapse anything past three actions into a [Menu](/invoca-design-system/components/actions/menu),
+per [Views overview](/invoca-design-system/views/overview#header-right).
+
+### Header — Tabs versus a scrolling page
+
+A detail view's body is either a **single scrolling page** or **tabbed sections**, never both
+at once, per the header's second-row exclusivity already stated in
+[Views overview](/invoca-design-system/views/overview#header-tab-bar). This page cites that
+model rather than deriving a second one.
+
+**The threshold: tab when the record's sections are independently substantial enough that a
+reader wants to jump to one without scrolling past the others.** A campaign with an overview,
+a routing configuration, and a call history each deep enough to scroll on its own is tabbed. A
+record whose attributes fit in a screen or two of scrolling, with nothing a reader would want
+to jump past, stays a single `Contents` region with grouped sections and anchor headings.
+
+There is no fixed count of attribute groups that forces tabs — it is whether scrolling past a
+section costs the reader something. A record with four short groups and one long call history
+often reads better as one scrolling page with the long section last, not four tabs for one page's
+worth of content.
+
+When tabbed, each tab is a section of *this record's own data* — Overview, Routing, History —
+never an action or a filter, per [TITAN-VIEW-15](/invoca-design-system/views/overview#constraints).
+Selecting a tab changes the URL, per [TITAN-VIEW-14](/invoca-design-system/views/overview#constraints),
+so a specific section of a specific record is linkable and survives a reload.
+
+### Contents — attribute groups and related data
+
+**The whole record is one `Contents` region**, per [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints).
+When the page is tabbed, each tab's content is a `TabPanel` inside that same `Contents` — the
+tabs partition one region, they do not create additional ones.
+
+Inside it, two kinds of content recur:
+
+- **Attribute groups** — the record's own fields, grouped by what they describe (identity,
+  configuration, targeting) rather than listed flat. Grouping is a per-page decision; the
+  system does not prescribe group names.
+- **Related data** — a collection attached to this record but not the record itself: a
+  campaign's calls, a routing rule's change history, a number's assigned campaigns. This
+  renders as a compact [Table](/invoca-design-system/components/data-display/table) or
+  [List](/invoca-design-system/components/data-display/list) embedded in a `Contents` section.
+
+**A related-data table here is not the same archetype as a full [List view](/invoca-design-system/views/list-view)
+for that same collection.** [List view](/invoca-design-system/views/list-view)'s own [Choose
+something else when](/invoca-design-system/views/list-view#choose-something-else-when) table
+already names this page as the destination for "show one record's attributes and related data" —
+this section is that destination. The embedded table is scoped to this one record (a campaign's
+calls, not all calls), is denser, and typically drops filtering and bulk actions that the
+collection's own list view would carry. A "View all" affordance on the embedded table can hand
+off to that collection's full list view, pre-filtered to this record, when the reader needs the
+full apparatus.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Attribute groups | Plain content, grouped by subject | No fixed layout — a two-column key/value grid and a stacked list both occur. |
+| Related data | [Table](/invoca-design-system/components/data-display/table) or [List](/invoca-design-system/components/data-display/list) | Scoped to this record. Distinct from that collection's own [List view](/invoca-design-system/views/list-view) — see above. |
+| No related data yet | [EmptyState](/invoca-design-system/components/data-display/empty-state) | Per [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states#when-this-applies)'s "nothing here yet" case — a campaign with no calls yet is not an error. |
+| Loading | [Skeleton](/invoca-design-system/components/feedback/skeleton) | Matching the shape of the attribute groups and any related-data table, per [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons). |
+
+### Footer
+
+**Absent by default.** Most attribute viewing has no single, whole-page commit — a reader looks
+at a record, they do not submit it, per the same reasoning [List view](/invoca-design-system/views/list-view#regions)
+gives for its own footer.
+
+A footer applies only when the **whole page is inline-editable as a unit** — every field on the
+page is open for editing at once, with one Save and one Cancel for the entire record. This is
+rare. The far more common case, a single field the reader wants to change without leaving the
+page, is [Inline editing](/invoca-design-system/patterns/inline-editing)'s territory: it commits
+per-field, with no page-level footer at all. Reach for a page-level footer only when the edit
+genuinely spans the whole record at once; reach for [Inline editing](/invoca-design-system/patterns/inline-editing)
+for everything short of that.
+
+## Responsive and density behavior
+
+Titan is desktop-first — most surfaces live at `lg` and `xl`, and `xs`/`sm` are rarely
+exercised (see [Layout & grid](/invoca-design-system/foundations/layout-and-grid#breakpoints)).
+What follows is proposed with that in mind.
+
+| Breakpoint | Collapses | Stacks | Dropped |
+|---|---|---|---|
+| `md` and below | A two-column attribute grid collapses to one column | The header's `Actions` group may move into a [Menu](/invoca-design-system/components/actions/menu) if it no longer fits `Right` | Nothing — a collapsed related-data table's lower-priority columns follow [List view](/invoca-design-system/views/list-view#responsive-and-density-behavior)'s own column-collapse logic; this page does not re-derive a second answer for the embedded table |
+| Compact density | Attribute group spacing tightens; related-data table row height only | — | — |
+
+## Accessibility
+
+The page-level decisions are the frame's, and they apply unchanged — see
+[Views overview → Accessibility](/invoca-design-system/views/overview#accessibility). One `main`,
+one `h1` on `Title`, region order matching visual order.
+
+What is **specific to this archetype**:
+
+- **The `Title` is the record's own identifying name**, so a screen-reader user landing on the
+  page hears what record they're on immediately, without needing `Breadcrumb` or `Status` read
+  first.
+- **Attribute groups get their own heading**, descending from `Title`'s `h1` without skipping a
+  level, so the page's outline reflects its grouping the same way its visual layout does.
+- **A tabbed detail view follows the tab bar's own accessibility requirements** in
+  [Views overview](/invoca-design-system/views/overview#accessibility) — a named `Tabs`
+  region, each tab's `id`/`aria-controls` pointing at its panel, and the panel's own heading
+  inside it (a tab label is not a heading, per that section).
+- **The related-data table's accessible name identifies the relationship**, not just the
+  collection — "Calls for this campaign," not "Calls" — so a screen-reader user can tell it apart
+  from that collection's own full [List view](/invoca-design-system/views/list-view) if they've
+  visited both.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DTLVIEW-01** | `Title` is the record's own name or identifier, never a generic label for the page type. | A reader arriving from a link, search result, or row action should see the identity they clicked, not a category label repeated on every record of that type. |
+| **TITAN-DTLVIEW-02** | Page-level actions on the record — edit, delete — render in `Header` → `Right`, never beside `Title`. | Per [TITAN-VIEW-03](/invoca-design-system/views/overview#constraints) — `Left` says what the record is, `Right` says what can be done to it. |
+| **TITAN-DTLVIEW-03** | The edit action opens whatever surface [CRUD: Update](/invoca-design-system/patterns/crud/update#choosing-a-surface-revisited) selects for this object type. This archetype does not choose the surface itself. | Matches [TITAN-LSTVIEW-02](/invoca-design-system/views/list-view#constraints)'s relationship to Create — the surface decision belongs to the CRUD pattern, not the view that hosts the trigger. |
+| **TITAN-DTLVIEW-04** | The delete action opens [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation), never a bespoke confirmation. | A second confirmation pattern invented per page defeats the friction-matching [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation#three-tiers-of-friction) already tunes across the whole product. |
+| **TITAN-DTLVIEW-05** | The record's attribute groups and related data share one `Contents` region. A tabbed body wraps each section in `TabPanel` inside that same region. | Per [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints) — tabs partition one region, they do not create a second. |
+| **TITAN-DTLVIEW-06** | A related-data table embedded in `Contents` is scoped to this record and is not a substitute for that collection's own [List view](/invoca-design-system/views/list-view). | A reader who needs to filter, sort broadly, or bulk-act across the full collection has outgrown the embedded table's scope — see [Contents — attribute groups and related data](#contents-attribute-groups-and-related-data). |
+| **TITAN-DTLVIEW-07** | A footer appears only when the entire page commits as one unit. A single field's edit uses [Inline editing](/invoca-design-system/patterns/inline-editing) instead. | Per [Footer](#footer) — most attribute viewing has no whole-page commit, and inventing one for a single field's change borrows a footer for a job [Inline editing](/invoca-design-system/patterns/inline-editing) already does without one. |
+
+## Composed example
+
+<Warning>
+  **No live embed exists yet.** Per this page's own rule, a composed example should be a real
+  screen or a live embed rather than a static image — the diagram below is structural (region
+  names and what's in them, no measurements or visual styling) for exactly that reason, the
+  same way every Structure diagram in [Patterns](/invoca-design-system/patterns/overview) is.
+  Replace it with a live embed the first time this archetype is built.
+</Warning>
+
+```
+┌─────────────────────────────────────────────────────┐
+│ Campaigns / Q3 Paid Search          Active           │  ← Header: Left (Breadcrumb, Title, Status)
+│                                    [Edit] [Delete ▾]  │  ← Header: Right (Actions)
+├─────────────────────────────────────────────────────┤
+│  Overview   Routing   History                        │  ← Tabs, header's second row
+├─────────────────────────────────────────────────────┤
+│  Identity                                            │  ← Contents: attribute group
+│    Name        Q3 Paid Search                        │
+│    Created     Jun 1, 2026                            │
+│                                                       │
+│  Configuration                                       │  ← Contents: attribute group
+│    Budget      $12,000 / month                        │
+│    Numbers     3 assigned                             │
+│                                                       │
+│  Recent calls                          [View all →]  │  ← Contents: related data (scoped table)
+│  ┌───────────────────────────────────────────────┐   │
+│  │ Call ID     Time         Duration     Status   │   │
+│  │ CL-88213    2:14 PM      3:42         Completed│   │
+│  │ CL-88209    1:57 PM      0:41         Missed    │   │
+│  └───────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────┘
+```
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame this archetype fills
+- [CRUD: Read](/invoca-design-system/patterns/crud/read) — decides when this view is the right destination
+- [CRUD: Update](/invoca-design-system/patterns/crud/update) — decides what surface the edit action opens
+- [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) — the delete action's destination
+- [Inline editing](/invoca-design-system/patterns/inline-editing) — the more common answer for a single field's change
+- [List view](/invoca-design-system/views/list-view) — where a record's reader most often arrives from
+- [Split view](/invoca-design-system/views/split-view) — a narrower version of this content model, alongside the list it came from
+- [Table](/invoca-design-system/components/data-display/table) · [List](/invoca-design-system/components/data-display/list) — what fills a related-data section
+
+## Why it works this way
+
+**The record is the whole page, so its actions live in one place.** A page that mixes the
+record's own actions with actions on its related data — deleting a call from inside the
+campaign's detail view, say — asks the reader to track two different "what can I act on here"
+answers on one screen. Keeping `Header` → `Right` reserved for actions on the page's own
+subject, and letting each related-data table carry its own scoped row actions if it needs any,
+keeps that answer to one per region.
+
+**Tabs are a threshold decision, not a default.** A detail view that reaches for tabs before a
+section has earned independent scrolling produces a record split into three shallow screens
+instead of one page a reader can skim in a single scroll. The cost of tabbing too early is not
+visual — it's that a reader who wants to check two facts in different sections now pays for two
+navigations instead of one scroll.

@@ -1,0 +1,211 @@
+---
+title: "Search"
+description: "Natural-language search over call data, so a user describes what they want instead of building a filter query by hand."
+icon: "search"
+keywords: ["natural language search", "ask", "query", "semantic search", "call search", "nl search"]
+---
+
+<Warning>
+  **Exemplar page — proposal only, nothing shipped.** There is no natural-language search
+  surface in Invoca's product today. Everything below is design intent offered for review,
+  not established policy. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+A user who wants calls matching a criterion today has to know which fields hold that
+criterion and build a filter against them. Search lets them ask for it instead: "show me
+calls last week where the caller asked about pricing and hung up" becomes a result set,
+without the user first figuring out that "asked about pricing" lives in the transcript and
+"hung up" lives in the disposition field.
+
+The job is translation, not retrieval. The system reads the request, decides which fields
+and time range it implies, runs the underlying query, and returns records the user can open,
+export, or act on. The user never sees a query language. They see their own words restated
+as an interpretation they can check, and a list of calls.
+
+This is proposal for a job Invoca does not yet do this way. Call data can already be
+filtered by structured fields; nothing today accepts a sentence and resolves it into that
+filter automatically.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The fields to filter on are known and the values are structured — a date range, a campaign, a disposition, a tag | [Filtering and search](/invoca-design-system/patterns/filtering-and-search) | A deterministic filter returns the same result for the same inputs every time. Search only earns its cost when the request doesn't map cleanly onto fixed fields. |
+| The user has already found the call and wants its gist | [Summarize](/invoca-design-system/ai-experience/actions/summarize) | Search's job ends at the result list. Turning one result into a synopsis is a different job. |
+| The user wants the system to produce something reviewable from the results, not just find them | [Draft](/invoca-design-system/ai-experience/actions/draft) | Search is read-only by definition. A follow-up email or a note is an artifact, not a result set. |
+| The user wants a record changed based on what search turned up | [Update](/invoca-design-system/ai-experience/actions/update) | Search never writes. Acting on a result is a separate, higher-authority step. |
+
+## Agency tier
+
+**Suggests.** Search surfaces a result set; the user decides what to do with it, including
+nothing. Refusing the suggestion costs nothing — clearing the query or ignoring the results
+has no consequence. Search never qualifies for a higher tier: it has no side effect to make
+reversible or irreversible in the first place.
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────────┐
+│  [ Input: "calls last week where caller asked      │
+│    about pricing and hung up"              [ ⌕ ] ] │
+│                                                     │
+│  Interpreted as:                                   │
+│  [Tag: last 7 days] [Tag: topic: pricing]           │
+│  [Tag: outcome: hangup]                    [ Edit ] │
+│                                                     │
+│  ┌─────────────────────────────────────────────┐  │
+│  │ Table / List of matching calls               │  │
+│  │  ...                                          │  │
+│  └─────────────────────────────────────────────┘  │
+│                                                     │
+│  (no matches: EmptyState, "0 calls matched")        │
+└───────────────────────────────────────────────────┘
+```
+
+- [Input](/invoca-design-system/components/forms/input) — the query, in the user's words.
+- [Tag](/invoca-design-system/components/data-display/tag) — the parsed interpretation, one
+  per field the system decided to filter on. Editable, not decorative.
+- [Table](/invoca-design-system/components/data-display/table) or
+  [List](/invoca-design-system/components/data-display/list) — the result set.
+- [EmptyState](/invoca-design-system/components/data-display/empty-state) — zero matches.
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Query is being parsed and run. Progress is visible on the input; cancellable. |
+| Streaming / partial | Applies if results arrive incrementally on a large date range. Partial results are labeled as partial, not presented as the complete set. |
+| Confident and right | The interpretation chips match what the user meant, and the result set matches the chips. |
+| Confident and wrong | See below. |
+| Uncertain | The request maps to more than one plausible interpretation (e.g., "pricing" as a transcript topic versus a tagged campaign name). Shown as two sets of chips to pick from, not silently resolved to one. |
+| Refused | The request can't be resolved against call data at all (asks for something outside what's indexed). States why, and offers the deterministic filter UI as a fallback. |
+| Empty | Zero calls matched the interpreted query. Distinguished from a broken search by restating the interpretation next to "0 calls matched" — the chips prove the query ran. |
+| Interrupted | User navigates away or cancels mid-run. Nothing is committed by a search, so nothing needs to survive; re-running from the same input is the recovery path. |
+| Degraded | Falls back to keyword matching instead of a semantic parse of the request. Disclosed in the interpretation chips (a keyword-matched chip reads differently from a parsed-field chip) rather than silently returning a narrower result set. |
+| Rate-limited / over budget | Undecided how a per-user query limit would be surfaced; see Gaps. |
+| Stale | Calls landing after the search ran won't appear. Not distinguished from a genuinely narrow result today — a proposal gap. |
+
+**Confident and wrong**, in detail: the failure is a misparsed interpretation that still
+looks plausible — "pricing" resolved to a tag that happens to exist but isn't what the
+caller meant, or a date range off by a week. The result set can look reasonable at a glance
+and still be the wrong set of calls. The only seam available is the interpretation chips:
+if a user doesn't read them against their own intent, nothing else in the result list will
+tell them the query ran wrong. This is why the chips are specified as the primary anatomy
+element, not the input box — they are the one place a wrong parse is checkable before the
+user acts on what looks like a normal list of calls.
+
+## Disclosure & recourse
+
+1. **Does the user know this is AI?** Yes — the interpretation chips are the disclosure. A
+   plain filter UI doesn't restate the user's own words back as a parsed query; seeing that
+   restatement is what signals a model sat between the request and the result.
+2. **What did it use?** The user's own query text and the call data already in their scope —
+   transcripts, metadata, dispositions. Not other customers' data, not any source outside
+   call records.
+3. **How sure is it?** No confidence figure is proposed. The interpretation chips carry the
+   information that would otherwise need a confidence number: an ambiguous chip triggers the
+   Uncertain state above (a choice between interpretations) rather than a percentage next to
+   a single guess.
+4. **How does the user check it?** Read the interpretation chips against what they meant, then
+   spot-check a result by opening the underlying call record.
+5. **How does the user correct it?** Edit a chip directly, or rephrase the query. Either
+   re-runs the search; a correction doesn't persist as a standing rule anywhere else — each
+   search is independent. Whether a corrected query can be saved is undecided; see Gaps.
+6. **How does the user get out?** Clear the query, or switch directly to
+   [Filtering and search](/invoca-design-system/patterns/filtering-and-search) for the same
+   result set built by hand.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+Nothing in Invoca's product performs this job today, so there is no source to generate this
+section from.
+
+## Evaluation
+
+Not evaluated. No eval set, score, or failure-class list exists for this pattern anywhere
+accessible.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| Zero results | "0 calls matched last 7 days, topic: pricing, outcome: hangup." | "No results found." |
+| Interpretation label | "Interpreted as:" | "AI thinks you mean:" |
+| Ambiguous request | "This could mean two things — pick one:" | Silently picking the more common meaning |
+| Degraded fallback | "Matched by keyword, not by topic — results may be broader than expected." | Returning a narrower set with no note that the parse fell back |
+
+## Accessibility
+
+- The result count is announced to a live region once the search completes, not as results
+  stream in — token-by-token or row-by-row announcement is unusable.
+- An indeterminate "working" state needs a text equivalent ("Searching call records…") for
+  anyone not looking at the spinner.
+- If an interpretation chip carries any confidence-like signal, it's paired with text — never
+  color alone, per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Focus moves to the result list heading when a search completes, not back to the input,
+  so a screen reader user lands on the new content rather than re-reading the query.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AISEARCH-01** | The parsed interpretation is always shown before or alongside results, as editable chips. | It is the only checkable seam between a right parse and a wrong one that still returns a plausible-looking list. |
+| **TITAN-AISEARCH-02** | An ambiguous request is resolved by asking the user to choose, never by silently picking the more likely interpretation. | Silent resolution removes the one moment the user could catch a misread request. |
+| **TITAN-AISEARCH-03** | A degraded (keyword-fallback) result set is visually distinguished from a fully parsed one. | A narrower, lower-quality result set that looks identical to a good one is a confident-and-wrong failure by another name. |
+| **TITAN-AISEARCH-04** | Zero results always restate the interpreted query next to the empty message. | Proves the query ran as understood, distinguishing a genuinely empty result from a broken search. |
+| **TITAN-AISEARCH-05** | Search never writes to a record. | Search's tier is Suggests; any side effect belongs to Draft or Update instead. |
+| **TITAN-AISEARCH-06** | No confidence percentage is shown unless it would change what the user does next. | Matches [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints) — a number that doesn't change behavior is decoration. |
+
+## Divergences
+
+Not applicable. Nothing is shipped, so there is no code behavior to diverge from.
+
+## Gaps
+
+- Whether a search or its edited interpretation can be saved and reused is undecided.
+- Whether search is scoped to the calls a user already has access to, or something narrower
+  (a saved view, a date default), is undecided.
+- How a per-user or per-workspace rate limit would be surfaced before it's hit is undecided.
+- How staleness (calls landing after the search ran) is communicated, if at all, is undecided.
+
+## Volatility
+
+This page depends entirely on a search surface that does not exist. It should be
+re-verified the moment any natural-language search capability is scoped for Invoca's
+product — at that point the anatomy, outcome states, and constraints above need checking
+against whatever is actually built, not assumed to already match. Written 2026-09-02.
+
+## Related
+
+<Columns cols={2}>
+  <Card title="AI Experience overview" icon="sparkles" href="/invoca-design-system/ai-experience/overview">
+    The vocabulary, agency tiers, and outcome states this page inherits.
+  </Card>
+  <Card title="Summarize" icon="file-text" href="/invoca-design-system/ai-experience/actions/summarize">
+    Turning one already-found call into a synopsis.
+  </Card>
+  <Card title="Draft" icon="pencil-line" href="/invoca-design-system/ai-experience/actions/draft">
+    Producing a reviewable artifact from what search finds.
+  </Card>
+  <Card title="Update" icon="refresh-cw" href="/invoca-design-system/ai-experience/actions/update">
+    Acting on a record search turned up.
+  </Card>
+  <Card title="Filtering and search" icon="layout-template" href="/invoca-design-system/patterns/filtering-and-search">
+    The deterministic alternative — same job, no model in between.
+  </Card>
+  <Card title="Wayfinders: Initial CTA" icon="route" href="/invoca-design-system/ai-experience/wayfinders/initial-cta">
+    How a user would discover this feature exists at all.
+  </Card>
+</Columns>
+
+## Why it works this way
+
+The interpretation chips are the design, not a decoration on top of it. A natural-language
+search that only shows results has moved the ambiguity from the query box into the result
+list, where it is far harder to notice — a plausible list of calls gives no signal that the
+request behind it was misread. Restating the parse as editable, checkable chips keeps that
+ambiguity where the user is already looking, before they've started trusting the results.

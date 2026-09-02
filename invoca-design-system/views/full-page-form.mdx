@@ -1,12 +1,231 @@
 ---
 title: "Full page form"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "layers"
+description: "A page whose entire body is one form: several independent sections, one commit, no sequence."
+icon: "square-pen"
 tag: "Draft"
+keywords: ["full page form", "form page", "create page", "edit page", "table of contents", "anchor nav", "single form"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+  page — Titan's design library was not available while writing it. It is built from general
+  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview)
+  and [CRUD: Create](/invoca-design-system/patterns/crud/create) already establish. Treat every
+  constraint below as a starting point to check against real product screens, not as a rule
+  already enforced.
 </Warning>
+
+## What it is
+
+A page whose entire body is **one form, committed once** — new campaign, integration settings,
+a routing rule with several independent fields. It's the surface [CRUD: Create](/invoca-design-system/patterns/crud/create#structure)'s
+tree lands on when an object is permanent enough to earn its own page and dense enough that a
+modal can't hold it, but its sections don't depend on each other in order. It's also [CRUD:
+Update](/invoca-design-system/patterns/crud/update)'s surface for the same object once it
+already has data.
+
+You're building one if the page's job is "capture everything, then commit." A page whose
+sections must be visited in a fixed order is a [Wizard](/invoca-design-system/views/wizard),
+not this.
+
+## Region vocabulary
+
+This archetype adds no regions. It uses the [page frame](/invoca-design-system/views/overview#the-page-frame)
+as published. One addition is worth naming even though it isn't a frame region: when the form has
+several independent sections, this archetype resolves [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints)'s
+"a Table of Contents" into a concrete in-page anchor nav — see [Contents — the form](#contents-the-form)
+below.
+
+| Region | Also called | The system uses |
+|---|---|---|
+| Page body | The form, the page | **`Contents`** |
+| In-page anchor nav | Table of contents, section nav, jump links | Not a named region — an in-page navigation aid built from anchors inside `Contents` |
+
+## Choose this view when
+
+- The object is permanent — it gets its own page and URL after this — per [CRUD: Create](/invoca-design-system/patterns/crud/create#structure)'s
+  Permanence axis.
+- It needs more room than a modal — several fields, or several sections — per that same tree's
+  Density axis.
+- Those sections don't depend on each other in a fixed order. A reader could fill them in any
+  sequence and the form would still make sense.
+
+## Choose something else when
+
+| If the object also needs… | Use | Why |
+|---|---|---|
+| Sections that must be completed in a fixed, dependent order | [Wizard](/invoca-design-system/views/wizard) | [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints): sections that depend on each other in order need a visible sequence, not a scrollable page. |
+| A lighter surface — few fields, no lasting page of its own | A [Dialog](/invoca-design-system/components/containment/dialog) or [Drawer](/invoca-design-system/components/containment/drawer) | [CRUD: Create](/invoca-design-system/patterns/crud/create#structure)'s Permanence and Density axes resolve to a lighter surface before this archetype is ever reached. |
+| To stay visible alongside a parent list while editing | A [Drawer](/invoca-design-system/components/containment/drawer) | Continuity with the parent costs more than the interruption a full page saves — same tree, Continuity axis. |
+
+## Regions
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| `Header` — `Left` | Yes | `banner` | `Title` naming the object being created or edited. `Breadcrumb` back to where the flow started. |
+| `Header` — `Right` | No | — | Empty by default, or a secondary, non-committing action. Never the page's Save. |
+| `Contents` | Yes | `main` | The form: all sections, visible on scroll. An in-page anchor nav when there's more than one section. |
+| `Footer` | Yes | `contentinfo` | Cancel and the commit action, trailing-only arrangement. |
+
+## What fills each region
+
+### Header — Left
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Title | `Title` | **Required.** States what's being created or edited — "New Campaign" while creating, the object's own name ("Q3 Paid Search") while editing. Not a generic "Edit" or "Create." |
+| Breadcrumb | `Breadcrumb` | Points back to where the flow started — the list or detail page the reader triggered Create or Update from. |
+
+### Header — Right
+
+`Right` is typically empty, or holds a secondary action that doesn't commit the page — something
+like "Preview," never Save.
+
+**The page-level Save and Cancel belong in `Footer`, not here.** This is worth stating directly
+because it's the most common instinct to violate: a form's primary commit reads, at a glance,
+like a page-level action, and `Right` is where page-level actions live per
+[TITAN-VIEW-03](/invoca-design-system/views/overview#constraints). But `Right` sits above a form
+the reader hasn't finished filling in — a Save button there implies the commit is available
+before the page's own footer says it is, and it's out of reach once the reader has scrolled past
+the header on a long form. The footer is anchored (or reachable) at the point where the reader
+has actually finished, which is the only point committing should be possible.
+
+### Contents — the form
+
+The form is the whole body. When it has several independent sections, `Contents` carries both
+the sections and a way to move between them — resolving what
+[CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) already
+states ("a form with several independent sections is one page with a Table of Contents, not a
+Wizard") into a concrete answer.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| The form | [Form](/invoca-design-system/components/forms/form) | One per page. Sections are visually distinguished — headings, dividers, or grouped cards — but never hidden behind tabs or steps. |
+| Section anchor nav | An in-page jump list, likely down the side or across the top | Every section is on the page at once and reachable by scrolling; the anchor nav is a shortcut to a section, not a gate in front of it. Clicking an anchor scrolls to that section — it never hides the others. |
+| Section heading | Typography, one per section | Gives the anchor nav something to link to and gives the reader a landmark while scrolling. |
+
+**Why an anchor nav rather than tabs.** Tabs show one section and hide the rest, which is the
+sectioned-but-not-sequential case the frame already reserves for a different signal — a tab bar
+means "this page has sections of its own subject," and here the sections are all one object being
+authored together, not separate views of it. An anchor nav keeps every section visible on scroll,
+which also means [Form validation](/invoca-design-system/patterns/form-validation)'s "surface
+every invalid field" guidance never has to reveal a hidden tab to show an error — nothing is ever
+hidden in the first place.
+
+### Footer
+
+The default **trailing-only** arrangement per [Views overview: Footer](/invoca-design-system/views/overview#footer) —
+Cancel and the commit action, commit last, per [TITAN-VIEW-09](/invoca-design-system/views/overview#constraints)
+and [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints). This archetype is a single
+unit of work, not a step in a sequence, so the leading-and-trailing arrangement with a `Back`
+action doesn't apply here — that's [Wizard](/invoca-design-system/views/wizard)'s footer, not
+this one.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Trailing — commit and cancel | `Button` | Cancel first, commit last. At most one primary — [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). Commit label states what's being created, per [TITAN-CREATE-05](/invoca-design-system/patterns/crud/create#constraints) — "Create Campaign," not "Save" or "Submit." |
+
+## Responsive and density behavior
+
+Titan is desktop-first — most surfaces live at `lg` and `xl`, and `xs`/`sm` are rarely exercised
+(see [Layout & grid](/invoca-design-system/foundations/layout-and-grid#breakpoints)). What follows
+is proposed with that in mind.
+
+| Breakpoint | Collapses | Stacks | Dropped |
+|---|---|---|---|
+| `md` and below | The anchor nav collapses from a persistent side rail into a dropdown or a collapsible list above the form | Multi-column field layouts within a section stack to one column | Nothing — every section stays reachable; only the nav's own presentation changes |
+| Compact density | Field and section spacing only | — | — |
+
+<Note>
+  **The anchor nav is a convenience, not a route.** Per
+  [TITAN-VIEW-07](/invoca-design-system/views/overview#constraints), a region dropped or
+  collapsed at a narrow viewport is never the only path to a function — scrolling reaches every
+  section with or without the nav, so collapsing it costs navigation speed, not access.
+</Note>
+
+## Accessibility
+
+The page-level decisions are the frame's, and they apply unchanged — see
+[Views overview → Accessibility](/invoca-design-system/views/overview#accessibility). One `main`,
+one `h1` on `Title`, region order matching visual order.
+
+What is **specific to this archetype**:
+
+- **Each section heading is a real heading**, descending from `Title`'s `h1` without skipping a
+  level, so a screen-reader user outlining the page sees the same structure the anchor nav
+  exposes visually.
+- **The anchor nav is a navigation landmark** with an accessible name — "Form sections," not
+  "Navigation" — and its links move focus to the target section's heading, not just scroll
+  position, so a keyboard or screen-reader user lands somewhere announced.
+- **An invalid field is never hidden from view.** Because every section renders on scroll rather
+  than behind a tab or a step, [Form validation](/invoca-design-system/patterns/form-validation)'s
+  error-surfacing guidance never has to additionally reveal a hidden section — the field is
+  already visible or one scroll away.
+- **The commit button's disabled or loading state is announced**, per
+  [Form validation](/invoca-design-system/patterns/form-validation)'s general rule for a
+  page-level submit — a screen-reader user waiting on a long form's submission needs the same
+  feedback a sighted user gets from the button's own state.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-FPFORM-01** | The page-level commit and cancel live in `Footer`, never in `Header` — `Right`. | `Right` holds page-level actions per [TITAN-VIEW-03](/invoca-design-system/views/overview#constraints), but a form's commit isn't available until the reader has finished, and `Footer` is where the frame already places commit and cancel — see [What fills each region — Header — Right](#header-right). |
+| **TITAN-FPFORM-02** | Several independent sections render on one scrollable page with an anchor nav, never behind tabs or a step sequence. | Per [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) — independent sections don't need linear traversal, and hiding them behind tabs reintroduces the sectioned-page signal this archetype isn't. |
+| **TITAN-FPFORM-03** | The footer uses the trailing-only arrangement. The leading-and-trailing arrangement with a `Back` action is reserved for a step in a sequence. | Per [TITAN-VIEW-09](/invoca-design-system/views/overview#constraints) and [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints) — this archetype is one unit of work, not a step, so there's no previous step to return to. |
+| **TITAN-FPFORM-04** | The commit button's label states what's being created or saved, never a generic verb. | Per [TITAN-CREATE-05](/invoca-design-system/patterns/crud/create#constraints) — "Create Campaign," not "Submit." |
+| **TITAN-FPFORM-05** | An anchor in the section nav scrolls to its section; it never hides the other sections. | The nav is a shortcut inside one page, not a tab bar. Hiding sections would make this a tabbed page, which is a different, unaddressed case for a form this shape. |
+| **TITAN-FPFORM-06** | Closing or navigating away from a non-empty, unsubmitted form warns before discarding it, per [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s existing unsaved-edits guidance. | Per [CRUD: Create: TITAN-CREATE-06](/invoca-design-system/patterns/crud/create#constraints) — this archetype doesn't re-decide that behavior, it inherits it. |
+
+## Composed example
+
+<Warning>
+  **No live embed exists yet.** Per this page's own rule, a composed example should be a real
+  screen or a live embed rather than a static image — the diagram below is structural (region
+  names and what's in them, no measurements or visual styling) for that reason, the same way
+  every Structure diagram in [Patterns](/invoca-design-system/patterns/overview) is. Replace it
+  with a live embed the first time this archetype is built.
+</Warning>
+
+```
+┌───────────────────────────────────────────────────────┐
+│ Campaigns / New Campaign                               │  ← Header: Left (Breadcrumb, Title)
+├───────────────────────────────────────────────────────┤
+│ ┌───────────┐ ┌─────────────────────────────────────┐ │
+│ │ Overview  │ │  Overview                            │ │
+│ │ Budget    │ │  Name:   [_______________________]   │ │  ← Contents: anchor nav + form
+│ │ Routing   │ │  ...                                 │ │     (all sections on one scroll)
+│ │ Tracking  │ │                                       │ │
+│ └───────────┘ │  Budget                               │ │
+│               │  Daily cap: [___________]             │ │
+│               │  ...                                  │ │
+│               └─────────────────────────────────────┘ │
+├───────────────────────────────────────────────────────┤
+│                                [ Cancel ] [Create Camp.]│  ← Footer: trailing-only
+└───────────────────────────────────────────────────────┘
+```
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame this archetype fills, including [Footer](/invoca-design-system/views/overview#footer)'s trailing-only arrangement
+- [Wizard](/invoca-design-system/views/wizard) — the sibling archetype for dependent, ordered sections
+- [CRUD: Create](/invoca-design-system/patterns/crud/create) — the decision tree that resolves to this page
+- [CRUD: Update](/invoca-design-system/patterns/crud/update) — what changes when the object already has data
+- [Form validation](/invoca-design-system/patterns/form-validation) — how fields on this page report errors
+- [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) — the unsaved-edits guidance this page inherits
+
+## Why it works this way
+
+**Independent sections stay on one page because hiding them costs more than scrolling does.**
+Tabs and steps both imply an order or a boundary the reader has to reason about — which section
+am I on, is there another one, did I finish it. A form whose sections don't depend on each other
+has none of that structure to communicate, so hiding them behind a control that implies structure
+teaches the reader a relationship that isn't there. An anchor nav gives the same fast-access
+benefit — jump to Budget without scrolling past Overview — without pretending the sections are
+anything but parts of one form.
+
+**The commit lives in the footer, not the header, because the header is available before the
+form is finished and the footer is not.** A Save button in `Right` is reachable from the moment
+the page loads, on a form that isn't valid yet. The footer's presence at the end of the scroll —
+or its stickiness, where the page uses one — matches the commit's own precondition: there's
+something to commit only once the reader has gotten there.

@@ -1,0 +1,207 @@
+---
+title: "Stream of thought"
+description: "Narrating the steps an agentic feature is taking through call data while it works, instead of showing a spinner and a final answer."
+icon: "scroll-text"
+keywords: ["stream of thought", "chain of thought", "reasoning trace", "progress narration", "agentic", "transparency", "governor"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  yet. Nothing below is code fact or measured behavior — it is a proposal for review. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+A call center manager asks an agentic feature a question that requires touching a batch of
+call data — "which campaigns had a spike in missed calls last week, and why?" Answering that
+means scanning call records for a date range, cross-referencing transcripts, and checking for
+patterns across dozens or hundreds of calls. That takes long enough that a spinner leaves the
+manager with no idea whether the system is working, stuck, or about to fail.
+
+Stream of thought replaces the spinner with a narrated list of the real steps the system is
+taking, in the order it takes them: *scanning call records, 6/2–6/8* → *cross-referencing
+missed-call transcripts* → *checking tag and keyword patterns* → *drafting summary*. Each step
+names something specific and checkable — a date range, a count, a data source — not a mood
+("thinking") or a placeholder ("processing").
+
+This is a Governor, not decoration. The steps are the only part of the run a human can inspect
+before the final answer lands, which makes them the first and cheapest place a wrong turn gets
+caught. A manager who knows there were 58 missed calls last week, not 42, can catch that
+mismatch the moment a step names the wrong number — before it propagates into a confident final
+answer.
+
+Stream of thought composes with two other pages in this section: it shows *what the system is
+doing*; [Verification](/invoca-design-system/ai-experience/governors/verification) lets the
+user check a specific *claim* in the finished output against its source; and
+[Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) states how sure the finished
+output *is*. None of the three substitute for each other.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The operation resolves in well under a second | [Skeleton](/invoca-design-system/components/feedback/skeleton) | A step list that flashes and disappears communicates nothing; a shape-of-the-content placeholder is the honest signal for a fast, simple load |
+| The process has a known total and literal percent-complete (e.g., "scanning call 340 of 1,240") | [ProgressBar](/invoca-design-system/components/feedback/progress-bar), determinate | A single number is more precise than free-text steps when the work is truly linear and countable |
+| The user needs to check one specific claim in a finished answer against its source | [Verification](/invoca-design-system/ai-experience/governors/verification) | Stream of thought narrates process while it runs; it is not a citation mechanism for output that already exists |
+| The concern is how sure the final answer is, not what steps produced it | [Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) | Confidence belongs to the trust-builder for the answer, not to the governor for the process |
+| The load is deterministic (no model involved) and has no interim steps worth narrating | [Loading and skeletons](/invoca-design-system/patterns/loading-and-skeletons) | Stream of thought is for narrating a non-deterministic, multi-step run — most loading states are neither |
+
+## Agency tier
+
+**Suggests.** As documented here, stream of thought narrates the process behind a search or
+analysis answer the user still has to act on — it performs no write, sends nothing, and changes
+no record on its own.
+
+That would have to change if a narrated run also *takes* actions as it goes (tagging calls,
+updating a record) rather than only reading and summarizing them. A step list that mixes "I read
+this" narration with "I changed this" narration needs each action's own tier stated and its own
+recourse — see [Agency tier](/invoca-design-system/ai-experience/overview#agency-tier) — not
+just a line item in a progress narration. Escalating past Suggests here is a decision to record,
+not something this pattern should absorb quietly.
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────┐
+│  [Avatar] Signal AI                             │
+│                                                  │
+│  ✓ Scanning call records, 6/2–6/8               │
+│  ✓ Cross-referencing missed-call transcripts    │
+│  ● Checking tag and keyword patterns...         │
+│  ○ Drafting summary                             │
+│                                                  │
+│                                    [ Cancel ]    │
+└───────────────────────────────────────────────┘
+```
+
+| Part | Role |
+|---|---|
+| [Card](/invoca-design-system/components/data-display/card) | Container for the whole run |
+| [Avatar](/invoca-design-system/ai-experience/identifiers/avatar) + name | Identifies the system doing the work, visible from the first step |
+| Step row | One named, checkable action; marked done, active, or pending |
+| Live-region text | Carries the announcement when a step completes |
+| [Button](/invoca-design-system/components/actions/button) `text` | Cancels the run in progress |
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Step list updates as each step completes; the active step is marked distinctly from done and pending ones; Cancel stays available for the full run |
+| Streaming/partial | Completed steps stay visible while later ones are still pending; a step never renders as done before its result actually exists |
+| Confident and right | The easy case — final steps complete, the step list stays visible as the answer's audit trail |
+| Confident and wrong | **The primary case.** The step list is the only pre-answer defense, and it only works if a knowledgeable user actually checks a named quantity against what they independently know — a step claiming "42 transcripts" when the user knows there were 58 missed calls is the seam. If the steps are generic ("Processing...") or the wrong step is silently skipped, there is no seam at all and the wrong answer arrives with the same confident presentation as a right one |
+| Uncertain | Ambiguity becomes its own step ("Found 2 campaigns named similarly — using the one with recent activity") instead of being resolved silently |
+| Refused | The step list stops at a named step with a stated reason ("Stopped — this account does not have call-recording access for this range"), not a silent halt |
+| Empty | A step states the negative result plainly ("No missed-call spikes found in this range") rather than leaving an empty step list beside a blank answer area |
+| Interrupted | Cancel freezes the list at its last completed step; any partial result already produced stays visible and is labeled partial |
+| Degraded | A fallback (smaller sample, transcripts-only, cached data) is named in its own step, not folded silently into a step that otherwise reads as complete |
+| Rate-limited/over budget | The limit is named as a step ("Scanned 500 of 1,240 calls — stopped at the time budget"), not discovered only by counting the final answer's coverage |
+| Stale | Not applicable to this page. Stream of thought describes one run in progress; whether its finished output later goes stale is the finished answer's property, covered wherever that answer's own page documents it, not here |
+
+## Disclosure & recourse
+
+1. **Does the user know this is AI?** Yes — the identifier and the first step render together, before any content is shown, not only once an answer appears.
+2. **What did it use?** Named per step, literally — each step states the data category it is touching (call records, transcripts, tags) rather than a generic verb.
+3. **How sure is it?** Not applicable here by design. Stream of thought narrates completion of steps, not confidence in an answer; a run's confidence is [Caveat](/invoca-design-system/ai-experience/trust-builders/caveat)'s job, not this pattern's.
+4. **How does the user check it?** By comparing the named counts, dates, and sources in each step against what they already know, while the run is still visible — and, once the answer exists, through [Verification](/invoca-design-system/ai-experience/governors/verification) for specific claims in it.
+5. **How does the user correct it?** Not within this pattern. Stream of thought has no edit surface of its own — noticing a wrong step means canceling and re-running with a refined input; nothing here persists a correction.
+6. **How does the user get out?** Cancel stops the run at any point, and the user is never blocked from doing the same lookup manually in Invoca's existing reporting while the run is in progress or after canceling it.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern yet.
+This is fact register — nothing below is invented to fill the gap.
+
+## Evaluation
+
+Not evaluated. No eval set exists for step accuracy, step relevance, or narration honesty.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| Interim step | "Cross-referencing 340 call transcripts from 6/2–6/8" | "Thinking..." |
+| Interim step | "Checking tag and keyword patterns for missed-call spikes" | "Doing some analysis" |
+| Empty result step | "No missed-call spikes found in this range" | "Working on it" |
+| Degraded step | "Scanned 500 of 1,240 calls — stopped at the time budget" | (no mention of the shortfall) |
+| Refusal step | "Stopped — this account does not have call-recording access for this range" | "Something went wrong" |
+
+## Accessibility
+
+- The live region announces on step completion, using `aria-live="polite"` — never per token
+  or per character. Token-level announcement is unusable with a screen reader and drowns the
+  update that actually matters.
+- An indeterminate wait inside a single step (no known duration) needs a non-visual equivalent
+  to a spinner — a periodic textual update ("still checking transcripts"), not silence.
+- If any step marks itself uncertain, that is text, never color alone — see
+  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Focus stays on the control that triggered the run; it does not jump on every step change.
+  When the step list is replaced by the final answer, the live region announces completion and
+  focus moves to the answer's heading.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SOT-01** | Each streamed step names a real object or quantity from the current run — a count, a date range, a data source — never a generic phrase like "Thinking" or "Processing." | A step a user can check against their own knowledge is what makes this a governor rather than decoration. |
+| **TITAN-SOT-02** | The live region announces on step completion, not per token or per character. | Token-level announcement is unusable with a screen reader and buries the update that matters. |
+| **TITAN-SOT-03** | A Cancel control is present and functional for the full duration of the run. | Narrating a process without a way to stop it invites patience but not control. |
+| **TITAN-SOT-04** | When a step reflects a fallback, a partial scan, or a budget limit, that is stated in the step text itself, not only in a disclaimer after the run finishes. | A disclosure that arrives after the fact defeats the purpose of narrating steps as they happen. |
+| **TITAN-SOT-05** | Stream of thought narrates process; it never carries the system's confidence in its final answer. | Confidence belongs to Caveat. Mixing "what it's doing" language with "how sure it is" language makes both harder to read. |
+| **TITAN-SOT-06** | The step list persists, uncollapsed, after the run completes, unless the user dismisses it. | The steps are the audit trail for how the answer was produced; hiding them the instant an answer appears removes the one thing that let a user catch a wrong turn. |
+| **TITAN-SOT-07** | A step never states a completed action that did not happen. If real step-level progress cannot be tracked, the pattern does not synthesize plausible-sounding fake steps. | A stream of thought whose steps are cosmetic rather than real is theater, not oversight — it defeats the entire premise of the pattern. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether steps come from the model's own internal reasoning trace or from a separately
+  instrumented pipeline log is undecided — this determines whether TITAN-SOT-07 is even
+  enforceable, since a model that produces no inspectable intermediate state has no real steps
+  to narrate.
+- Whether this pattern applies to Signal AI's existing single-call transcript summary at all is
+  undecided — a single call likely resolves fast enough that narrating steps may not be
+  warranted; see [Skeleton](/invoca-design-system/components/feedback/skeleton) as the
+  fast-path alternative above.
+- No decision on how long a step list stays retrievable after the session that produced it ends.
+- No decision on whether canceling a run mid-stream affects any future cost or usage budget.
+
+## Volatility
+
+This guidance depends on the eventual model or pipeline being able to expose real, inspectable
+intermediate state — some architectures produce an answer atomically with nothing to narrate,
+in which case this pattern cannot be built as described and would need to be dropped or
+synthesized from external instrumentation instead. It also depends on
+[Identifiers](/invoca-design-system/ai-experience/identifiers/avatar) settling how Signal AI (or
+a future assistant) presents itself in the header shown above. Reverify when a model or
+pipeline is chosen for the first agentic feature that analyzes more than one call at a time.
+Dated 2026-09-02.
+
+## Related
+
+[Verification](/invoca-design-system/ai-experience/governors/verification) and
+[Caveat](/invoca-design-system/ai-experience/trust-builders/caveat), the other two pages in this
+batch. [AI Experience overview](/invoca-design-system/ai-experience/overview), for the
+vocabulary and the agency-tier and outcome-state definitions this page uses.
+[Tuners: Controls](/invoca-design-system/ai-experience/tuners/controls), for adjusting scope
+before or during a run this pattern is narrating.
+[Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize), Signal AI's shipped
+transcript-summary job, which this pattern would sit in front of for a multi-call version.
+[ProgressBar](/invoca-design-system/components/feedback/progress-bar),
+[Skeleton](/invoca-design-system/components/feedback/skeleton),
+[Card](/invoca-design-system/components/data-display/card), and
+[Button](/invoca-design-system/components/actions/button), the components this pattern composes.
+[Loading and skeletons](/invoca-design-system/patterns/loading-and-skeletons), for the
+deterministic case this pattern is not.
+
+## Why it works this way
+
+Narrating real, checkable steps converts a wait into an inspectable trail instead of a black
+box — the same run either produces steps a knowledgeable user can catch a mismatch in, or it
+doesn't, and that is a fact about the run, not a matter of framing. It also forces a discipline
+a decorative spinner never demands: because a step's text is a claim someone can check, the
+engineering behind it has to produce something real to narrate, which is exactly the property
+TITAN-SOT-07 is written to protect.

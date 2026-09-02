@@ -1,12 +1,143 @@
 ---
 title: "Patterns overview"
-description: "TODO — one sentence. What it is and what it is for."
+description: "Named compositions of two or more components, with rules but no export — and how to choose between them."
 icon: "layout-template"
-tag: "Draft"
+keywords: ["patterns", "composition", "recurring", "ui patterns", "decision", "when to use"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Exemplar section — first pass.** [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)
+  was already reviewed to this standard. The nine pages added alongside it are new and carry
+  the same standing its own banner already states: **proposals for review, not established
+  policy.** None were produced by auditing a shipped Invoca screen — Titan's design library and
+  the product surfaces that would confirm or correct them were not available while writing
+  this pass. Each is built from general interaction-design practice and from the constraints
+  Foundations and Components already establish. Treat every constraint below as a starting
+  point to check against real product screens, not as a rule already enforced. The
+  [CRUD](/invoca-design-system/patterns/crud/overview) group nested below was added the same
+  way, under the same standing. See [Coverage, stated honestly](#coverage-stated-honestly).
 </Warning>
+
+## What Patterns governs
+
+A **pattern** is a named composition of two or more components, with rules, but no export. It
+sits between Components and Views in Titan's four-tier ladder: a pattern tells you which
+components to combine, in what order, and how they behave together, but it ships nothing of
+its own — no import, no props API, no tokens. If you can `import` it, it's a Component. If it
+defines a page's regions, it's a View. If it's a recurring, rule-bound arrangement of existing
+components that answers to neither of those tests, it's a Pattern.
+
+Patterns exist because component pages answer "what does a Button do" and views answer "what
+regions does this page have," and neither answers "how do these five components work together
+to let someone delete a campaign safely" or "what happens across a whole form when three
+fields are invalid at once." That composition-level question is this section's job.
+
+## Choosing a pattern
+
+The reader's intent, not the component name, is the useful index. Use this table before the
+card grid below — it is written in the words of the problem, not the solution.
+
+| If you need to… | Use | Not |
+|---|---|---|
+| Let someone act on many rows at once | [Bulk selection](/invoca-design-system/patterns/bulk-selection) | Per-row buttons repeated on every row — cheap to build, expensive for anyone who has to click it fifty times |
+| Ask before an action that destroys work | [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) | A confirmation on an action that's actually reversible — see [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints) |
+| Tell someone a view has nothing in it yet | [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) | A blank region with no explanation — indistinguishable from a bug |
+| Tell someone an action or a load failed | [Error handling](/invoca-design-system/patterns/error-handling) | A generic toast with no path to retry or recover |
+| Let someone narrow a large list down to what they want | [Filtering & search](/invoca-design-system/patterns/filtering-and-search) | Asking the user to scroll and scan a list that's grown past a page |
+| Catch a mistake in a field before it's submitted | [Form validation](/invoca-design-system/patterns/form-validation) | Waiting for a full-page error banner to explain what a red asterisk didn't |
+| Let someone change one small value without leaving the page | [Inline editing](/invoca-design-system/patterns/inline-editing) | A full edit page for a change that's one field |
+| Show that content is on its way, matching its eventual shape | [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) | A centered spinner over a page whose layout is about to jump once content lands |
+| Tell someone about something that happened outside the flow they're in | [Notifications](/invoca-design-system/patterns/notifications) | Blocking the whole page with a dialog for something that isn't a decision |
+| Keep an advanced or rarely-needed option out of the way without deleting it | [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) | Hiding a setting most people need behind an extra click, to keep a screen looking simple |
+| Decide where creating, viewing, editing, or deleting an object should happen — full page, drawer, modal, or inline | [CRUD](/invoca-design-system/patterns/crud/overview) | Defaulting every object to the same surface regardless of how permanent or complex it is |
+
+## Coverage, stated honestly
+
+Every pattern on this site carries the same standing right now: a first-pass proposal, not a
+decision confirmed against a shipped screen. Nothing here is generated, and nothing here has
+been signed off — the column below exists so that changes later, not so it reads as settled
+today.
+
+| Pattern | Decided for Invoca? |
+|---|---|
+| Destructive confirmation | **Proposal** — reviewed once already; the standard the rest of this section is held to |
+| Bulk selection | **Proposal** — first pass |
+| Empty & zero states | **Proposal** — first pass |
+| Error handling | **Proposal** — first pass |
+| Filtering & search | **Proposal** — first pass |
+| Form validation | **Proposal** — first pass |
+| Inline editing | **Proposal** — first pass |
+| Loading & skeletons | **Proposal** — first pass |
+| Notifications | **Proposal** — first pass |
+| Progressive disclosure | **Proposal** — first pass |
+| CRUD (Create, Read, Update, Delete) | **Proposal** — first pass; see its own [coverage note](/invoca-design-system/patterns/crud/overview#coverage-stated-honestly) for how it varies by operation |
+
+## Choosing where to look
+
+<Columns cols={2}>
+  <Card title="Destructive confirmation" icon="trash-2" href="/invoca-design-system/patterns/destructive-confirmation">
+    Undo versus confirm, and three tiers of friction matched to consequence.
+  </Card>
+  <Card title="Bulk selection" icon="list-checks" href="/invoca-design-system/patterns/bulk-selection">
+    Selecting many rows and acting on them as one batch.
+  </Card>
+  <Card title="Empty & zero states" icon="inbox" href="/invoca-design-system/patterns/empty-and-zero-states">
+    Nothing here yet, versus nothing matched, versus something went wrong.
+  </Card>
+  <Card title="Error handling" icon="octagon-alert" href="/invoca-design-system/patterns/error-handling">
+    Where a failure is shown, and what it must tell the user next.
+  </Card>
+  <Card title="Filtering & search" icon="filter" href="/invoca-design-system/patterns/filtering-and-search">
+    Narrowing a list, and keeping the narrowing visible and reversible.
+  </Card>
+  <Card title="Form validation" icon="clipboard-check" href="/invoca-design-system/patterns/form-validation">
+    When an error appears, where it appears, and how many places say it at once.
+  </Card>
+  <Card title="Inline editing" icon="pencil" href="/invoca-design-system/patterns/inline-editing">
+    Editing a value in place, and when that stops being the right idea.
+  </Card>
+  <Card title="Loading & skeletons" icon="loader" href="/invoca-design-system/patterns/loading-and-skeletons">
+    Matching a loading placeholder to the shape of what's coming.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/invoca-design-system/patterns/notifications">
+    Toast, banner, or alert — and what decides which.
+  </Card>
+  <Card title="Progressive disclosure" icon="chevrons-down-up" href="/invoca-design-system/patterns/progressive-disclosure">
+    Keeping a screen simple without hiding what people actually need.
+  </Card>
+  <Card title="CRUD" icon="database" href="/invoca-design-system/patterns/crud/overview">
+    Full page, drawer, modal, or inline — the decision tree for Create, Read, Update, and Delete.
+  </Card>
+</Columns>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-PATTERN-01** | A pattern page composes existing components. It never introduces a new visual value, and never asks for a component that doesn't exist. | A pattern that requires an unshipped primitive isn't a pattern yet — it's a component proposal wearing a pattern's name. |
+| **TITAN-PATTERN-02** | Every "when it doesn't apply" entry names a specific, linked alternative. | "Don't use this for the wrong thing" tells a reader nothing about what the right thing is. |
+| **TITAN-PATTERN-03** | A pattern's constraints cite the component-level constraint they follow from, where one exists, rather than restating it. | Restating a rule in two places means it can disagree with itself the first time one copy is updated and the other isn't. |
+
+## Related
+
+[Components](/invoca-design-system/components/overview), the units these compositions are
+built from. [Views](/invoca-design-system/views/overview), which decide the page regions a
+pattern is placed into. [AI Experience](/invoca-design-system/ai-experience/overview), the
+sibling section for anything in this composition tier where the output isn't deterministic —
+several patterns here have an AI-driven counterpart there (Empty & zero states pairs with
+[Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state);
+Filtering & search pairs with [Search](/invoca-design-system/ai-experience/actions/search)).
+
+## Why it works this way
+
+**A pattern is defined by what it lacks, not by what it contains.** Any of these could be
+redescribed as "a Card, a Button, and some state" — that description is true of nearly every
+screen in the product and explains nothing. What makes something worth a page here is a
+recurring **decision** — when to skip the pattern entirely, what order the pieces go in, what
+happens on failure — not the inventory of components involved.
+
+**Proposal-first is the honest way to grow this section without Titan.** Waiting for every
+pattern to be confirmed against a shipped screen before writing it down means the vocabulary
+for "how does Invoca do bulk selection" doesn't exist until someone happens to build bulk
+selection first and document it after. Writing the proposal first gives the next person
+building one a starting point to correct, instead of a blank page.
