@@ -224,10 +224,18 @@ an undetected failure in the other. Measured values are in
 | **Affects** | [Button](/invoca-design-system/components/actions/button), and every component page where one concept spans several exports |
 
 The documentation was already doing this implicitly. **19 of 39 component pages in the
-navigation have no matching Titan folder** — most are user-friendly aliases rather than
-absences: **Table** is `DataGrid`, `Switch` is `Toggle`, `Dialog` is `Modal`, `Tag` is
+navigation have no matching Titan folder.** Most are simple, harmless aliases — no second export
+competes for the design-vocabulary name: **Table** is `DataGrid`, `Switch` is `Toggle`, `Tag` is
 `Chip`, `Input` is `TextField`, `FileUpload` is `Dropzone`, `Spinner` is `CircularProgress`,
 `ProgressBar` is `LinearProgress`.
+
+**Two are not simple aliases and do not belong in that list.** `Dialog` and `Link` each collide
+with a second, real, unrelated export that also compiles under the design-vocabulary name —
+importing that second export silently produces something dangerously incomplete (`Dialog`) or
+entirely different (`Link`). These are dual-export collisions, not naming aliases: see
+[TITAN-DIV-27](/invoca-design-system/foundations/divergences#titan-div-27) for Dialog/`Modal`
+and [TITAN-DIV-25](/invoca-design-system/foundations/divergences#titan-div-25) for
+Link/`TextLink`.
 
 <Note>
   **Switch/Toggle confirmed, not inferred, as of this pass.** The Figma library's own
