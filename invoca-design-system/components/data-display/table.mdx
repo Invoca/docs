@@ -2,18 +2,11 @@
 title: "Table"
 description: "Rows of records of the same kind, scanned and compared, with selection and per-row actions."
 icon: "table"
-tag: "Draft"
+tag: "Stable"
 keywords: ["table", "data grid", "datagrid", "grid", "rows", "columns", "cells", "list of records", "sorting", "selection"]
 ---
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
-
-<Note>
-  **Exports, published variants, adoption, and status on this page are generated from Titan
-  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
-  off. Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
 
 ## What it is
 
@@ -205,11 +198,16 @@ position carries meaning. If it does not, the structure is a lie.
 | **TITAN-TBL-03** | A table is the whole body of its page. | A summary strip or chart beside it competes with the task the reader came for. A page needing both is a [dashboard](/invoca-design-system/views/dashboard) with a table on it. |
 | **TITAN-TBL-04** | An empty table states **why** it is empty, and offers the action that resolves it. | "No results" for a filter and "nothing here yet" for a new account are different messages. The default overlay says neither, so a new user reads an empty product as a broken one. |
 | **TITAN-TBL-05** | A horizontally scrolling table pins its identifying column. | Scrolled right, an unpinned table shows values with nothing naming the row they belong to, and every cell becomes ambiguous. |
-| **TITAN-TBL-06** | Cells truncate; column headers do not. | A truncated header makes the whole column unreadable rather than one value. Shorten the header instead, and keep the full cell value reachable. |
 | **TITAN-TBL-07** | At most two inline row actions. Past two, collapse into a menu. | A row of controls repeated down the table competes with the data for attention, and the widths stop aligning. |
 | **TITAN-TBL-08** | A bulk action states its count and scope before it runs. | "Delete selected" over a filtered table is ambiguous between the page, the filter, and everything — and the destructive case is unrecoverable. See [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation). |
 | **TITAN-TBL-09** | Sort state is announced programmatically, not only drawn. | A sort arrow is the only feedback that a header press did anything, and it is invisible to a screen reader. |
 | **TITAN-TBL-10** | Never use a table to lay out content that is not tabular. | Row and column semantics assert that position carries meaning. Where it does not, the structure misinforms every assistive technology that reads it. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-TBL-06** | Cells truncate; column headers do not. | This is DataGridPro's shipped themed default, not an independent per-table choice. Retired, not reversed. |
 
 ## Known issues
 

@@ -141,7 +141,12 @@ Three surfaces a new token will **not** appear on. None of these is a bug.
 | **TITAN-TOK-03** | Every new token ships with a `$description` stating what it is for. | A token whose only guide is its name is a token two people will use differently. This is the rule that stops [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02) growing. |
 | **TITAN-TOK-04** | A new component token aliases the semantic tier, or states why it does not. | Skipping the tier duplicates a decision the semantic layer already made, and severs the relationship between the two. |
 | **TITAN-TOK-05** | A missing value is a token proposal, never a literal in component code. | A literal is invisible to the audit and cannot participate in any system-wide change. |
-| **TITAN-TOK-06** | Documentation is re-emitted in the same change that adds the token. | The drift gate makes an un-emitted change fail; re-emitting after the fact means the docs were wrong in between. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-TOK-06** | Documentation is re-emitted in the same change that adds the token. | This page's own "Mechanism" section already describes a hard technical gate (`emit-tokens.mjs --check`) that guarantees this — restating it as a separate Constraint is redundant. Retired, not reversed. |
 
 ## Known issues
 

@@ -8,13 +8,6 @@ keywords: ["radio button", "single select", "mutually exclusive", "option group"
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source.**
-  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
-  Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 A control for choosing exactly one option from a small, fully visible set of mutually
@@ -25,12 +18,6 @@ selected — the group holds exactly one truth at a time, which is what separate
 ## Live example
 
 <StorybookFrame story="components-form-elements-radio-buttons--radio-input" height={140} />
-
-<Note>
-  Story ID `verified` against the real Chromatic Storybook index. Titan groups this
-  under **Form Elements/Radio Buttons**, not a top-level `Radio` group, and ships one
-  story: `radio-input`.
-</Note>
 
 ## Exports
 
@@ -65,11 +52,6 @@ selected — the group holds exactly one truth at a time, which is what separate
 | Capture a single, standalone, immediately-applied setting | Switch | A two-option case needs no group; Switch is the lighter control for exactly one binary decision |
 
 ## Anatomy
-
-<Note>
-  Anatomy diagram `pending` — `/images/components/radio-anatomy.png`. The images directory is
-  empty; nothing is published to generate it from yet.
-</Note>
 
 | # | Part | Required |
 |---|---|---|
@@ -113,6 +95,12 @@ label — see [TITAN-RADIO-02](#constraints).
   push the group past a sibling field's edge. A token existing for this implies the group
   wrapper is a modeled part of the system, not just a convenient `<div>`.
 </Info>
+
+For a complete field rather than the bare control, compose through [Form](/invoca-design-system/components/forms/form)'s
+`FormInput` with `type="radio"` — it also auto-selects the first option when no value is given.
+Unlike Input, Select, and Checkbox, source publishes no named anti-pattern story calling out a
+hand-assembled RadioGroup specifically; the same composition guidance applies, but with that
+one difference in evidence — see [Open issues](/invoca-design-system/components/forms/radio/open-issues).
 
 ## Content
 

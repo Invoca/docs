@@ -1,5 +1,5 @@
 ---
-title: "Tabs: open issues"
+title: "Tabs"
 description: "Divergences, open decisions, and undocumented gaps for Tabs."
 icon: "component"
 ---
@@ -31,3 +31,16 @@ See [Tabs](/invoca-design-system/components/navigation/tabs) for the decided par
   accessory, which is how a status chip ends up on one. Nothing says whether a horizontal tab may.
 - **`wrapped` has no rule.** A label may wrap to a second line, which makes the bar taller.
   Nothing states when that is acceptable rather than a signal to shorten the label.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-TAB-02** | Exactly one tab is selected in a page's tab bar. | A discriminated `variant="page"` prop requiring a non-`false` `value`, or a lint rule. |
+| **TITAN-TAB-03** | Every tab has a panel, with ids referencing each other. | A lint/test asserting Tab↔TabPanel id linkage. |
+| **TITAN-TAB-05** | A disabled tab is paired with a reachable explanation. | A required-when-disabled explanation prop. |
+| **TITAN-TAB-06** | An overflowing bar uses `scrollButtons="auto"`, never `false`. | A lint rule flagging `scrollButtons={false}`. |
+| **TITAN-TAB-08** | An icon-only tab carries an explicit accessible name. | A required accessible-name prop; a11y lint. |

@@ -1,5 +1,5 @@
 ---
-title: "Elevation: open issues"
+title: "Elevation"
 description: "Divergences, open decisions, and undocumented gaps for Elevation."
 icon: "layers"
 ---
@@ -31,3 +31,14 @@ has been decided yet. Neither is resolvable by inference.
   stated reasoning.
 - **`shadow-*-main` aliases `shadow-*-1`** in every direction. No rule says when to use the
   alias rather than the numbered token.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-ELV-01** | Stacking order comes from a `z-*` token, never a numeric literal. | A stylelint rule disallowing numeric `z-index` literals. |
+| **TITAN-ELV-04** | A focus-trapping surface (modal/dialog) always pairs its shadow with a scrim. | Making the scrim non-optional in Titan's Modal/Dialog component — removing any prop that allows disabling it. |
+| **TITAN-ELV-05** | Shadow never indicates state (selection, error, focus). | A lint rule scanning a component's own variant definitions for state-keyed shadow changes. |
+| **TITAN-ELV-06** | A deliberate absence of shadow uses `shadow-*-0`, never the literal `none`. | A stylelint rule disallowing the literal value `none` for `box-shadow`. |

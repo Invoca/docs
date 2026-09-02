@@ -1,15 +1,199 @@
 ---
 title: "Breadcrumb"
-description: "TODO — one sentence. What it is and what it is for."
+description: "A single styled link back to a page's parent, rendered above the title in the page frame's header."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
+keywords: ["breadcrumb", "ancestry", "trail", "back link", "wayfinding", "hierarchy"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+`Breadcrumb` renders **one** styled link — small, bold, all-caps, in the brand color — from a
+page to its parent. It ships as part of the page-frame templates
+(`templates/Page/Breadcrumb.tsx`), alongside `Title`, `Status`, and the rest of the header's
+`Left` slot, and it is exported from the package root like any of them.
+
+<Warning>
+  **This is not a multi-level breadcrumb trail.** Many design systems use "breadcrumb" for an
+  ordered chain of ancestor links joined by separators — Home / Section / This Page. Titan's
+  `Breadcrumb` is a single link with a single destination. Nothing in source composes more than
+  one into a chain: there is no separator, no list wrapper, and no `nav` landmark. If a page's
+  hierarchy is more than one level deep, building that chain is entirely on the caller — see
+  [Known issues](/invoca-design-system/components/navigation/breadcrumb/open-issues).
 </Warning>
+
+## Live example
+
+No Storybook story exists for `Breadcrumb` — verified against the live Storybook index. It has
+no `.stories.js` file in its own directory, and no other component's story renders it either.
+
+## Exports
+
+| Export | Import | Role |
+|---|---|---|
+| `Breadcrumb` | Package root (re-exported from `templates/Page/Breadcrumb`) | The single ancestry link |
+
+<Warning>
+  **This page documents chrome that belongs to the page frame, not an independent concept.** The
+  committed concept map (`tools/component-concepts.json`) files `Breadcrumb` under
+  [Views overview](/invoca-design-system/views/overview), the same place as `Title`, `Status`,
+  and `Actions` — it has no entry of its own there. This page exists because "Breadcrumb" is also
+  a name a reader searches for directly; treat
+  [Views overview](/invoca-design-system/views/overview) as the region-level source
+  and this page as the component-level detail on the one export that fills it.
+</Warning>
+
+Props, from `BreadcrumbProps` in source:
+
+| Prop | Type | Required | Default |
+|---|---|---|---|
+| `to` | `string` | Yes | — |
+| `children` | `React.ReactNode` | Yes | — |
+| `includeBrowserRouter` | `boolean` | No | `true` |
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Breadcrumb | Ancestry link, back link, wayfinding link | **`Breadcrumb`** — always singular in this system |
+| Trail | Breadcrumb trail, ancestry chain, path | Not a concept this component implements |
+
+**Say "the breadcrumb link", not "the breadcrumbs".** Plural implies a chain, and this component
+never renders more than one link at a time.
+
+## Choose Breadcrumb when
+
+- The page has one real parent — a list it belongs to, a section it lives under — and naming
+  that parent in a short link helps a reader get back to it.
+- One level of ancestry is enough. The destination is the immediate parent, not a full path back
+  to the root.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show more than one level of ancestry at once | Nothing in Titan supplies this today | No separator, list, or landmark convention exists for chaining more than one `Breadcrumb` — see [Known issues](/invoca-design-system/components/navigation/breadcrumb/open-issues). |
+| Move to a different, unrelated subject or record | [TopNav](/invoca-design-system/components/navigation/top-nav) or [SideNav](/invoca-design-system/components/navigation/side-nav) | A breadcrumb says where the current page sits; it is not for jumping to something unrelated. |
+| Show which section of *this* page a reader is viewing | [Tabs](/invoca-design-system/components/navigation/tabs) | Breadcrumb is ancestry between pages. A tab is a section inside one page. |
+| Render a general-purpose styled hyperlink, not page ancestry | [Link](/invoca-design-system/components/actions/link) | The system's general link (`TextLink`) has an icon option, underline variants, and no special typography. `Breadcrumb`'s styling is fixed and specific to this one job. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Link text | `children` | Yes |
+| 2 | Destination | `to` | Yes |
+| 3 | Router wrapper | `includeBrowserRouter` (default `true`) | No — see Edge and failure states |
+
+## Variants, sizes, and states
+
+There are none. `Breadcrumb` takes no `size`, `color`, or `variant` prop — confirmed directly
+from `BreadcrumbProps`, which declares only `to`, `children`, and `includeBrowserRouter`. Every
+instance renders identically: small, bold, all-caps text in `theme.palette.primary.main`, with
+`textDecoration: none` applied unconditionally — including on hover, since no hover rule exists
+in the component's styles at all.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| Rendered inside an app that already provides its own Router | With `includeBrowserRouter` left at its default of `true`, the component wraps itself in a second `<BrowserRouter>`. React Router's own `Router` component throws when a second one renders inside an already-routed tree — a general React Router behavior, not something Titan's own test suite exercises directly, but the component's test file avoids it: its second test explicitly passes `includeBrowserRouter={false}` and supplies its own `MemoryRouter` instead of relying on the default. | Pass `includeBrowserRouter={false}` whenever the app already has a Router — true of nearly every Titan-based application, since they are single-page apps with their own routing. |
+| No `to` given | The prop is typed as required, but nothing at runtime enforces it. `Link` from `react-router-dom` needs a real destination to behave as a navigation link. | Always pass a real destination. An empty or missing `to` is not caught anywhere between the type system and the rendered page. |
+| Two `Breadcrumb`s rendered side by side to fake a trail | Each renders independently with no separator, and — if both leave `includeBrowserRouter` at its default — each also tries to mount its own `BrowserRouter`. | Don't. See the trail warning above. |
+| `includeBrowserRouter` left at its default (`true`) | The same prop also sets `reloadDocument={true}` on the underlying `react-router-dom` `Link` — confirmed directly in `Breadcrumb.tsx`, where `reloadDocument={includeBrowserRouter}` is passed straight through. A click does a full browser navigation, not client-side routing, even when no second `Router` mounts to crash. | Pass `includeBrowserRouter={false}` — this disables both the extra `BrowserRouter` wrap and `reloadDocument`, restoring normal client-side navigation. |
+
+## Tokens
+
+Verified directly from `Breadcrumb.tsx` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Value | Source |
+|---|---|
+| Text color | `theme.palette.primary.main` — the raw underlying palette accessor, not a `theme.vars.tokens[...]` binding |
+| Font size, weight, family | `typographySpecs.baseSmallAllCapsBold`, referenced directly as an object, not through a token |
+| Text transform | Hardcoded `uppercase` |
+| Text decoration | Hardcoded `none`, in every state |
+
+<Warning>
+  **Nothing here goes through Titan's semantic token layer.** Every other page-frame template
+  reads from `theme.vars.tokens[...]` or a typed variant of the underlying theme. `Breadcrumb` reaches directly into
+  `theme.palette` and a raw typography spec object instead — an older pattern, confirmed by
+  reading the file directly, that predates the rest of the frame's token usage. It still resolves
+  to the same brand color today, but a color-scheme or palette change is not guaranteed to reach
+  it the way it reaches a token-bound value.
+</Warning>
+
+## Composition
+
+**It belongs in the header's `Left` slot, above `Title`.** [Views overview](/invoca-design-system/views/overview)
+documents the region: at most one `Breadcrumb`, omitted at the top level of a section, sitting
+above the page's title. This page does not repeat that region-level guidance — see it there.
+
+```jsx
+<Left>
+  <Breadcrumb to="/campaigns" includeBrowserRouter={false}>Campaigns</Breadcrumb>
+  <Information>
+    <Title>Spring Promo</Title>
+  </Information>
+</Left>
+```
+
+## Content
+
+- **Name the parent, not the action.** "Campaigns", not "Back to campaigns" — the link text
+  names the destination, the way a breadcrumb does in a file path.
+- **Keep it to one or two words.** The component's fixed all-caps small type does not have
+  headroom for a long label before it starts competing with the title beneath it.
+
+## Accessibility
+
+- Renders a real `<a>` through `react-router-dom`'s `Link` — confirmed by the component's own
+  test, which asserts `getByRole("link", ...)` finds it with the correct `href`.
+- **No `nav` landmark and no `aria-label="breadcrumb"` exist anywhere in source.** For a single
+  link this costs little — a screen reader announces it as a link like any other — but it means
+  there is no landmark to inherit if a trail is ever built on top of this component.
+- Link text should make sense heard in isolation, same as any link — see
+  [Link](/invoca-design-system/components/actions/link#accessibility) for the general rule.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-CRUMB-01** | Pass `includeBrowserRouter={false}` whenever `Breadcrumb` renders inside an app that already has its own Router. | React Router throws when a second `Router` renders inside an already-routed tree; the component's default risks exactly that in the common case. The same prop also gates `reloadDocument` on the underlying link, so leaving the default costs client-side navigation even on the rare page where a second `Router` wouldn't crash. |
+| **TITAN-CRUMB-02** | Use `Breadcrumb` for the single immediate-parent link in the header's `Left` slot only — never as a stand-in for a multi-level ancestry trail. | No separator, list, or landmark convention exists for composing more than one; two adjacent `Breadcrumb`s read as two unrelated links, not a path. |
+| **TITAN-CRUMB-03** | Every `Breadcrumb` carries a real `to` destination naming the actual parent page. | It renders through `react-router-dom`'s `Link`, which is only a real navigation control when given a destination. |
+
+## Known issues
+
+<Card title="Breadcrumb: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/navigation/breadcrumb/open-issues">
+  Divergences, open decisions, and undocumented gaps for Breadcrumb.
+</Card>
+
+## Why it works this way
+
+**It is chrome for one relationship, not a navigation system.** A page's ancestry is part of its
+identity — the same reasoning that puts `Title` in the header rather than the body — so a single
+link naming the parent lives beside the title rather than as a standalone navigation component.
+The cost of that minimalism is that anything beyond one level has no answer yet, which is why the
+warning at the top of this page exists rather than a worked multi-level example.
+
+## Status
+
+Hand-confirmed — no per-component status emitter exists yet for this concept.
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core`, version `3.6.3` |
+| **Export covered** | `Breadcrumb` |
+| **Tests** | Two, both passing per the file's own assertions: default (wrapped) usage, and `includeBrowserRouter={false}` usage |
+| **Story** | None |
+
+## Related
+
+No utilization data is tracked for `Breadcrumb` on its own — it is not its own entry in the
+concept map, so its adoption is folded into [Views overview](/invoca-design-system/views/overview)'s
+count rather than reported separately.
+
+- [Views overview](/invoca-design-system/views/overview) — the region this fills, and the rest of the header's `Left` slot
+- [Link](/invoca-design-system/components/actions/link) — the system's general-purpose styled hyperlink
+- [TopNav](/invoca-design-system/components/navigation/top-nav) · [SideNav](/invoca-design-system/components/navigation/side-nav) — for moving to a different subject rather than back to a parent

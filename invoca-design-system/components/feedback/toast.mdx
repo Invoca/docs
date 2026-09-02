@@ -1,15 +1,238 @@
 ---
 title: "Toast"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A brief notification that appears in response to something the reader just did, and dismisses itself."
+icon: "bell"
+tag: "Stable"
+keywords: ["toast", "snackbar", "notification", "confirmation", "transient message", "notistack"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A **toast** is a notification that appears at the corner of the screen in response to something
+the reader just did, then disappears on its own after a few seconds. It is not part of the page
+layout — it floats above everything else, is queued rather than placed, and does not require the
+reader to do anything to make it go away.
+
+That self-dismissal is what separates it from an
+[alert](/invoca-design-system/components/feedback/alert), which stays in place until the reader
+fixes the condition, dismisses it, or the state changes. A success message with nothing further
+to say is a toast; a message the reader needs to keep referring back to is an alert.
+
+Toast is not a single component you place on a page. It is a queue: `TitanToastProvider` wraps
+the application once, and `showToast(message, options)` pushes a notification into it from
+anywhere — a click handler, a mutation callback, an error boundary — with no JSX to render at
+the call site.
+
+## Live example
+
+<StorybookFrame story="components-toasts--titan-toast-provider-story" height={160} />
+
+## Exports
+
+Verified directly from `Toast/index.js`, `ToastComponent.tsx`, and `TitanToastProvider.tsx` — no
+per-component prop emitter exists yet for this concept, so this table is hand-confirmed rather
+than generated.
+
+| Export | What it is |
+|---|---|
+| `TitanToastProvider` | Wraps the app (or a subtree) once. Mounts the queue, the portal it renders into, and the visual mapping to `ToastComponent`. |
+| `showToast(message, options)` | Queues a toast. Re-exported directly from the underlying notification-queue library as `enqueueSnackbar`, renamed. |
+| `hideToast(key?)` | Dismisses a toast by key, or all of them if no key is given. Re-exported the same way, as `closeSnackbar`. |
+| `ToastComponent` | The visual itself. Exported for advanced composition; not something most call sites import directly. |
+
+`options` accepts `variant` (`"success" | "error" | "warning" | "info"`), `persist` (boolean),
+and the underlying library's own queueing options (`autoHideDuration`, `anchorOrigin`, and so
+on) — confirmed from `ToastComponent`'s destructured props and `TitanToastProvider`'s defaults.
+
+<Warning>
+  **There is no `variant="default"`.** Source explicitly removes it (`interface
+  VariantOverrides { default: false }`), and `TitanToastProvider`'s component map only has
+  entries for `success`, `error`, `warning`, `info`. Calling `showToast` with no `variant`, or a
+  misspelled one, does not fall back to a plain Titan-styled toast — it falls back to the
+  underlying library's own default notification, which carries none of `ToastComponent`'s
+  tokens, icon, or color. See [Edge and failure states](#edge-and-failure-states).
 </Warning>
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Toast** | Snackbar, notification | **`toast`** | `ToastComponent`, queued via `showToast` |
+| **Variant** | Severity, type | **`variant`** | `variant` |
+| **Persist** | Sticky, pinned | **`persist`** | `persist` |
+
+**Variant is the same four-way severity split as Alert** — `success`, `error`, `warning`,
+`info` — and it draws from the identical `-alt` token family (`background-{severity}-alt`,
+`icon-{severity}-alt`). The two components share a visual vocabulary for severity even though
+nothing in source names that sharing explicitly.
+
+## Choose Toast when
+
+- The message confirms something that just happened, and there is nothing more for the reader
+  to do about it.
+- It is fine for the reader to miss it — the underlying state change already took effect, and
+  the toast is a courtesy, not the only record of what happened.
+- The trigger is an action, not something present when the page loads.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Keep a message visible until the reader acts on it or it's dismissed | [Alert](/invoca-design-system/components/feedback/alert) | A toast disappears on a timer regardless of whether the reader saw it. If missing the message matters, it cannot be a toast. |
+| Stop the reader until they decide something | [Dialog](/invoca-design-system/components/containment/dialog) | A toast never blocks interaction, and vanishes without an answer. |
+| Report a problem with one specific field | [Form validation](/invoca-design-system/patterns/form-validation) | A toast is not anchored to the thing it's about. A field error needs to point at the field. |
+| Announce something that should reach every user of the product, not just the one who triggered an action | Not currently available — see [Banner](/invoca-design-system/components/feedback/banner) | A toast is per-session and self-dismissing; it cannot serve as a durable, product-wide notice, and Titan ships no component built for that job today. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Variant icon | automatic, from `variant` | Yes |
+| 2 | Message | `message` (string or node) | Yes |
+| 3 | Dismiss control | shown when `persist: true` | No |
+
+There is no title, no trailing action, and no severity-neutral form — unlike Alert, a toast is
+always exactly one of the four variants and always carries the matching icon.
+
+## Variants, sizes, and states
+
+<Warning>
+  **Every toast renders at a fixed width of `toast-width` (31.25rem / 500px)**, confirmed
+  directly in source. It does not shrink to fit a short message or grow for a long one — a
+  one-word toast and a two-sentence toast occupy the same footprint, and long text wraps inside
+  that fixed width rather than expanding it.
+</Warning>
+
+**Two dismissal modes**, controlled by `persist`:
+
+| Mode | Behavior |
+|---|---|
+| Default (`persist` unset or `false`) | Auto-dismisses after the underlying queue's default duration — **5 seconds**, confirmed from the notification library's own default and not overridden by `TitanToastProvider`. No close button renders. |
+| `persist: true` | Never auto-dismisses. A close button renders, and the reader must dismiss it (or code calls `hideToast`). |
+
+**Stacking defaults to top-right, dense spacing, and up to 3 at once** — all confirmed from
+`TitanToastProvider`'s configuration, and all are the underlying queue's own options rather than
+a Titan-specific model. A 4th toast beyond `maxSnack` queues rather than rendering immediately;
+if all 3 currently showing are `persist: true` (so none is due to auto-dismiss and free a slot),
+the oldest is force-dismissed to make room — confirmed from the queue library's own internal
+messaging for that condition, not from a Titan-authored rule.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `variant` omitted or misspelled | Falls back to the underlying library's own default notification, not `ToastComponent` — no icon, no severity color, no Titan tokens | Always pass a valid `variant`: `success`, `error`, `warning`, or `info`. |
+| Neither `persist` nor a custom `autoHideDuration` is set | Dismisses after 5 seconds regardless of message length | For a longer message, pass `persist: true` rather than assuming the reader finished reading in time. |
+| More than 3 toasts queued, all `persist: true` | The oldest is dismissed automatically to admit the newest | Avoid stacking several `persist` toasts — a reader who dismisses none of them will start losing the earliest ones without acting on them. |
+| The app unmounts `TitanToastProvider` (or it's never mounted) | `showToast` has nothing to render into | Mount `TitanToastProvider` once, near the application root. Not verified against a specific error message — only that no visual queue exists without it. |
+
+## Tokens
+
+Verified directly from `ToastComponent.tsx` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `toast-width` | Fixed width of every toast |
+| `toast-icon-padding-y` | Vertical padding around the variant icon |
+| `spacing-3` | Message padding |
+| `spacing-8` | Icon width (forced with `!important` in source) |
+| `background-{variant}-alt` | Icon-column background, per variant |
+| `icon-{variant}-alt` | Icon color, per variant |
+
+This is the same `-alt` family Alert uses for its four severities — see
+[Alert's tokens](/invoca-design-system/components/feedback/alert#tokens).
+
+## Composition
+
+**`TitanToastProvider` wraps the application once**, typically at or near the root — not per
+page or per feature. Every `showToast` call anywhere in the tree reaches the same queue and
+renders into the same portal at the document body.
+
+**Toasts are called, not rendered.** There is no JSX for an individual toast in normal use; a
+component that wants one calls `showToast` from an event handler, a mutation's `onCompleted`, or
+similar, and never holds toast state itself.
+
+## Content
+
+- **State what happened, in the past tense, in one short line** — the fixed width and short
+  auto-dismiss window both push against long copy.
+- **No severity words in the message.** The icon and color already carry `error`/`warning`, the
+  same rule as Alert.
+- **Do not put the only record of an important outcome in a toast.** If the reader needs to
+  find this information again later, it also needs a permanent home — a toast that dismisses
+  itself does not persist anywhere once it's gone.
+
+## Accessibility
+
+**Every toast renders with `role="alert"`, unconditionally** — confirmed directly in
+`ToastComponent.tsx`, on the wrapping element, regardless of variant. Unlike an
+[Alert](/invoca-design-system/components/feedback/alert#accessibility), where `role="alert"` is
+only correct for content that appears after page load, a toast is *always* triggered by
+something happening after load — it is never present at first render — so the same role is
+correct here without the caveat Alert needs.
+
+**The variant icon's accessible treatment is unconfirmed.** Nothing in `ToastComponent.tsx`
+marks the icon `aria-hidden`, and no test exercises how a screen reader announces it alongside
+the message text.
+
+**A toast that auto-dismisses in 5 seconds may not give a screen reader user enough time to
+finish hearing it**, particularly a longer message. This is not handled specially — the same
+default duration applies regardless of message length or announcement speed. Passing `persist:
+true` for a longer or more consequential message is the only available mitigation today.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TOAST-01** | Always pass an explicit, valid `variant` — `success`, `error`, `warning`, or `info`. | An omitted or misspelled variant silently renders the underlying library's unstyled default notification instead of `ToastComponent`, with no icon and no Titan color. |
+| **TITAN-TOAST-02** | A toast never carries the only record of a consequential outcome. | It self-dismisses after 5 seconds by default and leaves nothing behind. Anything the reader might need to find again belongs somewhere permanent as well. |
+| **TITAN-TOAST-03** | Mount `TitanToastProvider` once, near the application root. | `showToast` has no queue to push into otherwise, and mounting it more than once risks duplicate portals and queues that were not exercised by any test read for this page. |
+| **TITAN-TOAST-04** | Avoid stacking several `persist: true` toasts at once. | Beyond 3 concurrent toasts, if none is eligible to auto-dismiss, the queue force-dismisses the oldest — a reader who hadn't acted on it loses it without warning. |
+
+## Known issues
+
+<Card title="Toast: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/toast/open-issues">
+  Divergences, open decisions, and undocumented gaps for Toast.
+</Card>
+
+## Why it works this way
+
+**Toast is a queue, not a component you place, because its whole value is not competing for
+layout.** A notification that had to be slotted into a page's regions would need the page to
+have reserved space for it, and most of the time nothing is queued. Making it a call — `showToast`
+— rather than a rendered element is what lets any part of the app trigger one without owning
+where it appears.
+
+**The fixed width is the tradeoff for that same portability.** A toast rendered from anywhere
+cannot size itself to a parent container it isn't inside, so it takes one width regardless of
+content, and long messages wrap rather than the box growing.
+
+## Status
+
+| | |
+|---|---|
+| Package | `@invoca/titan-core` |
+| Version | `3.6.3` |
+| Exports covered | `TitanToastProvider`, `showToast`, `hideToast`, `ToastComponent` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+The generated adoption report for this component shows **zero usages**, matched against a
+literal `<Toast />` JSX tag. That is very likely a tooling artifact rather than true non-adoption:
+real call sites invoke `showToast(...)` as a function and never render a `<Toast>` element, so a
+tag-based scan would undercount it the same way — confirmed here as a limitation of the
+generated figure, not evidence nobody uses toasts. Treat the adoption count for this component as
+unreliable until the scanning approach accounts for function-call usage.
+
+- [Alert](/invoca-design-system/components/feedback/alert) — the persistent counterpart; read its "Choose something else when" table for the other half of this distinction
+- [Banner](/invoca-design-system/components/feedback/banner) — the product-wide, durable notice Toast is not, and which Titan does not currently ship
+- [Error handling](/invoca-design-system/patterns/error-handling) — where toasts fit alongside alerts and inline errors

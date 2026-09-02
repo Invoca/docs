@@ -82,12 +82,6 @@ This is the most consequential gap in the token layer, and it is **not an open q
 the specification supplies the token to do it with; the code does not have it. Every component
 deciding focus independently is the cost of that one missing implementation.
 
-<Note>
-  **This entry is a correction.** It previously described the focus token as undecided. The
-  specification defines it, which changes the work from *make a decision* to *ship what was
-  decided*.
-</Note>
-
 ---
 
 ## TITAN-DIV-03
@@ -115,9 +109,9 @@ an undetected failure in the other. Measured values are in
 
 | | |
 |---|---|
-| **Code ships** | 34 variants defined in the type scale. 13 of them wired into the theme as base variants. 11 names exposed on `<Typography>`, which is the only way to reach them. |
-| **Design intends** | The 11 `<Typography>` names are the design vocabulary. The other two sets are implementation surface. |
-| **Follow today** | Use the 11 `<Typography>` variant names. Do not reach past the component into the underlying scale. |
+| **Code ships** | 34 variants defined in the type scale. 13 of them wired into the theme as base variants. 11 names exposed on `<Typography>`, which is the only way to reach them: `mainHeader`, `subHeader`, `base`, `baseBold`, `baseItalic`, `baseSmall`, `baseSmallBold`, `baseSmallItalic`, `baseSmallAllCaps`, `baseSmallAllCapsBold`, `code`. The component's `variant` prop is typed to exactly this set — a value like `h3` or `body1` does not compile. |
+| **Design intends** | The 11 `<Typography>` names are the design vocabulary. The other two sets are implementation surface. Of the 13 theme-wired base variants, 9 — every heading level above `h2`, both subtitle sizes, `body2`, and `overline` — have no reachable `<Typography>` prop at all. |
+| **Follow today** | Use only the 11 `<Typography>` variant names listed above. Do not reach past the component into the underlying scale, and do not use the framework's own `h1`–`h6`/`subtitle1/2`/`body1/2`/`overline` variant names — they will not compile against this component. |
 | **Direction** | Either expose the full scale as vocabulary or trim what is unused. 34 defined against 11 reachable is a gap nobody has decided about. |
 | **Affects** | [Typography](/invoca-design-system/foundations/typography) |
 
@@ -232,7 +226,8 @@ an undetected failure in the other. Measured values are in
 The documentation was already doing this implicitly. **19 of 39 component pages in the
 navigation have no matching Titan folder** — most are user-friendly aliases rather than
 absences: **Table** is `DataGrid`, `Switch` is `Toggle`, `Dialog` is `Modal`, `Tag` is
-`Chip`, `Input` is `TextField`, `FileUpload` is `Dropzone`, `Spinner` is `CircularProgress`.
+`Chip`, `Input` is `TextField`, `FileUpload` is `Dropzone`, `Spinner` is `CircularProgress`,
+`ProgressBar` is `LinearProgress`.
 
 <Note>
   **Switch/Toggle confirmed, not inferred, as of this pass.** The Figma library's own
@@ -250,12 +245,6 @@ absences: **Table** is `DataGrid`, `Switch` is `Toggle`, `Dialog` is `Modal`, `T
 front of the code's. **Table** is not — code and the design library both say *data grid*, and
 *table* is what the team says out loud. That is the vocabulary rule working as intended: the
 reader-facing name is the decision name, and it is the team that holds it.
-
-<Note>
-  **The mapping was the missing piece, not the grouping.** Concept-named pages without a
-  recorded export mapping leave an engineer guessing what to import. `tools/component-concepts.json`
-  records it, and the Exports table on each page is generated from it.
-</Note>
 
 <Warning>
   **This grouping also hides a real asymmetry.** Within one concept, `Button` is a wrapper
@@ -547,16 +536,6 @@ Computed from the shipped token values, formula validated against published refe
 
 **The theme's naive every-word capitalization doesn't implement title case's function-word exceptions.**
 
-<Note>
-  **Corrected this pass.** An earlier version of this entry had the direction backwards —
-  it asserted sentence case as the design intent and framed the theme's title-case rendering
-  as the bug. zeroheight's Button page confirms title case is the actual rule: *"Label text
-  should be title case"* / *"Label text should not be sentence case."* It also cited a
-  specific usage count ("170 usages across 22 applications") that had no traceable source and
-  has been removed. See [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation)
-  for the corrected model.
-</Note>
-
 | | |
 |---|---|
 | **Code ships** | The theme sets `textTransform: "capitalize"` on every button, which capitalizes the first letter of *every* word at render — "save changes to draft" becomes "Save Changes To Draft". |
@@ -579,14 +558,131 @@ Computed from the shipped token values, formula validated against published refe
 | **Direction** | Check whether the focus-ring token is reading `border-error` through an unguarded scheme lookup (a mode leak, given [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01) — neither scheme is designed, so a leak between them would be easy to ship unnoticed) or is a coincidence. If the former, fix the lookup, not the colour. |
 | **Affects** | [Input](/invoca-design-system/components/forms/input), [Select](/invoca-design-system/components/forms/select) |
 
-<Note>
-  **Found by cross-referencing two snapshot files, not source.** `density.json` records
-  `form-field-focus-ring-error` from a light-mode probe; `colorSchemes.json` records both
-  schemes' resolved tokens independently. Neither file states a relationship between the two
-  numbers — the match was found by comparing them, not documented anywhere as intentional.
-  This session had the resolved values but not the Titan checkout, so the coincidence is
-  confirmed and its cause is not.
-</Note>
+---
+
+## TITAN-DIV-25
+
+**The package's `Link` export is not the design vocabulary's Link.**
+
+| | |
+|---|---|
+| **Code ships** | Two unrelated exports share the word. `Link` is a React Router wrapper that appends `titan-*` query parameters to internal navigation — no `variant`, no `icon`, no themed colour, no style override recorded anywhere in the theme. `TextLink` is the styled, themed hyperlink: configurable underline, an optional trailing icon, and dedicated `link-hover` / `link-visited` tokens. |
+| **Design intends** | The vocabulary's "Link" — the component named as Button's navigational counterpart, the one a reader reaches for to render a styled hyperlink — is `TextLink`. The plain `Link` export is routing plumbing, not a visual decision, and is not part of this concept at all. |
+| **Follow today** | Import `TextLink` for a styled hyperlink. Do not import `Link` expecting styling or a `variant`/`icon` prop — it has none, and it does something unrelated (query-parameter preservation) that has nothing to do with appearance. |
+| **Direction** | The collision is confusing by name alone, not by behavior — nothing forces a consumer to reach for the wrong one, since the two aren't interchangeable in any call site that would compile. Renaming either export removes the risk permanently; documenting it, as this entry does, is the lower-cost interim fix. |
+| **Affects** | [Link](/invoca-design-system/components/actions/link) |
+
+---
+
+## TITAN-DIV-26
+
+**The package's export for FileUpload is named `Dropzone`.**
+
+| | |
+|---|---|
+| **Code ships** | A component named `Dropzone`, in a source directory named `Dropzone/`, with a Storybook title of "Components/Dropzones". |
+| **Design intends** | The vocabulary's term is "FileUpload" — what a reader searches for when they need to attach a file to something. |
+| **Follow today** | Import `Dropzone` for the component this page documents as FileUpload. The two names refer to the same thing; neither is wrong, they're just different registers — implementation name versus reader-facing concept. |
+| **Direction** | Low urgency — unlike the Link/TextLink collision (TITAN-DIV-25), there is no second, unrelated export also named "FileUpload" to confuse this with. Renaming either side is optional, not corrective. |
+| **Affects** | [FileUpload](/invoca-design-system/components/forms/file-upload) |
+
+---
+
+## TITAN-DIV-27
+
+**The package's `Dialog` export is not the design vocabulary's Dialog.**
+
+| | |
+|---|---|
+| **Code ships** | Two exports exist. `Dialog` (plus `DialogTitle`, `DialogContent`, `DialogActions`) is the raw, unstyled primitive re-exported unchanged — no sizing presets, no standardized footer, no divider tokens. `Modal` is the styled, themed wrapper: six size presets (`sm` through `fullscreen`), a fixed three-button footer contract (left action / Cancel / Save), configurable dividers, and token-driven padding. Source publishes a named anti-pattern story, `DoNotUse_RawDialog`, stating directly that using the raw primitive loses all of this. |
+| **Design intends** | The vocabulary's "Dialog" — the modal, page-blocking confirmation/edit surface — is `Modal`. The raw `Dialog` export is implementation plumbing inherited from the underlying primitive, not a visual decision, and is not part of this concept. |
+| **Follow today** | Import `Modal` for a Dialog. Do not import `Dialog` expecting sizing presets, a footer, or dividers — it has none, and looks plausible enough in isolation to pass review while silently dropping every Titan-specific decision. |
+| **Direction** | Lower risk than TITAN-DIV-25 (Link/TextLink) in one sense — source already ships an anti-pattern story calling this out by name — but higher risk in another: `Dialog` renders a visually complete, unblocked-looking overlay on its own, so a reviewer without the anti-pattern story in view would not obviously notice the substitution. Documenting it here, alongside the in-source warning, is the interim fix; renaming either export would remove the risk permanently. |
+| **Affects** | [Dialog](/invoca-design-system/components/containment/dialog) |
+
+---
+
+## TITAN-DIV-28
+
+**The package's export for Panel is named `Tile`.**
+
+| | |
+|---|---|
+| **Code ships** | A component named `Tile`, in a source directory named `Tile/`, with a Storybook title of "Components/Tiles," alongside sibling exports `TileHeader`, `TileBody`, `TileFooter`, and `TileTitle`. |
+| **Design intends** | The vocabulary's term for a persistent, elevated content region — header, scrollable body, footer — is "Panel." |
+| **Follow today** | Import `Tile` (and its `Tile*` siblings) for the component this page documents as Panel. The two names refer to the same thing; this is a naming register difference, not a functional one. |
+| **Direction** | Low urgency, matching TITAN-DIV-26 (FileUpload/Dropzone) rather than TITAN-DIV-25 — there is no second, unrelated export also named "Panel" to confuse this with, and no anti-pattern story exists because there is no competing raw import to bypass. Renaming either side is optional. |
+| **Affects** | [Panel](/invoca-design-system/components/containment/panel) |
+
+---
+
+## TITAN-DIV-29
+
+**Popover ships with no Titan-specific decision recorded anywhere.**
+
+| | |
+|---|---|
+| **Code ships** | The package re-exports `Popover` (and `Popper`) directly from the underlying primitive library, unchanged. There is no `Popover.overrides.ts`, no Popover Storybook story, no Popover test file, no `popover-*` entry in `component.tokens.json`, and no other component in this package's own source imports or wraps it. Confirmed by a full source-tree search and by the live Storybook deployment's own story index, which carries zero `popover` entries. |
+| **Design intends** | Unknown from any artifact examined. Every other component in the Containment category — even the thinnest wrappers, Accordion and Tooltip — carries at least a theme override giving it a documented, Titan-specific appearance. Whether the design language has simply never needed a themed Popover (because Menu and Tooltip cover its common cases) or whether this is an unaddressed gap is not stated anywhere. |
+| **Follow today** | Treat Popover's current visual appearance as unthemed and unverified. Do not assume it matches Titan's elevation, radius, or spacing conventions elsewhere — nothing confirms that it does. |
+| **Direction** | Needs a product decision, not a documentation fix: either confirm the unthemed default is acceptable and state that explicitly, or invest in an override the way Tooltip and Accordion have. |
+| **Affects** | [Popover](/invoca-design-system/components/containment/popover) |
+
+---
+
+## TITAN-DIV-30
+
+**`List`'s `disableBorder`, `disableHover`, and `bulleted` props render no visual change.**
+
+| | |
+|---|---|
+| **Code ships** | `List.tsx` applies CSS classes (`titan-list-no-border`, `titan-list-no-hover`, `titan-list-bulleted`) and matching `data-*` attributes for all three props. A repo-wide search finds no CSS rule anywhere in the checkout that targets any of the three classes. The component's own `BasicListNoBorder` story doesn't use the Titan `List` component or the prop at all — it renders a plain native `<ul>`/`<li>` instead. |
+| **Design intends** | `List.tsx`'s own JSDoc states the intent directly: "Optional border removal for seamless integration," "Hover effect toggle for interactive list items," "Bulleted list style option." |
+| **Follow today** | None of the three props changes anything visually. Don't rely on them — style directly, or use a plain `<ul>`/`<li>` as `BasicListNoBorder` itself does. |
+| **Direction** | Either implement the CSS rules the class names imply, or remove the dead props and their classes/attributes. |
+| **Affects** | [List](/invoca-design-system/components/data-display/list) |
+
+---
+
+## TITAN-DIV-31
+
+**`Avatar` ships with zero Titan decisions.**
+
+| | |
+|---|---|
+| **Code ships** | `Avatar` is re-exported directly from the underlying primitive library, unmodified. No `.overrides.ts`, no `.stories.js`, no `.test.tsx`, and no `MuiAvatar` key anywhere in the theme — confirmed by searching the entire theme directory. `AvatarGroup` is not exported either. |
+| **Design intends** | Not established. Figma was not checked this pass, so whether the design library defines an Avatar with its own colors, sizes, or states — which would make this a real code/design gap rather than a shared absence — is unconfirmed. |
+| **Follow today** | Use the underlying library's own unthemed Avatar defaults (40×40px, circular, grey fallback background). Nothing Titan-specific exists to reach for. |
+| **Direction** | Confirm whether Figma has an Avatar component; if so, build the override. If not, decide whether this is an intentional "always default" policy and document it as such. |
+| **Affects** | [Avatar](/invoca-design-system/components/data-display/avatar) |
+
+---
+
+## TITAN-DIV-32
+
+**Code ships a bare `AppBar`; design's page template depicts a composed site header.**
+
+| | |
+|---|---|
+| **Code ships** | `AppBar` — the underlying UI library's `AppBar` re-exported unmodified, with exactly one theme override (a top margin applied only above an 1800px viewport while `position="sticky"`). No logo slot, no account selector, no search, no account menu — checked against the full override set, which carries nothing else for it, and against the component's directory, which has no `.tsx`, `.stories.js`, or `.test.tsx` file at all. |
+| **Design intends** | The page template's own "site header" region, as already recorded on [Views overview](/invoca-design-system/views/overview): a bar carrying the logo, the account selector, global search, and the account menu — named there as page-template chrome the frame documentation deliberately scopes out. |
+| **Follow today** | Compose the bar by hand from independent pieces: `AppBar` for the positioned bar itself, `Logo` (from the page-frame template exports) for the brand mark, `Menu` for an account-menu trigger, and nothing for search — no dedicated search export exists. Nothing wires these together, so each application currently does this itself; `AppBar`'s own utilization shows nine standalone usages across eight applications, none confirmed to match the design library's full composition. |
+| **Direction** | Decide whether the composed site header becomes a real Titan template (parallel to the `Page` template for the page frame) or stays application-owned. Either answer is a decision nobody has recorded yet. |
+| **Affects** | [TopNav](/invoca-design-system/components/navigation/top-nav), [Views overview](/invoca-design-system/views/overview) |
+
+---
+
+## TITAN-DIV-33
+
+**Design intent names "Banner" as a product-wide message; no such component ships.**
+
+| | |
+|---|---|
+| **Code ships** | No `Banner`, `Callout`, `SystemMessage`, or equivalent component anywhere in the `core`, `legacy-web`, or `shared` packages. Neither top-level export barrel references one. No matching Storybook story exists in the live index. |
+| **Design intends** | A persistent message scoped to the whole product rather than one page — the term this documentation itself already uses, in Alert's own "Choose something else when" table: *"Announce something across the whole product → Banner → A page-level alert is about this page. Product-wide messages outlive it."* |
+| **Follow today** | There is nothing to import. A page-level need is served by [Alert](/invoca-design-system/components/feedback/alert); a transient one by [Toast](/invoca-design-system/components/feedback/toast). A genuine product-wide need has no sanctioned component and would have to be composed ad hoc, most plausibly from Alert's tokens. |
+| **Direction** | Build the component, or retire the term from Alert's own cross-reference table if it is not going to be built. Figma verification was out of scope for this pass — an absence in code is not proof of an absence in design intent, and someone with Figma access should check before this is scoped as new work. |
+| **Affects** | [Banner](/invoca-design-system/components/feedback/banner), [Alert](/invoca-design-system/components/feedback/alert) |
 
 ---
 

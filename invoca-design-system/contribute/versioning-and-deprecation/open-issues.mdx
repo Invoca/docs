@@ -1,5 +1,5 @@
 ---
-title: "Versioning & deprecation: open issues"
+title: "Versioning & deprecation"
 description: "Divergences, open decisions, and undocumented gaps for Versioning & deprecation."
 icon: "history"
 ---
@@ -29,3 +29,13 @@ See [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-d
 - **No supported-version window.** How long a consumer can stay behind is undecided.
 - **No migration-guide convention.** When a name changes, nothing says where the old-to-new
   mapping is published.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-VER-01** | A constraint ID is never renumbered or reused. | A CI script maintaining an ID registry, failing if an ID is reused with different content or vanishes without a Retired-table entry. |
+| **TITAN-VER-02** | A retired rule keeps its original wording plus a stated reason. | A script hashing the original wording at first publish and verifying the Retired entry matches; requiring a non-empty reason. |
+| **TITAN-VER-03** | The changelog is generated from the repo, never hand-written. | A CI check restricting changelog-file commits to an automated bot, or diffing against generator output. |

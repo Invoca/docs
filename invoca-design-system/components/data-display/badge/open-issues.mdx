@@ -1,0 +1,29 @@
+---
+title: "Badge"
+description: "Divergences, open decisions, and undocumented gaps for Badge."
+icon: "circle-dot"
+---
+
+See [Badge](/invoca-design-system/components/data-display/badge) for the decided part of this
+page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Badge.
+
+## Gaps in the current rules
+
+- **`color="default"` and `color="info"` are unthemed.** Both are valid options in the component's
+  own Storybook controls, but `Badge.overrides.ts` defines `colorPrimary`, `colorSecondary`,
+  `colorSuccess`, `colorError`, and `colorWarning` — nothing for the other two. Whether that's
+  intentional (say, "info" was never needed as a distinct badge color) or an oversight is not
+  recorded anywhere in source.
+- **No test file exists for Badge.** There is no `Badge.test.tsx` in the Titan checkout. Every
+  behavior on the main page beyond what the Storybook stories visibly demonstrate — including the
+  `max`-capping and `showZero` behavior — is confirmed only by reading story code, not by an
+  automated assertion.
+- **Adoption is very thin and entirely internal.** The tracked utilization data shows exactly 3
+  usages, all inside a `.stories.js` file in the `dashboards` product, not application code. No
+  real production usage is evidenced in the tracked data.
+- **Accessible announcement of `badgeContent`** — see [Accessibility](/invoca-design-system/components/data-display/badge#accessibility)
+  on the main page for what's unconfirmed.

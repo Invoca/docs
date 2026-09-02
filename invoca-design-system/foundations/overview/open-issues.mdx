@@ -1,5 +1,5 @@
 ---
-title: "Foundations overview: open issues"
+title: "Foundations overview"
 description: "Divergences, open decisions, and undocumented gaps for Foundations overview."
 icon: "compass"
 ---
@@ -37,3 +37,13 @@ Genuinely undecided. Do not infer answers to these.
 - **Motion, breakpoints, and the z-index ladder have no recorded intent.** The values ship
   and are what renders, but nothing states why these and not others, or which interaction
   each is meant for.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-FND-01** | Component code references a token, never a literal value or a primitive. | A stylelint literal-value ban across all token families. |
+| **TITAN-FND-02** | Raw CSS uses the `--titan-tokens-*` prefix, never the bare `--titan-*` primitive prefix. | A stylelint custom-property pattern rule banning the bare `--titan-` prefix in consumer code. |
+| **TITAN-FND-06** | JS reaches tokens through `theme.vars.tokens[…]`, never `theme.tokens[…]`. | Already lint-enforced inside `components/core` — publishing the same rule as a shareable ESLint config for consumers outside that package. |

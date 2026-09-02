@@ -6,12 +6,6 @@ tag: "Stable"
 keywords: ["error copy", "validation message", "error text", "help text", "error handling"]
 ---
 
-<Info>
-  **Source: the zeroheight IDS documentation** (`Error Messaging`). The rules below are
-  transcribed from the existing design system documentation and are `verified` against it.
-  They have been reformatted into constraints with IDs — the substance is unchanged.
-</Info>
-
 ## The core rule
 
 **"Help me help you."** An error message's entire job is stated in that line — it exists to
@@ -21,15 +15,6 @@ get the reader unstuck, not to report a failure for its own sake.
 - Display the error message as close to its source as possible.
 - Provide a message that helps the reader solve the problem.
 - Use sentence case for all messaging.
-
-<Note>
-  **This converges directly with what [FieldLabel](/invoca-design-system/components/forms/field-label) already
-  states.** "As close to the source as possible" is why error text occupies the same slot as
-  helper text, directly under the field, rather than in a summary elsewhere
-  ([TITAN-FLD-03](/invoca-design-system/components/forms/field-label#constraints)). "Helps solve the problem" is
-  the same reasoning behind [TITAN-FLD-04](/invoca-design-system/components/forms/field-label#constraints) —
-  the two pages were authored independently and arrived at the same place.
-</Note>
 
 ## Sentence case, confirmed
 

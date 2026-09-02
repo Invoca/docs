@@ -1,5 +1,5 @@
 ---
-title: "DatePicker: open issues"
+title: "DatePicker"
 description: "Divergences, open decisions, and undocumented gaps for DatePicker."
 icon: "calendar"
 ---
@@ -22,3 +22,12 @@ None specific to this component beyond the Forms-group-wide items already tracke
   value. This is a wider gap in this page's grounding than any other Forms page written so
   far.
 - **No stated minimum or maximum navigable range** for the calendar header.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-DATEPICKER-04** | A disabled day cell is paired with a reachable reason. | A required-when-disabled explanation composed near the cell. |

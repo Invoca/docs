@@ -1,15 +1,217 @@
 ---
 title: "ProgressBar"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A horizontal track that reports how much of a known-length process has completed, or that one is running."
+icon: "bars-progress"
+tag: "Stable"
+keywords: ["progress bar", "linear progress", "determinate", "indeterminate", "percent complete", "loading"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A **ProgressBar** is a horizontal track that fills to show completion. It has two distinct jobs
+bundled into one component, switched by its `variant` prop: **determinate**, where a real 0–100
+`value` fills the bar to an exact point ("how much longer"), and **indeterminate**, where the bar
+animates with no real value behind it ("still working, duration unknown").
+
+That determinate/indeterminate split is what separates it from the other two loading primitives
+in this category. A [Skeleton](/invoca-design-system/components/feedback/skeleton) promises a
+*shape*, not a percentage. A [Spinner](/invoca-design-system/components/feedback/spinner) is a
+compact, always-indeterminate mark that fits inline rather than a full-width track. ProgressBar
+is the only one of the three that can report a real, measurable number.
+
+## Live example
+
+<StorybookFrame story="components-progress-bars--linear-with-value-label" height={100} />
+
+## Exports
+
+Verified directly from `Progress/LinearProgress.tsx`, which adds nothing to the interface it
+wraps — no per-component prop emitter exists yet for this concept, so this table is
+hand-confirmed rather than generated.
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `variant` | `"determinate" \| "indeterminate" \| "buffer" \| "query"` | `"indeterminate"` | Only `determinate` and `indeterminate` are demonstrated in Titan's own stories. |
+| `value` | `number` (0–100) | `0` | The fill amount for `determinate` and `buffer`. Not clamped by source — see [Edge and failure states](#edge-and-failure-states). |
+| `valueBuffer` | `number` (0–100) | — | `buffer` variant only. Undemonstrated in any Titan story. |
+| `color` | `"primary" \| "secondary" \| "error" \| "info" \| "success" \| "warning" \| "inherit"` | `"primary"` | Only `primary` and `secondary` are themed by name in `Progress.overrides.ts` — see [Tokens](#tokens). |
+
+<Warning>
+  **The package exports this as `LinearProgress`, not `ProgressBar`.** This page's name is the
+  design vocabulary's term for the concept; `LinearProgress` is the import. This fits the same
+  pattern [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) records for
+  Table/`DataGrid`, Switch/`Toggle`, and others — ProgressBar/`LinearProgress` is not yet listed
+  among that entry's examples, and should be added.
 </Warning>
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **ProgressBar** | Linear progress, progress track | **`ProgressBar`** | `LinearProgress` |
+| **Determinate** | Known progress, percentage mode | **`determinate`** | `variant="determinate"` |
+| **Indeterminate** | Unknown duration, busy mode | **`indeterminate`** | `variant="indeterminate"` (the default) |
+
+<Warning>
+  **`buffer` and `query` exist in the type system and render nothing Titan has themed or
+  demonstrated.** They accept the framework's own defaults with no Titan color mapping and no
+  story exercising them — more renders than the system has decided about. Treat them as
+  unsupported until a story or override says otherwise.
+</Warning>
+
+## Choose ProgressBar when
+
+- The process has a real, trackable length, and you can report a percentage as it advances.
+- Or: something is running with no known duration, and a full-width horizontal indicator fits
+  the layout better than a compact circular one.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show the shape of content that hasn't arrived yet, not a percentage | [Skeleton](/invoca-design-system/components/feedback/skeleton) | A skeleton previews a layout. ProgressBar has no concept of the content's shape, only of how much of a process is done. |
+| Show a compact, indeterminate mark that fits inline — in a button, a small region, beside a label | [Spinner](/invoca-design-system/components/feedback/spinner) | ProgressBar is a full-width horizontal track. It has no small inline form. |
+| Confirm something finished and move on | [Toast](/invoca-design-system/components/feedback/toast) | Once the process is done, the bar itself has nothing left to communicate. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Track (unfilled background) | automatic | Yes |
+| 2 | Bar (filled portion) | driven by `value` when `determinate`; animated when `indeterminate` | Yes |
+| 3 | Buffer bar | `buffer` variant only | No — undemonstrated |
+| 4 | Value label | not part of the component | No — see below |
+
+<Warning>
+  **There is no built-in percentage label.** The published "with value label" story composes
+  `LinearProgress` with a separate `Typography` element by hand, positioned beside the bar. A
+  visible "50%" next to the track is a pattern to build, not a prop to set.
+</Warning>
+
+## Variants, sizes, and states
+
+<Warning>
+  **The default color renders green, not the brand blue.** `Progress.overrides.ts` maps
+  `barColorPrimary` to `background-success`. A `ProgressBar` with no `color` prop set — which is
+  most of them, since `primary` is the default — fills with the same green used for success
+  states elsewhere in the product, not a neutral or brand-colored bar. This is easy to miss
+  because nothing about "just add a progress bar" suggests picking a color.
+</Warning>
+
+**Two demonstrated variants** — `determinate` and `indeterminate` — and **two named colors** —
+`primary` (green) and `secondary`, which resolves to the dedicated `progress-bar-secondary`
+token. `error`, `info`, `success`, and `warning` are accepted by the type but not confirmed to
+route through a Titan-named token the way `primary`/`secondary` do.
+
+**No size prop.** Track height comes entirely from the `progress-track-height` token, uniform
+across every use — there is no small/medium distinction the way Button or TextField have one.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `variant="determinate"` with no `value` | Renders at the type's default, `0` — an apparently-stuck, empty bar | Always pass a `value` alongside `determinate`. |
+| `value` outside 0–100 | Not clamped in source | Clamp the value yourself before passing it. What renders outside the range is undemonstrated by any story. |
+| Left at the default `variant` while a real percentage exists | Renders `indeterminate` — animates instead of showing the actual number | Set `variant="determinate"` explicitly whenever a real value is available; the default does not infer this from the presence of a `value` prop. |
+| The process never completes | An indeterminate bar animates forever; a determinate one sits at whatever value it was last given | Same failure mode as an unresolved Skeleton — see [TITAN-SKL-03](/invoca-design-system/components/feedback/skeleton#constraints). Time out and show an [Alert](/invoca-design-system/components/feedback/alert). |
+
+## Tokens
+
+Verified directly from `Progress.overrides.ts` — no per-component token emitter exists yet for
+this concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `progress-track-height` | Track and bar height |
+| `radius-base` | Corner rounding on the track |
+| `background-disabled` | Unfilled track color, and the buffer surface in `buffer` variant |
+| `background-success` | Bar color when `color="primary"` (the default) |
+| `progress-bar-secondary` | Bar color when `color="secondary"` |
+
+<Warning>
+  **`error`, `info`, `success`, and `warning` as explicit `color` values are not covered by this
+  override file.** Only `barColorPrimary` and `barColorSecondary` are styled here. Whether those
+  other four route through a Titan-decided token or the framework's own default palette is
+  unconfirmed — see [Open issues](/invoca-design-system/components/feedback/progress-bar/open-issues).
+</Warning>
+
+## Composition
+
+No Titan component in this codebase composes `LinearProgress` internally — it was not found
+inside any other component's source during this pass. Its own stories compose it directly with
+`Box` for width and, in one case, `Typography` for a value label; both are call-site patterns,
+not something the component provides.
+
+## Content
+
+A ProgressBar carries no text of its own. If a percentage or a status line accompanies it,
+it is separate content placed beside the bar — write it the way any other short status line is
+written, stating what's in progress, not restating "loading."
+
+## Accessibility
+
+**Renders `role="progressbar"` unconditionally**, confirmed directly in the underlying
+component's source. In `determinate` mode it also sets `aria-valuenow`, `aria-valuemin` (`0`),
+and `aria-valuemax` (`100`) from the real value — confirmed in the same source. In
+`indeterminate` mode none of the three `aria-value*` attributes are set, which is the correct
+behavior for a progressbar with no real value to report.
+
+**No accessible name is set by the component itself.** A `ProgressBar` describing a specific
+region's loading state needs an `aria-label` or an `aria-describedby` pointing at it — not
+supplied automatically, and not verified anywhere in Titan source as a pattern any component
+uses.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-PROG-01** | Set `variant="determinate"` explicitly whenever a real percentage is available; do not rely on the default. | The default is `indeterminate`. A determinate case left at the default animates instead of showing the number the reader could have been given. |
+| **TITAN-PROG-02** | Clamp `value` to 0–100 before passing it. | The component does not clamp it, and no story demonstrates what an out-of-range value renders as. |
+| **TITAN-PROG-03** | Treat the default color as an active decision, not a neutral default. | `color="primary"` (the default) renders the same green used for success states elsewhere. An in-progress, not-yet-successful process rendered in success green may misread as already succeeded. |
+
+## Known issues
+
+<Card title="ProgressBar: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/progress-bar/open-issues">
+  Divergences, open decisions, and undocumented gaps for ProgressBar.
+</Card>
+
+## Why it works this way
+
+**Determinate and indeterminate are one component because they are the same visual object at
+different levels of information.** Both are a horizontal track; the only difference is whether
+something outside the component can say how full it should be. Splitting them into two
+components would duplicate the track, the height token, and the color mapping for a difference
+that is really just "is `value` meaningful right now."
+
+**The green default is inherited, not chosen for this purpose.** Nothing in the override file's
+history explains why `primary` was mapped to `background-success` specifically for progress
+bars; it is the same convention this checkout uses for the Loader's bouncing-bar animation
+color, which suggests a house habit of coloring "things that are working" green rather than a
+decision made about ProgressBar on its own.
+
+## Status
+
+| | |
+|---|---|
+| Package | `@invoca/titan-core` |
+| Version | `3.6.3` |
+| Exports covered | `LinearProgress` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+The generated adoption report for this component shows **zero usages**, matched against a
+literal `<Progress />` JSX tag — which is not the real import name. Since the actual export and
+call sites use `LinearProgress`, this figure is very likely a tag-matching artifact rather than
+evidence the component is genuinely unused anywhere in the product. Treat it as unreliable
+rather than as a recommendation either way.
+
+- [Skeleton](/invoca-design-system/components/feedback/skeleton) · [Spinner](/invoca-design-system/components/feedback/spinner) — the other two loading primitives, split by whether the shape or the duration is known
+- **`Loader`** — a separate, unrelated component in this same package (a five-bar bounce animation, not a track), heavily adopted across applications per its own generated usage data, and currently undocumented in this site. Not the same thing as this page and not interchangeable with it.

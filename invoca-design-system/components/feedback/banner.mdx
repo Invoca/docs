@@ -1,15 +1,120 @@
 ---
 title: "Banner"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
+description: "A persistent, product-wide message, distinct from a page-level Alert — a concept this documentation already refers to, but that Titan does not currently ship as a component."
+icon: "bullhorn"
 tag: "Draft"
+keywords: ["banner", "announcement", "product-wide message", "system notice"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
-
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+  **This page documents a real absence, not an unwritten stub.** Every claim below was checked
+  against source. The finding is: **no Banner component exists anywhere in Titan today.** This
+  is different from the placeholder warning a stub normally carries — the research was done, and
+  the answer is that there is nothing to document yet.
 </Warning>
+
+## What it is
+
+"Banner" is the term this documentation's own pages already use for a message that is about the
+whole product rather than the page the reader happens to be on — the kind of notice that would
+still be relevant if the reader navigated somewhere else.
+[Alert's own page](/invoca-design-system/components/feedback/alert#choose-something-else-when)
+names this job directly: *"Announce something across the whole product | Banner | A page-level
+alert is about this page. Product-wide messages outlive it."*
+
+**No component fulfilling that job exists in Titan.** This was checked, not assumed:
+
+- No directory, file, or export named `Banner`, `Callout`, `SystemMessage`, or similar exists
+  anywhere in the `core`, `legacy-web`, or `shared` packages.
+- Neither of the package's top-level export barrels (`index.js` and `components/index.js`)
+  references anything of the kind.
+- No Storybook story matching `banner`, `callout`, `notification`, or `message` exists in the
+  live Storybook index, beyond the unrelated `Alerts` stories.
+
+## Live example
+
+None exists. There is nothing to embed.
+
+## Exports
+
+None. There is no `Banner` export, themed or unthemed, in any package this checkout covers.
+
+## Choose Banner when
+
+There is no component to choose. If the underlying need is a message that should reach every
+user of the product regardless of the page they're on, that need is real and currently unmet —
+see [Choose something else when](#choose-something-else-when) for what teams reach for instead
+today.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Say something about the state of the specific page the reader is on | [Alert](/invoca-design-system/components/feedback/alert) | This is what Alert is for, and it is shipped, themed, and documented. |
+| Confirm something just happened, then let it go | [Toast](/invoca-design-system/components/feedback/toast) | For a transient confirmation, Toast already exists and does not require inventing anything. |
+| Announce something across the whole product | Nothing shipped covers this today | Teams that need this currently have to compose it themselves — most plausibly from Alert's tokens and severity model, placed in page chrome rather than page content — since nothing in Titan is built or themed for this specific job. |
+
+## Anatomy
+
+Not applicable. There is no component.
+
+## Variants, sizes, and states
+
+Not applicable.
+
+## Edge and failure states
+
+Not applicable — there is nothing to fail.
+
+## Tokens
+
+None exist for this concept. If a Banner is composed ad hoc from Alert's tokens, see
+[Alert's tokens](/invoca-design-system/components/feedback/alert#tokens) for what's actually
+available; none of it was designed with a product-wide, persistent placement in mind.
+
+## Composition
+
+Not applicable in the sense of a documented pattern. Anyone building a stand-in today is making
+an undocumented decision, not following one — see
+[Open issues](/invoca-design-system/components/feedback/banner/open-issues).
+
+## Content
+
+Not applicable — no component exists to write content for. If a stand-in is built from Alert,
+[Alert's content rules](/invoca-design-system/components/feedback/alert#content) are the closest
+existing guidance, though they were written for a page-scoped message, not a product-wide one.
+
+## Accessibility
+
+Not applicable. There is nothing shipped to verify.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-BANNER-01** | Do not build a product-wide message component from scratch without checking whether a design decision already exists elsewhere (Figma, a design review, or another team's implementation) that this research pass could not see. | This page's research covered the `core`, `legacy-web`, and `shared` code packages and the live Storybook index — not the Figma library, which was out of scope. An absence in code is not proof of an absence in design intent. |
+
+## Known issues
+
+<Card title="Banner: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/banner/open-issues">
+  Divergences, open decisions, and undocumented gaps for Banner.
+</Card>
+
+## Why it works this way
+
+**This page exists to close a loop, not to describe a component.** Alert's own page already
+promises a Banner as the answer to "announce something across the whole product" — a promise
+made by this same documentation set, not invented here. Leaving that promise unverified would
+mean a reader follows the link, finds nothing, and cannot tell whether that's a bug in the docs
+or a real, confirmed gap. It is the second one: real, checked, and recorded, rather than quietly
+broken.
+
+## Status
+
+There is no package, version, or export to report. No Banner component ships in
+`@invoca/titan-core`, or in any other package covered by this research, as of this pass.
+
+## Related
+
+- [Alert](/invoca-design-system/components/feedback/alert) — the page-scoped message this concept is meant to sit beside, and the component whose own page first names this gap
+- [Toast](/invoca-design-system/components/feedback/toast) — the transient counterpart; also not a substitute for a persistent, product-wide notice

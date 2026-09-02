@@ -1,5 +1,5 @@
 ---
-title: "Views overview: open issues"
+title: "Views overview"
 description: "Divergences, open decisions, and undocumented gaps for Views overview."
 icon: "layers"
 ---
@@ -57,6 +57,9 @@ been decided yet. Neither is resolvable by inference.
   [TITAN-GAP-12](/invoca-design-system/foundations/open-decisions#titan-gap-12).
 - **No rule for when a page gets a `Footer`.** This page proposes "when the page is a single
   unit of work"; nothing upstream states it.
+- **A left-aligned footer variant has no stated use case.** `justifyContent: "flex-start"` pushes
+  every footer action left. Nothing says when a page should reach for it, and it conflicts with
+  the trailing-primary order stated elsewhere on this page.
 - **Pagination has no region.** A paged list has nowhere in the frame to put its controls, and
   three unreconciled implementations exist. See
   [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27).
@@ -85,3 +88,24 @@ been decided yet. Neither is resolvable by inference.
   direction: `Contents` sizes itself by measuring the site header at runtime, so a page frame
   dropped into a shell that does not identify itself gets the wrong height. See
   [TITAN-GAP-23](/invoca-design-system/foundations/open-decisions#titan-gap-23).
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-VIEW-01** | Every page is built from the shared page frame, never a bespoke shell. | A lint rule requiring page components to compose the shared Page/Header/Footer exports. |
+| **TITAN-VIEW-02** | Exactly one Title per page, rendered as the `h1`. | An accessibility lint/test asserting exactly one `h1`. |
+| **TITAN-VIEW-03** | Page-level actions live in the `Right` region, never beside the title. | A type constraint on `Left`'s allowed children (Breadcrumb/Title/Status/Information only). |
+| **TITAN-VIEW-04** | At most one primary action per page. | A lint/runtime check counting `variant="contained"` buttons in `Actions` (≤ 1). |
+| **TITAN-VIEW-06** | Exactly one `Contents` region, carrying the `main` landmark. | An accessibility lint rule (landmark-uniqueness pattern). |
+| **TITAN-VIEW-08** | Region spacing comes from the frame, never manual margins on region contents. | A stylelint rule disallowing inline margin on Contents/Header/Footer children. |
+| **TITAN-VIEW-09** | A sequence step offers a backward action in the footer's leading slot. | A required `onBack` prop on a future WizardStep/sequence-step API. |
+| **TITAN-VIEW-10** | The footer's leading slot holds only a backward action. | A type restricting the leading slot to a single tertiary "back" button. |
+| **TITAN-VIEW-11** | At most one tab bar per page, positioned in the header. | A lint/test asserting a single Tabs instance, positioned per convention. |
+| **TITAN-VIEW-12** | A header with a tab bar passes `hidePageDivider`. | A type/lint rule requiring `hidePageDivider` whenever `<Tabs>` is present. |
+| **TITAN-VIEW-13** | The tab bar is inset to `spacing-6`. | A lint rule requiring the `spacing-6` token rather than a hardcoded value. |
+| **TITAN-VIEW-14** | Selecting a tab changes the URL. | An integration test asserting router navigation on tab change. |
+| **TITAN-VIEW-16** | Exactly one TabPanel is visible at a time; every tab has a matching panel. | A test/runtime assertion that exactly one panel is unhidden and every tab has a matching panel id. |
+| **TITAN-VIEW-17** | The header's second row holds tabs or filters, never both (needs confirmation — code currently works around this). | A type/lint rule preventing simultaneous `<Tabs>` and a header-region filter row. |

@@ -1,0 +1,29 @@
+---
+title: "TopNav"
+description: "Divergences, open decisions, and undocumented gaps for TopNav."
+icon: "component"
+---
+
+See [TopNav](/invoca-design-system/components/navigation/top-nav) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-32**](/invoca-design-system/foundations/divergences#titan-div-32) | Divergence | Code ships a bare, one-override `AppBar`; the design library's page template depicts a composed site header with a logo, account selector, global search, and account menu |
+
+## Gaps in the current rules
+
+- **No composed "site header" export exists.** `AppBar`, `Logo`, and `Menu` exist independently;
+  nothing wires them together, and no global-search export exists at all. See the main page's
+  Composition section for the full inventory.
+- **`AppBar`'s stacking order relative to the page frame's sticky `Header` is unconfirmed.**
+  `Header` uses the `z-sticky` token; `AppBar` has no equivalent override recorded anywhere in
+  the theme. Whether the two coordinate correctly when both are sticky on one page was not
+  tested.
+- **Whether any of the eight applications using bare `AppBar` actually match the design
+  library's intended composition was not checked.** `utilization.md` records the usages; it says
+  nothing about what each application built around them.
+- **No accessible-name or landmark guidance exists for a composed site header**, since no such
+  component exists to check. `AppBar`'s own default `<header>` landmark is confirmed; anything
+  beyond that is unverified.

@@ -1,15 +1,186 @@
 ---
 title: "Badge"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A small count or dot layered on the corner of another element, for a notification or status that belongs to whatever it's attached to."
+icon: "circle-dot"
+tag: "Stable"
+keywords: ["notification badge", "count", "dot", "unread indicator", "overlay"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A small indicator — a number or a plain dot — layered on the corner of another element to signal
+a count or an unread/active status. It wraps the underlying element's `Badge` unmodified; Titan's
+contribution is entirely in the theme, not the component code.
+
+## Live example
+
+<StorybookFrame story="components-badges--basic" height={110} />
+
+## Exports
+
+| Export | Implementation | Props it declares | What Titan decided |
+|---|---|---|---|
+| `Badge` | A bare pass-through of the underlying element, verified directly from `Badge.tsx` | None of its own — the full native `BadgeProps` surface passes through | Five of the seven color intents, the dot's size and shape, and the badge's text color (see [Tokens](#tokens)) |
+
+Hand-confirmed props, from `Badge.tsx`'s own JSDoc and its Storybook `argTypes`:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `badgeContent` | `ReactNode` | — | The content rendered inside the badge |
+| `color` | `"default" \| "primary" \| "secondary" \| "error" \| "info" \| "success" \| "warning"` | `"default"` | See [Vocabulary](#vocabulary) — only five of these seven are themed |
+| `variant` | `"standard" \| "dot"` | `"standard"` | `dot` renders a plain circle with no content |
+| `invisible` | `boolean` | `false` | Hides the badge without unmounting it |
+| `max` | `number` | `99` | Content above this renders as `"{max}+"` |
+| `overlap` | `"rectangular" \| "circular"` | `"rectangular"` | Which corner geometry the badge clips to |
+| `showZero` | `boolean` | `false` | Whether a `badgeContent` of `0` still renders |
+| `anchorOrigin` | `{ vertical, horizontal }` | `{ top, right }` | Corner the badge sits on |
+| `children` | `ReactNode` | — | The element the badge is anchored to |
+
+## Vocabulary
+
+**Do not confuse a Badge with a status label.** Badge carries only a number or a dot — it has no
+text-label slot of its own. A word like "Active" or "Pending" belongs on
+[Tag](/invoca-design-system/components/data-display/tag), not squeezed into `badgeContent`.
+
+**`color="secondary"` is Titan's neutral badge.** The override for `colorSecondary` points at
+`badge-neutral-background` / `badge-neutral-text`, not a purple "secondary" brand color — Titan
+uses the underlying element's `secondary` slot to carry its own neutral intent, the same way
+[TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11) describes Button's
+`primary`/`secondary`/`tertiary` riding on top of the underlying element's `variant` values
+rather than its `color` ones. Say **neutral** when that's the intent you mean.
+
+## Choose Badge when
+
+- A count or a simple on/off status needs to attach to the corner of another element — an icon, an
+  avatar, a button — rather than stand on its own.
+- The information is genuinely secondary to whatever it's attached to: an unread count, an
+  active-session dot.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Label an item with a status word — "Active," "Pending," "Failed" | [Tag](/invoca-design-system/components/data-display/tag) | Badge has no text-label slot beyond a short count; a status word belongs on a Tag. |
+| Show a small circular image or initials for a person or entity | [Avatar](/invoca-design-system/components/data-display/avatar) | Badge decorates a corner of something else; it doesn't stand alone as an identity marker. |
+| Show a full-width message about the page or view | [Alert](/invoca-design-system/components/feedback/alert) | Badge is a small, in-context indicator, not a page-level message. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Wrapped element | `children` | Yes — Badge renders nothing meaningful without something to anchor to |
+| 2 | Badge content | `badgeContent` | No — renders empty for `variant="dot"` |
+| 3 | Position | `anchorOrigin` | No — defaults to top-right |
+
+## Variants, sizes, and states
+
+Hand-confirmed from `Badge.overrides.ts` and the component's own Storybook stories — no
+per-component matrix emitter exists yet for this concept.
+
+| Axis | Values |
+|---|---|
+| `variant` | `standard` (shows `badgeContent`), `dot` (a plain circle, `icon-sm` in size, no content) |
+| `color` | `default`, `primary`, `secondary`, `error`, `info`, `success`, `warning` — **only `primary`, `secondary`, `success`, `error`, and `warning` are themed.** `default` and `info` render with no token behind them — an unthemed default despite both being listed as valid options in the component's own Storybook controls. |
+| `overlap` | `rectangular` (default), `circular` — demonstrated together in the `BadgeOverlap` story, paired with a square placeholder and a circular one respectively |
+| `anchorOrigin` | Four corner combinations, demonstrated in the `BadgeAlignment` story |
+| States | None beyond `invisible` — Badge has no hover, focus, or disabled state of its own |
+
+## Edge and failure states
+
+Confirmed directly against the component's own `MaximumValue`, `BadgeVisibilityOverride`, and
+`BadgeOverlap` stories:
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `badgeContent` exceeds `max` | Displays `"{max}+"` — demonstrated with `max={999}` and content `1000` rendering `"999+"` | Set `max` deliberately when counts can exceed 99 |
+| `badgeContent={0}`, `showZero` unset | Badge renders invisible | Set `showZero` to show a literal `0` |
+| `color="info"` or `color="default"` | Renders with no token behind it — an unthemed default, not a Titan decision | Use one of the five themed colors instead, unless the unthemed default is genuinely wanted |
+| No `children` | Nothing anchors the badge; no story or test demonstrates this case | Always pair Badge with a wrapped element |
+
+<Warning>
+  **Badge has no test file in the Titan checkout.** There is no `Badge.test.tsx` — every behavior
+  on this page beyond what the stories above visibly demonstrate is unverified by any automated
+  test.
 </Warning>
+
+## Tokens
+
+Hand-confirmed from `Badge.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `icon-sm` | The `dot` variant's height and width |
+| `radius-circle` | The `dot` variant's corner radius |
+| `text-invert` | Badge text color for `default` and `info` — the two colors with no dedicated color override |
+| `badge-neutral-background` / `badge-neutral-text` | `color="secondary"` (Titan's neutral badge) |
+
+`text-invert` is set on the root and would apply to every color, but `colorPrimary`,
+`colorSecondary`, `colorSuccess`, `colorError`, and `colorWarning` each set their own text color on
+top of it — confirmed in `Badge.overrides.ts`, where those five keys are declared after `root`. So
+`text-invert` only actually reaches the screen for `default` and `info`, the two colors without a
+matching override. For the other five, background and contrast text pull straight from the palette
+(`theme.vars.palette.{color}.main` / `theme.vars.palette.{color}.contrastText`), except
+`secondary`, which uses `badge-neutral-background` / `badge-neutral-text` instead.
+
+## Composition
+
+Badge wraps a single child element — most often an icon or an [Avatar](/invoca-design-system/components/data-display/avatar).
+Pair `overlap="circular"` with a circular child (an Avatar) and leave the default
+`overlap="rectangular"` for square or icon children — the `BadgeOverlap` story demonstrates this
+pairing directly, and mismatching them positions the badge visibly off the child's curve.
+
+## Content
+
+`badgeContent` should stay short — a count, or nothing at all for the `dot` variant. It has no
+typography treatment for longer text.
+
+## Accessibility
+
+- Badge has no test file in the Titan checkout, so nothing here beyond the stories' visible
+  behavior is independently verified.
+- **Unconfirmed:** whether `badgeContent` is announced by assistive technology as part of the
+  wrapped element's accessible name, or read as a separate, disconnected number. Nothing in source
+  addresses this.
+- A `dot` variant carries no accessible information at all beyond whatever the wrapped element
+  itself announces — a caller relying on the dot alone to convey "unread" needs to supply that
+  meaning elsewhere (e.g., in the wrapped element's own `aria-label`).
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-BDG-01** | Use only `primary`, `secondary`, `success`, `error`, or `warning` for `color` on a Badge that must match the rest of the interface. | Confirmed against `Badge.overrides.ts`, which defines `colorPrimary`, `colorSecondary`, `colorSuccess`, `colorError`, and `colorWarning` and nothing for `colorDefault`/`colorInfo` — despite both being valid `color` values in the component's own Storybook controls. |
+| **TITAN-BDG-02** | `badgeContent` carries a short count or nothing (the `dot` variant) — never a text label. | Badge has no typography treatment for longer content, and no story or override demonstrates one; a status word belongs on [Tag](/invoca-design-system/components/data-display/tag). |
+| **TITAN-BDG-03** | Pair `overlap="circular"` with a circular child and leave `overlap="rectangular"` for square or icon children. | Confirmed in the `BadgeOverlap` story, which pairs each `overlap` value with a shape of matching curvature; mismatching them positions the badge visibly off the child's edge. |
+
+## Known issues
+
+<Card title="Badge: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/badge/open-issues">
+  Divergences, open decisions, and undocumented gaps for Badge.
+</Card>
+
+## Why it works this way
+
+Badge, like Tag, is a bare pass-through component wrapping the underlying element unmodified —
+its entire Titan-specific contribution lives in the theme override, not the component file. Routing
+`color="secondary"` to a neutral gray rather than a purple brand color is a real, deliberate
+choice recorded in that file. Leaving `default` and `info` untouched is not explained anywhere in
+source, which is why it is recorded as an edge case here rather than assumed to be intentional.
+
+## Status
+
+Package `@invoca/titan-core`, version **3.6.3**. Single export: `Badge`. No deprecation marker,
+`since` field, or changelog entry specific to this component exists in source.
+
+## Related
+
+Titan's own `utilization.md` records exactly **3 usages**, all three inside
+`dashboards/src/components/Tile/TileTitle.stories.js` — a Storybook stories file, not application
+code. No production usage of Badge outside of Titan's own demos is evidenced in the tracked data.
+
+- [Tag](/invoca-design-system/components/data-display/tag) — for a text status label, which Badge cannot carry
+- [Avatar](/invoca-design-system/components/data-display/avatar) — the most common thing a Badge is layered onto
+- [Alert](/invoca-design-system/components/feedback/alert) — for a page-level message, rather than an in-context indicator

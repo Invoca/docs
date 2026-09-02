@@ -1,5 +1,5 @@
 ---
-title: "Empty state copy: open issues"
+title: "Empty state copy"
 description: "Divergences, open decisions, and undocumented gaps for Empty state copy."
 icon: "inbox"
 ---
@@ -20,3 +20,12 @@ See [Empty state copy](/invoca-design-system/content/empty-state-copy) for the d
 | **No rule for choosing among the three action presentations** (button, inline link, pointer to another control). | Three legitimate options with no criteria for choosing between them is a coin flip repeated across every empty state in the product. | Open |
 | **The max-width/height values are from a legacy source and need re-verification.** The zeroheight page cites `$empty-state-max-width: 320px` and `$empty-state-max-height: 220px` from a pre-Titan SCSS token file (`Invoca/web/client/shared/design_system/tokens.scss`). This predates Titan's `--titan-tokens-*` custom-property system used everywhere else in this documentation, and this session could not confirm whether a current Titan equivalent exists or what its value is. | This may be stale by a full design-system generation. | Open |
 | **"Higher level of detail and specificity" for error-management empty states is not actionable as written.** The source names the goal without a rule that produces it. | Two writers reading "more detail" can land on very different word counts. | Open |
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-EMPTYCOPY-04** | The action renders as a link button, never a solid one. | A required-variant constraint on EmptyState's action slot (a type-level ban on `contained`), or a lint rule. |
+| **TITAN-EMPTYCOPY-06** | Sentence case, with no exclamation marks. | A content linter checking sentence case and banning `!` on empty-state strings. |

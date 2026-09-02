@@ -1,5 +1,5 @@
 ---
-title: "Capitalization and punctuation: open issues"
+title: "Capitalization and punctuation"
 description: "Divergences, open decisions, and undocumented gaps for Capitalization and punctuation."
 icon: "case-sensitive"
 ---
@@ -26,3 +26,15 @@ where the shipped theme's rendering still disagrees with the rule stated here.
 | **Field labels' casing is Proposed, not confirmed.** | If a real source states otherwise, [TITAN-CASE-05](/invoca-design-system/content/capitalization-and-punctuation#constraints) and [FieldLabel's](/invoca-design-system/components/forms/field-label#constraints) content rule both need to change together. | Open |
 | **No stated rule for ellipsis on actions that open a further step** (e.g., "Export…"). Common in other design systems, not confirmed for Titan. | A missing rule here means every author decides independently whether "Export" needs the ellipsis. | Open |
 | **AP style's other conventions are assumed, not verified.** The source states exactly one exception (Oxford comma); whether every other AP convention (number spelling, quotation punctuation, etc.) is actually followed in shipped product copy hasn't been checked against real screens. | An assumed baseline is only as good as the one exception anyone has bothered to write down — there could be more that nobody's documented. | Open |
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-CASE-01** | Button labels are title case, with short function words (articles/conjunctions/short prepositions) lowercased unless first or last. | A shared title-case formatter utility applied to button label props, or a content-lint rule checking casing against the exception word list. |
+| **TITAN-CASE-02** | Error messages and other full-sentence copy are sentence case. | A sentence-case content-lint rule (e.g. a Vale-style rule) run against error/helper-text strings. |
+| **TITAN-CASE-03** | Lists of three or more items use the Oxford comma. | A prose/content linter's serial-comma rule. |
+| **TITAN-CASE-04** | Labels carry no terminal punctuation; full-sentence messages carry sentence punctuation. | A lint rule flagging trailing periods on label-typed strings and requiring terminal punctuation on message-typed strings. |
+| **TITAN-CASE-05** | Field labels are sentence case (Proposed). | The same sentence-case linter as TITAN-CASE-02, scoped to FieldLabel's `label` prop. |

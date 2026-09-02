@@ -1,15 +1,209 @@
 ---
 title: "TopNav"
-description: "TODO — one sentence. What it is and what it is for."
+description: "The site-level top bar — a bare, minimally-themed AppBar, not the composed site header the design library depicts."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
+keywords: ["top nav", "app bar", "site header", "global header", "masthead", "site chrome"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+The site-level bar above the page frame's own [Header](/invoca-design-system/views/overview) —
+the strip that would carry branding and account-level chrome across an entire product, as
+opposed to `Header`, which belongs to one page. In code this concept maps to `AppBar`,
+re-exported with exactly one Titan override.
+
+<Warning>
+  **`AppBar` has no dedicated Titan source file.** Its directory holds only
+  `AppBar.overrides.ts` and `utilization.md` — no `.tsx`, no `.stories.js`, no `.test.tsx`.
+  It is imported directly from the underlying UI library's `AppBar`, themed by one CSS rule, and
+  otherwise left exactly as that library ships it. This page names it `TopNav` because that is
+  the concept a reader searches for; the import is `AppBar`.
 </Warning>
+
+## Live example
+
+None. No Storybook story exists for `AppBar` — verified against the live Storybook index —
+consistent with it having no `.stories.js` file in its own directory.
+
+## Exports
+
+| Export | Import | Implementation | What Titan decided |
+|---|---|---|---|
+| `AppBar` | Package root | Passthrough, one override | A `margin-top` of `10%`, applied only when `position="sticky"` and the viewport is at least 1800px wide |
+
+Props inherited from the underlying `AppBarOwnProps`, verified directly against the type
+definitions — hand-confirmed, no generator exists for this concept:
+
+| Prop | Values | Default |
+|---|---|---|
+| `position` | `"fixed"`, `"absolute"`, `"sticky"`, `"static"`, `"relative"` | `"fixed"` |
+| `color` | theme palette colors, plus `"transparent"` | `"primary"` |
+| `elevation` | `0`–`24` | `4` |
+| `square` | `boolean` | `true` (square corners) |
+| `enableColorOnDark` | `boolean` | `false` |
+
+**None of these is decided by Titan.** The one override touches only sticky positioning at a
+wide breakpoint; every other prop renders at whatever the underlying default is.
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| TopNav | Top bar, global header, masthead, site header | **`TopNav`** in this documentation | `AppBar` |
+| Site header | Application chrome, global chrome | Named once, in [Views overview](/invoca-design-system/views/overview)'s own Note, as page-template chrome outside the frame | No single export — see Composition |
+
+**"TopNav" and "Header" are not the same region.** [Views overview](/invoca-design-system/views/overview#region-vocabulary)
+already draws this line for the page frame's own `Header` — this page's `AppBar` sits above that,
+at the site level, and the two are separate exports with no relationship in code.
+
+## Choose TopNav when
+
+- The product needs one persistent, site-wide bar above every page — branding, global account
+  controls, global search — rather than per-page header content.
+- The bar's job is site-level identity and account context, not a specific page's title or
+  actions. Those belong to the page frame's own `Header`.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show a specific page's title and page-level actions | [Views overview](/invoca-design-system/views/overview)'s `Header` | `Header` is the page's own chrome — title, breadcrumb, status, actions. `AppBar` is the layer above all pages. |
+| Move between different subjects or records within the product | [SideNav](/invoca-design-system/components/navigation/side-nav) | A top bar is typically identity and account chrome, not a list of destinations — though neither side of this pair has a fully composed, confirmed answer today. |
+| Switch between sections of the current page | [Tabs](/invoca-design-system/components/navigation/tabs) | Sections of one subject, not site-level chrome. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | The bar | `AppBar` | Yes |
+| 2 | Brand mark | `Logo`, from the page-frame template exports | No — nothing wires it into `AppBar` automatically |
+| 3 | Account menu trigger | `Menu`, generic | No — nothing account-specific exists |
+| 4 | Global search | Nothing | Not exported anywhere in `core` |
+
+Nothing in source assembles these into one composed bar — see Composition.
+
+## Variants, sizes, and states
+
+`AppBar` accepts the full set of underlying props (`position`, `color`, `elevation`, `square`,
+`enableColorOnDark`) with no Titan-specific restriction on any of them — unlike, for example,
+[Button](/invoca-design-system/components/actions/button), which themes exactly two sizes and
+leaves a third explicitly undecided. Here, nothing has a themed value to prefer at all; every
+combination renders at whatever the underlying default is.
+
+**The one thing Titan does decide:** a top margin of `10%`, applied only above an 1800px
+viewport width, and only while `position="sticky"`. Confirmed directly from
+`AppBar.overrides.ts` — the entire override is one media query, nothing else.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| A sticky `AppBar` and a sticky page `Header` both present | The page frame's own `Header` gets its stacking order from Titan's `z-sticky` token (confirmed in `Header.tsx`); `AppBar` has no equivalent override recorded anywhere in the theme — its stacking order is whatever the underlying library's own default `zIndex.appBar` value is. Whether the two coordinate correctly when both are sticky on the same page has not been confirmed. | Set `AppBar`'s `sx` z-index explicitly if a page uses both a sticky `AppBar` and a sticky `Header`, rather than assuming they already agree. |
+| Below 1800px viewport width | The one override does nothing at all — a sticky `AppBar` gets no top margin below that width, so its behavior there is entirely the underlying library's default. | Confirm the bar looks right at your product's real breakpoints; the one themed rule targets an unusually wide viewport specifically. |
+
+## Tokens
+
+Verified directly from `AppBar.overrides.ts` — no per-component token emitter exists yet for
+this concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `appbar-sticky-margin-top` | Top margin, sticky `AppBar` only, only at ≥1800px viewport width (resolves to `10%`) |
+
+That is the only token anywhere in this concept. No color, elevation, height, or spacing value
+used by `AppBar` otherwise comes from a Titan token.
+
+## Composition
+
+**No component in `core` composes the site header the design library depicts.**
+[Views overview](/invoca-design-system/views/overview) already records, in its own words, that
+the design library's page template draws site-level chrome as "a site header carrying the logo,
+the account selector, global search and the account menu" — and states plainly that this is
+"deliberately out of scope" for the page-frame documentation. This page is where that concept
+should live instead, and what exists to build it is only loose parts:
+
+- `AppBar` — the positioned bar itself.
+- `Logo` — a page-frame template export ("Brand mark in the header," per the committed concept
+  map), sized to a maximum width, with no wiring to `AppBar`.
+- `Menu` — a generic dropdown surface that could serve as an account menu trigger, with nothing
+  account-specific about it.
+- Global search has no export at all. `SearchBars` exists only as a Storybook story file with no
+  corresponding `.tsx` source — it demonstrates a composition, not a reusable component.
+
+`AppBar`'s own utilization data shows nine standalone usages across eight applications (`ai-model-management`
+×2, `signals`, `report-management`, `demo-discovery-generation`, `demo-call-generation`,
+`dashboard-management`, `current-calls-viewer`, `blocked-numbers`) — each presumably assembling
+its own bar by hand, with nothing confirming whether any of them matches the design library's
+full composition.
+
+<Note>
+  **This gap is recorded as** [TITAN-DIV-32](/invoca-design-system/foundations/divergences#titan-div-32)
+  **in the central register**: code ships a bare, one-override `AppBar`; design's page template
+  depicts a fully composed site header. See [Known issues](/invoca-design-system/components/navigation/top-nav/open-issues)
+  for the rest of this page's open items.
+</Note>
+
+## Content
+
+Nothing to document. No text content is specific to `AppBar` itself — whatever a consuming app
+puts inside it (a product name, an account label) is that app's own content decision, with no
+Titan guidance recorded anywhere.
+
+## Accessibility
+
+- `AppBar`'s default root element is a native `<header>` — confirmed directly from
+  `AppBarTypeMap`'s `defaultComponent` of `'header'`. A `<header>` that is not itself nested
+  inside `<article>`, `<aside>`, `<main>`, `<nav>`, or `<section>` maps to the `banner` landmark
+  automatically.
+- This is worth contrasting with the page frame's own `Header`, which renders a plain `<Box>`
+  (a `<div>`) with no landmark role at all — [Views overview](/invoca-design-system/views/overview#accessibility)
+  already records this as something a builder has to add by hand. `AppBar` gets a landmark for
+  free that the page-level `Header` does not.
+- If both a landmark-bearing `AppBar` and a manually-landmarked page `Header` appear on the same
+  page, check that only one carries `banner` — two banner landmarks on one page is confusing for
+  a screen-reader user navigating by landmark.
+- No accessible-name guidance is recorded for the bar itself, and none of the composed pieces
+  (logo, account menu, search) that a real site header would need are specified anywhere in this
+  system today.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TNAV-01** | Never render `AppBar` and the page frame's `Header` expecting them to be the same region. | They are separate exports with no shared code; treating one as a substitute for the other produces either a missing site-level bar or a missing page-level header. |
+| **TITAN-TNAV-02** | When a page uses both a sticky `AppBar` and a sticky `Header`, set `AppBar`'s stacking order explicitly rather than assuming it coordinates with `Header`'s `z-sticky` token. | `Header`'s sticky z-index is token-bound; `AppBar` has no equivalent override, so their relative order is only whatever each one's own framework default happens to produce. |
+| **TITAN-TNAV-03** | If a site header composition (logo, account menu, search) is built, assemble it from `AppBar` + `Logo` + `Menu` explicitly rather than inventing new layout each time. | Eight applications already build a bar around bare `AppBar` independently; a stated minimum composition prevents a ninth divergent one. |
+
+## Known issues
+
+<Card title="TopNav: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/navigation/top-nav/open-issues">
+  Divergences, open decisions, and undocumented gaps for TopNav.
+</Card>
+
+## Why it works this way
+
+**`AppBar` is positioning, not a decision.** It gives a consuming application a themed-adjacent
+place to put a top bar without deciding what goes inside it — which is defensible as a starting
+point, but it means the concept a reader means by "TopNav" (a composed site header with identity
+and account chrome) has never actually been built as a Titan export. The one override that exists
+— a sticky margin at a specific wide breakpoint — reads like a fix for one application's problem
+that never generalized into a design decision.
+
+## Status
+
+Hand-confirmed — no per-component status emitter exists yet for this concept.
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core`, version `3.6.3` |
+| **Export covered** | `AppBar` |
+| **Theme overrides** | One (`appbar-sticky-margin-top`) |
+| **Story** | None |
+| **Test** | None |
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the page frame's own `Header`, and the site-level chrome its own Note scopes out
+- [SideNav](/invoca-design-system/components/navigation/side-nav) — the sibling question for the side of the screen
+- [Tabs](/invoca-design-system/components/navigation/tabs) — for sections of one page, not site-level chrome

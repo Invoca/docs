@@ -8,13 +8,6 @@ keywords: ["primary", "secondary", "tertiary", "cta", "call to action", "submit"
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source** by
-  `tools/emit-components.mjs`. Guidance and constraints are authored, and constraints are
-  **Proposed** until signed off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 A control that performs an action in place: submitting, confirming, opening, applying,
@@ -27,12 +20,6 @@ the package; the mapping is below.
 ## Live example
 
 <StorybookFrame story="components-buttons--basic-button" height={200} />
-
-<Note>
-  Story ID `verified` — this is the same embed the previously-published Button page used
-  (see `invoca-design-system/temp/button.mdx` in the repo, not yet reconciled with this
-  page), served from the public Chromatic deployment rather than an internal Storybook.
-</Note>
 
 ## Exports
 
@@ -118,11 +105,6 @@ weight is what you meant.
 </Note>
 
 ## Anatomy
-
-<Note>
-  Anatomy diagram `pending` — `/images/components/button-anatomy.png`. The images directory is
-  empty; nothing is published to generate it from yet.
-</Note>
 
 | # | Part | Prop | Required |
 |---|---|---|---|
@@ -234,16 +216,6 @@ with dismissive actions to its left.
 | No terminal punctuation | Save Changes | Save Changes. |
 | Match the user's word, not the system's | Publish | Commit |
 
-<Note>
-  **Corrected this pass.** This page previously stated sentence case as the rule and framed
-  the theme's title-case rendering as a bug — backwards. zeroheight's Button page states
-  plainly: *"Label text should be title case"* / *"Label text should not be sentence case."*
-  See [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation) for the
-  corrected, per-content-type casing model, and
-  [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23) for what's left as an actual
-  divergence now that the direction is fixed.
-</Note>
-
 <Info>
   **Title case here means headline style, not "every word capitalized."** Lowercase short
   articles, conjunctions, and prepositions (`a`, `the`, `to`, `of`, `and`) unless one is the
@@ -289,14 +261,19 @@ announcing the result of the action, and its own error state. Those belong to th
 | **TITAN-BTN-04** | Button labels are 1–3 words. | Past three words the label is describing a task, not naming an action. Buttons do not truncate, so a long label grows the control instead. |
 | **TITAN-BTN-05** | Never more than three Buttons in one action group. | Beyond three, weight stops communicating hierarchy. Collapse the overflow into a [Menu](/invoca-design-system/components/actions/menu). |
 | **TITAN-BTN-06** | A `disabled` Button is always accompanied by a reachable explanation of what would enable it. | Disabled controls are not focusable and announce nothing. A disabled control with no stated cause is indistinguishable from a bug. |
-| **TITAN-BTN-07** | `loading` disables the Button and preserves its rendered width. | A Button that resizes on press moves the controls next to it, producing mis-clicks at exactly the moment the user is committing. |
 | **TITAN-BTN-08** | Never use a Button for navigation that has a URL. | Removes right-click, middle-click, ⌘-click, and copy-link. Use [Link](/invoca-design-system/components/actions/link). |
 | **TITAN-BTN-09** | An icon-only button carries an explicit accessible name. | Without one it announces as "button" with no further information, which is unusable by screen reader and unrecoverable by guessing. |
 | **TITAN-BTN-10** | Size is `small` or `medium`. Never `large`. | Only two sizes are themed. `large` renders at dimensions no token defines and no decision covers. |
 | **TITAN-BTN-11** | An icon sits before the label, never after it. **Needs confirmation.** | One icon position means a row of buttons has one rhythm. A trailing icon also reads as "this opens something", which is a menu's or a link's signal, not a button's. |
 | **TITAN-BTN-12** | An icon-only button is primary prominence and default purpose. **Needs confirmation.** | Stripping the label already removes most of the control's information; taking the weight as well leaves a glyph the eye does not register as pressable. An icon-only destructive control is worse still — the one action needing an unambiguous label has none. |
 | **TITAN-BTN-13** | Button labels are title case: capitalize principal words, lowercase short articles/conjunctions/prepositions unless first or last. | Directly stated in zeroheight's Button page. Corrected this pass — see [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#the-base-style). The shipped theme's naive every-word capitalization is a close but imperfect implementation — [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23). |
-| **TITAN-BTN-14** | A button label occupies one line. It never wraps. | A wrapping label makes one control taller than its neighbours, which breaks the alignment of every row of buttons it appears in. The theme enforces this with `nowrap`, so a label too long to fit widens the button instead — shorten it per [TITAN-BTN-04](#constraints). |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-BTN-07** | `loading` disables the Button and preserves its rendered width. | Automatic library behavior — sets `aria-busy="true"` and holds width — not a discretionary consumer choice. Retired, not reversed. |
+| **TITAN-BTN-14** | A button label occupies one line. It never wraps. | The theme already enforces this with `nowrap`. Retired, not reversed. |
 
 ## Known issues
 

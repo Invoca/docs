@@ -1,5 +1,5 @@
 ---
-title: "Accessibility: open issues"
+title: "Accessibility"
 description: "Divergences, open decisions, and undocumented gaps for Accessibility."
 icon: "accessibility"
 ---
@@ -33,10 +33,24 @@ has been decided yet. Neither is resolvable by inference.
 - **No semantic focus token exists.** See
   [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
 - **No reduced-motion implementation exists** in the token layer. See
+  [TITAN-A11Y-06](#constraints-titan-should-enforce) below, and
   [Motion](/invoca-design-system/foundations/motion/open-issues#gaps-in-the-current-rules).
 - **No forced-colors / High Contrast Mode guidance exists.**
 - **Focus Not Obscured is unaddressed.** No rule governs the interaction between the `z-*`
   ladder and focus.
-- **Contrast is checked here, not in Titan.** `emit-tokens.mjs --check` fails the docs build
-  if a ratio changes, but nothing in Titan's own CI blocks a token change that breaks
-  contrast.
+- **Contrast is checked here, not in Titan** — see
+  [TITAN-A11Y-01 and TITAN-A11Y-03](#constraints-titan-should-enforce) below.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-A11Y-01** | Text meets 4.5:1 (or 3:1 for large text) contrast on every surface it appears on. | Extending `emit-tokens.mjs --check` to fail the build when a token's contrast against its documented surface(s) falls below threshold, instead of only reporting it. |
+| **TITAN-A11Y-02** | Status text and icons use the `-alt` token variant. | A lint rule flagging non-`-alt` status tokens used as a `color`/`fill` value. |
+| **TITAN-A11Y-03** | Contrast is checked against `background-view-background`, not only `background-default`. | The same build-time contrast gate as TITAN-A11Y-01, checked against both surface columns. |
+| **TITAN-A11Y-04** | Focus is never removed without a replacement style. | A stylelint rule requiring a replacement declaration alongside any `outline: none`. |
+| **TITAN-A11Y-06** | Every transition respects `prefers-reduced-motion`. | Shipping the `@media (prefers-reduced-motion: reduce)` reset as a global stylesheet in the token package, rather than leaving each consumer to add it. |
+| **TITAN-A11Y-07** | Interactive targets are at least 24×24px, including an icon-only control's width. | Defaulting an icon-only control's min-width to its `control-height` token value. |
+| **TITAN-A11Y-08** | Opacity is never used to derive a color variant. | A lint rule banning direct reference to any `*Channel` token outside the token build. |

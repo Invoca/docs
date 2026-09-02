@@ -1,5 +1,5 @@
 ---
-title: "Color: open issues"
+title: "Color"
 description: "Divergences, open decisions, and undocumented gaps for Color."
 icon: "palette"
 ---
@@ -41,3 +41,17 @@ has been decided yet. Neither is resolvable by inference.
   function as surfaces, with no defined order and no rule pairing a border to the surface
   it sits on. The ordering on the main page is a proposal, not yet signed off. See
   [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07).
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-COLOR-01** | Component code references a token, never a hex value, `rgb()`, or a `*Channel` value. | A stylelint literal-value ban plus a `*Channel`-reference ban in `components/core` and consumer styles. |
+| **TITAN-COLOR-02** | Text meets AA contrast against the surface it sits on. | The same build-time contrast gate as TITAN-A11Y-01. |
+| **TITAN-COLOR-05** | Status color comes from the four defined statuses only. | The same literal-value-ban lint as TITAN-COLOR-01, applied to any color used in a status-labeled prop/slot. |
+| **TITAN-COLOR-06** | Opacity is never used to derive a color variant. | A lint rule banning direct `*Channel` reference (same as TITAN-A11Y-08). |
+| **TITAN-COLOR-07** | Status text/icons use `-alt`; bold fills never pair with `text-invert` for success or warning. | A lint rule hardcoding the two forbidden pairings as banned combinations, and requiring the `-alt` suffix for any status token used as `color`/`fill`. |
+| **TITAN-COLOR-08** | Contrast is verified against `background-view-background`, not only `background-default`. | The same build-time contrast gate as TITAN-A11Y-01. |
+| **TITAN-COLOR-09** | Hover color is never the sole interactive signal. | A lint rule scanning a component's hover-state style block for changes that touch only color properties. |

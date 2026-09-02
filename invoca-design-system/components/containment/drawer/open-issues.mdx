@@ -1,0 +1,24 @@
+---
+title: "Drawer"
+description: "Divergences, open decisions, and undocumented gaps for Drawer."
+icon: "table-columns"
+---
+
+See [Drawer](/invoca-design-system/components/containment/drawer) for the decided part of this
+page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Drawer.
+
+## Gaps in the current rules
+
+- **Focus containment, focus return, and keyboard dismissal are unconfirmed at the Titan
+  layer.** The one published test only checks that the Drawer renders and shows its content; it
+  does not exercise closing, focus, or keyboard behavior.
+- **A bare Drawer with no `footerContent` is the only pattern demonstrated in the one published
+  story besides the default render.** Whether a footer without any of the visual separation a
+  caller might expect (no built-in border or background) is an accepted look, or a gap the
+  product works around per-instance, is unrecorded.
+- **Whether a left-, top-, or bottom-anchored side panel is needed anywhere in the product, and
+  is being hand-built outside this component as a result, has not been checked.**

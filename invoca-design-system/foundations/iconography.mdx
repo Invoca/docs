@@ -5,13 +5,6 @@ icon: "shapes"
 keywords: ["icon", "icons", "Material Icons", "size", "icon color", "IconButton"]
 ---
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it governs
 
 The icon set, the four sizes icons render at, and the 13 color tokens that apply to them.
@@ -30,7 +23,7 @@ pick from a closed list, then color and size it with tokens.
 <Note>
   **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
   baseline the design language is being built on. This is the vocabulary of record — not
-  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+  inferred from token names.
 </Note>
 
 <Note>
@@ -55,13 +48,6 @@ as `AgentManagementIcon` and `DomainIcon`.
 issue](/invoca-design-system/foundations/iconography/open-issues)) — check the export name
 against the Storybook index rather than guessing.
 
-The full inventory renders live:
-
-<Note>
-  Browse the complete set at
-  `internal-docs.invocadev.com/Titan/core/?path=/docs/components-icons--docs`.
-</Note>
-
 ## Sizes
 
 Four sizes, each paired to a type size rather than chosen freely.
@@ -74,14 +60,18 @@ Four sizes, each paired to a type size rather than chosen freely.
 | `icon-lg` | 24px | Standalone interactive targets, empty-state and status graphics |
 
 **Match the icon to the text it sits with, not to the space available.** An icon optically
-matched to its label is the entire job of this scale:
+matched to its label is the entire job of this scale. Sizes are named against the full type
+scale, since that is what a label may render at; the **Typography prop** column is what you
+actually reach for — see
+[Typography's coverage gap](/invoca-design-system/foundations/typography#choosing-a-variant)
+for why several rows have none.
 
-| Alongside… | Use |
-|---|---|
-| `h6` (10px), `caption` (12px), `h5` (12px) | `icon-xs` (14px) |
-| `body2` (14px), `subtitle2` (14px), `h4` (14px) | `icon-sm` (16px) |
-| `body1` (16px), `subtitle1` (16px), `h3` (16px) | `icon-md` (20px) |
-| `h2` (20px), `h1` (24px) | `icon-lg` (24px) |
+| Alongside… | Typography prop | Use |
+|---|---|---|
+| `h6` (10px), `caption` (12px), `h5` (12px) | `baseSmall` reaches `caption` only; `h5`/`h6` are not reachable | `icon-xs` (14px) |
+| `body2` (14px), `subtitle2` (14px), `h4` (14px) | *none reachable* | `icon-sm` (16px) |
+| `body1` (16px), `subtitle1` (16px), `h3` (16px) | `base` reaches `body1` only; `subtitle1`/`h3` are not reachable | `icon-md` (20px) |
+| `h2` (20px), `h1` (24px) | `subHeader` reaches `h2`; `mainHeader` reaches `h1` | `icon-lg` (24px) |
 
 <Note>
   The icon is always slightly larger than the type it accompanies — 16px icon beside 14px

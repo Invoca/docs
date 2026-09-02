@@ -1,5 +1,5 @@
 ---
-title: "Layout & grid: open issues"
+title: "Layout & grid"
 description: "Divergences, open decisions, and undocumented gaps for Layout & grid."
 icon: "grid-3x3"
 ---
@@ -36,9 +36,19 @@ Layout is the least specified foundation in Titan. Do not infer answers to any o
 - **No maximum content width is defined.** On a 2560px monitor a full-width text region
   produces line lengths far beyond the ~75-character readable maximum. Nothing prevents
   it.
-- **`Grid`'s off-scale `spacing` prop is not documented as a hazard** anywhere in
-  Titan. [TITAN-LAY-03](/invoca-design-system/foundations/layout-and-grid#constraints) is this page's proposal, not existing policy.
+- **`Grid`'s off-scale `spacing` prop is not documented as a hazard** anywhere in Titan.
+  See [TITAN-LAY-03](#constraints-titan-should-enforce) below.
 - **No guidance exists on breakpoints vs. container queries.** Both are available; nothing
   says which to reach for.
 - **No published page-region model.** [Views](/invoca-design-system/views/overview) is the tier meant to answer this and
   is entirely stubs. Until it is written, page structure is undocumented.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-LAY-01** | Layout responds only at the defined breakpoints, never a hardcoded media query. | A lint rule banning raw `@media (min-width:` literals in favor of the theme's breakpoints API. |
+| **TITAN-LAY-02** | No custom intermediate breakpoint values. | The same lint, validating the breakpoint argument against the 5 defined names only. |
+| **TITAN-LAY-03** | Grid gaps come from a `spacing-*` token via `gap`, never the Grid component's own `spacing` prop. | An ESLint rule flagging `<Grid spacing={...}>` usage. |

@@ -1,15 +1,142 @@
 ---
 title: "Menu"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A temporary surface listing choices or actions, anchored to the control that opened it."
+icon: "menu"
+tag: "Stable"
+keywords: ["dropdown", "context menu", "action menu", "popup", "kebab menu"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A list of choices that appears anchored to a triggering element — a button, an icon, a row — and
+closes once a choice is made or the reader dismisses it. Titan themes only the items inside it;
+the surface itself renders with no visual decision recorded.
+
+## Live example
+
+<StorybookFrame story="components-menu--basic-menu" height={250} />
+
+## Exports
+
+<Snippet file="generated/props/menu.mdx" />
+
+<Warning>
+  **Do not confuse this with `DropdownMenus`.** That export is deprecated in source — its own
+  Storybook entry states it directly: *"Please use the Select component instead of
+  DropdownMenus."* It is not a Menu concept and is not covered by this page.
 </Warning>
+
+## Choose Menu when
+
+- A trigger opens a list of actions or choices that apply right now, and the list disappears
+  once one is picked or the reader looks away.
+- The set of options is not itself a value the reader is setting on a field — it is a set of
+  things to *do*, not a value to *hold*.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Let a reader choose and hold a value from a fixed list | [Select](/invoca-design-system/components/forms/select) | A Menu closes after acting; a Select's chosen value persists and represents form state. The deprecated `DropdownMenus` made this mistake — Select is its stated replacement. |
+| Offer two or three actions that should stay visible at once | [ButtonGroup](/invoca-design-system/components/actions/button-group) | Disclosure costs a click. A small, always-relevant set of actions does not need to be hidden behind a trigger. |
+| Show a small amount of supporting information, not a set of actions | [Popover](/invoca-design-system/components/containment/popover) or [Tooltip](/invoca-design-system/components/containment/tooltip) | A Menu's items are interactive choices. Content a reader only looks at, without acting on, is not a Menu. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | The trigger | Any element with `onClick` setting `anchorEl` | Yes |
+| 2 | The surface | `Menu` | Yes |
+| 3 | A choice | `MenuItem` | Yes — one or more |
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/menu.mdx" />
+
+Only one story is published, and it demonstrates the complete, correct trigger pattern: the
+trigger carries `aria-controls`, `aria-haspopup="true"`, and `aria-expanded`, and the `Menu`
+itself receives `MenuListProps={{ "aria-labelledby": <trigger id> }}`. This is the pattern to
+copy, not just a demo — see [Accessibility](#accessibility).
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| The menu has no items | Not demonstrated — no published story covers an empty menu | Not confirmed. See [Open issues](/invoca-design-system/components/actions/menu/open-issues). |
+| A `MenuItem` is disabled | Not demonstrated | Not confirmed whether a reachable explanation is expected, the way it is for [Button](/invoca-design-system/components/actions/button#constraints). |
+
+## Tokens
+
+Verified directly from `Menu.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated. The surface itself (elevation,
+radius, positioning) has no entry here because none exists — it is entirely unthemed.
+
+| Token | Applies to |
+|---|---|
+| `background-default` | A `MenuItem`'s background on focus |
+| `background-hover` | A `MenuItem`'s background on hover |
+
+## Composition
+
+The trigger and the Menu are two separate elements a consumer wires together — there is no
+combined "MenuButton" export. The published pattern ties them with three ARIA attributes on the
+trigger and one prop on the Menu; see [Accessibility](#accessibility) for the exact shape.
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Each item names the action it performs | Delete campaign | Delete |
+| Items read as a list of actions, not a sentence | Duplicate, Export, Archive | You can duplicate, export, or archive this |
+
+## Accessibility
+
+The one published story demonstrates a complete pattern, confirmed by reading the story source
+directly:
+
+| Attribute | On | Purpose |
+|---|---|---|
+| `aria-controls` | Trigger | Points to the menu's `id` while open |
+| `aria-haspopup="true"` | Trigger | Announces that activating it opens a menu |
+| `aria-expanded` | Trigger | Reflects open/closed state |
+| `aria-labelledby` (via `MenuListProps`) | Menu | Names the menu by its trigger's `id` |
+
+- Per the component's own source documentation, `onClose` distinguishes `escapeKeyDown`,
+  `backdropClick`, and `tabKeyDown` as separate close reasons, and a `variant` of
+  `selectedMenu` versus `menu` controls where initial focus lands when the menu opens. Neither
+  is exercised by the published story, so the described behavior is not independently
+  confirmed here.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-MENU-01** | The trigger carries `aria-controls`, `aria-haspopup="true"`, and `aria-expanded`; the Menu carries `aria-labelledby` pointing back to the trigger. | This is the only demonstrated pattern in source. Without it, assistive technology has no way to associate the trigger with the surface it opens. |
+| **TITAN-MENU-02** | A Menu is for actions, never for setting a value a form holds. | Titan deprecated its own value-setting dropdown (`DropdownMenus`) in favor of Select for exactly this reason. |
+
+## Known issues
+
+<Card title="Menu: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/actions/menu/open-issues">
+  Divergences, open decisions, and undocumented gaps for Menu.
+</Card>
+
+## Why it works this way
+
+**Theming stops at the item, not the surface, because the surface has nothing to say.** A
+menu's shadow, radius, and position are functions of where it opens, not of what it contains —
+Titan records a decision at the layer that repeats (every item, every time) and leaves the
+layer that's purely positional to the framework. The items' hover and focus treatment is the
+one thing that would otherwise be silently inconsistent between one menu and the next.
+
+## Status
+
+<Snippet file="generated/status/menu.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/menu.mdx" />
+
+- [Select](/invoca-design-system/components/forms/select) — for choosing and holding a value, not performing an action
+- [ButtonGroup](/invoca-design-system/components/actions/button-group) — for a small set of actions that should stay visible

@@ -1,0 +1,26 @@
+---
+title: "Accordion"
+description: "Divergences, open decisions, and undocumented gaps for Accordion."
+icon: "layer-group"
+---
+
+See [Accordion](/invoca-design-system/components/containment/accordion) for the decided part of
+this page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Accordion.
+
+## Gaps in the current rules
+
+- **A disabled Accordion with a body is not demonstrated anywhere.** The one published disabled
+  story renders only a header. Whether a disabled Accordion can still be expanded to show its
+  body, and what that looks like, is unconfirmed.
+- **"Only one open at a time" behavior across a group of Accordions is not built in and not
+  documented as a pattern.** Nothing in source coordinates sibling Accordions; whether the
+  product has a house convention for this (versus letting every section stay independent) is
+  unrecorded.
+- **The header/body id-pairing (`aria-controls` + `id`) is only ever wired by hand in the one
+  published example.** Whether every real usage across the product actually does this, or
+  whether unlabeled Accordions exist in production, has not been checked beyond source and
+  stories.

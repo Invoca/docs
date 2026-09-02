@@ -1,0 +1,29 @@
+---
+title: "Card"
+description: "Divergences, open decisions, and undocumented gaps for Card."
+icon: "credit-card"
+---
+
+See [Card](/invoca-design-system/components/data-display/card) for the decided part of this page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Card.
+
+## Gaps in the current rules
+
+- **`interactive` and `selected` are weakly tested.** `Card.test.tsx` asserts the resulting CSS
+  class is present, but does so by passing `className="interactive-card"` (or
+  `"selected-card"`) directly to the component, rather than by setting the `interactive` or
+  `selected` boolean prop and checking that the class appears as a result. Only the `error` boolean
+  prop is tested through its real path. Reading `Card.tsx` directly confirms the boolean-to-class
+  wiring is implemented correctly (`clsx(className, { "interactive-card": interactive, … })`), but
+  the test suite does not independently exercise it for two of the three states.
+- **No story demonstrates the `error` state.** `Card.stories.js` contains only `BasicCard` and
+  `InteractiveCard` — there is no visual reference for what an error-state Card looks like next to
+  a selected one, even though both are themed and tested.
+- **`raised` appears to have no visible effect**, since `Card.overrides.ts` sets `boxShadow: none`
+  unconditionally on the root — this is an inference from reading the override, not something
+  independently rendered and confirmed in a browser this session.
+- **No content rules exist for what goes inside a Card.** Unlike Table's column-header rules or
+  Tag's label rules, nothing in source constrains Card's copy.

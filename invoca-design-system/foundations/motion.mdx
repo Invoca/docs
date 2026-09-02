@@ -5,13 +5,6 @@ icon: "activity"
 keywords: ["motion", "animation", "transition", "duration", "easing", "reduced motion"]
 ---
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it governs
 
 Every transition and animation: how long it takes and how it accelerates. Eleven tokens —
@@ -86,9 +79,14 @@ as long as an appearance feels sluggish, because the user has already moved on.
 | **TITAN-MOT-02** | Entering uses `ease-out`; leaving uses `ease-in`. | Reversed easing makes entrances hesitate and exits slam. The asymmetry is what makes motion read as physical. |
 | **TITAN-MOT-03** | Every transition respects `prefers-reduced-motion: reduce`. | Vestibular disorders make large-area motion physically painful. This is a health requirement, not a preference. |
 | **TITAN-MOT-04** | Reduced motion removes movement, not feedback. Substitute an instant state change; never remove the state change. | A user who cannot see that a menu opened is worse off than one who saw it slide. |
-| **TITAN-MOT-05** | Nothing exceeds `motion-duration-complex` (375ms). | Beyond roughly 400ms a transition stops reading as responsive and starts reading as latency. |
 | **TITAN-MOT-06** | Motion never conveys information on its own. | It is unavailable under reduced-motion, invisible to screen readers, and missed entirely by anyone who looked away. |
 | **TITAN-MOT-07** | Nothing animates that the user did not initiate, except loading indicators. | Unprompted motion pulls attention away from the task and cannot be predicted or avoided. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-MOT-05** | Nothing exceeds `motion-duration-complex` (375ms). | The 7 defined duration tokens already top out exactly at `motion-duration-complex` (375ms) — as long as TITAN-MOT-01 (tokens-only, no literals) holds, this ceiling is structurally guaranteed by the closed token set. Retired, not reversed. |
 
 ## Accessibility
 

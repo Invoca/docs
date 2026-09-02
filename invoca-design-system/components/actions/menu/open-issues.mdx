@@ -1,0 +1,24 @@
+---
+title: "Menu"
+description: "Divergences, open decisions, and undocumented gaps for Menu."
+icon: "menu"
+---
+
+See [Menu](/invoca-design-system/components/actions/menu) for the decided part of this page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Menu.
+
+## Gaps in the current rules
+
+- **An empty menu is undemonstrated.** No published story shows a Menu with zero items — what
+  should render, if anything, is unconfirmed.
+- **A disabled `MenuItem`'s accessibility treatment is undemonstrated.** Unlike Button, Input,
+  and several other components, there is no published example pairing a disabled menu item with
+  a reachable explanation, and no constraint requiring one.
+- **`onClose` reason handling and the `selectedMenu`/`menu` focus variant are documented only in
+  a source code comment, not exercised by the one published story.** The behavior described —
+  distinguishing `escapeKeyDown`, `backdropClick`, and `tabKeyDown`, and controlling initial
+  focus placement — is the component author's stated intent, not independently verified
+  behavior.

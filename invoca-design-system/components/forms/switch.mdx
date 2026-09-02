@@ -8,13 +8,6 @@ keywords: ["toggle", "on/off", "binary setting", "immediate setting"]
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source.**
-  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
-  Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 A control for one binary setting whose change takes effect immediately — no submit step, no
@@ -24,12 +17,6 @@ implies membership in a form the reader submits as a batch.
 ## Live example
 
 <StorybookFrame story="components-form-elements-toggle--basic-toggles" height={100} />
-
-<Note>
-  Story ID `verified` against the real Chromatic Storybook index. Titan's own
-  Storybook groups this component as **Toggle**, not `Switch`, and has no `default`
-  story — this is `basic-toggles`.
-</Note>
 
 ## Exports
 
@@ -63,11 +50,6 @@ names differ.
 
 ## Anatomy
 
-<Note>
-  Anatomy diagram `pending` — `/images/components/switch-anatomy.png`. The images directory is
-  empty; nothing is published to generate it from yet.
-</Note>
-
 | # | Part | Required |
 |---|---|---|
 | 1 | Track | Yes |
@@ -93,6 +75,13 @@ names differ.
 ## Composition
 
 Where the label sits relative to the track — leading or trailing — is unconfirmed; see
+[Open issues](/invoca-design-system/components/forms/switch/open-issues).
+
+**Unlike Input, Select, Checkbox, and Radio, there is no `FormInput` type for Switch.**
+`FormInput`'s six types are `text`, `radio`, `segmentedButton`, `select`, `checkbox`, and
+`custom` — verified directly from its source. Composing a labeled Switch field today means
+either hand-assembling `FormLabel`/`FormHelperText` around it, or using `type="custom"` with a
+Switch passed as children. Neither is a documented, decided pattern — see
 [Open issues](/invoca-design-system/components/forms/switch/open-issues).
 
 ## Content

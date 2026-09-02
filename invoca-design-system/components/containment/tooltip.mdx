@@ -1,15 +1,154 @@
 ---
 title: "Tooltip"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A short label that appears on hover or focus, anchored to the element it describes, and disappears on its own."
+icon: "message"
+tag: "Stable"
+keywords: ["hint", "hover text", "help text", "label on hover"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
-</Warning>
+## What it is
+
+A label that appears when a reader hovers, focuses, or taps the element it describes, and
+disappears on its own when they move away — no click required to open or close it. Its `title`
+accepts plain text or arbitrary React content, which published stories demonstrate up to and
+including a full [Alert](/invoca-design-system/components/feedback/alert) rendered inside one.
+
+## Live example
+
+<StorybookFrame story="components-tooltips--textonly" height={150} />
+
+## Exports
+
+Hand-confirmed from source — no prop emitter has run for this component yet. The component
+itself is a typed passthrough with no prop interface of its own beyond the underlying
+primitive's.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `title` | `ReactNode` | Required. Zero-length strings, `undefined`, `null`, and `false` are never displayed — stated directly in the component's own Storybook `argTypes`. |
+| `children` | `ReactElement` | Required. The single element the tooltip is anchored to. |
+| `placement` | `"top" \| "top-start" \| "top-end" \| "bottom" \| "bottom-start" \| "bottom-end" \| "left" \| "left-start" \| "left-end" \| "right" \| "right-start" \| "right-end"` | Default `"bottom"`. |
+| `arrow` | `boolean` | Default `false`. Adds a pointer from the tooltip to the anchor. |
+
+## Choose Tooltip when
+
+- The content is a short label or clarification for a specific element, and disappearing the
+  instant the reader moves away is the correct behavior.
+- No click or dismissal action should be needed — the reader is looking, not interacting.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Keep supplementary content visible until the reader dismisses it, or trigger it by click rather than hover | [Popover](/invoca-design-system/components/containment/popover) | Popover stays open until explicitly closed; Tooltip is transient and tied to hover/focus. |
+| Offer a list of actions | [Menu](/invoca-design-system/components/actions/menu) | Menu's own comparison states it directly: its items are interactive choices, where Tooltip content is something a reader only looks at. |
+| Pair a small icon with explanatory text as a single reusable control | The package's `IconWithTooltip` export | It composes an icon button and a tooltip together with its own size and placement defaults, rather than a caller assembling `Tooltip` and an icon by hand each time. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Reference element | `children` | Yes |
+| 2 | Label | `title` | Yes (though a falsy value suppresses display entirely) |
+| 3 | Arrow | `arrow` | No |
+
+## Variants, sizes, and states
+
+No size prop exists — a Tooltip sizes to its content, with no `maxWidth` on the base component
+(see [IconWithTooltip](#composition) for a sibling composition that does add one). Twelve
+placement options, confirmed against source's own `argTypes`. Published stories demonstrate
+three real content patterns: plain text, rich React content (a bold warning-colored heading plus
+body text), and the same rich content inside a wider container to show text-wrapping behavior at
+larger widths.
+
+## Edge and failure states
+
+- **A falsy `title` — empty string, `undefined`, `null`, or `false` — never renders anything.**
+  Stated directly in the component's own `argTypes` description, not inferred.
+- **Rich content inside a Tooltip includes styling for a nested `<h4>` and a nested Alert**,
+  confirmed from the theme override — meaning composing structured content into a Tooltip is an
+  anticipated, styled pattern here, not an unsupported edge case.
+
+## Tokens
+
+Hand-confirmed from `Tooltip.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `text-primary` | Tooltip text color |
+| `background-default` | Tooltip background |
+| `tooltip-font-size` / `tooltip-line-height` | 0.85rem / 1rem — a bespoke type scale that does not match any canonical Typography variant value-for-value |
+| `spacing-2` | Outer margin around the tooltip, and the bottom margin under a nested heading |
+| `spacing-4` | Tooltip padding |
+| `shadow-down-1` | Tooltip elevation |
+| `icon-with-tooltip-max-width` | Not used by Tooltip itself — this token belongs to the separate `IconWithTooltip` composition; see [Composition](#composition) |
+
+A nested `<h4>` inside tooltip content is restyled to the canonical caption-bold type scale, and
+a nested Alert is forced to full width — both confirmed directly from the override.
+
+## Composition
+
+`IconWithTooltip` is a separate, related export — an icon button pre-wired with a tooltip,
+adding its own `iconName`, `iconSize`, and `tooltipMaxWidth` props (default max width: 300px, via
+the `icon-with-tooltip-max-width` token). It is not documented in depth on this page. Notably,
+its source imports the underlying tooltip primitive directly rather than this package's own
+`Tooltip` export — confirmed by reading both files — though since this page's `Tooltip` is
+itself an unmodified passthrough of that same primitive, the two render identically today.
+
+## Content
+
+No copy rules are recorded in source, beyond the falsy-title suppression behavior noted above.
+
+## Accessibility
+
+- No test in source asserts a specific ARIA role or attribute for Tooltip itself — unconfirmed
+  at the Titan layer, beyond what the underlying primitive provides by default (typically an
+  `aria-describedby` relationship to the anchor element).
+- Nothing in source marks the arrow decoration `aria-hidden` or otherwise excludes it from the
+  accessibility tree — unconfirmed whether it is announced.
+
+## Constraints
+
+No falsifiable, source-backed constraint beyond the documented edge cases is recorded for this
+component.
+
+## Known issues
+
+<Card title="Tooltip: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/containment/tooltip/open-issues">
+  Divergences, open decisions, and undocumented gaps for Tooltip.
+</Card>
+
+## Why it works this way
+
+**Tooltip carries real, bespoke type tokens instead of reusing a canonical Typography variant.**
+The override's own comment records that the 0.85rem/1rem ramp is preserved byte-for-byte from a
+legacy value with no canonical variant matching it exactly — a deliberate compatibility choice,
+not an oversight.
+
+## Status
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core` |
+| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Exports covered on this page** | `Tooltip` |
+| **Related exports, not detailed here** | `IconWithTooltip` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+Hand-confirmed from `utilization.md` — no utilization emitter has run for this component yet.
+54 usages across 14 applications, the heaviest being **interaction-details** (11),
+**ai-model-management** (7), and **call-review-flow** (6) — the highest adoption of any
+component in this category.
+
+- [Popover](/invoca-design-system/components/containment/popover) — the alternative for content that should stay open until dismissed
+- [Alert](/invoca-design-system/components/feedback/alert) — a component the theme explicitly styles to render correctly nested inside a Tooltip

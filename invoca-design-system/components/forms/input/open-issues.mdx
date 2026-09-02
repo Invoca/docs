@@ -1,5 +1,5 @@
 ---
-title: "Input: open issues"
+title: "Input"
 description: "Divergences, open decisions, and undocumented gaps for Input."
 icon: "text-cursor-input"
 ---
@@ -20,3 +20,17 @@ See [Input](/invoca-design-system/components/forms/input) for the decided part o
   it should do; whether Titan's implementation matches was not verifiable this pass.
 - **No vertical-rhythm token between stacked fields inside a form** was found in the token
   snapshot.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-INPUT-02** | Read-only stays focusable, selectable, and copyable — never styled like disabled. | An automated style-diff/interaction test comparing `readOnly` vs `disabled` renders. |
+| **TITAN-INPUT-03** | A disabled Input is paired with a reachable explanation. | A required-when-disabled explanation prop, or a lint rule. |
+| **TITAN-INPUT-04** | The trailing adornment slot carries at most one element. | A lint/runtime check limiting adornment children to 1. |
+| **TITAN-INPUT-05** | Invalid state is signaled by border/focus color AND text, never color alone. | A required error-text prop whenever the invalid/error state is true. |
+| **TITAN-INPUT-06** | Multiline specifies a fixed or minimum row count, never the native default. | A required `rows`/`minRows` prop when `multiline` is set. |
+| **TITAN-INPUT-07** | Numeric entry is validated as typed text, not the native number spinner. | A lint rule flagging native `type="number"` in favor of `text` + validation. |

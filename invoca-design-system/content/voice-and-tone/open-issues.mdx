@@ -1,5 +1,5 @@
 ---
-title: "Voice and tone: open issues"
+title: "Voice and tone"
 description: "Divergences, open decisions, and undocumented gaps for Voice and tone."
 icon: "message-circle"
 ---
@@ -13,3 +13,15 @@ See [Voice and tone](/invoca-design-system/content/voice-and-tone) for the decid
 | **No mapping from brand personality to interface copy.** The three traits describe the brand; nothing in the source says how "Eye-opening" or "Bold" should show up in a button label, an error message, or an empty state. | Without it, two writers can both claim to be "on brand" while producing very different copy for the same screen. | Open |
 | **No worked examples.** The source states the traits but does not show a "sounds like us" / "doesn't sound like us" comparison for any real screen. | Traits without examples are hard to apply consistently across a team. | Open |
 | **Possible tension with caution-first patterns.** "Bold" — assertive, willing to take risks — is a reasonable fit for marketing headlines and a much less obvious fit for, say, a destructive-confirmation dialog, where the system's own decision is to be cautious rather than assertive (see [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)). Not reconciled against places the system deliberately asks for restraint. | An untested tension is one a writer discovers by shipping the wrong tone, not by reading the docs. | Open |
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-VOICE-01** | Product copy uses plain language over technical or internal wording. | A content linter (e.g. a Vale-style rule) checking copy against a maintained list of internal or technical terms. |
+| **TITAN-VOICE-02** | Avoid acronyms and phrases not commonly heard outside the office. | The same content linter, checking copy against a maintained acronym/jargon list. |
+
+TITAN-VOICE-03 ("concise and clear") is excluded above — conciseness isn't mechanically
+checkable, so the only guardrail available today is editorial review, not a lint rule.

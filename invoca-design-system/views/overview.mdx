@@ -5,14 +5,6 @@ icon: "layers"
 keywords: ["view", "page", "layout", "header", "footer", "region", "page frame", "structure", "tabs", "tab strip", "tab panel", "sections"]
 ---
 
-<Note>
-  **The Exports table and adoption figures are generated from Titan source** by
-  `tools/emit-components.mjs`. Region names, slot rules, and constraints are authored, and
-  constraints are **Proposed** until signed off. Code issues found while writing this page are
-  recorded in [Divergences](/invoca-design-system/foundations/divergences) and
-  [Open decisions](/invoca-design-system/foundations/open-decisions) rather than here.
-</Note>
-
 ## What Views govern
 
 A **view** is a full page: which regions it has, what fills each, and what the page is
@@ -248,8 +240,8 @@ where you came from. Putting anything else there costs you that.
 
 <Note>
   **A left-aligned footer also exists** — every action pushed left, via
-  `justifyContent: "flex-start"`. Nothing states when a page should use it, and it conflicts with
-  trailing-primary order. Treat it as unspecified.
+  `justifyContent: "flex-start"`. When to use it is undecided — see
+  [Open issues](/invoca-design-system/views/overview/open-issues).
 </Note>
 
 ## What a page view is expected to do

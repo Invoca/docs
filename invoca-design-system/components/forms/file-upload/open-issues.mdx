@@ -1,0 +1,31 @@
+---
+title: "FileUpload"
+description: "Divergences, open decisions, and undocumented gaps for FileUpload."
+icon: "upload"
+---
+
+See [FileUpload](/invoca-design-system/components/forms/file-upload) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-26**](/invoca-design-system/foundations/divergences#titan-div-26) | Divergence | The package exports this concept as `Dropzone`, not `FileUpload` |
+
+## Gaps in the current rules
+
+- **Rejected files (wrong format, over the count limit) fail silently.** `react-dropzone`'s
+  `useDropzone` hook exposes a `fileRejections` result carrying exactly this information;
+  source does not read it. Whether this is an intentional simplification or an oversight is
+  unconfirmed.
+- **There is no way to pre-populate or externally control the attached file list.** The
+  component manages `files` entirely in its own internal state; there is no `value` or `files`
+  prop. Editing something that already has an attached file has no confirmed path through this
+  component alone.
+- **The remove control's keyboard accessibility in production is unconfirmed.** The component's
+  own test suite mocks the close icon with keyboard handling that is not present in the real
+  icon component as rendered in source. Whether a keyboard user can remove a file in the shipped
+  component has not been verified either way.
+- **No accessible association between the visible text and the file input was found.** Whether
+  `react-dropzone`'s own root/input props supply this by default was not traced further; do not
+  assume either that it's handled or that it's missing.

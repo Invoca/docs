@@ -8,13 +8,6 @@ keywords: ["label", "helper text", "hint text", "error text", "required", "optio
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source.**
-  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
-  Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 The text stack that identifies a field and reports its state: the label, an optional
@@ -28,22 +21,13 @@ is never used alone; every Forms component composes with it.
 
 <StorybookFrame story="components-form-elements-forminput--text-input-with-optional-label" height={140} />
 
-<Note>
-  Story ID `verified` against the real Chromatic Storybook index — with a caveat.
-  FieldLabel has no standalone story of its own (confirmed absent from the index, not
-  just unchecked), which is consistent with this page's own claim that it is never used
-  alone. This embeds the FormInput story that shows it composed with a field, which is
-  the only form a live example of FieldLabel can take.
-</Note>
-
 ## Exports
 
 <Snippet file="generated/props/field-label.mdx" />
 
 <Note>
   This page treats the label, helper text, and error text as one authored concept because a
-  reader makes one decision about all three together. Whether that is one export or several in
-  code is unconfirmed without source access this pass.
+  reader makes one decision about all three together.
 </Note>
 
 ## Vocabulary
@@ -84,11 +68,6 @@ is never used alone; every Forms component composes with it.
 
 ## Anatomy
 
-<Note>
-  Anatomy diagram `pending` — `/images/components/field-label-anatomy.png`. The images
-  directory is empty; nothing is published to generate it from yet.
-</Note>
-
 | # | Part | Required |
 |---|---|---|
 | 1 | Label text | Yes |
@@ -106,7 +85,7 @@ is never used alone; every Forms component composes with it.
 | Situation | What renders | Recovery |
 |---|---|---|
 | Label longer than the field is wide | Wraps to a second line — no truncation rule was found for this component | Needs confirmation — see [Gaps](/invoca-design-system/components/forms/field-label/open-issues#gaps-in-the-current-rules) |
-| Both helper text and an error would apply at once | Undefined | Error should take the slot — not stated as a rule anywhere found. See [Gaps](/invoca-design-system/components/forms/field-label/open-issues#gaps-in-the-current-rules) |
+| Both helper text and an error would apply at once | Error text replaces helper text; helper text does not render | Confirmed directly in `FormInput`'s source: the `helperText` prop is documented as "Hidden when `error` is set (error wins)," and the render logic shows `error` unconditionally over `helperText`. See [TITAN-FLD-03](#constraints) |
 | No helper text and no error | The slot renders nothing | The layout should not reserve empty space for a message that is not showing |
 | Field is disabled | Label renders at `text-disabled` | — |
 
@@ -148,12 +127,17 @@ to the first invalid field on submit — both belong to
 | ID | Constraint | Rationale |
 |---|---|---|
 | **TITAN-FLD-01** | Every field has a visible FieldLabel. Placeholder text is never the only label. | A placeholder disappears the moment the field has a value or focus, and is not read by every assistive technology as a label in the first place. |
-| **TITAN-FLD-02** | Fields are required by default and unmarked. A field carries an explicit "optional" marker only when it is *not* required. Never the reverse (marking required fields instead). | The design library's own property is named `Optional Label` — a boolean that adds a marker, not a choice between two conventions. Evidenced by Figma, not source; **needs sign-off**. |
 | **TITAN-FLD-03** | Error text occupies the same slot as helper text. The two are never shown at once. | Two lines of guidance under one field competes for the same read; the more urgent one — the error — should be the only one showing. |
 | **TITAN-FLD-04** | Error text states the correction, not only the failure. | "Invalid" tells the reader something is wrong and nothing about what to do next. |
 | **TITAN-FLD-05** | Field labels are sentence case with no terminal punctuation. **Proposed** — assumed consistent with the sentence-case default for non-button UI text, not directly confirmed for field labels specifically. See [TITAN-CASE-05](/invoca-design-system/content/capitalization-and-punctuation#constraints). | [Button labels are the confirmed exception, not the model](/invoca-design-system/components/actions/button#constraints) — they're title case. Field labels are assumed to follow the sentence-case default instead, matching [error messages](/invoca-design-system/content/error-messages#constraints), until a source states otherwise. |
 | **TITAN-FLD-06** | A field label is programmatically associated with its field, not merely adjacent to it visually. | Visual proximity is not a semantic relationship; a screen reader that has not been told the association will not announce the label with the field. |
 | **TITAN-FLD-07** | A field's tooltip icon supplements the label; it never carries information found nowhere else. A reader who cannot or does not open it must still be able to complete the field. | A tooltip's content is not guaranteed to be read — hover-dependent content is unreliable on touch, and a reader who doesn't notice the icon gets none of it. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-FLD-02** | Fields are required by default and unmarked. A field carries an explicit "optional" marker only when it is *not* required. Never the reverse (marking required fields instead). | The component's API exposes only an "optional marker" property — there is no "required marker" to misuse in the first place. Retired, not reversed. |
 
 ## Known issues
 

@@ -1,15 +1,145 @@
 ---
 title: "Popover"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A small surface anchored to a trigger element, for supplementary content the reader looks at rather than a page-blocking task."
+icon: "note-sticky"
+tag: "Stable"
+keywords: ["anchored surface", "flyout", "popup", "callout"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+A surface that appears anchored to a trigger element — positioned relative to it on any of nine
+origin points — and dismisses on an outside click or an Escape key, without blocking the rest of
+the page. It renders arbitrary content passed as `children`, unlike
+[Tooltip](/invoca-design-system/components/containment/tooltip), which takes a single `title`.
+
+<Warning>
+  **No Titan-specific decision is recorded for this component at all.** There is no
+  `Popover.overrides.ts`, no Popover story, no Popover test, and no `popover-*` entry in the
+  component token file — confirmed by searching the full source tree. Every other component on
+  this page has at least a theme override or a published story; Popover has neither. See
+  [TITAN-DIV-29](/invoca-design-system/foundations/divergences#titan-div-29).
 </Warning>
+
+## Live example
+
+No Storybook story exists for this component — confirmed against the live deployment's own
+story index, which carries no `popover` entry of any kind. There is nothing to embed here.
+
+## Exports
+
+Hand-confirmed by reading the shipped type declaration directly, since no Titan-specific prop
+interface, override, or story exists to confirm against instead.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `open` | `boolean` | Required. |
+| `anchorEl` | `Element \| (() => Element \| null) \| null` | Positions the popover relative to this element. |
+| `anchorOrigin` | `{ vertical: 'top' \| 'center' \| 'bottom' \| number, horizontal: 'left' \| 'center' \| 'right' \| number }` | Default `{ vertical: 'top', horizontal: 'left' }`. The point on the anchor the popover attaches to. |
+| `transformOrigin` | Same shape as `anchorOrigin` | Default `{ vertical: 'top', horizontal: 'left' }`. The point on the popover itself that attaches to the anchor. |
+| `anchorPosition` | `{ top: number, left: number }` | Used only when `anchorReference="anchorPosition"`, for positioning against a point rather than an element. |
+| `onClose` | Callback | Fires on backdrop click, Escape, or any dismissal the underlying overlay primitive recognizes. |
+| `children` | `ReactNode` | Arbitrary content — not limited to text, unlike Tooltip's `title`. |
+| `elevation` | `number` | Default `8`. No Titan token backs this value. |
+| `marginThreshold` | `number \| null` | Default `16`. How close to the viewport edge the popover may render before being repositioned. |
+
+## Choose Popover when
+
+- A reader has triggered a request for more content — clicking an info icon, a status chip, or
+  a "more" affordance — and that content is more than the short label a Tooltip carries.
+- The content should stay visible until the reader dismisses it, not disappear the instant they
+  stop hovering.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show a short label that appears on hover or focus and disappears when the pointer leaves | [Tooltip](/invoca-design-system/components/containment/tooltip) | Tooltip is hover/focus-transient; Popover stays open until explicitly dismissed and is meant to be triggered by a click. |
+| Offer a list of actions the reader can choose from | [Menu](/invoca-design-system/components/actions/menu) | Menu's own comparison names this directly: its items are interactive choices, where Popover content is something a reader looks at, not acts on. |
+| Block the page and demand a decision | [Dialog](/invoca-design-system/components/containment/dialog) | Popover never blocks the rest of the page and has no confirm/cancel contract. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Anchor | `anchorEl` (or `anchorPosition` with `anchorReference="anchorPosition"`) | Effectively yes — an unanchored, undismissable popover is possible but not a supported pattern anywhere in source |
+| 2 | Content | `children` | No, technically — an empty popover is not prevented, but is not a real use |
+
+## Variants, sizes, and states
+
+No Titan-defined variant, size, or state exists. Positioning is configurable per the nine-point
+origin grid documented above; visual size is whatever `children` render at, with no preset.
+
+## Edge and failure states
+
+Unconfirmed. With no test, story, or override, there is no source evidence for what happens at
+a screen edge (beyond the generic `marginThreshold` repositioning behavior described above), with
+long or overflowing content, or with a stale `anchorEl` that has unmounted.
+
+## Tokens
+
+No token table is possible for this component. Confirmed by searching
+`component.tokens.json` for any `popover-*` entry and finding none, and by confirming no
+`Popover.overrides.ts` file exists. Every visual property — elevation, corner radius, spacing,
+color — renders at whatever the underlying primitive's own default is, with no design decision
+recorded anywhere in this codebase.
+
+## Composition
+
+Nothing in this package's own components imports or wraps Popover internally — confirmed by
+searching the full source tree, which surfaces only the barrel re-export itself. Whatever
+composes Popover today does so directly against the shipped primitive, with no Titan-specific
+behavior in between.
+
+## Content
+
+No copy rules are recorded in source.
+
+## Accessibility
+
+Unconfirmed. No test, override, or story exists to verify focus handling, ARIA role, or
+keyboard dismissal for this component within Titan. Whatever the underlying primitive provides
+by default is what ships; none of it has been checked here.
+
+## Constraints
+
+No falsifiable, source-backed constraint can be written for this component — there is no
+Titan-specific behavior to constrain. Its absence is itself the finding; see
+[TITAN-DIV-29](/invoca-design-system/foundations/divergences#titan-div-29) and
+[Known issues](#known-issues).
+
+## Known issues
+
+<Card title="Popover: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/containment/popover/open-issues">
+  Divergences, open decisions, and undocumented gaps for Popover.
+</Card>
+
+## Why it works this way
+
+**Popover ships as a bare re-export because nothing in the product has needed more from it
+yet.** Every other component in this category — even the thinnest wrappers like Accordion and
+Tooltip — carries at least a theme override that gives it a documented, Titan-specific
+appearance. Popover carries none, which means its actual rendered look today is whatever the
+underlying primitive defaults to, not a decision this design language has made.
+
+## Status
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core` |
+| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Exports covered on this page** | `Popover` (re-exported unchanged; `Popper` is also re-exported from the same barrel and shares this page's findings, but is not separately detailed here) |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+No utilization data exists for this component — `utilization.md` files exist per-component in
+source, and Popover has none, consistent with it having no dedicated directory of its own.
+
+- [Tooltip](/invoca-design-system/components/containment/tooltip) — the hover/focus-transient alternative for a short label
+- [Menu](/invoca-design-system/components/actions/menu) — the alternative when the content is a set of actions rather than something to read

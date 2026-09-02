@@ -1,15 +1,15 @@
 ---
-title: "Radius: open issues"
-description: "Everything unresolved about the radius scale — divergences, open decisions, and undocumented gaps — in one place."
+title: "Radius"
+description: "Divergences, open decisions, and undocumented gaps for Radius."
 icon: "square"
 ---
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference — see
-[Radius](/invoca-design-system/foundations/radius) for the decided part of this
-foundation.
+See [Radius](/invoca-design-system/foundations/radius) for the decided part of this page.
 
 ## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
 
 | ID | Kind | What |
 |---|---|---|
@@ -32,3 +32,14 @@ foundation.
   proposal.
 - **No `radius-lg`.** Whether large decorative surfaces are meant to use `radius-md` or
   something larger is undecided.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-RAD-01** | Corner rounding comes from a `radius-*` token, never a literal value. | A stylelint literal-value ban on `border-radius`. |
+| **TITAN-RAD-03** | Fully rounded ends use `radius-pill`, never a computed half-height value. | A lint rule banning computed half-height expressions for `border-radius`. |
+| **TITAN-RAD-04** | Circles use `radius-circle`, and only on square elements. | A test asserting `width === height` for any element using `radius-circle`. |
+| **TITAN-RAD-05** | Radius never indicates state. | A lint rule scanning a component's own style variants for state-keyed radius changes. |

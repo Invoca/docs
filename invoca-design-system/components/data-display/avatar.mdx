@@ -1,15 +1,200 @@
 ---
 title: "Avatar"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A small circular image, initials, or fallback icon standing for a person or entity — the one component in this category Titan has not customized."
+icon: "circle-user"
+tag: "Stable"
+keywords: ["avatar", "profile picture", "user icon", "initials", "circular image", "avatar group"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+A small image, initials, or fallback icon that stands for a person or entity, most often at the
+front of a list row or beside a name. It renders with no Titan-specific decision — every visual
+property is whatever the underlying element defaults to. Titan has not added a wrapper, an
+override, or a token to it.
+
+## Live example
+
+No Storybook story demonstrates this component. The live index at Titan's own Chromatic
+deployment has no `avatar` entry of any kind, and there is no `Avatar.stories.js` in source —
+confirmed by listing `components/core/src/components/` in the Titan checkout, where no `Avatar`
+directory exists at all. There is nothing to embed.
+
+## Exports
+
+<Warning>
+  **Titan has not written a single line of code for this component.** `Avatar` is re-exported
+  directly from the underlying package in `src/index.js` — no wrapper component, no
+  `.overrides.ts`, no `.stories.js`, no `.test.tsx`, and no theme override entry for this
+  component anywhere in the theme (confirmed by searching the entire theme directory). Every
+  other component in this category —
+  Badge, Card, List, Tag — has at least a theme override behind it. Avatar has none.
 </Warning>
+
+| Export | Implementation | Props it declares | What Titan decided |
+|---|---|---|---|
+| `Avatar` | Re-exported directly from the underlying package, unmodified | None — the full native `AvatarProps` passes through | Nothing |
+
+Since Titan adds nothing, the real prop surface is whatever the underlying package defines,
+hand-confirmed from the installed package (v7.3.6) type definitions rather than from anything
+Titan wrote:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` / `srcSet` / `sizes` | `string` | — | The image to render |
+| `alt` | `string` | — | Alt text for the underlying `<img>` |
+| `children` | `ReactNode` | — | Rendered when `src` is absent or fails to load |
+| `variant` | `"circular" \| "rounded" \| "square"` | `"circular"` | The avatar's shape |
+| `imgProps` | `ImgHTMLAttributes` | — | Deprecated — the underlying package recommends `slotProps.img` instead |
+| `sx` | `SxProps` | — | The only way to set size or background color; neither has a dedicated prop |
+
+<Note>
+  **A stacking helper for overlapping avatars** — with an overlap and a "+N" overflow chip — is
+  not exported by this package. Titan's `index.js` exports only bare `Avatar`. A stacked group
+  has to be hand-built.
+</Note>
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Avatar** | Profile picture, user icon, headshot | **`avatar`** | `Avatar` |
+
+No aliasing dispute exists here the way it does for [Table](/invoca-design-system/components/data-display/table)
+or [Tag](/invoca-design-system/components/data-display/tag) — "avatar" is the word code, the
+design library, and casual conversation all use for this concept.
+
+## Choose Avatar when
+
+- Representing a specific person or entity as a small circular image or initials, most often
+  beside their name in a list row, a comment, or a page header.
+- A photo may or may not be available, and a graceful fallback — initials via `children`, or a
+  default icon — is acceptable.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Layer a small count or status dot onto another element | [Badge](/invoca-design-system/components/data-display/badge) | Avatar represents an identity; Badge overlays a status onto whatever it wraps — including onto an Avatar itself, per Badge's own published story. |
+| Label an attribute, category, or status | [Tag](/invoca-design-system/components/data-display/tag) | A Tag names a property of a record. An avatar names *who* — a specific identity, not an attribute. |
+| Show a small square or rounded thumbnail of non-person content — a document, a logo, a media placeholder | Avatar's own `variant="rounded"` or `"square"` | Avatar already covers all three shapes; there is no separate "thumbnail" component to reach for instead. |
+| Stack several avatars to represent a group of people | Nothing shipped — build it by hand | A stacking helper exists in the underlying element but Titan's package does not export it — see [Known issues](/invoca-design-system/components/data-display/avatar/open-issues). |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Image | `src` (with `srcSet`, `sizes`, `alt`) | No |
+| 2 | Fallback content | `children` | No — renders only once no image is loading or available |
+| 3 | Default fallback icon | None — automatic | No — renders only when neither `src` nor `children` is usable |
+
+The three fall back in that order: image, then `children`, then a default icon. Confirmed by
+reading the underlying element's own source — the default icon is an internal `Person` SVG built
+into the package, not one of Titan's own `Icons.*` set. Titan has not swapped it for anything of
+its own.
+
+## Variants, sizes, and states
+
+Titan applies no theme entry, so everything below is an unthemed default with no Titan decision
+behind it — hand-confirmed against the installed package (v7.3.6), not emitted from any Titan
+source.
+
+| Axis | Values |
+|---|---|
+| Shape (`variant`) | `circular` (default), `rounded`, `square` |
+| Size | Fixed at 40×40px. No size prop exists — set `width`/`height` via `sx` by hand. |
+| Color | No `color` prop. The fallback background is `theme.palette.grey[400]` in light mode and `grey[600]` in dark, straight from the underlying package's default theme — not a Titan token. |
+| States | None. Avatar is not a control — it has no hover, focus, disabled, or pressed state. |
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `src` fails to load | Falls back to `children` if present, otherwise the default Person icon | Always supply `children` (typically initials) so a failed image never surfaces a generic silhouette that means nothing to the reader |
+| No `src` and no `children` | Renders the default Person icon on the unthemed grey background | Supply initials via `children` — an anonymous icon in a product surface signals nothing about who the row belongs to |
+| Long text passed as `children` | Undefined — no story or test in the Titan checkout exercises this, since none exists | Keep `children` to one or two characters; the underlying element does not scale or truncate text to fit the circle |
+
+## Tokens
+
+No Titan token, override, or theme entry exists for Avatar — confirmed by searching the entire
+theme directory for a theme override entry for this component and finding nothing. Every value
+below is an unthemed default with no Titan decision behind it, hand-confirmed from the installed
+package, not from any Titan file.
+
+| Value | Source |
+|---|---|
+| 40×40px box | The underlying element's own default styles |
+| `theme.palette.grey[400]` (light) / `grey[600]` (dark) | Fallback background, from the underlying package's default theme, not a Titan token |
+| `theme.palette.background.default` | Fallback icon/text color |
+| `variant="circular"` | The underlying element's default shape |
+
+## Composition
+
+Sits inline in a row — a list item's leading slot, a table cell, a comment header, or beside a
+name in a page header. [List](/invoca-design-system/components/data-display/list)'s own
+`List.overrides.ts` themes the list-item-icon slot but has no override entry for a list-item
+avatar slot either — so an Avatar placed in a list row's leading slot renders at the underlying
+element's own spacing, not a value Titan chose.
+
+## Content
+
+Avatar carries no visible label copy of its own beyond `alt` and `children`:
+
+- `alt` should name the person or entity the image represents — "Photo of Jordan Diaz," not
+  "avatar" or "user image."
+- `children` used as an initials fallback should be one or two characters, drawn from the same
+  name as `alt`.
+
+## Accessibility
+
+- No `role` or accessible-name handling is added by Titan — whatever `alt` a caller supplies on
+  the underlying `<img>` is what a screen reader gets. Nothing in source enforces that one exists.
+- **Unconfirmed:** whether the default Person fallback icon is marked `aria-hidden`. Since Titan
+  has not touched Avatar at all, this is entirely upstream behavior from the underlying package
+  that this page has not independently verified against the installed version's rendered DOM.
+- **This component does not decide** whether identifying a person by photo or initials is
+  appropriate for the surface it appears in — that is a per-page content and privacy decision.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AVT-01** | Always supply `alt` (for an image) or meaningful `children` (for initials) — never leave an Avatar with neither identifying who or what it represents. | The unthemed default fallback is a generic Person icon carrying no information about the specific record; a page relying on it renders every missing avatar identically. |
+| **TITAN-AVT-02** | Use [Badge](/invoca-design-system/components/data-display/badge) to convey a status or count on an Avatar — never build one by hand on top of it. | Badge already exists with the `anchorOrigin`/`overlap` handling this would otherwise duplicate, and its own published story demonstrates layering onto a circular shape. |
+
+## Known issues
+
+<Card title="Avatar: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/avatar/open-issues">
+  Divergences, open decisions, and undocumented gaps for Avatar.
+</Card>
+
+## Why it works this way
+
+There is no Titan decision to explain here, and this page says so rather than inventing one.
+[Badge](/invoca-design-system/components/data-display/badge),
+[Card](/invoca-design-system/components/data-display/card), and
+[List](/invoca-design-system/components/data-display/list) — the other three components in this
+category with a real Titan source file behind them — each carry a `.overrides.ts` translating at
+least one slot of the underlying element into a `theme.vars.tokens[…]` value. Avatar has none.
+Whether that is a considered decision — avatars are always left at the underlying package's
+defaults across Invoca products — or simply an oversight is not recorded anywhere this session
+could find. See
+[Known issues](/invoca-design-system/components/data-display/avatar/open-issues).
+
+## Status
+
+Package `@invoca/titan-core`, version **3.6.3**. Export: `Avatar`, re-exported unmodified from
+the underlying package. There is no dedicated Titan source file, so no independent version
+history, deprecation marker, or `since` field exists for it beyond the package's own release
+notes.
+
+## Related
+
+No utilization data exists for Avatar specifically. `utilization.md` is generated per Titan
+component directory in the checkout, and Avatar has none to hold one. Real usage of Avatar
+certainly exists across Invoca products — it is a normal export available to every consumer of
+the package — but it is not tracked the way every other component in this category is.
+
+- [Badge](/invoca-design-system/components/data-display/badge) — for overlaying a status or count, including on top of an Avatar
+- [List](/invoca-design-system/components/data-display/list) — the most common place an Avatar sits, in a row's leading slot
+- [Card](/invoca-design-system/components/data-display/card) — often carries an Avatar near a name in its header area

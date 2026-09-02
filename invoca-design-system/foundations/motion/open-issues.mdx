@@ -1,5 +1,5 @@
 ---
-title: "Motion: open issues"
+title: "Motion"
 description: "Divergences, open decisions, and undocumented gaps for Motion."
 icon: "activity"
 ---
@@ -22,8 +22,8 @@ has been decided yet. Neither is resolvable by inference.
 This foundation has more gaps than settled rules. Do not infer answers.
 
 - **No reduced-motion handling exists in the token layer.** No token, no media query, no
-  documented pattern. The constraints above state what should be true; nothing enforces it.
-  This is the most significant gap in Foundations.
+  documented pattern. This is the most significant gap in Foundations — see
+  [TITAN-MOT-03](#constraints-titan-should-enforce) below.
 - **No Invoca intent is recorded for any value.** Whether 300ms is right for Titan's
   surfaces has not been asked.
 - **The duration-to-use mapping on this page is proposed, not transcribed.** Nothing binds
@@ -34,3 +34,13 @@ This foundation has more gaps than settled rules. Do not infer answers.
 - **No guidance exists on animating layout properties.** Nothing says whether to prefer
   `transform`/`opacity` over `height`/`top`, which is a performance decision with a visible
   cost on long tables.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-MOT-01** | Duration and easing always come from tokens, never a literal ms value or inline `cubic-bezier()`. | A stylelint rule disallowing raw duration/easing values on `transition`/`animation` properties. |
+| **TITAN-MOT-02** | Entering elements use `ease-out`; leaving elements use `ease-in`. | A lint rule tying a transition library's enter/exit lifecycle hook to the required easing token. |
+| **TITAN-MOT-03** | Every transition respects `prefers-reduced-motion`. | Shipping the reduced-motion reset globally in the token package (same fix as TITAN-A11Y-06). |

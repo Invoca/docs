@@ -1,5 +1,5 @@
 ---
-title: "Dates and times: open issues"
+title: "Dates and times"
 description: "Divergences, open decisions, and undocumented gaps for Dates and times."
 icon: "calendar"
 ---
@@ -20,3 +20,16 @@ or an agent — will otherwise make ad hoc and inconsistently.
 | **Seconds.** No format given. | Call duration is a core Invoca concept and needs a rule. | Open |
 | **Year omission.** No rule on whether the current year may be dropped (`12/12` vs `12/12/2020`). | Affects table column width, where it matters most. | Open |
 | **Date ranges spanning years.** No rule. | `12/12/2020 - 1/5/2021` vs an abbreviated form. | Open |
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-DATE-01** | Dates render as `M/D/YYYY`, with no leading zero. | A shared `formatDate` utility plus a lint rule banning ad hoc date-string construction. |
+| **TITAN-DATE-02** | Each date-filter preset uses its specific, defined display label, not the raw picker text. | A `dateFilterLabelMap` constant with a unit test asserting each preset's applied-filter label. |
+| **TITAN-DATE-03** | A custom date range renders as `[START] - [END]`, with both ends in the same format. | A range-formatting component/util that forces both ends through the same date formatter. |
+| **TITAN-TIME-01** | The meridiem is lowercase with no space (e.g. `3pm`). | A shared time-formatting utility plus lint/test. |
+| **TITAN-TIME-02** | No leading zero on single-digit hours. | The same shared time-formatting utility. |
+| **TITAN-TIME-03** | Relative timestamps switch to an absolute date at 7 days. | A unit test on `formatRelativeTime` asserting the cutover exactly at 7 days. |

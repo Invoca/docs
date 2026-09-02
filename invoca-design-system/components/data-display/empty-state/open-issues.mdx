@@ -1,5 +1,5 @@
 ---
-title: "EmptyState: open issues"
+title: "EmptyState"
 description: "Divergences, open decisions, and undocumented gaps for EmptyState."
 icon: "component"
 ---
@@ -34,3 +34,14 @@ See [EmptyState](/invoca-design-system/components/data-display/empty-state) for 
   does not say whether it is primary or secondary.
 - **Whether an empty state may carry a link to documentation is unstated**, which is the most
   common request for an onboarding zero state.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-EMP-01** | An explicit `title` is always passed. | Making `title` a required (non-optional) prop. |
+| **TITAN-EMP-04** | The supporting line is one sentence. | A lint/content-check flagging multi-sentence `subTitle` strings. |
+| **TITAN-EMP-07** | The message never lives only in the illustration. | Same required-`title` type change also guarantees this. |

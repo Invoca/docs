@@ -1,15 +1,152 @@
 ---
 title: "Link"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A styled hyperlink to a resource with its own URL — Button's counterpart for navigation."
+icon: "link"
+tag: "Stable"
+keywords: ["hyperlink", "anchor", "text link", "navigation", "textlink"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A hyperlink to a resource that has its own URL, styled with the system's link colors and an
+optional trailing icon. It renders a real `<a>` element, so right-click, middle-click,
+⌘-click, and copy-link-address all work the way a reader expects from any link on the web.
+
+## Live example
+
+<StorybookFrame story="components-text-links--text-links" height={150} />
+
+## Exports
+
+<Snippet file="generated/props/link.mdx" />
+
+<Warning>
+  **The package's `Link` export is a different thing entirely.** It is a React Router wrapper
+  that preserves `titan-*` query parameters on internal navigation — no styling, no `variant`,
+  no icon, no visual decision of any kind. Import `TextLink` for the component this page
+  documents. See [TITAN-DIV-25](/invoca-design-system/foundations/divergences#titan-div-25).
 </Warning>
+
+## Choose Link when
+
+- The destination has a real URL, and a reader would reasonably want to open it in a new tab,
+  copy it, or right-click it.
+- The action is navigation, not a change to application state.
+- The control sits inline in a sentence, or beside other content, rather than standing alone as
+  a page-level or region-level action.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Trigger a state change — submit, confirm, apply, delete | [Button](/invoca-design-system/components/actions/button) | Pressing it does not take the reader anywhere with a URL. Button's own test: does pressing it change state, or take you to a resource? |
+| Stand alone as the primary or secondary action in a region | [Button](/invoca-design-system/components/actions/button) | A Link reads as inline or secondary by convention. A reader looking for "the button" on a screen will not scan link-styled text. |
+| Preserve `titan-*` query parameters on an internal route change | The package's `Link` export | A routing concern, not a styling one — see the divergence above. Do not use TextLink for this; it has no routing behavior at all. |
+| Offer several related destinations from one control | [Menu](/invoca-design-system/components/actions/menu) | A list of links stacked in a menu reads as one decision with several outcomes, not several standalone links. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Link text | `children` | Yes |
+| 2 | Destination | `href` | No — see [Edge and failure states](#edge-and-failure-states) |
+| 3 | Trailing icon | `icon` | No |
+
+The icon is always trailing. There is no leading-icon variant recorded anywhere in source.
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/link.mdx" />
+
+**Underline** is the one themed axis: `none` (default), `hover`, or `always`. There is no
+sizing prop — a Link inherits its font size from the surrounding text, which is why it has no
+`small`/`medium` distinction the way Button does.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| No `href` is given | `onClick` still fires; the element renders without a destination | Pass an `href` whenever the control is genuinely a navigation. An `href`-less Link that only runs a handler is indistinguishable, on inspection, from a broken one. |
+| The destination is unreachable or the resource no longer exists | Nothing — the link renders identically until clicked | Not handled by the component. The destination page's own not-found state is what a reader sees. |
+| Link text wraps to a second line with a trailing icon | Undefined — no story demonstrates this combination | Keep link text short enough not to wrap, especially when an icon is present. |
+
+## Tokens
+
+Verified directly from `TextLink.overrides.ts` — no per-component token emitter exists yet for
+this concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `link-hover` | Text color on `:hover` |
+| `link-visited` | Text color on `:visited` |
+| `text-link-icon-offset` | Bottom and left margin on the trailing icon, so it sits inline with the text |
+| `font-family-base` | The link's font family |
+
+<Warning>
+  **No focus-state token is recorded.** The override sets `hover` and `visited`; it sets
+  nothing for `:focus`. Whether a Link's focus ring comes from a browser default, an inherited
+  style from the underlying framework, or nothing distinguishable at all is unconfirmed — see
+  [Open issues](/invoca-design-system/components/actions/link/open-issues).
+</Warning>
+
+## Composition
+
+A Link is inline by default — it composes with surrounding text or sits beside other content,
+rather than occupying its own region. When several links belong together as a set of
+destinations rather than one sentence, that is a [Menu](/invoca-design-system/components/actions/menu) or a list, not several
+adjacent Links.
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Text names the destination or the action, not the mechanism | View invoice | Click here |
+| Length matches its context — inline links stay short | Export results | Click this link to export your results as a CSV file |
+
+## Accessibility
+
+- Renders a real `<a>` with `role="link"`, confirmed by the component's own test suite —
+  keyboard and assistive-technology support come from the native element, not from ARIA added
+  on top.
+- The trailing icon's accessible treatment is unconfirmed — nothing in source marks it
+  `aria-hidden`, so whether a screen reader announces it alongside the link text has not been
+  verified.
+- **Link text must make sense out of context.** A screen reader user can navigate a page by
+  pulling up a list of all links in isolation from their surrounding sentences; "Click here"
+  and "Read more" are indistinguishable from each other in that list.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-LINK-01** | Every Link that performs navigation carries a real `href`. | An `href`-less Link is not distinguishable from a broken one on sight, and loses every native anchor affordance a reader expects. |
+| **TITAN-LINK-02** | Link text names the destination or outcome, never the mechanism ("click here", "this link"). | Screen reader users often navigate by a links-only list, where surrounding sentence context is stripped away. |
+| **TITAN-LINK-03** | The icon, when present, is always trailing. | No leading-icon treatment exists in source or in any published story. |
+
+## Known issues
+
+<Card title="Link: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/actions/link/open-issues">
+  Divergences, open decisions, and undocumented gaps for Link.
+</Card>
+
+## Why it works this way
+
+**The naming collision with the package's own `Link` export is exactly why this page leads with
+a warning instead of burying it in a footnote.** A reader who imports the wrong `Link` gets
+code that compiles, renders an anchor, and does something entirely unrelated — preserving
+tracking parameters rather than applying any of the styling this page documents. That failure
+mode is silent, which is the reason it is surfaced at the top of the page rather than left to
+the divergence register alone.
+
+## Status
+
+<Snippet file="generated/status/link.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/link.mdx" />
+
+- [Button](/invoca-design-system/components/actions/button) — for actions that change state rather than navigate
+- [Menu](/invoca-design-system/components/actions/menu) — for offering several destinations from one control

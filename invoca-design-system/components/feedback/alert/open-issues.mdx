@@ -1,5 +1,5 @@
 ---
-title: "Alert: open issues"
+title: "Alert"
 description: "Divergences, open decisions, and undocumented gaps for Alert."
 icon: "component"
 ---
@@ -30,3 +30,17 @@ treatment defined, so a titled alert is buildable and unspecified.
   section-level alert goes above the section heading or below it is undecided.
 - **Nothing states what happens to a dismissed alert whose condition persists.** It returns on the
   next render, and whether that is correct has not been decided.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-ALR-01** | Use the `standard` variant; never `filled` or `outlined`. | Narrowing the `variant` type to `'standard'` only, or a lint rule. |
+| **TITAN-ALR-02** | `severity` is always set explicitly. | Removing the default, or making `severity` a required prop. |
+| **TITAN-ALR-03** | `color` always matches `severity`, or is left unset. | A type union or lint rule comparing the two prop values. |
+| **TITAN-ALR-05** | At most one trailing action, and it resolves the alert. | A lint/runtime check counting action children (≤ 1). |
+| **TITAN-ALR-06** | Never place an Alert inside a table row or list item. | A lint rule flagging Alert inside TableRow/ListItem ancestry. |
+| **TITAN-ALR-08** | An Alert that appears after page load carries a live-region role. | A required `role`/live prop with no default, or a lint rule requiring `role="alert"`/`"status"`. |

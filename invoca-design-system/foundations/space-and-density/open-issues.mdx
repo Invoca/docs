@@ -1,5 +1,5 @@
 ---
-title: "Space: open issues"
+title: "Space"
 description: "Divergences, open decisions, and undocumented gaps for Space."
 icon: "ruler"
 ---
@@ -34,3 +34,12 @@ has been decided yet. Neither is resolvable by inference.
 - **A second, older 8px spacing unit is still exposed** alongside the scale. Its
   relationship to the `spacing-*` steps is unstated, and its multiplier behavior does not
   correspond to any step on this page.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-SPC-01** | All spacing comes from a `spacing-*` token; no px/rem/em literals. | A stylelint literal-value ban on margin/padding/gap. |
+| **TITAN-SPC-05** | A deliberate zero uses `spacing-none`, never the literal `0`. | A lint rule banning literal `0`/`0px` for margin/padding/gap, requiring the token. |

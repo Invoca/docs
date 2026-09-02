@@ -1,15 +1,55 @@
 ---
 title: "Components overview"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "How this section is organized, and what a component page promises."
+icon: "shapes"
+tag: "Stable"
+keywords: ["components", "component library", "UI components"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What this section covers
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
-</Warning>
+A component is a unit a reader recognizes as one thing — a Button, a Table, a Tooltip —
+regardless of how many separate exports it takes to build it. One page can cover several
+exports; its own Exports section maps concept to import, because documentation groups by what
+a reader recognizes and the package groups by what an engineer imports. See
+[TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) for why those two groupings sometimes disagree, and
+[FieldLabel](/invoca-design-system/components/forms/field-label) for a case where the reader-facing name and the
+package's export name are different words for the same thing on purpose.
+
+**Grouped by job, not by alphabet.** The sidebar organizes components into Actions, Forms, Data
+display, Navigation, Feedback, and Containment — the question each group answers, not the
+component's name. A reader who knows their problem ("I need to group related actions") and not
+yet its solution is served by this grouping; a reader who already knows the component's name
+was never the one who needed the sidebar.
+
+## What every component page promises
+
+The same fixed section order, whether the page is dense (Button) or thin (Skeleton) — a fixed
+order makes an omission visible, which is the point. Every page states:
+
+- **What it is**, in two sentences, and a live example from the real, deployed Storybook.
+- **Choose this when / choose something else when** — the second half is mandatory and always
+  names a specific alternative. "Don't use this for the wrong thing" is not an entry anywhere
+  in this section.
+- **What the system decided**, versus what merely renders because the underlying control
+  accepts it. A component's accepted API surface is consistently wider than the surface Titan
+  themed — see any page's Exports section for exactly where that page's line falls.
+- **Numbered constraints**, each falsifiable and each carrying a reason. Cite the ID when it
+  drives a decision; a cited constraint is checkable against the system, an uncited one is
+  checkable only against taste.
+- **What's still open** — a Known issues Card linking to the page's own divergences and gaps,
+  never resolved by inference on the page itself.
+
+## Where facts come from
+
+Reference content — props, token values, adoption — is generated from Titan source or
+hand-confirmed directly against it and marked as such; it is never invented to fill a table.
+Where a page cites a Figma finding, it was read directly from the file, never from a Code
+Connect mapping — Code Connect has been found unreliable and is not used as evidence anywhere
+in this section.
+
+## Related
+
+- [Foundations](/invoca-design-system/foundations/overview) — the tokens every component is built from
+- [Patterns](/invoca-design-system/patterns/overview) — named compositions of two or more components
+- [Views](/invoca-design-system/views/overview) — the page-level archetypes components and patterns fill

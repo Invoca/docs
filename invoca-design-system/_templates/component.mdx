@@ -23,13 +23,6 @@ keywords: ["synonyms", "what people call it when they don't know the name"]
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, tokens, and changelog on this page are generated from Titan source.**
-  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
-  Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 Two sentences at most. State what the component is and the job it does.
@@ -104,9 +97,16 @@ appears in every design system and carries no information. Write what distinguis
      Part names are stable across years. Measurements change every release. Put
      the parts in the diagram; put every number in the generated token table. */}
 
-<Frame caption="ComponentName parts. Measurements live in the token table, not here.">
-  <img src="/images/components/componentname-anatomy.png" alt="Annotated diagram of ComponentName" />
-</Frame>
+{/* No diagram exists yet for most components (`/images/components/` is currently empty).
+     Omit the Frame/img entirely until a real one is produced — do not add a callout
+     explaining that it's missing. A missing section is silence; a "pending" note
+     asserting its own absence is a claim, and one more thing to clean up later. Add the
+     Frame back only once an actual image file exists:
+
+     <Frame caption="ComponentName parts. Measurements live in the token table, not here.">
+       <img src="/images/components/componentname-anatomy.png" alt="Annotated diagram of ComponentName" />
+     </Frame>
+*/}
 
 | # | Part | Prop | Required |
 |---|---|---|---|
@@ -234,7 +234,28 @@ composition or the page — focus return after close, live-region announcement, 
      An agent asked about anything here answers "Titan does not specify this."
 
      A confident invented answer in the system's voice is the most expensive
-     failure available, because it propagates and nobody can trace its origin. */}
+     failure available, because it propagates and nobody can trace its origin.
+
+     ─── A THIRD CATEGORY, ON THE open-issues.mdx SIBLING, NOT HERE ──────────
+     Run every Constraint above through this test before it ships:
+
+       1. Real decision      — Titan's code cannot determine this; a person judged
+                                it. Keep it as a Constraint on THIS page. No further action.
+       2. Duplicate of Reference — Titan's types/enum already make the violation
+                                impossible; the constraint just restates the generated
+                                props/token table. Cut it from this page's Constraints
+                                table — move it to a `### Retired` subsection with a
+                                reason (never delete a numbered row outright).
+       3. Should be Titan's job, isn't yet — a real, currently-true rule describing a
+                                MECHANICALLY CHECKABLE pattern (a count, a required prop,
+                                a banned combination) that nothing in code enforces yet.
+                                Keep the Constraint on this page AND add it to a
+                                "## Constraints Titan should enforce" section on this
+                                page's open-issues.mdx sibling, naming what would
+                                enforce it (a lint rule, a type change, a required prop).
+
+     Do not over-assign bucket 3 — if judging the rule needs understanding intent or
+     meaning rather than a structural pattern, it is bucket 1 even when unenforced. */}
 
 ## Why it works this way
 

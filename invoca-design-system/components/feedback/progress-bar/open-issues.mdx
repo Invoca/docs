@@ -1,0 +1,38 @@
+---
+title: "ProgressBar"
+description: "Divergences, open decisions, and undocumented gaps for ProgressBar."
+icon: "bars-progress"
+---
+
+See [ProgressBar](/invoca-design-system/components/feedback/progress-bar) for the decided part
+of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| Proposed addition to [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | The package's export for ProgressBar is `LinearProgress` — not yet listed among that entry's worked examples (Table/`DataGrid`, Switch/`Toggle`, and others), though it is the same pattern. |
+
+## Gaps in the current rules
+
+- **Whether `error`, `info`, `success`, and `warning` as explicit `color` values route through a
+  Titan-named token is unconfirmed.** `Progress.overrides.ts` only styles `barColorPrimary` and
+  `barColorSecondary`; the other four colors were not traced further in this pass.
+- **`buffer` and `query` variants are undemonstrated.** They exist in the type interface
+  inherited from the underlying framework, with no Titan story, override, or non-story usage
+  found anywhere in this checkout.
+- **The generated adoption figure reads zero usages, matched against a literal `<Progress />`
+  tag.** The real import name is `LinearProgress`; this figure is very likely undercounting true
+  adoption rather than reflecting it, but this pass could not correct the scan or independently
+  verify real usage.
+- **Out-of-range `value` behavior (below 0 or above 100) is unconfirmed.** Source does not clamp
+  it, and no story demonstrates what renders.
+- **Why `color="primary"` maps to `background-success` (green) specifically for this component
+  is undocumented.** No rationale was found in source or in the override file's comments.
+- **No design-side confirmation of this component was possible in this pass.** Figma
+  verification was out of scope for this research; everything on the main page is sourced from
+  code, tests, and stories only.
+- **`Loader`, a separate and far more heavily adopted loading primitive in the same package, has
+  no documentation page anywhere in this site.** It is not part of this concept and is not
+  documented here, but its absence from the navigation entirely is worth flagging to whoever
+  owns the component inventory.

@@ -5,13 +5,6 @@ icon: "grid-3x3"
 keywords: ["layout", "grid", "breakpoint", "responsive", "columns", "viewport", "container"]
 ---
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it governs
 
 Where things sit on the page and how that changes with viewport width. Two mechanisms —
@@ -27,7 +20,7 @@ breakpoints and a 12-column grid — and no tokens of its own.
 <Note>
   **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
   baseline the design language is being built on. This is the vocabulary of record — not
-  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+  inferred from token names.
 </Note>
 
 ## Breakpoints
@@ -52,8 +45,9 @@ A 12-column flexbox grid, driven by per-breakpoint span props.
 
 <Warning>
   **The grid's `spacing` prop is not the Titan spacing scale.** It uses a separate 8px
-  multiplier, so `spacing={2}` resolves to 16px through a property that is
-  a **separate 8px multiplier** that maps to no step on the Titan scale.
+  multiplier, so `spacing={2}` resolves to 16px — the same number as `spacing-5`, by
+  coincidence, through a mechanism that maps to no step on the Titan scale and will not
+  track it if the scale ever changes.
 
   Set gaps from a `spacing-*` token instead:
 

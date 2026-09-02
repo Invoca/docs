@@ -36,7 +36,7 @@ means it stays visible with its original wording and a reason.
 | Keep the original wording | Reword it to fit the new position |
 | State why it was retired, and what supersedes it | Reuse the number for a new rule |
 
-A missing number therefore means a retired rule, not an error. Four are retired today:
+A missing number therefore means a retired rule, not an error. Ten are retired today:
 
 | ID | Was | Why |
 |---|---|---|
@@ -44,6 +44,12 @@ A missing number therefore means a retired rule, not an error. Four are retired 
 | `TITAN-FND-05` | Density is set by `data-density`, never by swapping a theme | Same |
 | `TITAN-SPC-02` | Raw CSS uses `var(--titan-tokens-spacing-N)` | Superseded by [TITAN-FND-02](/invoca-design-system/foundations/overview#constraints) |
 | `TITAN-SPC-06` | Never scale `spacing-1` or `spacing-2` for compact | Governs density behaviour, out of scope |
+| [`TITAN-BTN-07`](/invoca-design-system/components/actions/button#constraints) | `loading` disables the Button and preserves its rendered width | Automatic library behaviour, not a discretionary choice |
+| [`TITAN-BTN-14`](/invoca-design-system/components/actions/button#constraints) | A button label occupies one line and never wraps | The theme already enforces this with `nowrap` |
+| [`TITAN-TBL-06`](/invoca-design-system/components/data-display/table#constraints) | Cells truncate; column headers do not | DataGridPro's shipped themed default, not a per-table choice |
+| [`TITAN-FLD-02`](/invoca-design-system/components/forms/field-label#constraints) | Fields are required by default; optional is marked explicitly, never the reverse | The API exposes only an "optional marker" — there is no "required marker" to misuse |
+| [`TITAN-MOT-05`](/invoca-design-system/foundations/motion#constraints) | Nothing exceeds `motion-duration-complex` (375ms) | The 7 duration tokens already top out there, guaranteed by the closed token set |
+| [`TITAN-TOK-06`](/invoca-design-system/contribute/token-workflow#constraints) | Documentation is re-emitted in the same change that adds the token | Already guaranteed by the `emit-tokens.mjs --check` gate described on that page |
 
 **Retired is not reversed.** Each of those rules still describes what the code does. They
 stopped being *documentation policy* because the subject moved out of scope.

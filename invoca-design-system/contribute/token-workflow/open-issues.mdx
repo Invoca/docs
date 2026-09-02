@@ -1,5 +1,5 @@
 ---
-title: "Token workflow: open issues"
+title: "Token workflow"
 description: "Divergences, open decisions, and undocumented gaps for Token workflow."
 icon: "git-pull-request"
 ---
@@ -26,3 +26,15 @@ See [Token workflow](/invoca-design-system/contribute/token-workflow) for the de
 - **No rule for when a value earns a token.** One use, three uses, any use — undecided.
 - **No deprecation path**, so the workflow is add-only. See
   [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation).
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-TOK-01** | A token is authored in the DTCG source, never added directly to a generated file. | A CI check (mirroring the doc-emission `--check` gate) that regenerates output from source and diffs against committed files, failing on drift. |
+| **TITAN-TOK-02** | A token's value is an alias, never an inline literal. | A token-lint script rejecting semantic/component-tier `$value`s that aren't `{...}` alias syntax. |
+| **TITAN-TOK-03** | Every new token ships with a `$description`. | A JSON-schema/build-time validation requiring a non-empty `$description` per token. |
+| **TITAN-TOK-04** | A new component token aliases the semantic tier, or states why it doesn't. | A lint rule checking the alias path resolves to `semantic.*` unless an explicit exception field is present. |
+| **TITAN-TOK-05** | A missing value produces a token proposal, never a literal in component code. | An ESLint/stylelint rule flagging raw color/spacing literals where a token exists. |

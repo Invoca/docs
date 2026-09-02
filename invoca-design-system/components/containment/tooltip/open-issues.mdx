@@ -1,0 +1,25 @@
+---
+title: "Tooltip"
+description: "Divergences, open decisions, and undocumented gaps for Tooltip."
+icon: "message"
+---
+
+See [Tooltip](/invoca-design-system/components/containment/tooltip) for the decided part of this
+page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Tooltip.
+
+## Gaps in the current rules
+
+- **ARIA role and `aria-describedby` wiring are unconfirmed at the Titan layer.** No test in
+  source checks what the underlying primitive actually produces here; the page states the
+  expected default behavior without verifying it.
+- **Whether the arrow decoration is excluded from the accessibility tree is unconfirmed.**
+  Nothing marks it `aria-hidden` in source.
+- **`IconWithTooltip` imports the underlying tooltip primitive directly instead of this
+  package's own `Tooltip` export.** The two are functionally identical today because `Tooltip`
+  itself adds no behavior, but the inconsistency means a future change to `Tooltip` (an added
+  wrapper behavior, for instance) would silently not apply to `IconWithTooltip`. Whether this is
+  intentional or an oversight is unrecorded.

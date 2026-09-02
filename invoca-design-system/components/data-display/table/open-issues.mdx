@@ -1,5 +1,5 @@
 ---
-title: "Table: open issues"
+title: "Table"
 description: "Divergences, open decisions, and undocumented gaps for Table."
 icon: "table"
 ---
@@ -42,3 +42,15 @@ this page.
   grid" without saying which, and the published demo names one and renders the other.
 - **No rule for default sort.** Every table arrives sorted somehow, and nothing states whether that
   is the newest record, a name, or the server's order.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-TBL-01** | Built with the grid export, never assembled from raw table primitives. | A `no-restricted-imports`-style lint rule banning direct `Table`/`TableRow`/`TableCell` imports from the underlying package. |
+| **TITAN-TBL-05** | A horizontally scrolling table pins its identifying column. | A lint/runtime check requiring a non-empty `pinnedColumns.left` once column count forces horizontal scroll. |
+| **TITAN-TBL-07** | At most two inline row actions, else collapse to a menu. | A lint/runtime check counting action items per row. |
+| **TITAN-TBL-09** | Sort state is announced programmatically, not only shown visually. | An automated accessibility test (axe) asserting `aria-sort` on sortable column headers. |

@@ -1,5 +1,5 @@
 ---
-title: "Button: open issues"
+title: "Button"
 description: "Divergences, open decisions, and undocumented gaps for Button."
 icon: "square-mouse-pointer"
 ---
@@ -25,8 +25,8 @@ See [Button](/invoca-design-system/components/actions/button) for the decided pa
   containing a function word like "to" or "of" — "Save Changes To Draft" instead of "Save
   Changes to Draft." See
   [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23).
-- **The `large` size is reachable and undefined.** It is not themed, but nothing prevents
-  passing it. [TITAN-BTN-10](/invoca-design-system/components/actions/button#constraints) is a documentation rule with no enforcement.
+- **The `large` size is reachable and undefined.** See
+  [TITAN-BTN-10](#constraints-titan-should-enforce) below.
 - **`tertiary` exists as a design term and in no token.** The prominence vocabulary is three
   levels; the token layer names none of them. See
   [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11).
@@ -36,3 +36,19 @@ See [Button](/invoca-design-system/components/actions/button) for the decided pa
   two of its own tokens, and no page states what an active filter should look like.
 - **No rule for buttons inside dense table rows** beyond "use a smaller size", which does not
   say which size or what happens in a row that already has three actions.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-BTN-01** | At most one primary (`variant="contained"`) Button per view region. | Lint scanning a region for more than one `contained` Button. |
+| **TITAN-BTN-04** | Button labels are 1–3 words. | Lint/prop validator counting words in the label. |
+| **TITAN-BTN-05** | Never more than 3 Buttons in one action group. | Lint counting Button descendants of an action-group wrapper. |
+| **TITAN-BTN-06** | A disabled Button is paired with a reachable explanation. | A required `disabledReason` prop, or a lint rule requiring an adjacent Tooltip/`aria-describedby`. |
+| **TITAN-BTN-09** | An icon-only Button carries an explicit accessible name. | A required accessible-name prop when no text child is present; standard a11y lint. |
+| **TITAN-BTN-10** | Size is `small` or `medium`, never `large`. | Narrowing the exported `size` type to `'small' \| 'medium'`, or a lint rule flagging `size="large"`. |
+| **TITAN-BTN-11** | Icon comes before the label, never after (needs confirmation). | Removing `endIcon` from the type, or a lint rule prohibiting it. |
+| **TITAN-BTN-13** | Labels are title case. | A lint rule/formatter enforcing the exact title-case algorithm (with function-word exceptions) on label strings. |

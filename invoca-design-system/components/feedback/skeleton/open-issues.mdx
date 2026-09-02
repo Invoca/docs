@@ -1,5 +1,5 @@
 ---
-title: "Skeleton: open issues"
+title: "Skeleton"
 description: "Divergences, open decisions, and undocumented gaps for Skeleton."
 icon: "component"
 ---
@@ -35,3 +35,14 @@ is the one it has decided least about; the animation does not respond to
   the system provides none, which is why applications keep writing their own.
 - **Whether a skeleton may be reused as a disabled or placeholder state is unstated**, and it is a
   common misuse.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-SKL-04** | One animation style per screen. | A lint rule scanning a view for mixed `pulse`/`wave` values. |
+| **TITAN-SKL-05** | Respects `prefers-reduced-motion`. | A default `animation` value driven by a shared reduced-motion hook. |
+| **TITAN-SKL-06** | Hidden from assistive technology. | An automated accessibility test asserting `aria-hidden` on rendered Skeletons. |

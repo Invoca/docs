@@ -1,15 +1,138 @@
 ---
 title: "ButtonGroup"
-description: "TODO — one sentence. What it is and what it is for."
+description: "Groups related Buttons into one visually cohesive control."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
+keywords: ["segmented control", "grouped buttons", "toolbar", "button bar"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A container that groups a small set of related Buttons so they read as one control rather than
+several independent ones — shared spacing, a shared boundary, and (for the contained,
+default and destructive colors) a border treatment that makes adjacent buttons look seamless.
+
+## Live example
+
+<StorybookFrame story="components-button-groups--basic-button-group" height={150} />
+
+## Exports
+
+<Snippet file="generated/props/button-group.mdx" />
+
+## Choose ButtonGroup when
+
+- Two or three Buttons represent closely related actions a reader compares or chooses between
+  at the same moment — not actions scattered across a region.
+- The buttons share the same prominence and are meant to be read as one decision with several
+  outcomes, not a hierarchy of primary and secondary actions.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Combine a primary action with lower-weight alternatives | Individual [Buttons](/invoca-design-system/components/actions/button) in an action row | ButtonGroup applies one shared `variant` and `size` to every child — it cannot express mixed prominence. |
+| Bind a set of mutually exclusive choices to a single form value | `FormInput` with `type="segmentedButton"` | Source ships this as a separate, form-bound pattern for the same visual shape — see [Open issues](/invoca-design-system/components/actions/button-group/open-issues). ButtonGroup itself has no `value`/`onChange` and does not track which child is "selected." |
+| Offer three or more unrelated actions from one trigger | [Menu](/invoca-design-system/components/actions/menu) | A ButtonGroup shows every option at once; a Menu discloses them on demand. Past a small count, showing everything competes for the same visual weight as the page's real primary action. |
+
+## Anatomy
+
+| # | Part | Required |
+|---|---|---|
+| 1 | The group | Yes |
+| 2 | Two or more [Button](/invoca-design-system/components/actions/button) children | Yes |
+
+ButtonGroup declares no props of its own — every prop it accepts, including `variant`, `size`,
+`orientation`, and `color`, is inherited from its base in full.
+
+## Variants, sizes, and states
+
+<Snippet file="generated/matrix/button-group.mdx" />
+
+<Warning>
+  **`size` accepts three values; none renders distinctly.** The override that themes a grouped
+  button's padding and font weight applies identically regardless of `size` — there is no
+  `small`/`medium`/`large` branch in source. Whatever visual difference the three values produce
+  comes entirely from the underlying framework default, not from a Titan decision.
 </Warning>
+
+**The design library's `Type` axis has three values, not two, and neither side fully covers the
+other.** Confirmed directly from the Figma file (not from Code Connect, which undercounts
+this): `Type` is `Solid`, `Ghost`, or `Icon`, at two sizes (`Medium`, `Small`). `Solid` and
+`Ghost` correspond to code's `contained` and `outlined`. Neither side has a confirmed
+counterpart for the other's third value — code's `text` variant has no matching Figma `Type`,
+and Figma's `Icon` type has no confirmed code equivalent.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| A grouped child uses a color other than the group's default or destructive | The seamless border treatment does not apply — a visible divider appears between that button and its neighbors | Not handled by the component. Match every child's color to the group's, or accept the visible divider. |
+| The group has no `aria-label` | Renders with a `role="group"` and no accessible name for the group itself | Published stories are inconsistent here — see [Accessibility](#accessibility). Set one describing the group's collective purpose. |
+
+## Tokens
+
+Verified directly from `ButtonGroup.overrides.ts` — no per-component token emitter exists yet
+for this concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `font-weight-bold` | Every grouped button's label |
+| `spacing-3`, `spacing-5` | Grouped button padding — vertical and horizontal |
+| `background-strong` | Touch-ripple color |
+| `opacity-full` | Touch-ripple opacity |
+| `background-default` | Border color forced between adjacent `contained` buttons in the default and destructive colors, to hide the divider |
+
+## Composition
+
+Every published example composes ButtonGroup from plain [Button](/invoca-design-system/components/actions/button) children using the
+system's two real color intents — default and destructive, per Button's own vocabulary. No
+example mixes the two colors within a single group.
+
+## Content
+
+Button label rules apply unchanged to every grouped child — see
+[Button → Content](/invoca-design-system/components/actions/button#content).
+
+## Accessibility
+
+- Renders with a native `role="group"`. Published examples are inconsistent about giving that
+  group an accessible name: some set `aria-label` (for example, `"medium outlined button
+  group"`), others set none at all.
+- Each individual Button keeps its own accessible name regardless of the group's label, so a
+  screen reader user always hears what each button does — an unlabeled group only loses the
+  "these belong together" context, not the individual actions.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-BTNGROUP-01** | A ButtonGroup carries an `aria-label` describing what the set of actions is for. | Without one, a screen reader user gets each button's own name but no signal that they form a related set. |
+| **TITAN-BTNGROUP-02** | Every child shares one color — the group's default or destructive intent. | Mixed colors within one group break the border treatment that makes adjacent contained buttons read as one control, and mixed severity within a visually unified control is confusing regardless. |
+
+## Known issues
+
+<Card title="ButtonGroup: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/actions/button-group/open-issues">
+  Divergences, open decisions, and undocumented gaps for ButtonGroup.
+</Card>
+
+## Why it works this way
+
+**The border-hiding treatment is scoped to two colors on purpose, not by oversight.** Forcing
+every adjacent border to match the page background only works cleanly when every child shares
+one color — which is also the composition rule every published example already follows. A
+group that mixed colors would need the divider to stay visible to remain legible, so the
+narrow override and the "one color per group" guidance are the same decision seen twice.
+
+## Status
+
+<Snippet file="generated/status/button-group.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/button-group.mdx" />
+
+- [Button](/invoca-design-system/components/actions/button) — the unit ButtonGroup composes
+- [Menu](/invoca-design-system/components/actions/menu) — for disclosing more options than a group should show at once

@@ -1,15 +1,174 @@
 ---
 title: "Panel"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A persistent, elevated content region with an optional header and footer — always rendered, never an overlay."
+icon: "table-cells-large"
+tag: "Stable"
+keywords: ["tile", "card", "content container", "surface", "region"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A flexible, elevated container for a section of a page — a raised surface with rounded corners
+that lays out an optional header, a scrollable body, and an optional footer in a fixed column.
+Unlike every other component in this category, it is not an overlay: it renders in place as
+part of the page layout and has no open, close, or expand/collapse state of its own.
+
+## Live example
+
+<StorybookFrame story="components-tiles--full-example" height={420} />
+
+## Exports
+
+<Warning>
+  **The package exports this as `Tile`, not `Panel`.** This page's name is the design
+  vocabulary's term for the concept; `Tile` — along with `TileHeader`, `TileBody`, `TileFooter`,
+  and `TileTitle` — is the real import. See
+  [TITAN-DIV-28](/invoca-design-system/foundations/divergences#titan-div-28).
 </Warning>
+
+Hand-confirmed from source — no prop emitter has run for this component yet. `Tile` itself
+accepts any prop the underlying box-layout primitive does (it is a typed passthrough with no
+prop interface of its own); the sub-components add the following:
+
+| Export | Prop | Type | Notes |
+|---|---|---|---|
+| `TileHeader` | `chips` | `{ label, color, icon?, tooltip? }[]` | Status chips rendered below the title row. `color` is one of `info \| success \| error \| warning \| default`. |
+| | `menuOptions` | `{ label, onClick, icon?, showDividerAfter? }[]` | Renders a three-dot overflow menu when non-empty. |
+| | `dropdownOptions` | `{ items, selectedItem, onChange, label?, dataTrack? }` | Renders a filter dropdown. |
+| | `draggable` | `boolean` | Switches the cursor to a move icon; does not implement drag-and-drop itself. |
+| `TileBody` | — | `BoxProps` | A scrollable, padded content region. No props beyond the underlying box primitive's own. |
+| `TileFooter` | — | `BoxProps` | A bordered, padded footer region. No props beyond the underlying box primitive's own. |
+| `TileTitle` | `maxWidth` | `string \| number` | Default `"93%"`. Truncates long titles with an ellipsis and shows the full text in a tooltip on hover. |
+
+## Choose Panel when
+
+- A section of a page needs a visually distinct, raised surface — separate from the page
+  background — that is always visible, not something a reader opens or dismisses.
+- The content benefits from a structured header (title, status chips, a filter, an actions menu)
+  and a separately-scrollable body.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show an item as one of several selectable, clickable options in a grid or list | [Card](/invoca-design-system/components/data-display/card) | Card carries interactive, selected, and error states built for a clickable item; Panel has none of those — it is a structural region, not a control. |
+| Reveal or hide the content on demand | [Accordion](/invoca-design-system/components/containment/accordion) | A Panel is always fully visible; it has no collapsed state at all. |
+| Show the content only temporarily, anchored to a trigger the reader interacted with | [Drawer](/invoca-design-system/components/containment/drawer) or [Popover](/invoca-design-system/components/containment/popover) | Panel renders in the page's normal layout flow; it does not open, close, or float above other content. |
+
+## Anatomy
+
+| # | Part | Export | Required |
+|---|---|---|---|
+| 1 | Container | `Tile` | Yes |
+| 2 | Header | `TileHeader` | No |
+| 3 | Title | `TileTitle` (inside the header) | No |
+| 4 | Status chips | `chips` prop on `TileHeader` | No |
+| 5 | Actions menu | `menuOptions` prop on `TileHeader` | No |
+| 6 | Filter dropdown | `dropdownOptions` prop on `TileHeader` | No |
+| 7 | Body | `TileBody` | No, but the container has no built-in scrolling of its own without it |
+| 8 | Footer | `TileFooter` | No |
+
+## Variants, sizes, and states
+
+No size or variant prop exists on `Tile` itself — it fills its container's width and inherits
+its height ("inherit" is a literal value in source, not a token), so sizing is entirely up to
+the parent layout. The one published example demonstrates the full composition: a draggable
+header with three chips (each with its own tooltip and color), a filter dropdown, an actions
+menu, a scrollable body with multiple paragraphs, and a footer.
+
+## Edge and failure states
+
+- **A `Tile` with no `TileHeader` or `TileFooter` is not demonstrated in any story.** The only
+  published example uses all four sub-components together, so the container's appearance with
+  just a bare body — or with no sub-components at all — is unconfirmed visually, though nothing
+  in source requires any of them.
+- **`TileTitle` truncation depends on extracting plain text from its children.** Source walks
+  `children` looking for strings or nested `children` to build the tooltip text; a title built
+  from more complex nested elements may not extract cleanly, though this is not exercised by any
+  test found.
+
+## Tokens
+
+Hand-confirmed from `Tile.tsx`, `TileHeader.tsx`, `TileBody.tsx`, and `TileFooter.tsx` — no
+per-component token emitter exists yet for this concept, so this table is hand-confirmed rather
+than generated. Unlike [Dialog](/invoca-design-system/components/containment/dialog) and
+[Accordion](/invoca-design-system/components/containment/accordion), none of this is registered
+as a theme override — there is no `Tile.overrides.ts` file, and no `panel-*` or `tile-*` entries
+exist in the component token file. Every value below is a generic, cross-component token applied
+inline.
+
+| Token | Applies to |
+|---|---|
+| `background-default` | Container background |
+| `spacing-3` | Container corner radius (reused as a radius value, not a spacing value) |
+| `shadow-down-1` | Container elevation |
+| `spacing-7` | Header and body horizontal padding |
+| `spacing-4` | Header bottom padding |
+| `spacing-2` | Gap between the title row and the chips/filter row |
+| `spacing-3` | Footer vertical padding |
+| `border-width-md`, `border-default` | Header's bottom border and footer's top border |
+
+## Composition
+
+`TileHeader`'s `menuOptions` renders a [Menu](/invoca-design-system/components/actions/menu);
+its per-chip `tooltip` renders a [Tooltip](/invoca-design-system/components/containment/tooltip).
+`TileTitle` composes a separate truncate-with-tooltip primitive from outside this package's
+`components/` tree, not `Tooltip` directly. A Panel does not compose into `Form`'s field pattern.
+
+## Content
+
+No copy rules are recorded in source for title, chip, or footer text.
+
+## Accessibility
+
+- No test in source asserts a landmark role, heading semantics, or any ARIA relationship between
+  `TileTitle` and the region it labels — unconfirmed at the Titan layer.
+- The header's overflow-menu button carries `aria-haspopup`, `aria-expanded`, and
+  `aria-controls`, confirmed directly from source — the most complete accessibility wiring found
+  anywhere in this container.
+- Chip tooltips use the same `Tooltip` component documented on its own page, so the same
+  hover/focus behavior applies to them.
+
+## Constraints
+
+No falsifiable, source-backed constraint beyond what is already stated as an edge case is
+recorded for this component.
+
+## Known issues
+
+<Card title="Panel: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/containment/panel/open-issues">
+  Divergences, open decisions, and undocumented gaps for Panel.
+</Card>
+
+## Why it works this way
+
+**The header/body/footer split exists to make one thing predictable: only the body scrolls.**
+`TileBody` is the one sub-component with `overflow: auto`; header and footer are fixed. That
+split is what lets a Panel hold a long list or block of text without its own header actions or
+footer buttons scrolling out of view.
+
+## Status
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core` |
+| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Exports covered on this page** | `Tile`, `TileHeader`, `TileBody`, `TileFooter`, `TileTitle` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+Hand-confirmed from `utilization.md` — no utilization emitter has run for this component yet.
+Only 4 usages across 3 applications: **real-time-interactions-reporting** (2),
+**dashboards** (1), **interaction-details** (1) — the lightest adoption of any component in this
+category.
+
+- [Card](/invoca-design-system/components/data-display/card) — the alternative for a clickable, selectable item rather than a structural region
+- [Accordion](/invoca-design-system/components/containment/accordion) — the alternative when the region should be collapsible
