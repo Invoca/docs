@@ -5,13 +5,6 @@ icon: "ruler"
 keywords: ["spacing", "space", "padding", "margin", "gap", "control height", "scale"]
 ---
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it governs
 
 Every gap, pad, inset, and control height. Two token families do all of it: `spacing-*`
@@ -28,15 +21,8 @@ Every gap, pad, inset, and control height. Two token families do all of it: `spa
 <Note>
   **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
   baseline the design language is being built on. This is the vocabulary of record — not
-  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+  inferred from token names.
 </Note>
-
-<Warning>
-  **The specification stops at `spacing-9`; code ships `spacing-0` through `spacing-10`.**
-  It also records no definition for any spacing step, so which gap each step is *for* is
-  undecided — see [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02) and
-  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
-</Warning>
 
 ## The scale is ordinal, not arithmetic
 
@@ -130,27 +116,9 @@ Left column is what you are trying to express. Right column is the token.
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-06**](/invoca-design-system/foundations/divergences#titan-div-06) | Divergence | two tokens for zero |
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-02**](/invoca-design-system/foundations/open-decisions#titan-gap-02) | Open decision | 112 of 244 tokens record nothing about what they are for |
-| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
-
-## Gaps in the current rules
-
-- **`spacing-0` (`0rem`) and `spacing-none` (`0px`) are duplicates.** Both ship, neither is
-  marked deprecated. This page recommends `spacing-none` on the grounds that it reads as a
-  decision, but that is an inference, not a documented policy. See
-  [TITAN-DIV-06](/invoca-design-system/foundations/divergences#titan-div-06).
-- **`--titan-spacing-compact-3` (`0.375rem`) exists as a public CSS custom property** but is
-  not a token on any access surface. Treat it as private; it is not documented as such.
-- **A second, older 8px spacing unit is still exposed** alongside the scale. Its
-  relationship to the `spacing-*` steps is unstated, and its multiplier behavior does not
-  correspond to any step on this page.
+<Card title="Space: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/space-and-density/open-issues">
+  Divergences, open decisions, and undocumented gaps for Space.
+</Card>
 
 ## Related
 

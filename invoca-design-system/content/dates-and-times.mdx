@@ -6,15 +6,6 @@ tag: "Stable"
 keywords: ["date format", "time format", "timestamp", "relative time", "date range", "date filter", "am pm"]
 ---
 
-<Info>
-  **Source: the zeroheight IDS documentation.** The rules and tables on this page are
-  transcribed from the existing design system documentation and are `verified` against it.
-  They have been reformatted into constraints with IDs — the substance is unchanged.
-
-  Where the legacy rules contradict each other or run out, that is called out in
-  [Gaps in the current rules](#gaps-in-the-current-rules) rather than resolved silently.
-</Info>
-
 ## Dates
 
 The format is `M/D/YYYY`. Single-digit months and days do **not** carry a leading zero.
@@ -109,18 +100,9 @@ When a comment is posted, a timestamp shows how long ago it happened.
 
 ## Gaps in the current rules
 
-These are unanswered by the legacy documentation. Each is a real decision someone —
-or an agent — will otherwise make ad hoc and inconsistently.
-
-| Gap | Why it matters | Status |
-|---|---|---|
-| **Timezone.** No guidance on whether times render in the user's zone, the account's zone, or UTC — or whether the zone is ever labeled. | Invoca's data is call activity across US timezones. A timestamp with no zone is ambiguous by up to three hours, and the current rules do not permit displaying one. | Open |
-| **Localization.** `M/D/YYYY` is US-only, and `2/1/2020` reads as 1 February to most of the world. | Determines whether the format is a locale default or a hard rule. | Open |
-| **Singular units.** "1 minutes ago" vs "1 minute ago" is not specified. | Every relative timestamp implementation hits this in its first hour. | Open |
-| **Timestamp scope.** The rules are written for comments specifically. | Unclear whether call records, exports, and audit logs follow the same rules or use absolute times. | Open |
-| **Seconds.** No format given. | Call duration is a core Invoca concept and needs a rule. | Open |
-| **Year omission.** No rule on whether the current year may be dropped (`12/12` vs `12/12/2020`). | Affects table column width, where it matters most. | Open |
-| **Date ranges spanning years.** No rule. | `12/12/2020 - 1/5/2021` vs an abbreviated form. | Open |
+<Card title="Dates and times: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/dates-and-times/open-issues">
+  Divergences, open decisions, and undocumented gaps for Dates and times.
+</Card>
 
 ## Why it works this way
 

@@ -6,18 +6,8 @@ keywords: ["accessibility", "a11y", "WCAG", "contrast", "keyboard", "screen read
 ---
 
 <Note>
-  **Contrast ratios on this page are computed from Titan source** by `tools/emit-tokens.mjs`,
-  using the
-  [WCAG 2.x relative luminance formula](https://www.w3.org/WAI/GL/wiki/Relative_luminance).
-  They are arithmetic on the values that ship. Constraints are **Proposed** and need
-  sign-off.
+  These are arithmetic on the values that ship, not asserted.
 </Note>
-
-<Warning>
-  **Several standard pairings fail AA.** The results are reported as measured. Nobody has
-  triaged them, and this page does not know whether they are known and accepted or
-  unnoticed. See [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
-</Warning>
 
 ## What it governs
 
@@ -37,7 +27,7 @@ each component page.
 <Note>
   **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
   baseline the design language is being built on. This is the vocabulary of record — not
-  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+  inferred from token names.
 </Note>
 
 ## The conformance target
@@ -87,16 +77,12 @@ Criteria carried over from 2.1 that the token layer governs directly:
 
 ## Focus
 
-<Warning>
-  **No semantic focus token exists.** Three component-scoped rings ship —
-  `form-field-focus-ring`, `form-field-focus-ring-error`, and `data-grid-focus-ring` — each
-  authored independently against a primitive. Outside a Form field or DataGrid there is no
-  token to reach for, so every component decides for itself.
-
-  [TITAN-A11Y-04](#constraints) requires a visible focus indicator and the token layer does
-  not supply one. This is the most consequential accessibility gap in the system. See
-  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
-</Warning>
+[TITAN-A11Y-04](#constraints) requires a visible focus indicator. Three component-scoped
+rings ship — `form-field-focus-ring`, `form-field-focus-ring-error`, and
+`data-grid-focus-ring` — each authored independently against a primitive; outside a Form
+field or DataGrid there is no semantic token to reach for, so every component decides for
+itself ([known issue](/invoca-design-system/foundations/accessibility/open-issues) — the
+most consequential accessibility gap in the system).
 
 ## Constraints
 
@@ -146,38 +132,9 @@ The manual checks are not optional.
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented |
-| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
-| [**TITAN-GAP-06**](/invoca-design-system/foundations/open-decisions#titan-gap-06) | Open decision | the measured contrast failures are untriaged |
-| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
-| [**TITAN-GAP-09**](/invoca-design-system/foundations/open-decisions#titan-gap-09) | Open decision | Focus Not Obscured is unaddressed |
-| [**TITAN-GAP-10**](/invoca-design-system/foundations/open-decisions#titan-gap-10) | Open decision | no forced-colors guidance exists |
-| [**TITAN-GAP-11**](/invoca-design-system/foundations/open-decisions#titan-gap-11) | Open decision | contrast is not enforced in Titan's own CI |
-
-## Gaps in the current rules
-
-- **The light-mode status failures are untriaged.** Whether they are known and accepted,
-  scoped to non-text uses, or unnoticed is not recorded. See
-  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
-- **`text-error-invert` on `background-error` fails in dark** (2.49:1) and is marginal in
-  light (4.36:1), despite the names implying they pair.
-- **No token expresses dark text on a bold status fill**, which is what conformant
-  light-mode success and warning banners require.
-- **No semantic focus token exists.** See
-  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
-- **No reduced-motion implementation exists** in the token layer. See
-  [Motion](/invoca-design-system/foundations/motion#gaps-in-the-current-rules).
-- **No forced-colors / High Contrast Mode guidance exists.**
-- **Focus Not Obscured is unaddressed.** No rule governs the interaction between the `z-*`
-  ladder and focus.
-- **Contrast is checked here, not in Titan.** `emit-tokens.mjs --check` fails the docs build
-  if a ratio changes, but nothing in Titan's own CI blocks a token change that breaks
-  contrast.
+<Card title="Accessibility: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/accessibility/open-issues">
+  Divergences, open decisions, and undocumented gaps for Accessibility.
+</Card>
 
 ## Related
 

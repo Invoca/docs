@@ -5,35 +5,17 @@ icon: "activity"
 keywords: ["motion", "animation", "transition", "duration", "easing", "reduced motion"]
 ---
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it governs
 
 Every transition and animation: how long it takes and how it accelerates. Eleven tokens —
 seven durations and four easings.
 
-<Warning>
-  **Motion is the least-decided foundation.** The eleven values ship and are what renders,
-  but nothing records why these durations and not others, or which interaction each is
-  meant for. The mapping on this page is a proposal.
-
-  Treat that as the cost of change: a color token overturns an Invoca decision, a duration
-  token overturns nothing that has been written down.
-</Warning>
+**Motion is the least-decided foundation** — see
+[Open issues](/invoca-design-system/foundations/motion/open-issues) for what that leaves
+unsettled. Treat that as the cost of change: a color token overturns an Invoca decision, a
+duration token overturns nothing that has been written down.
 
 ## Vocabulary
-
-<Warning>
-  **The naming specification does not cover motion.** It defines the six naming axes and 64
-  colour definitions; motion appears in neither. The terms used on this page are therefore
-  descriptive rather than decided — see
-  [TITAN-GAP-03](/invoca-design-system/foundations/open-decisions#titan-gap-03).
-</Warning>
 
 Durations are named by **length** (`shortest` … `complex`) and easings by **curve shape**
 (`ease-in`, `ease-out`, `sharp`). Neither names what the value is *for*, so there is no
@@ -97,9 +79,14 @@ as long as an appearance feels sluggish, because the user has already moved on.
 | **TITAN-MOT-02** | Entering uses `ease-out`; leaving uses `ease-in`. | Reversed easing makes entrances hesitate and exits slam. The asymmetry is what makes motion read as physical. |
 | **TITAN-MOT-03** | Every transition respects `prefers-reduced-motion: reduce`. | Vestibular disorders make large-area motion physically painful. This is a health requirement, not a preference. |
 | **TITAN-MOT-04** | Reduced motion removes movement, not feedback. Substitute an instant state change; never remove the state change. | A user who cannot see that a menu opened is worse off than one who saw it slide. |
-| **TITAN-MOT-05** | Nothing exceeds `motion-duration-complex` (375ms). | Beyond roughly 400ms a transition stops reading as responsive and starts reading as latency. |
 | **TITAN-MOT-06** | Motion never conveys information on its own. | It is unavailable under reduced-motion, invisible to screen readers, and missed entirely by anyone who looked away. |
 | **TITAN-MOT-07** | Nothing animates that the user did not initiate, except loading indicators. | Unprompted motion pulls attention away from the task and cannot be predicted or avoided. |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-MOT-05** | Nothing exceeds `motion-duration-complex` (375ms). | The 7 defined duration tokens already top out exactly at `motion-duration-complex` (375ms) — as long as TITAN-MOT-01 (tokens-only, no literals) holds, this ceiling is structurally guaranteed by the closed token set. Retired, not reversed. |
 
 ## Accessibility
 
@@ -135,32 +122,9 @@ currently implemented anywhere in the token layer.
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
-| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
-| [**TITAN-GAP-16**](/invoca-design-system/foundations/open-decisions#titan-gap-16) | Open decision | no design intent is recorded for any motion value |
-
-## Gaps in the current rules
-
-This foundation has more gaps than settled rules. Do not infer answers.
-
-- **No reduced-motion handling exists in the token layer.** No token, no media query, no
-  documented pattern. The constraints above state what should be true; nothing enforces it.
-  This is the most significant gap in Foundations.
-- **No Invoca intent is recorded for any value.** Whether 300ms is right for Titan's
-  surfaces has not been asked.
-- **The duration-to-use mapping on this page is proposed, not transcribed.** Nothing binds
-  a named duration to a component, so which duration a Drawer actually uses is a
-  component-level fact this page cannot assert.
-- **No curve is named for what it does.** The easings are named by shape, not by purpose,
-  so there is no shared vocabulary for "how Titan moves."
-- **No guidance exists on animating layout properties.** Nothing says whether to prefer
-  `transform`/`opacity` over `height`/`top`, which is a performance decision with a visible
-  cost on long tables.
+<Card title="Motion: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/motion/open-issues">
+  Divergences, open decisions, and undocumented gaps for Motion.
+</Card>
 
 ## Related
 

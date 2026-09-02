@@ -1,15 +1,204 @@
 ---
 title: "Pagination"
-description: "TODO — one sentence. What it is and what it is for."
+description: "Raw, un-themed pagination — three exports with no Titan decision behind any of them, and no confirmed home in the page frame."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
+keywords: ["pagination", "page numbers", "rows per page", "prev next", "table pagination", "pager"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+Titan does not ship a pagination component of its own. Three exports pass straight through
+with no wrapper and no theme override: `Pagination` (a row of page-number buttons), `TablePagination`
+(a table-footer row combining a rows-per-page selector, a range, and prev/next), and `usePagination`
+(the headless hook behind both, for building a custom pager). This is confirmed by reading the
+full set of `*.overrides.ts` files in the package — none of the twenty-six files defines a
+theme override for either pagination component — and it is exactly the situation
+[TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) describes.
+
+<Warning>
+  **None of these three is how tables in this system actually paginate today.** `DataGridPro`
+  ships its own built-in pagination footer, and that is what most list pages use — see
+  [Table](/invoca-design-system/components/data-display/table). Reach for the exports on this
+  page only when you are paginating something that is not a `DataGridPro` table.
 </Warning>
+
+## Live example
+
+No Storybook story exists for `Pagination`, `TablePagination`, or `usePagination` — verified
+against the live Storybook index; none of the three has a component directory of its own to
+carry one. The closest available demonstration of pagination in this system is
+`DataGridPro`'s own built-in footer, shown in [Table](/invoca-design-system/components/data-display/table#live-example).
+
+## Exports
+
+| Export | Import | Implementation | What Titan decided |
+|---|---|---|---|
+| `Pagination` | Package root (re-exported, unmodified) | Raw passthrough | Nothing |
+| `TablePagination` | Package root (re-exported, unmodified) | Raw passthrough | Nothing |
+| `usePagination` | Package root (re-exported, unmodified) | Raw passthrough (hook) | Nothing |
+
+## Vocabulary
+
+"Pagination" names three unrelated-looking things in this package, and the system has not stated
+which one a reader should mean by default:
+
+| Term | What it actually is |
+|---|---|
+| `Pagination` | A standalone row of page-number controls — prev/next, optional first/last, optional ellipsis |
+| `TablePagination` | A `<TableCell>`-rooted row meant to sit inside a native table's `<TableFooter>` |
+| `usePagination` | The headless state/behavior hook underneath `Pagination`, with no UI of its own |
+| The grid's built-in pagination | `DataGridPro`'s own footer — not one of these three exports at all, and the one most tables actually use |
+
+## Choose Pagination when
+
+The system has not confirmed when to reach for any of these three over `DataGridPro`'s own
+footer — that is the open question [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)
+describes, not settled guidance this page can give. What source does confirm:
+
+- `Pagination` is the one to reach for when you are paging over something that is **not** a
+  `DataGridPro` table — a card grid, a custom list, anything with no table underneath it.
+- `TablePagination` only makes sense inside a real `<table>`'s row/footer structure, because its
+  root element is a `TableCell`.
+- `usePagination` is for a fully custom pager UI with none of the underlying rendering — you own
+  every pixel.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Paginate a `DataGridPro` table | The grid's own `pagination` / `paginationModel` props | It ships a footer already wired to the grid's data. Adding one of these three exports on top duplicates the control — see [Table](/invoca-design-system/components/data-display/table). |
+| Get any visual decision — color, spacing, sizing — that matches the rest of the product | Nothing today | These three render at the underlying defaults; no Titan token or override touches any of them. See Tokens below. |
+
+## Anatomy
+
+`Pagination`'s items, from `UsePaginationItem` in source:
+
+| # | Part | `type` value | Required |
+|---|---|---|---|
+| 1 | A page number | `"page"` | Yes |
+| 2 | Previous / Next | `"previous"` / `"next"` | Yes, unless hidden |
+| 3 | First / Last | `"first"` / `"last"` | No — `showFirstButton` / `showLastButton` |
+| 4 | Ellipsis | `"start-ellipsis"` / `"end-ellipsis"` | No — appears once `count` exceeds `boundaryCount` + `siblingCount` |
+
+`TablePagination` has no equivalent breakdown documented here — it renders as a single row inside
+a table footer, with a rows-per-page select, a range label, and its own prev/next actions.
+
+## Variants, sizes, and states
+
+From `PaginationProps` and `UsePaginationProps`, verified directly against the type definitions
+— hand-confirmed, no generator exists for this concept:
+
+| Prop | Values | Default |
+|---|---|---|
+| `variant` | `"text"`, `"outlined"` | `"text"` |
+| `shape` | `"circular"`, `"rounded"` | `"circular"` |
+| `size` | `"small"`, `"medium"`, `"large"` | `"medium"` |
+| `color` | `"standard"`, `"primary"`, `"secondary"` | `"standard"` |
+| `disabled` | `boolean` | `false` |
+| `showFirstButton` / `showLastButton` | `boolean` | `false` |
+| `hidePrevButton` / `hideNextButton` | `boolean` | `false` |
+| `boundaryCount` / `siblingCount` | `number` | `1` / `1` |
+
+**None of these axes is decided by Titan.** Unlike Button, where `small`/`medium` are themed and
+`large` explicitly is not, every size and every color here renders at the underlying default —
+no Titan decision covers any of them, and there is no themed default to prefer over another.
+
+<Warning>
+  **`Pagination`'s `page` starts at 1. `TablePagination`'s `page` starts at 0.** This is stated
+  directly in the installed package's type definitions, not inferred: `usePagination`'s JSDoc reads "Unlike
+  `TablePagination`, which starts numbering from `0`, this pagination starts from `1`." Converting
+  between the two without accounting for the offset is an off-by-one bug that will not look wrong
+  at a glance.
+</Warning>
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| Mixing `Pagination`'s 1-based page with `TablePagination`'s 0-based page in one feature | An off-by-one paging error | See the warning above. Do not assume the two share a convention. |
+| `count` is not yet known (data still loading) | Neither component has a loading state — each renders using whatever `count` / `page` value it is given | Not handled by either component. Hide or disable the control until the real count is known. |
+| A very large `count` on `Pagination` | Ellipsis items appear per `boundaryCount` / `siblingCount`, with no Titan-specific behavior since nothing here is themed | Confirm the default `boundaryCount`/`siblingCount` values actually look right for the product — nothing about them has been product-reviewed. |
+
+## Tokens
+
+Verified directly against the full set of `*.overrides.ts` files — no per-component token
+emitter exists yet for this concept, so this table is hand-confirmed rather than generated.
+
+**There are none.** No token or style override exists for `Pagination`, `TablePagination`, or
+`usePagination` anywhere in the theme. If you set `color="primary"`, that resolves through the
+Titan-themed underlying palette like any other component would; every other visual property —
+size, shape, variant, spacing — is whatever the underlying package ships, unmodified for this
+system.
+
+## Composition
+
+**Where any of these three belongs in the page frame is undecided.** The frame has no region
+between `Contents` and `Footer` — the place pagination conventionally sits — so a list page
+either puts it inside the body, invents a place, or (most often) relies on the grid's own footer
+instead. See [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) for
+the full account, including that two applications (`ai-model-management` and `signal-validation`)
+have each built their own `PaginationBar` independently rather than using any of these three
+exports or waiting on a system answer.
+
+## Content
+
+No content rule is recorded for any of the three. `TablePagination`'s `labelDisplayedRows` and
+`labelRowsPerPage`, and `Pagination`'s `getItemAriaLabel`, are the only wording hooks that exist,
+and nothing in this system states what they should say — an open gap, not a confirmed default.
+
+## Accessibility
+
+Confirmed directly from the underlying package's own runtime source:
+
+- `Pagination` renders a `<nav aria-label="pagination navigation">` by default, and each item
+  receives its own accessible label through `getItemAriaLabel`.
+- `TablePagination`'s root is a `<TableCell>` — it assumes a `<TableRow>` / `<TableFooter>` /
+  `<table>` ancestor. Used outside that structure, it loses the semantics that make it
+  understandable to a screen reader, without producing any error.
+- `usePagination` supplies no accessibility on its own — it is a state hook with no rendered
+  markup. Every accessible name, landmark, and label is the caller's responsibility if this hook
+  is used directly.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-PGN-01** | Use `DataGridPro`'s own built-in pagination for a `DataGridPro` table. Never add a second pager beside it. | The grid already ships one wired to its own data; a second pager duplicates the control and gives two ways to change the same page. |
+| **TITAN-PGN-02** | Never mix `Pagination`'s 1-based page numbering with `TablePagination`'s 0-based numbering in the same feature. | Verified directly in the installed package's type definitions. The two conventions coexisting in one codebase produces an off-by-one bug that passes a casual visual check. |
+| **TITAN-PGN-03** | Render `TablePagination` only inside a table's row/footer structure. Never as a standalone control. | Its root element is a `TableCell`; used elsewhere it breaks table semantics silently rather than raising an error. |
+
+## Known issues
+
+<Card title="Pagination: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/navigation/pagination/open-issues">
+  Divergences, open decisions, and undocumented gaps for Pagination.
+</Card>
+
+## Why it works this way
+
+**It doesn't, yet.** This page describes an unresolved area more than it describes a component.
+Three approaches ship — the raw exports, the grid's own footer, and two independently-built
+application-level bars — and nothing has confirmed which is the system's answer, beyond the
+design library's own page templates already showing pagination inside the grid (see
+[TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)'s "Direction" row).
+Two teams reaching the same conclusion separately, without a system answer to point to, is the
+measurable cost of leaving this open.
+
+## Status
+
+Hand-confirmed — no per-component status emitter exists yet for this concept, and no
+`utilization.md` exists for any of the three exports (they have no component directory of their
+own to generate one from).
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core`, version `3.6.3` |
+| **Exports covered** | `Pagination`, `TablePagination`, `usePagination` |
+| **Theme overrides** | None |
+| **Story** | None |
+
+## Related
+
+- [Table](/invoca-design-system/components/data-display/table) — where pagination actually lives today, via the grid's own footer
+- [Views overview](/invoca-design-system/views/overview) — the page frame, which has no region for a standalone pager
+- [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) — the full account of the three unreconciled approaches

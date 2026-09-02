@@ -1,0 +1,28 @@
+---
+title: "ButtonGroup"
+description: "Divergences, open decisions, and undocumented gaps for ButtonGroup."
+icon: "component"
+---
+
+See [ButtonGroup](/invoca-design-system/components/actions/button-group) for the decided part of this page.
+
+## Known issues
+
+No divergence is currently recorded specifically for ButtonGroup.
+
+## Gaps in the current rules
+
+- **ButtonGroup and `FormInput`'s `type="segmentedButton"` overlap with no stated rule between
+  them.** Source ships both as ways to render a visually grouped row of buttons — one a plain
+  container, the other bound to a form value via `value`/`onChange`. Nothing in source or this
+  documentation states when to reach for which.
+- **The design library's `Type` axis (Solid, Ghost, Icon — confirmed directly from Figma, not
+  Code Connect) doesn't fully align with code's `variant` values (`contained`, `outlined`,
+  `text`).** Solid/Ghost map cleanly to contained/outlined. Two values have no confirmed
+  counterpart on the other side: code's `text` variant has no matching Figma `Type`, and
+  Figma's `Icon` type — an icon-only grouped-button treatment — has no confirmed code
+  equivalent. Whether an icon-only ButtonGroup pattern exists in code under a different name,
+  or was never built, is unconfirmed.
+- **Zero production usage is confirmed** — `utilization.md` reports no adoption at all. Every
+  fact on the main page is verified against source and Storybook, but none of it has been
+  exercised in a real composition.

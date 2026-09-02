@@ -1,0 +1,44 @@
+---
+title: "Elevation"
+description: "Divergences, open decisions, and undocumented gaps for Elevation."
+icon: "layers"
+---
+
+See [Elevation](/invoca-design-system/foundations/elevation) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-14**](/invoca-design-system/foundations/open-decisions#titan-gap-14) | Open decision | the stacking ladder does not cover every layer |
+
+## Gaps in the current rules
+
+- **`overlay-default` is malformed.** The emitted value is `rgba(21, / 36, / 62, / 0.3000)` —
+  stray slashes, not valid CSS. Browsers drop the declaration entirely. Reported, unresolved.
+- **No token exists for the drawer or toast layers.** They stack at 1200 and 1400, which
+  no Titan token expresses, so their order relative to a Titan surface is not something the
+  design system controls.
+- **Whether `z-overlay` (1000) is meant to sit below a drawer is not recorded.** As
+  shipped it does, which means a scrim does not cover a drawer.
+- **`z-loader` (1038) is an unexplained number.** It corresponds to no round step and no
+  stated reasoning.
+- **`shadow-*-main` aliases `shadow-*-1`** in every direction. No rule says when to use the
+  alias rather than the numbered token.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-ELV-01** | Stacking order comes from a `z-*` token, never a numeric literal. | A stylelint rule disallowing numeric `z-index` literals. |
+| **TITAN-ELV-04** | A focus-trapping surface (modal/dialog) always pairs its shadow with a scrim. | Making the scrim non-optional in Titan's Modal/Dialog component — removing any prop that allows disabling it. |
+| **TITAN-ELV-05** | Shadow never indicates state (selection, error, focus). | A lint rule scanning a component's own variant definitions for state-keyed shadow changes. |
+| **TITAN-ELV-06** | A deliberate absence of shadow uses `shadow-*-0`, never the literal `none`. | A stylelint rule disallowing the literal value `none` for `box-shadow`. |

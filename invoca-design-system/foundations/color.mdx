@@ -5,19 +5,6 @@ icon: "palette"
 keywords: ["palette", "swatches", "theme", "contrast", "semantic color", "status"]
 ---
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
-<Warning>
-  **Several standard pairings on this page fail WCAG AA** — measured, not estimated. See
-  [Accessibility](/invoca-design-system/foundations/accessibility) for the full table and
-  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03) for what to do about it.
-</Warning>
-
 ## What it governs
 
 Every color that renders: surfaces, text, borders, icons, states, and status. Color in Titan
@@ -41,7 +28,7 @@ The colour vocabulary is fully specified. Four axes apply.
 <Note>
   **Sourced from Invoca's design-token naming specification**, confirmed by its owner as the
   baseline the design language is being built on. This is the vocabulary of record — not
-  inferred from token names. Transcribed in `tools/spec-vocabulary.json`.
+  inferred from token names.
 </Note>
 
 <Warning>
@@ -138,7 +125,7 @@ words, not the system's.
 | A selected row that stays selected | `background-selected` | The hover token. Hover is transient; selection persists. |
 | A strongly marked selection — a filled active tab or nav item | `background-selected-alt` | `background-selected` at a heavier weight |
 | An unavailable control | `background-disabled` | Reduced opacity on the normal surface |
-| A modal scrim | `overlay-default` | A black at some alpha — see the [known defect](#gaps-in-the-current-rules) |
+| A modal scrim | `overlay-default` | A black at some alpha — see the [known defect](/invoca-design-system/foundations/color/open-issues#gaps-in-the-current-rules) |
 | The backdrop behind a loading state | `overlay-loading` | `overlay-default` — loading is not a modal block |
 
 ### Text
@@ -247,12 +234,7 @@ is interactive — see [TITAN-COLOR-09](#constraints).
 
 ## Surface layering
 
-<Warning>
-  **Proposed — not yet signed off.** Titan ships four background tokens that function as
-  surfaces, with no defined order and no rule pairing a border to the surface it sits on.
-  The ordering below is a proposal. See
-  [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07).
-</Warning>
+**Proposed, pending sign-off** — see [Open issues](/invoca-design-system/foundations/color/open-issues) for what that leaves unsettled.
 
 | Level | Surface token | Sits on | Pair borders with |
 |---|---|---|---|
@@ -296,37 +278,9 @@ Full measured tables live in [Accessibility](/invoca-design-system/foundations/a
 
 ## Known issues
 
-Divergences are where code and design intent disagree; open decisions are where nothing
-has been decided yet. Neither is resolvable by inference.
-
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-01**](/invoca-design-system/foundations/divergences#titan-div-01) | Divergence | Tier-3 tokens alias primitives, never semantics |
-| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented |
-| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
-| [**TITAN-DIV-07**](/invoca-design-system/foundations/divergences#titan-div-07) | Divergence | no surface layering model |
-| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
-| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
-| [**TITAN-GAP-04**](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Open decision | seven groups of tokens share one value with no visible distinction |
-| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
-| [**TITAN-GAP-13**](/invoca-design-system/foundations/open-decisions#titan-gap-13) | Open decision | surfaces have no layering order |
-
-## Gaps in the current rules
-
-- **`overlay-default` is malformed** — `rgba(21, / 36, / 62, / 0.3000)` is not
-  valid CSS and browsers will drop the declaration. The dark value is well-formed.
-- **`background-neutral` and `background-disabled` are identical** (`#e7e9eb`). Two names, one
-  value, different meanings — and one of seven such collisions. See
-  [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
-- **`link-default` and `link-visited` are identical** (`#1c53e9`), so visited links cannot be
-  identified. See [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
-- **`border-width-md` and `border-width-emphasis` are both 2px**, so their recorded distinction is invisible on screen. See [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04).
-- **No semantic focus token exists.** See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
-- **The light-mode status contrast failures are untriaged.** Whether they are known and
-  accepted or unnoticed is not recorded. See
-  [TITAN-DIV-03](/invoca-design-system/foundations/divergences#titan-div-03).
-- **Surfaces have no defined layering order.** See
-  [TITAN-DIV-07](/invoca-design-system/foundations/divergences#titan-div-07).
+<Card title="Color: open issues" icon="triangle-exclamation" href="/invoca-design-system/foundations/color/open-issues">
+  Divergences, open decisions, and undocumented gaps for Color.
+</Card>
 
 ## Related
 

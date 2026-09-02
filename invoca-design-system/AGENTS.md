@@ -43,7 +43,7 @@ authored. Do not infer its rules from neighboring pages.
 | Marker | Means |
 |---|---|
 | `verified` | Traced to Titan source or the prior IDS documentation |
-| `pending` | Placeholder awaiting the Titan checkout or the CI emitter |
+| `pending` | Placeholder awaiting a `component-concepts.json` entry and an emitter run — not a checkout problem: a working Titan checkout exists locally (`~/invoca/Titan`), so this now means the concept map or emitter hasn't caught up, not that source is unreachable |
 | **Proposed** | Written as policy but not yet signed off. Say so when citing. |
 | `REPLACE_ME` | Unset configuration. Not a real value. |
 | `TITAN-GAP-<NN>` | An explicitly undecided question, listed at [open decisions](/invoca-design-system/foundations/open-decisions). Cite it; never resolve it. |
@@ -63,6 +63,28 @@ node tools/emit-components.mjs --titan /path/to/Titan  # exports, variants, stat
 `--check` re-emits to memory and exits non-zero if any file on disk differs. That is the
 drift gate; run it before proposing a change to any generated table.
 
+**Never hand-author a "Pending generation" placeholder.** If a concept has no
+`component-concepts.json` entry yet, either add one and run the real emitter against an actual
+checkout, or state the gap in authored prose (never inside a hand-typed imitation of the
+emitter's own output). A hand-written placeholder that merely *looks* generated is exactly the
+kind of thing this rule exists to prevent, and it will read as real content to the next person
+— several component pages shipped exactly this mistake before it was caught and removed.
+
+**Before adding a new component concept, check whether a Titan checkout is actually available**
+(commonly `~/invoca/Titan` — verify per-environment, since this is a local path, not a
+guaranteed one) before assuming source is unreachable. If it is, add the concept to
+`tools/component-concepts.json` and run the emitter for real; do not simulate its output by
+hand on the assumption that no checkout exists.
+
+**A story ID is not real until it's checked against the live deployment, not just the internal
+checkout.** The internal Titan checkout's local Storybook `title` field, and a component's own
+`utilization.md` self-link, can both name a slug that the public Chromatic deployment does not
+actually use — pluralization and hyphenation differ in practice. Before shipping a
+`<StorybookFrame story="...">` value, fetch
+`https://main--64e4dc66838839c721332d22.chromatic.com/index.json` and confirm the id is
+present, or load the iframe URL directly and confirm it doesn't return "Couldn't find story
+matching". See `snippets/StorybookFrame.jsx`'s header for the exact method.
+
 ## Writing new documentation
 
 Use the templates in `_templates/`: `component.mdx`, `foundation.mdx`, `pattern.mdx`,
@@ -74,6 +96,39 @@ When authoring Decision content:
 - **Constraints must be falsifiable.** Someone looks at a screen and says yes or no. "Use buttons consistently" is not a constraint.
 - **One rule per ID. Rationale required.** A constraint without a reason gets deleted by the next person who has a reason.
 - **Do/Don't captions state the rule, not the image.** "Two buttons side by side" describes what is already visible. "Give the destructive action the recessive treatment" transfers.
+
+## Figma access
+
+A live connection to the real Figma file exists via the official Figma Dev Mode MCP server —
+tool names are namespaced with a connection-specific ID that can change between sessions, so
+search for them (e.g. a tool search for "figma design context screenshot") rather than
+hard-coding one. The file is `jh6AQcOATYpxshCcRVOQ6U` ("IDS – Core Components"); a confirmed
+real page within it is `node-id=22525-6240` ("Form Elements - Form Input - Text Field"). Check
+tool availability at the start of a session rather than assuming it based on a past one.
+
+**Do not use Code Connect for anything.** It has been confirmed inaccurate. That means: do not
+call a `get_context_for_code_connect`-style tool, do not read `*.figma.tsx` Code Connect files
+in the Titan checkout as evidence of the design library's structure, and do not treat a
+component's Code Connect mapping as confirmation of anything about the Figma side. Get
+evidence directly instead — `get_screenshot` and `get_design_context` against a real node ID,
+never inferred from a Code Connect file.
+
+**Page discovery is unreliable; direct node access is not.** Calling the metadata tool with no
+node ID to enumerate the file's pages returned only one page ("STYLES & TOKENS") even though
+the file demonstrably has many more — the component page above resolved immediately by its own
+node ID despite not appearing in that listing. **If a broad discovery call comes back thin,
+that means try a specific node ID next, not that the content isn't there.** Node IDs come from
+a Figma URL (the user's, or one found in this session) — `?node-id=22525-6240` in a URL is
+`22525:6240` as a tool argument. When you have one from a prior successful call or a URL,
+reuse it directly rather than re-discovering it through the unreliable broad listing.
+
+**What Figma evidence is for, restated from `skill.md`'s direction-of-truth section:** Figma
+is authoritative for *composition intent* where code is silent (layout, regions, slots), never
+for *values* where code gives an answer — code always wins a values disagreement. A screenshot
+or a live `get_design_context` call against a real node is verified evidence; a recollection of
+file layout, or anything sourced from Code Connect, is not. See PLAN.md §5a's adjudication
+table for how to weigh what you find against what code says before promoting it into a
+Constraint.
 
 ## Platform constraints
 

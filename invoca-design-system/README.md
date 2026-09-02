@@ -50,8 +50,10 @@ neither a reader nor an agent can distinguish a considered omission from an unwr
 
 ## Agent entry points
 
-The site is **internal**, so Mintlify's automatic `skill.md` generation does not apply
-(public sites only). Both files below are hand-maintained:
+The site is **public** (see the migration note above) — Mintlify's automatic `skill.md`
+generation applies to public sites, but both files below stay hand-maintained anyway, since
+they carry more than the tier model alone (constraint IDs, direction-of-truth, authoring
+rules):
 
 | File | Purpose |
 |---|---|
@@ -82,8 +84,8 @@ has **not** been run — the sandbox has no npm registry access. Run it before f
 
 ## Before this can ship
 
-1. **Storybook story index** — paste `internal-docs.invocadev.com/Titan/core/index.json`. It contains every real component and story ID, and would replace the ~40 inferred component names in `docs.json` with correct ones. Highest-value remaining input.
-2. **Titan checkout** — every reference table is a placeholder until the emitter can read DTCG token JSON and component source.
+1. **Storybook story index** — resolved. The internal `internal-docs.invocadev.com/Titan/core/index.json` remains unreachable from this environment, but `StorybookFrame` actually embeds the public Chromatic deployment, and that deployment's own `/index.json` (311 entries) is reachable and authoritative. Verify any new story ID against it before shipping — see `snippets/StorybookFrame.jsx`'s header.
+2. **Titan checkout** — resolved for local work. A checkout exists at `~/invoca/Titan` (verify per environment). `tools/emit-components.mjs` and `tools/emit-tokens.mjs` both run against it for real. Reference tables are placeholders only for concepts with no `component-concepts.json` entry yet, not because the checkout is unreachable.
 3. **Figma and GitHub URLs** — `REPLACE_ME` in `docs.json`.
 4. **Brand color** — `colors.primary` is a placeholder; replace from the Invoca brand palette.
 5. **Storybook toolbar globals** — the parameter names for color scheme and density are unknown, so `StorybookFrame` omits them. Storybook ignores unrecognized globals silently, which would make every mode-specific embed render the default while appearing correct.

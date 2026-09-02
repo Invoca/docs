@@ -2,18 +2,11 @@
 title: "Alert"
 description: "An inline message about the state of the thing on screen, shown alongside it."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
 keywords: ["alert", "banner", "inline message", "error", "warning", "success", "info", "severity", "notification"]
 ---
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
-
-<Note>
-  **Exports, published variants, adoption, and status on this page are generated from Titan
-  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
-  off. Contrast figures below are computed from the shipped token values. Disagreements between the
-  design language and the shipped code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
 
 ## What it is
 
@@ -68,7 +61,7 @@ form, and each dismissible.
 | Stop the reader until they decide | [Dialog](/invoca-design-system/components/containment/dialog) | An alert can be ignored by design. If it must not be, it is not an alert. |
 | Say a region has nothing in it | [EmptyState](/invoca-design-system/components/data-display/empty-state) | An empty state replaces content; an alert accompanies it. |
 | Report a problem with one field | [Form validation](/invoca-design-system/patterns/form-validation) | Field-level errors belong at the field. An alert repeating them makes the reader search for which one. |
-| Announce something across the whole product | [Banner](/invoca-design-system/components/feedback/banner) | A page-level alert is about this page. Product-wide messages outlive it. |
+| Announce something across the whole product | Not currently available — see [Banner](/invoca-design-system/components/feedback/banner) | A page-level alert is about this page. Product-wide messages outlive it — but Titan ships no Banner component today; its page documents that gap rather than a usable import. |
 
 ## Anatomy
 
@@ -216,26 +209,9 @@ four severities; the other two variants do not — see the table above.
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-21**](/invoca-design-system/foundations/divergences#titan-div-21) | Divergence | Only the standard variant is colour-complete; filled and outlined fail contrast |
-
-**Also true and not yet recorded as either:** `severity` defaults to `success`, which no design
-decision supports; every published example overrides the severity icon, so the default mapping is
-demonstrated nowhere; and `AlertTitle` is exported with no treatment defined, so a titled alert is
-buildable and unspecified.
-
-## Gaps in the current rules
-
-- **Whether an alert may carry a title is undecided.** `AlertTitle` ships, the design library
-  publishes no titled alert, and nothing states when a message needs a heading.
-- **No rule for how many alerts a page may show at once**, or whether they should merge.
-- **Whether alerts are dismissible by default is unstated.** The design draws a dismiss control on
-  every alert; code makes it opt-in via `onClose`.
-- **No rule for placement precision** beyond "with the thing it is about" — whether a
-  section-level alert goes above the section heading or below it is undecided.
-- **Nothing states what happens to a dismissed alert whose condition persists.** It returns on the
-  next render, and whether that is correct has not been decided.
+<Card title="Alert: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/alert/open-issues">
+  Divergences, open decisions, and undocumented gaps for Alert.
+</Card>
 
 ## Why it works this way
 

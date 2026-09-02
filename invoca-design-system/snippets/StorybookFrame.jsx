@@ -6,20 +6,45 @@
  * here. This keeps exactly one implementation of every component.
  *
  * ─────────────────────────────────────────────────────────────────────────────
- * VERIFIED from the pages already live at /invoca-design-system/temp/*:
+ * VERIFIED from the pages already live at /invoca-design-system/temp/*, plus direct checks
+ * against the deployment's own story index (see below):
  *   Origin        https://main--64e4dc66838839c721332d22.chromatic.com
  *   Story ID      components-<name-plural>--<story>   e.g. components-buttons--basic-button,
  *                 components-alerts--basic-alerts, components-chips--color-chips,
- *                 components-modals--medium-modal, components-tooltips--textonly
+ *                 components-modals--medium-modal, components-tooltips--textonly,
+ *                 components-text-links--docs, components-button-groups--docs,
+ *                 components-menu--docs (this one is NOT pluralized — Menu's own Storybook
+ *                 title is singular, confirmed against the index)
  *   Autodocs      confirmed working for at least Button (…?path=/docs/components-buttons--docs)
  *
  * This site is public (docs.invoca.com), and so is this Chromatic deployment — unlike the
  * internal Storybook this file originally targeted, these embeds render for every reader.
  *
+ * ⚠ USE A SPECIFIC STORY, NEVER THE `--docs` ID, FOR A "LIVE EXAMPLE" EMBED. A component's
+ *   `--docs` id is Storybook's autodocs page for the whole component — title, description,
+ *   every story, and the props table, all at once. Embedded at a "live example" height (150–250px)
+ *   it shows a sliver of that whole page, not a focused example. Pick an actual story id instead
+ *   (e.g. `components-buttons--basic-button`, not `components-buttons--docs`) so the iframe shows
+ *   one live, focused rendering. This was shipped wrong on three pages before being caught.
+ *
+ * ⚠ HOW TO GET A REAL STORY ID — do not derive one from the internal Titan checkout's local
+ *   Storybook `title` field, or from a component's `utilization.md` self-link. Both can be
+ *   wrong: this deployment's actual slugs follow Chromatic's own pluralization/hyphenation
+ *   rules, which do not always match the source `title` string, and a component's own
+ *   utilization.md was found carrying a stale self-reference (`components-textlink--docs`
+ *   for what the live deployment actually serves as `components-text-links--docs`). Instead,
+ *   fetch this deployment's real index and confirm the id is in it before using it:
+ *
+ *     fetch("https://main--64e4dc66838839c721332d22.chromatic.com/index.json")
+ *       .then(r => r.json()).then(d => Object.keys(d.entries))
+ *
+ *   Then load `.../iframe.html?id=<candidate>&viewMode=docs` and confirm it does not return
+ *   "Couldn't find story matching '<id>'" before shipping it in a page.
+ *
  * UNVERIFIED — do not trust until checked against the running Storybook:
  *   - The `globals` parameter names for color scheme and density.
- *   - The full story-ID naming convention across all ~40 components. Only the six migrated
- *     from /temp are confirmed; the rest are still the drafted-not-verified names from the IA.
+ *   - The story-ID naming convention for any component not explicitly listed above as
+ *     confirmed. Check it against the index before using it.
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Mintlify constraints this file must respect:

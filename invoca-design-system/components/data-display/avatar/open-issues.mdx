@@ -1,0 +1,29 @@
+---
+title: "Avatar"
+description: "Divergences, open decisions, and undocumented gaps for Avatar."
+icon: "circle-user"
+---
+
+See [Avatar](/invoca-design-system/components/data-display/avatar) for the decided part of this
+page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-31**](/invoca-design-system/foundations/divergences#titan-div-31) | Divergence | Avatar ships as a bare, unthemed re-export of the underlying element with no override, story, test, or utilization data — the only component in this category with zero recorded Titan decisions |
+
+## Gaps in the current rules
+
+- **Whether zero customization is a decision or an oversight is not recorded anywhere.** No
+  changelog entry, comment, or ticket reference in source explains why Avatar alone, among this
+  category's five components, has never been given a theme override.
+- **No stacking helper is exported.** The underlying package ships one for showing overlapping
+  avatars with a "+N" overflow; Titan's `index.js` does not re-export it. Whether that is
+  intentional or simply never requested is unconfirmed.
+- **No design-side evidence was checked this session.** This page's findings are entirely
+  code-side (source, theme, stories, tests, the live Storybook index). Whether the Figma library
+  defines an Avatar component with its own colors, sizes, or states — which would make the code's
+  silence a real divergence rather than a shared absence — was not verified.
+- **Fallback icon accessibility** — see [Accessibility](/invoca-design-system/components/data-display/avatar#accessibility)
+  on the main page for what's unconfirmed.

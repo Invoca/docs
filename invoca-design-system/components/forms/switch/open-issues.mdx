@@ -1,0 +1,49 @@
+---
+title: "Switch"
+description: "Divergences, open decisions, and undocumented gaps for Switch."
+icon: "toggle-right"
+---
+
+See [Switch](/invoca-design-system/components/forms/switch) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-22**](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component expresses a failed action |
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Multiple independent disabled-opacity values exist across the Forms group |
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | This documentation's "Switch" is the design library's and the token layer's "Toggle" |
+
+## Gaps in the current rules
+
+- **The Figma library confirms only three states, not the four seen on its siblings.**
+  `Selected=True/False` × `State=Enabled/Disabled/Focused` — versus the
+  `Default/Hover/Disabled/Focused` seen on
+  [Checkbox](/invoca-design-system/components/forms/checkbox#variants-sizes-and-states) and
+  [Radio](/invoca-design-system/components/forms/radio#variants-sizes-and-states). No
+  `Hover` state is demonstrated anywhere in the library for this component, and the resting
+  state is named `Enabled` rather than `Default` — a naming difference from its siblings,
+  not just a missing state.
+- **No hover state is demonstrated** for this component in the design library, unlike its
+  siblings. Whether that's intentional (a track/thumb may not need a hover cue the way a
+  clickable icon does) or simply unmodeled is unconfirmed.
+- **No labeled composite ("Toggle + Label") was found in the design library**, unlike
+  [Checkbox](/invoca-design-system/components/forms/checkbox#composition) and
+  [Radio](/invoca-design-system/components/forms/radio#composition), both of which have one.
+  Many systems put a Switch's label before the control, opposite Checkbox and Radio's
+  trailing convention, but this page does not have evidence either way for Titan
+  specifically.
+- **`FormInput` has no `type` for Switch, confirmed directly from its source** — its six types
+  are `text`, `radio`, `segmentedButton`, `select`, `checkbox`, and `custom`. Every other field
+  in this category composes a complete labeled field through `FormInput`; Switch has no
+  equivalent, decided path to do the same.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-SWITCH-03** | No visible label → an explicit accessible name is required. | A required accessible-name prop; a11y lint. |
+| **TITAN-SWITCH-04** | A disabled Switch is paired with a reachable explanation. | A required-when-disabled explanation prop. |

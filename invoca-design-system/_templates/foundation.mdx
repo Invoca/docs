@@ -23,13 +23,6 @@ icon: "palette"
   Delete these comment blocks when you author a real page.
 */}
 
-<Note>
-  **Token values on this page are generated from Titan source** by `tools/emit-tokens.mjs`,
-  which reads the DTCG token files and `token-manifest.json` directly. Constraints are
-  **Proposed** and need sign-off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it governs
 
 {/* [DEC] Scope, one paragraph. What decisions belong to this page and which belong elsewhere. */}
@@ -147,7 +140,24 @@ Axes that do not apply collapse out. Values per axis are on
 ## Gaps in the current rules
 
 {/* Genuinely undecided. NOT a to-do list, and not an invitation to resolve them.
-     An agent asked about anything here answers "Titan does not specify this." */}
+     An agent asked about anything here answers "Titan does not specify this."
+
+     ─── A THIRD CATEGORY, ON THE open-issues.mdx SIBLING, NOT HERE ──────────
+     Run every Constraint above through this test before it ships:
+
+       1. Real decision      — keep it as a Constraint on THIS page, no further action.
+       2. Duplicate of Reference — the constraint just restates the generated token
+                                table; move it to a `### Retired` subsection with a
+                                reason instead of deleting the row.
+       3. Should be Titan's job, isn't yet — a real, unenforced rule describing a
+                                mechanically checkable pattern (a literal-value ban, a
+                                required token, a banned combination). Keep it here AND
+                                add it to a "## Constraints Titan should enforce" section
+                                on this page's open-issues.mdx sibling, naming the lint
+                                rule or build-time check that would enforce it.
+
+     Don't over-assign bucket 3 — a rule needing judgment about intent or meaning is
+     bucket 1 even when nothing enforces it. */}
 
 ## Related
 

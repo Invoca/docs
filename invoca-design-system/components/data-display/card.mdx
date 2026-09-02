@@ -1,15 +1,186 @@
 ---
 title: "Card"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A bordered container for one self-contained unit of content, with interactive, selected, and error states layered on top of the underlying element's own Card."
+icon: "credit-card"
+tag: "Stable"
+keywords: ["container", "tile", "panel", "interactive card", "selected card", "error card"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
-</Warning>
+## What it is
+
+A bordered container that groups related content into one recognizable unit, with three optional
+states — interactive, selected, and error — expressed as CSS classes and `data-*` attributes on
+top of the underlying element's own `Card`.
+
+## Live example
+
+<StorybookFrame story="components-cards--interactive-card" height={240} />
+
+## Exports
+
+| Export | Implementation | Props it declares | What Titan decided |
+|---|---|---|---|
+| `Card` | Wraps the underlying element, adding three boolean props, verified directly in `Card.tsx` | `interactive`, `selected`, `error` (plus the full native `CardProps` surface) | The border, its three states' colors, the interactive cursor and transition, and `CardActions`/`CardContent` padding |
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `interactive` | `boolean` | `false` | Adds a pointer cursor and hover/active border treatment |
+| `selected` | `boolean` | `false` | Sets the strong border, independent of `interactive` |
+| `error` | `boolean` | `false` | Sets the error border |
+| `raised` | `boolean` | `false` | Native prop from the underlying element — Titan's override sets `boxShadow: none` unconditionally, so this has no visible effect (see [Edge and failure states](#edge-and-failure-states)) |
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Card** | Tile, panel, container | **`card`** | `Card` |
+| Interactive | Clickable, hoverable | **`interactive`** | `interactive` prop |
+| Selected | Active, chosen, highlighted | **`selected`** | `selected` prop |
+
+No aliasing dispute exists between the design library and code here — both call the container a
+card. The three state names above are this page's own vocabulary for the three boolean props; say
+**selected**, not "active," for the same reason [Tabs](/invoca-design-system/components/navigation/tabs#vocabulary)
+prefers it — a card can be selected while the content behind it is still loading.
+
+## Choose Card when
+
+- Content forms one coherent, self-contained unit a reader recognizes as a single object — a
+  record's summary, an option in a set, a tile in a grid.
+- The container itself needs to communicate interactive, selected, or error state through its own
+  border or background, not just through its contents.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show rows of the same kind of record, compared attribute by attribute | [Table](/invoca-design-system/components/data-display/table) | Card has no column model; comparing values across many records needs a table's alignment. |
+| Show a short, flat stack of simple text or icon-and-text rows | [List](/invoca-design-system/components/data-display/list) | A List row has no independent border, hover surface, or state layering — Card's states are exactly what a List row doesn't offer. |
+| Label one attribute or status of a record | [Tag](/invoca-design-system/components/data-display/tag) | A single word describing a property doesn't need a bordered container with padding and states. |
+| Show a small notification count layered on another element | [Badge](/invoca-design-system/components/data-display/badge) | Different job entirely — Badge decorates a corner; Card contains a whole unit of content. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Container | `Card` | Yes |
+| 2 | Content | `CardContent` | No — accepts any children, but padding is themed only for `CardContent` |
+| 3 | Actions row | `CardActions` | No |
+
+<Note>
+  **`CardHeader` and `CardActionArea` are exported and render inside a Card, but carry no Titan
+  override.** Confirmed against `Card.overrides.ts`, whose only theme override entries are for
+  `Card`, `CardActions`, and `CardContent`. Their padding and typography are unthemed defaults
+  with no Titan decision behind them, unlike `CardContent` and `CardActions`, which use
+  `spacing-6`.
+</Note>
+
+## Variants, sizes, and states
+
+Hand-confirmed from `Card.overrides.ts` and the component's own `BasicCard`/`InteractiveCard`
+stories — no per-component matrix emitter exists yet for this concept.
+
+| State | Trigger | Visual |
+|---|---|---|
+| Default | No boolean props | `border-default` border, `border-width-md`, no shadow |
+| Interactive | `interactive` | Pointer cursor; hover → `border-strong`; active → `border-strong` border plus `card-background-active` background; border-color/background transition over `motion-duration-shorter` |
+| Selected | `selected` | `border-strong` border, static |
+| Error | `error` | `border-error` border |
+
+The `InteractiveCard` story demonstrates `interactive` alone and `interactive selected` together.
+Since all three are independent booleans rather than one `variant` enum, they combine freely in
+the type system — including combinations no story or test demonstrates, such as `interactive
+error` together.
+
+There is no `size` prop — a Card takes whatever width or height its container or `sx` gives it; no
+small/medium scale exists.
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `error` set | Renders `border-error` — confirmed only by `Card.test.tsx`, never shown in any Storybook story | Don't assume the error border reads clearly next to `selected`'s `border-strong` without checking; no visual reference exists to compare them against |
+| `interactive` and `error` combined | Undefined — no story or test covers it | Avoid combining without checking manually: hover targets `border-strong` while the resting state targets `border-error` |
+| Bare children, no `CardContent`/`CardActions` | Renders with zero internal padding | The `spacing-6` padding is themed onto `CardContent` and `CardActions` specifically, not the `Card` root — wrap content in one of them, or add your own padding |
+| `raised` set | No visible change | `Card.overrides.ts` sets `boxShadow: "none"` unconditionally on the root, overriding whatever elevation `raised` would otherwise add |
+
+## Tokens
+
+Hand-confirmed from `Card.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `border-width-md` | Border width, all states |
+| `border-default` | Default border color |
+| `border-strong` | Hover, active, and selected border color |
+| `border-error` | Error border color |
+| `card-background-active` | Background while `interactive` is pressed (`:active`) |
+| `motion-duration-shorter` | Border-color/background transition duration on `interactive` |
+| `spacing-6` | Padding on `CardActions` and `CardContent` |
+
+## Composition
+
+A Card's children are otherwise unconstrained — `CardContent` and `CardActions` are the only two
+slots Titan themes, so anything else composed inside (a header, a media block, an avatar) renders
+at whatever spacing that element itself provides, not a Card-level decision.
+
+## Content
+
+No content rules are recorded in source for Card copy. Unlike a table column header or a tag
+label, nothing in `Card.tsx`, its stories, or its tests constrains what goes inside one. Treat
+general copy guidance — [Voice & tone](/invoca-design-system/content/voice-and-tone),
+[Capitalization](/invoca-design-system/content/capitalization-and-punctuation) — as what applies.
+
+## Accessibility
+
+- Card renders a plain container with no ARIA role of its own — confirmed neither `Card.tsx` nor
+  `Card.overrides.ts` sets one.
+- **`interactive` adds no keyboard affordance.** Confirmed by reading `Card.tsx` in full: the prop
+  only ever touches `className` and `data-interactive`. It adds no `tabIndex`, no `role="button"`,
+  and no `onKeyDown` handler. A keyboard user cannot activate an `interactive` Card unless the
+  caller adds their own focus and key handling.
+- **No accessible signal exists for `selected` or `error` beyond the border color.** Confirmed: no
+  `aria-selected`, `aria-invalid`, or equivalent attribute is set for either state. A screen reader
+  user gets no indication a card is selected or in error — only its border color, which conveys
+  nothing to anyone who can't perceive it.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-CARD-01** | An `interactive` Card must be given its own keyboard focus and activation handling by the caller — `tabIndex`, a role, and an `onKeyDown` handler, or a real button or link inside it. | Confirmed by reading `Card.tsx` — `interactive` only ever sets a CSS class and a `data-interactive` attribute; it adds no keyboard affordance of its own. A pointer-only "interactive" card is invisible to keyboard and screen-reader users. |
+| **TITAN-CARD-02** | A `selected` or `error` Card also states that fact in text or an icon somewhere in its content — never rely on the border color alone. | Confirmed no `aria-selected`/`aria-invalid`/visually-hidden text exists for either state in source; color is the only signal, which fails for anyone who can't perceive it. |
+| **TITAN-CARD-03** | Put content inside `CardContent` (and actions inside `CardActions`) when the built-in padding is wanted, rather than as Card's own direct children. | The `spacing-6` padding is themed onto `CardContent`/`CardActions` specifically — verified in `Card.overrides.ts`, which has no padding rule on the Card root itself. |
+
+## Known issues
+
+<Card title="Card: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/card/open-issues">
+  Divergences, open decisions, and undocumented gaps for Card.
+</Card>
+
+## Why it works this way
+
+Card's three states are independent booleans rather than one `variant` enum, which is why they
+combine freely — the same mechanism that makes `interactive selected` in the `InteractiveCard`
+story straightforward to build also means nothing in the type system stops a caller from setting
+`error` and `interactive` together, a combination no story or override treats as a real case.
+
+## Status
+
+Package `@invoca/titan-core`, version **3.6.3**. Primary export: `Card`. `CardActions` and
+`CardContent` carry Titan padding; `CardHeader` and `CardActionArea` are exported but unthemed. No
+deprecation marker or `since` field is recorded for any of them.
+
+## Related
+
+Titan's own `utilization.md` records **37 usages across 11 products**: ai-model-management (6),
+interaction-details (6), signal-validation (5), call-review-flow (4), manage-integrations (4),
+manage-invoca-tags (3), ai-labs (2), dashboards (2), developer-tools (2), signals (2), and
+intent-detection (1).
+
+- [List](/invoca-design-system/components/data-display/list) — the flatter, borderless alternative for simple rows
+- [Table](/invoca-design-system/components/data-display/table) — for many records compared attribute by attribute
+- [Tag](/invoca-design-system/components/data-display/tag) — for a single attribute label rather than a whole container
+- [Skeleton](/invoca-design-system/components/feedback/skeleton) — the loading placeholder several products already pair with Card

@@ -1,0 +1,24 @@
+---
+title: "Error messages"
+description: "Divergences, open decisions, and undocumented gaps for Error messages."
+icon: "circle-alert"
+---
+
+See [Error messages](/invoca-design-system/content/error-messages) for the decided part of this page.
+
+## Gaps in the current rules
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **No length or character guidance.** The source says to be helpful, not how much room that's allowed to take. | A one-line inline error and a full-paragraph explanation are both defensible readings of "helps solve the problem." | Open |
+| **No tone guidance specific to errors.** [Voice and tone](/invoca-design-system/content/voice-and-tone) states the brand is "Bold" — assertive, direct — and does not say whether that applies when the reader has just hit a failure. | An assertive tone risks reading as blaming the reader for the error. | Open |
+| **No rule for which surface carries the error** — inline text, a toast, or a banner. | "As close to the source as possible" argues for inline whenever there is a source location; what to do when there isn't one (a failed background job, for instance) is unaddressed. See [Alert](/invoca-design-system/components/feedback/alert) and [Toast](/invoca-design-system/components/feedback/toast). | Open |
+| **No retry or recovery-action pattern.** The source says to help the reader solve the problem, but not whether that should include an action button, and if so, styled how. | Left to page-by-page improvisation without it. | Open |
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-ERR-04** | Error messaging is sentence case. | A sentence-case content linter applied to error-message strings. |

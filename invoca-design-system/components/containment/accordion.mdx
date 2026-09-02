@@ -1,15 +1,169 @@
 ---
 title: "Accordion"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A disclosure section that expands or collapses in place, keeping the rest of the page visible around it."
+icon: "layer-group"
+tag: "Stable"
+keywords: ["expand", "collapse", "disclosure", "expandable section", "collapsible"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
-</Warning>
+## What it is
+
+A single collapsible section — a header a reader clicks to reveal or hide the content beneath
+it, in place, without leaving or replacing the surrounding page. Several Accordions stacked
+together form the familiar list-of-expandable-sections pattern, but each one is independent:
+nothing in source couples one Accordion's expanded state to another's.
+
+## Live example
+
+<StorybookFrame story="components-accordions--accordions" height={260} />
+
+## Exports
+
+Hand-confirmed from source — no prop emitter has run for this component yet.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `children` | `ReactNode` | Required. Normally one `AccordionSummary` and, optionally, one `AccordionDetails`. |
+| `defaultExpanded` | `boolean` | Default `false`. Uncontrolled initial state. |
+| `expanded` | `boolean` | Setting this prop puts the Accordion in controlled mode. |
+| `onChange` | `(event: SyntheticEvent, expanded: boolean) => void` | Fires on every expand/collapse. |
+| `disableGutters` | `boolean` | Default `false`. Removes the margin and height increase otherwise added between two expanded, adjacent Accordions. |
+| `disabled` | `boolean` | Confirmed by a published story rendering a disabled Accordion with no `AccordionDetails`. |
+
+`AccordionSummary` (the clickable header) and `AccordionDetails` (the revealed content) are
+separate exports from the same package. Accordion does not wrap or re-type them — they are
+styled by the same theme override that styles Accordion itself (see [Tokens](#tokens)), but
+carry no Titan-specific prop interface of their own to hand-confirm here.
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Header** | Trigger, summary row | **`AccordionSummary`** |
+| **Body** | Panel, content | **`AccordionDetails`** |
+
+## Choose Accordion when
+
+- A section of content is optional reading — a reader can get what they need from the page
+  without opening it.
+- Several such sections sit in a list and a reader may want more than one open, or none, at a
+  time.
+- The content belongs *in place*, on the same page, not on a different screen or view.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Replace the whole section when a reader picks between alternatives | [Tabs](/invoca-design-system/components/navigation/tabs) | A tab replaces its panel entirely; an Accordion keeps the surrounding context visible while it opens. See the Tabs page's own comparison. |
+| Show a persistent, always-visible region with a header, body, and footer | [Panel](/invoca-design-system/components/containment/panel) | A Panel never collapses — it is a structural region of the page, not a disclosure control. |
+| Interrupt the reader to demand a decision before they continue | [Dialog](/invoca-design-system/components/containment/dialog) | An Accordion never blocks the rest of the page; it only reveals more of it. |
+
+## Anatomy
+
+| # | Part | Export | Required |
+|---|---|---|---|
+| 1 | Header | `AccordionSummary` | Yes |
+| 2 | Expand indicator | `expandIcon` prop on `AccordionSummary` | No — the published example passes its own icon; nothing renders one by default |
+| 3 | Body | `AccordionDetails` | No — a disabled Accordion with no body is a published story |
+
+## Variants, sizes, and states
+
+No size prop exists — an Accordion fills the width of its container. Confirmed states, from the
+published stories:
+
+- **Collapsed** (default) and **expanded** — either uncontrolled (`defaultExpanded`) or
+  controlled (`expanded` + `onChange`).
+- **Disabled** — a published story renders a disabled Accordion carrying only a header, no body.
+
+## Edge and failure states
+
+- **A disabled Accordion with an `AccordionDetails` body is not demonstrated anywhere.** The one
+  published disabled story omits the body entirely, so what a disabled-but-still-expanded
+  Accordion looks like is unconfirmed.
+- **Multiple Accordions with no shared group state is the only pattern in source.** Nothing in
+  this component enforces "only one open at a time" — that behavior, if wanted, is the caller's
+  own state to manage across sibling Accordions.
+
+## Tokens
+
+Hand-confirmed from `Accordion.overrides.ts` — no per-component token emitter exists yet for
+this concept, so this table is hand-confirmed rather than generated. These are theme
+registrations keyed to the underlying primitive's own component names, so they apply regardless
+of which export renders it.
+
+| Token | Applies to |
+|---|---|
+| `border-width-sm`, `border-default` | Accordion's own border (all four sides; the expanded state's redundant border declaration was removed as dead weight) |
+| `spacing-0` | Margin reset between adjacent expanded Accordions |
+| `accordion-summary-padding-y` | `AccordionSummary` vertical padding (7.5px — off the standard spacing scale, adopted unchanged) |
+| `spacing-6` | `AccordionSummary` horizontal padding, and `AccordionDetails` horizontal/bottom padding |
+| `text-primary` | `AccordionSummary` content color and `AccordionDetails` text color |
+| `icon-default` | The expand-icon wrapper's color |
+
+## Composition
+
+An Accordion is a standalone region — it does not compose into `Form` or any other field
+pattern. Several stacked in a list is the common composition; nothing in source names or
+provides a "group" wrapper for that list, so spacing and grouping between them is left to the
+caller.
+
+## Content
+
+No copy rules are recorded in source for header or body text.
+
+## Accessibility
+
+- Confirmed only at the level of what the underlying elements provide natively (a button-like
+  header toggling a revealed region) — no test in source asserts specific ARIA attributes for
+  Accordion itself.
+- The published example wires `aria-controls` and `id` by hand on each `AccordionSummary`
+  (`panel1a-header` / `panel1a-content`) — nothing in the component does this pairing
+  automatically, so a caller who omits it ships an Accordion with no programmatic link between
+  header and body.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-ACCORDION-01** | Each `AccordionSummary` carries its own `id` and `aria-controls` pointing at its `AccordionDetails`; the component does not pair them automatically. | The only published example wires this by hand — nothing in source generates or defaults these attributes, so omitting them ships an unlabeled disclosure control. |
+
+## Known issues
+
+<Card title="Accordion: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/containment/accordion/open-issues">
+  Divergences, open decisions, and undocumented gaps for Accordion.
+</Card>
+
+## Why it works this way
+
+**Accordion is a near-zero-value wrapper by design.** The component itself is a one-line
+passthrough; the real Titan-specific behavior — border, spacing, color — lives entirely in the
+theme override, which is keyed to the underlying primitive's own component name rather than to
+this wrapper. That means the styling applies whether or not a caller imports Accordion from this
+package, which is also why there is no anti-pattern story here the way [Dialog](/invoca-design-system/components/containment/dialog)
+has one: there is no competing raw import that would visibly lose styling by bypassing it.
+
+## Status
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core` |
+| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Exports covered on this page** | `Accordion` |
+| **Related exports, not detailed here** | `AccordionSummary`, `AccordionDetails` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+Hand-confirmed from `utilization.md` — no utilization emitter has run for this component yet.
+12 usages across 5 applications: **interaction-details** (5), **developer-tools** (3),
+**manage-invoca-tags** (2), **reporting-thoughtspot** (1), **call-review-flow** (1).
+
+- [Tabs](/invoca-design-system/components/navigation/tabs) — the alternative when a section should replace another rather than sit alongside it
+- [Panel](/invoca-design-system/components/containment/panel) — the alternative when the region should never collapse

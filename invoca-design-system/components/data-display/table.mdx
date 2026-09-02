@@ -2,18 +2,11 @@
 title: "Table"
 description: "Rows of records of the same kind, scanned and compared, with selection and per-row actions."
 icon: "table"
-tag: "Draft"
+tag: "Stable"
 keywords: ["table", "data grid", "datagrid", "grid", "rows", "columns", "cells", "list of records", "sorting", "selection"]
 ---
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
-
-<Note>
-  **Exports, published variants, adoption, and status on this page are generated from Titan
-  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
-  off. Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
 
 ## What it is
 
@@ -30,15 +23,9 @@ in the product.
 
 <StorybookFrame story="components-datagrid--multi-row-example" height={420} />
 
-<Warning>
-  **Do not copy this example's props.** Four of them do not exist in the shipped version:
-  `pageSize`, `onPageSizeChange`, and `rowsPerPageOptions` were replaced by `paginationModel` and
-  `pageSizeOptions`, and `unstable_cellSelection` is now `cellSelection`. The demo also declares
-  `DataGridPro` as its subject and renders `DataGridPremium`.
-
-  Verified against the installed package, not inferred. Until the story is corrected, treat the
-  props table it publishes as unreliable and reach for the ones this page documents.
-</Warning>
+**Do not copy this example's props** — see
+[Open issues](/invoca-design-system/components/data-display/table/open-issues) for which ones
+are stale, and reach for the ones this page documents instead.
 
 ## Exports
 
@@ -46,13 +33,9 @@ in the product.
 
 ## Vocabulary
 
-<Warning>
-  **The system says *table*. Code says `DataGridPro`; the design library says *Data Grid*.**
-  *Table* is what people say in conversation, so it is the word this documentation leads with — and
-  it is the one case where the reader-facing name comes from the team rather than from either
-  artifact. Say **table** in a review and **grid** only when you mean the export. See
-  [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10).
-</Warning>
+**The system says *table*. Code says `DataGridPro`; the design library says *Data Grid*.**
+*Table* is what people say in conversation, so it is the word this documentation leads with.
+Say **table** in a review and **grid** only when you mean the export.
 
 | Term | Also called | The system uses | In code |
 |---|---|---|---|
@@ -87,7 +70,7 @@ place — and frozen suggests the data stopped updating.
 | Show records that each need a heading, an image, or a summary | [Card](/invoca-design-system/components/data-display/card) | A row cannot hold a hierarchy. Once a row needs its own internal layout, it is not a row. |
 | Summarise rather than enumerate | [Dashboard](/invoca-design-system/views/dashboard) | A reader who wants the shape of the data does not need every record. |
 | Present grouped settings that happen to align | [Settings view](/invoca-design-system/views/settings-view) | Configuration is not a collection, even when it renders in aligned rows. |
-| Let someone edit many values freely, spreadsheet-style | Nothing — ask first | The system has no sanctioned editable-grid pattern. See [Gaps](#gaps-in-the-current-rules). |
+| Let someone edit many values freely, spreadsheet-style | Nothing — ask first | The system has no sanctioned editable-grid pattern. See [Gaps](/invoca-design-system/components/data-display/table/open-issues#gaps-in-the-current-rules). |
 
 ## Anatomy
 
@@ -116,11 +99,9 @@ focus ring on a cell, and the colour of the sort icon.
 
 **Row states:** default, hover, selected, and cell focus.
 
-<Warning>
-  **A hovered row and a selected row are given the same fill.** While the pointer is over the
-  table, "which rows did I select" is unanswerable — which matters most on exactly the pages that
-  have bulk actions. Recorded as [TITAN-DIV-20](/invoca-design-system/foundations/divergences#titan-div-20).
-</Warning>
+**A hovered row and a selected row are given the same fill** ([known
+issue](/invoca-design-system/components/data-display/table/open-issues)), which matters most on
+exactly the pages that have bulk actions.
 
 **Density** is out of scope for this documentation ([TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01)),
 so no compact row height is specified here even though the grid accepts one.
@@ -217,43 +198,22 @@ position carries meaning. If it does not, the structure is a lie.
 | **TITAN-TBL-03** | A table is the whole body of its page. | A summary strip or chart beside it competes with the task the reader came for. A page needing both is a [dashboard](/invoca-design-system/views/dashboard) with a table on it. |
 | **TITAN-TBL-04** | An empty table states **why** it is empty, and offers the action that resolves it. | "No results" for a filter and "nothing here yet" for a new account are different messages. The default overlay says neither, so a new user reads an empty product as a broken one. |
 | **TITAN-TBL-05** | A horizontally scrolling table pins its identifying column. | Scrolled right, an unpinned table shows values with nothing naming the row they belong to, and every cell becomes ambiguous. |
-| **TITAN-TBL-06** | Cells truncate; column headers do not. | A truncated header makes the whole column unreadable rather than one value. Shorten the header instead, and keep the full cell value reachable. |
 | **TITAN-TBL-07** | At most two inline row actions. Past two, collapse into a menu. | A row of controls repeated down the table competes with the data for attention, and the widths stop aligning. |
 | **TITAN-TBL-08** | A bulk action states its count and scope before it runs. | "Delete selected" over a filtered table is ambiguous between the page, the filter, and everything — and the destructive case is unrecoverable. See [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation). |
 | **TITAN-TBL-09** | Sort state is announced programmatically, not only drawn. | A sort arrow is the only feedback that a header press did anything, and it is invisible to a screen reader. |
 | **TITAN-TBL-10** | Never use a table to lay out content that is not tabular. | Row and column semantics assert that position carries meaning. Where it does not, the structure misinforms every assistive technology that reads it. |
 
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-TBL-06** | Cells truncate; column headers do not. | This is DataGridPro's shipped themed default, not an independent per-table choice. Retired, not reversed. |
+
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-19**](/invoca-design-system/foundations/divergences#titan-div-19) | Divergence | The selection bar and its select-all menu are designed and absent from code |
-| [**TITAN-DIV-20**](/invoca-design-system/foundations/divergences#titan-div-20) | Divergence | A hovered row and a selected row are given the same fill |
-| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Three pagination approaches, none confirmed — the templates draw it inside the table |
-| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | No layout tokens, so nothing bounds the table's width on a wide monitor |
-| [**TITAN-GAP-01**](/invoca-design-system/foundations/open-decisions#titan-gap-01) | Open decision | Density is undesigned, so no compact row height is specified |
-
-**Also true and not yet recorded as either**: the published demo uses four props the shipped
-version does not accept, and declares one export while rendering another (see
-[Live example](#live-example)). No product adoption is recorded for the grid export in the
-utilization data, so the adoption figures below cannot yet corroborate any usage guidance on this
-page.
-
-## Gaps in the current rules
-
-- **No column-count limit.** Nothing states when a table has too many columns to be scannable, or
-  what to do about it — pin, hide, or move to a detail view.
-- **No sanctioned editable table.** The demo enables cell selection, and nothing states whether
-  editing in place is supported, what saves it, or how it fails. Treat editable grids as
-  unspecified and ask.
-- **No default page size.** The grid offers a set of options; nothing says which a list page starts
-  on, and the design's templates show one number without stating it as the rule.
-- **No rule for row height or wrapping.** The design library publishes single-line and multi-line
-  cells. Nothing says when a table may use the taller row.
-- **Which grid export is the system's is undecided.** Two ship. The guidance story says "use the
-  grid" without saying which, and the published demo names one and renders the other.
-- **No rule for default sort.** Every table arrives sorted somehow, and nothing states whether that
-  is the newest record, a name, or the server's order.
+<Card title="Table: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/table/open-issues">
+  Divergences, open decisions, and undocumented gaps for Table.
+</Card>
 
 ## Why it works this way
 

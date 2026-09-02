@@ -8,13 +8,6 @@ keywords: ["primary", "secondary", "tertiary", "cta", "call to action", "submit"
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source** by
-  `tools/emit-components.mjs`. Guidance and constraints are authored, and constraints are
-  **Proposed** until signed off. Disagreements between the design language and the shipped
-  code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 A control that performs an action in place: submitting, confirming, opening, applying,
@@ -27,12 +20,6 @@ the package; the mapping is below.
 ## Live example
 
 <StorybookFrame story="components-buttons--basic-button" height={200} />
-
-<Note>
-  Story ID `verified` — this is the same embed the previously-published Button page used
-  (see `invoca-design-system/temp/button.mdx` in the repo, not yet reconciled with this
-  page), served from the public Chromatic deployment rather than an internal Storybook.
-</Note>
 
 ## Exports
 
@@ -119,11 +106,6 @@ weight is what you meant.
 
 ## Anatomy
 
-<Note>
-  Anatomy diagram `pending` — `/images/components/button-anatomy.png`. The images directory is
-  empty; nothing is published to generate it from yet.
-</Note>
-
 | # | Part | Prop | Required |
 |---|---|---|---|
 | 1 | Label | `children` | Yes — see [TITAN-BTN-04](#constraints) |
@@ -191,12 +173,6 @@ The state everyone designs is a short label on a wide button. These are the othe
 | Disabled | Not focusable, announces nothing | Pair with a reachable explanation — [TITAN-BTN-06](#constraints). |
 | Permission denied | Same as disabled — indistinguishable from a bug | State the reason. "You do not have permission" is a different message from "Select a row first". |
 
-<Warning>
-  **Failure is the least-specified state.** Nothing in the component or the token layer
-  expresses "this action failed", so every surface improvises. See
-  [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22).
-</Warning>
-
 ## Tokens
 
 <Snippet file="generated/tokens/button.mdx" />
@@ -240,25 +216,13 @@ with dismissive actions to its left.
 | No terminal punctuation | Save Changes | Save Changes. |
 | Match the user's word, not the system's | Publish | Commit |
 
-<Note>
-  **Corrected this pass.** This page previously stated sentence case as the rule and framed
-  the theme's title-case rendering as a bug — backwards. zeroheight's Button page states
-  plainly: *"Label text should be title case"* / *"Label text should not be sentence case."*
-  See [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation) for the
-  corrected, per-content-type casing model, and
-  [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23) for what's left as an actual
-  divergence now that the direction is fixed.
-</Note>
-
-<Warning>
+<Info>
   **Title case here means headline style, not "every word capitalized."** Lowercase short
   articles, conjunctions, and prepositions (`a`, `the`, `to`, `of`, `and`) unless one is the
   first or last word — "Save Changes to Draft," not "Save Changes To Draft." The theme's
-  `textTransform: "capitalize"` doesn't know this exception and capitalizes every word
-  unconditionally; for most short, verb-first labels the two happen to agree, but they
-  diverge on any label containing a function word. See
-  [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23).
-</Warning>
+  rendering doesn't know this exception on every label — see
+  [Open issues](/invoca-design-system/components/actions/button/open-issues) for where that bites.
+</Info>
 
 **Confirmation labels restate the action, never "Yes"/"No".** A dialog asking "Delete this
 campaign?" answered by "Yes" forces the user to re-read the question to know what "Yes" does.
@@ -279,13 +243,10 @@ campaign?" answered by "Yes" forces the user to re-read the question to know wha
 - Label contrast meets WCAG 2.2 AA (4.5:1). A **tertiary** button on a tinted surface is the
   historical failure case — verify it against the surface it actually sits on, not white.
 
-<Warning>
-  **Focus has no semantic token.** [TITAN-A11Y-04](/invoca-design-system/foundations/accessibility#constraints)
-  requires a visible focus indicator, and the token layer supplies none for the general case —
-  `border-focus` is specified and unimplemented. Button therefore inherits whatever the
-  framework draws. Never remove it. See
-  [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
-</Warning>
+[TITAN-A11Y-04](/invoca-design-system/foundations/accessibility#constraints) requires a
+visible focus indicator. Button has no semantic focus token to draw it from ([known
+issue](/invoca-design-system/components/actions/button/open-issues)) and inherits whatever
+the framework draws instead — **never remove it.**
 
 **What this component does not handle:** focus return after a dialog it opened closes,
 announcing the result of the action, and its own error state. Those belong to the composition.
@@ -300,39 +261,25 @@ announcing the result of the action, and its own error state. Those belong to th
 | **TITAN-BTN-04** | Button labels are 1–3 words. | Past three words the label is describing a task, not naming an action. Buttons do not truncate, so a long label grows the control instead. |
 | **TITAN-BTN-05** | Never more than three Buttons in one action group. | Beyond three, weight stops communicating hierarchy. Collapse the overflow into a [Menu](/invoca-design-system/components/actions/menu). |
 | **TITAN-BTN-06** | A `disabled` Button is always accompanied by a reachable explanation of what would enable it. | Disabled controls are not focusable and announce nothing. A disabled control with no stated cause is indistinguishable from a bug. |
-| **TITAN-BTN-07** | `loading` disables the Button and preserves its rendered width. | A Button that resizes on press moves the controls next to it, producing mis-clicks at exactly the moment the user is committing. |
 | **TITAN-BTN-08** | Never use a Button for navigation that has a URL. | Removes right-click, middle-click, ⌘-click, and copy-link. Use [Link](/invoca-design-system/components/actions/link). |
 | **TITAN-BTN-09** | An icon-only button carries an explicit accessible name. | Without one it announces as "button" with no further information, which is unusable by screen reader and unrecoverable by guessing. |
 | **TITAN-BTN-10** | Size is `small` or `medium`. Never `large`. | Only two sizes are themed. `large` renders at dimensions no token defines and no decision covers. |
 | **TITAN-BTN-11** | An icon sits before the label, never after it. **Needs confirmation.** | One icon position means a row of buttons has one rhythm. A trailing icon also reads as "this opens something", which is a menu's or a link's signal, not a button's. |
 | **TITAN-BTN-12** | An icon-only button is primary prominence and default purpose. **Needs confirmation.** | Stripping the label already removes most of the control's information; taking the weight as well leaves a glyph the eye does not register as pressable. An icon-only destructive control is worse still — the one action needing an unambiguous label has none. |
 | **TITAN-BTN-13** | Button labels are title case: capitalize principal words, lowercase short articles/conjunctions/prepositions unless first or last. | Directly stated in zeroheight's Button page. Corrected this pass — see [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#the-base-style). The shipped theme's naive every-word capitalization is a close but imperfect implementation — [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23). |
-| **TITAN-BTN-14** | A button label occupies one line. It never wraps. | A wrapping label makes one control taller than its neighbours, which breaks the alignment of every row of buttons it appears in. The theme enforces this with `nowrap`, so a label too long to fit widens the button instead — shorten it per [TITAN-BTN-04](#constraints). |
+
+### Retired
+
+| ID | Was | Why retired |
+|---|---|---|
+| **TITAN-BTN-07** | `loading` disables the Button and preserves its rendered width. | Automatic library behavior — sets `aria-busy="true"` and holds width — not a discretionary consumer choice. Retired, not reversed. |
+| **TITAN-BTN-14** | A button label occupies one line. It never wraps. | The theme already enforces this with `nowrap`. Retired, not reversed. |
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-02**](/invoca-design-system/foundations/divergences#titan-div-02) | Divergence | `border-focus` is specified and never implemented — Button inherits its focus ring |
-| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | Documentation groups by concept; the package exports by unit |
-| [**TITAN-DIV-11**](/invoca-design-system/foundations/divergences#titan-div-11) | Divergence | The design vocabulary is prominence; code names the treatment |
-| [**TITAN-DIV-23**](/invoca-design-system/foundations/divergences#titan-div-23) | Divergence | The theme's naive capitalize-every-word doesn't implement title case's function-word exceptions |
-| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | No selection rule where two tokens both apply |
-| [**TITAN-GAP-22**](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component expresses a failed action |
-
-## Gaps in the current rules
-
-- **The `large` size is reachable and undefined.** It is not themed, but nothing prevents
-  passing it. [TITAN-BTN-10](#constraints) is a documentation rule with no enforcement.
-- **`tertiary` exists as a design term and in no token.** The prominence vocabulary is three
-  levels; the token layer names none of them. See
-  [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11).
-- **Icon-only sizing has no rule.** Three icon sizes and two control heights exist; nothing
-  states which pairs.
-- **`FilterButton`'s applied-state treatment is not specified.** It carries a `count` prop and
-  two of its own tokens, and no page states what an active filter should look like.
-- **No rule for buttons inside dense table rows** beyond "use a smaller size", which does not
-  say which size or what happens in a row that already has three actions.
+<Card title="Button: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/actions/button/open-issues">
+  Divergences, open decisions, and undocumented gaps for Button.
+</Card>
 
 ## Why it works this way
 

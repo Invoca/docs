@@ -1,0 +1,39 @@
+---
+title: "Radio"
+description: "Divergences, open decisions, and undocumented gaps for Radio."
+icon: "circle-dot"
+---
+
+See [Radio](/invoca-design-system/components/forms/radio) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Multiple independent disabled-opacity values exist across the Forms group, with no rule for which applies |
+
+## Gaps in the current rules
+
+- **No stated default-selection rule** for a mandatory Radio group — see
+  [TITAN-RADIO-06](#constraints-titan-should-enforce) below.
+- **No rule for a group with only one option** beyond [TITAN-RADIO-05](/invoca-design-system/components/forms/radio#constraints) saying it
+  shouldn't happen — what to do if it does (render anyway, warn, fall back to something else)
+  is unstated.
+- **Whether a hand-assembled RadioGroup is a documented anti-pattern is unconfirmed.** Input,
+  Select, and Checkbox each have a named `DoNotUse_Raw*` story in source explicitly calling out
+  bypassing `FormInput`. No equivalent story exists for Radio. This may mean it was never
+  flagged, or that raw `RadioGroup` composition is considered acceptable for a reason not
+  written down anywhere checked. Do not assume either answer.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-RADIO-02** | A Radio group is exposed as a named set. | A required group name/`aria-label`. |
+| **TITAN-RADIO-03** | No visible label → an explicit accessible name is required. | A required accessible-name prop; a11y lint. |
+| **TITAN-RADIO-04** | A disabled Radio is paired with a reachable explanation. | A required-when-disabled explanation prop. |
+| **TITAN-RADIO-05** | A Radio group never has exactly one option. | A lint/runtime check flagging `options.length === 1`. |
+| **TITAN-RADIO-06** | A required group ships with a default selection (needs confirmation). | A required `defaultValue` prop when `required` is true. |

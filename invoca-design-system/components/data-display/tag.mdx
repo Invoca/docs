@@ -1,15 +1,208 @@
 ---
 title: "Tag"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A compact, pill-shaped label for one entity's attribute, category, or status, optionally removable or clickable."
+icon: "tag"
+tag: "Stable"
+keywords: ["chip", "label", "status pill", "filter chip", "removable label"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A compact, pill-shaped label standing for one entity's attribute, category, or status — optionally
+with a leading icon and a delete control. It renders the underlying element's own `Chip`
+unmodified; Titan's theme supplies the shape, sizes, and semantic color intents.
+
+## Live example
+
+<StorybookFrame story="components-chips--color-chips" height={110} />
+
+## Exports
+
+<Warning>
+  **The package exports this as `Chip`, not `Tag`.** This page's name is the design vocabulary's
+  term for the concept — the same kind of choice this site made for
+  [Table](/invoca-design-system/components/data-display/table)/`DataGridPro` — and `Chip` is the
+  import. See [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10).
 </Warning>
+
+| Export | Implementation | Props it declares | What Titan decided |
+|---|---|---|---|
+| `Chip` | A bare pass-through of the underlying element, verified directly in `Chip.tsx` | None of its own — the full native `ChipProps` surface passes through | Two variants, two sizes, and four of the six native color intents (see [Vocabulary](#vocabulary)) |
+
+Hand-confirmed props, from the underlying package's own `ChipProps` type since Titan declares
+none of its own:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label` | `ReactNode` | — | The tag's text |
+| `color` | `"default" \| "primary" \| "secondary" \| "error" \| "info" \| "success" \| "warning"` | `"default"` | See [Vocabulary](#vocabulary) — `secondary` is unstyled |
+| `variant` | `"filled" \| "outlined"` | `"filled"` | Solid tint vs. bordered/transparent |
+| `size` | `"small" \| "medium"` | `"medium"` | Height and padding, not typography — both sizes share one text scale |
+| `icon` | `ReactElement` | — | Leading icon |
+| `avatar` | `ReactElement` | — | Leading avatar, mutually exclusive with `icon` |
+| `deleteIcon` / `onDelete` | `ReactElement` / handler | — | Shows a delete control only when `onDelete` is set |
+| `onClick` | handler | — | Makes the tag clickable |
+| `disabled` | `boolean` | `false` | No themed disabled treatment exists — see [Edge and failure states](#edge-and-failure-states) |
+
+## Vocabulary
+
+**The system says *tag*. Code and the design library both say *chip*.**
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **Tag** | Chip, label, pill | **`tag`** | `Chip` |
+
+This is the same kind of alias as Table/`DataGridPro` — the docs use the reader-facing word, and
+the [Exports](#exports) table is where the mapping stays visible.
+
+**"Primary" and "info" render identically.** Confirmed in `Chip.overrides.ts`: `filledPrimary` and
+`filledInfo` both call the same `filledChip(theme, "info")` helper, and the equivalent is true for
+`outlinedPrimary`/`outlinedInfo`. There is no distinguishable "primary" Tag — say **info**, since
+that's the intent it actually renders.
+
+**"Default" means neutral.** `color="default"` (the prop's own default) renders Titan's neutral
+tag via `chip-neutral-*` tokens. This page calls that intent **neutral**.
+
+**"Secondary" is unstyled.** Confirmed: `Chip.overrides.ts` defines `filledDefault`,
+`filledPrimary`, `filledInfo`, `filledSuccess`, `filledWarning`, `filledError`, and the matching
+`outlined*` keys — but no `filledSecondary`, `outlinedSecondary`, or `colorSecondary` exists
+anywhere in the file. `color="secondary"` renders with no token behind it — an unthemed default,
+not a Titan decision.
+
+This is the opposite of [Badge](/invoca-design-system/components/data-display/badge#vocabulary),
+where `color="secondary"` is the one Titan deliberately routed to a neutral tint. The two
+components picked different color slots of the underlying element to carry "neutral" — Tag uses
+`default`, Badge uses `secondary` — so a Tag's unstyled `secondary` is not a parity bug with
+Badge; it is simply a slot nobody themed.
+
+## Choose Tag when
+
+- Labeling one attribute, category, or status of a record — something a reader would describe in
+  a word or two.
+- The value may need to be removed individually (a filter, a selected option) or clicked as a
+  whole — the component's own `ChipsArray` story is the demonstrated pattern for a removable set.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Layer a small notification count or dot on another element | [Badge](/invoca-design-system/components/data-display/badge) | Different job — Badge decorates a corner; Tag stands as its own label. |
+| Hold a whole unit of related content in a bordered container | [Card](/invoca-design-system/components/data-display/card) | A Tag is a label, not a region that holds other components. |
+| Trigger a state change — submit, confirm, delete | [Button](/invoca-design-system/components/actions/button) | Tags read as data by convention — this component's own stories treat `onClick`/`onDelete` as selection or removal, not as a general action trigger. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Label | `label` | Yes — no story renders one without it |
+| 2 | Leading icon or avatar | `icon` or `avatar` | No — mutually exclusive, each accepts a single element |
+| 3 | Delete control | `deleteIcon` (shown only when `onDelete` is set) | No |
+
+## Variants, sizes, and states
+
+Hand-confirmed from `Chip.overrides.ts` and the component's own stories — no per-component matrix
+emitter exists yet for this concept.
+
+| Axis | Values |
+|---|---|
+| `variant` | `filled` (default) — solid tint background; `outlined` — border plus tinted text/icon, transparent fill until hover |
+| `size` | `medium` (default, `chip-height-md`) / `small` (`chip-height-sm`) — both use the same caption type scale; only height, vertical padding, and icon size (`icon-sm` vs. `icon-xs`) differ |
+| `color` (intent) | **neutral** (`default`), **info** (`primary` and `info`, identically), **success**, **warning**, **error** — `secondary` is unstyled, see [Vocabulary](#vocabulary) |
+| States | Clickable (adds a hover fill per variant/intent), disabled (no themed treatment — see below) |
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `color="secondary"` | Renders with no token behind it — an unthemed default purple, not a Titan decision | Use `default` (neutral), `info`, `success`, `warning`, or `error` instead |
+| `disabled` | No themed disabled style exists in `Chip.overrides.ts` | Confirm the unthemed disabled opacity is acceptable before relying on it |
+| Long `label` | No truncation rule found in source or stories; the underlying element does not truncate by default | Keep labels to a word or two, consistent with [Content](#content) |
+| `icon` and `avatar` both passed | Undefined precedence — no test or story exercises both together | Pass one or the other |
+
+<Warning>
+  **No test file exists for Chip in the Titan checkout.** There is no `Chip.test.tsx` — every
+  behavior on this page beyond what the stories visibly demonstrate is unverified by any automated
+  test.
+</Warning>
+
+## Tokens
+
+Hand-confirmed from `Chip.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `chip-height-md` / `chip-height-sm` | Height, medium/small |
+| `chip-padding-y-sm` | Vertical padding, small size |
+| `icon-sm` / `icon-xs` | Leading icon size, medium/small |
+| `chip-info-tint` / `chip-info-icon` / `chip-info-icon-hover` | `color="primary"` and `color="info"`, filled and outlined |
+| `chip-success-tint` / `chip-success-icon` / `chip-success-icon-hover` | `color="success"` |
+| `chip-error-tint` / `chip-error-icon` / `chip-error-icon-hover` | `color="error"` |
+| `chip-warning-tint` / `chip-warning-icon` / `chip-warning-icon-hover` | `color="warning"` |
+| `chip-neutral-tint` / `chip-neutral-text` / `chip-neutral-icon` / `chip-neutral-icon-hover` | `color="default"` (neutral) |
+| `text-success-alt` / `text-info-alt` / `text-error-alt` / `text-warning-alt` | Tag label text color per intent — applies to both `filled` and `outlined`, since neither variant helper sets its own text color |
+
+## Composition
+
+A Tag stands alone or in a wrapped row of several — the `ChipsArray` story is the demonstrated
+pattern for a removable set, such as a filter bar or a multi-select field's chosen values. It also
+composes inside a table cell as a status column, or beside a heading as a record's category.
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| One or two words, sentence case, no punctuation | Active | This item is currently active. |
+| Name the entity's real value, not a paraphrase | Sales qualified | Qualified for sales purposes |
+
+## Accessibility
+
+- No test file exists for Chip in the Titan checkout — every behavior below the demonstrated
+  stories is unverified by automation.
+- A clickable Tag needs a label that makes sense on its own, the same rule as any other control.
+- **Unconfirmed:** whether the leading `icon` or `avatar` is marked decorative (`aria-hidden`).
+  Nothing in source addresses it.
+- **Unconfirmed:** the delete control's keyboard behavior. This page has not independently
+  verified it against the installed package's rendered DOM.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TAG-01** | Use `default` (neutral), `info`, `success`, `warning`, or `error` for `color`. Never `secondary`. | Confirmed: `secondary` has no entry in `Chip.overrides.ts` — it silently renders an unthemed default purple. |
+| **TITAN-TAG-02** | `primary` and `info` are the same rendered intent — say **info**. | `filledPrimary` and `filledInfo` both call `filledChip(theme, "info")`; there is no distinguishable "primary" tag. |
+| **TITAN-TAG-03** | A Tag's label is one or two words, sentence case, no punctuation. | No truncation or wrapping treatment exists in source; a long label breaks the pill shape rather than adapting to it. |
+
+## Known issues
+
+<Card title="Tag: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/tag/open-issues">
+  Divergences, open decisions, and undocumented gaps for Tag.
+</Card>
+
+## Why it works this way
+
+Tag, like Badge, is a bare pass-through component — its entire Titan-specific contribution lives
+in the override file. Collapsing "primary" and "info" into one rendered intent and giving
+"default" its own neutral tokens are real, deliberate choices recorded there. Leaving "secondary"
+out is not explained anywhere in source, which is why it's recorded as a gap rather than assumed
+to be intentional.
+
+## Status
+
+Package `@invoca/titan-core`, version **3.6.3**. Single export: `Chip`. No deprecation marker or
+`since` field is recorded in source.
+
+## Related
+
+Titan's own `utilization.md` records **68 usages across 16 products** — the heaviest adoption of
+any component in this category — led by manage-invoca-tags (11), ai-agent-studio (10), and
+ai-agent-template-management (7), with the remainder spread across ai-model-management,
+agent-management-v2, interaction-details, signal-validation, dashboards, signals,
+agent-management, call-review-flow, dashboard-management, manage-scorecards, dashboard-header,
+connect-apps, and manage-integrations.
+
+- [Badge](/invoca-design-system/components/data-display/badge) — for a count or dot rather than a text label
+- [Card](/invoca-design-system/components/data-display/card) — for a whole bordered unit of content
+- [Button](/invoca-design-system/components/actions/button) — including `FilterButton`, for a control that opens a menu of filter options

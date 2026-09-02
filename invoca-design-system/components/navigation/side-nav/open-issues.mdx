@@ -1,0 +1,30 @@
+---
+title: "SideNav"
+description: "Divergences, open decisions, and undocumented gaps for SideNav."
+icon: "component"
+---
+
+See [SideNav](/invoca-design-system/components/navigation/side-nav) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-29**](/invoca-design-system/foundations/open-decisions#titan-gap-29) | Open decision | Vertical tabs are a navigation rail with no region and no archetype; this page is named directly in that entry as a stub with no answer of its own |
+
+## Gaps in the current rules
+
+- **No standalone SideNav component exists in `core`.** This is the central gap this whole page
+  documents — see the main page for the full inventory of what exists instead (the rail, the
+  deprecated `legacy-web` `SideNav`, and the bespoke `primary-navigation` application).
+- **`TITAN-GAP-29`'s own "What ships today" does not yet mention the `legacy-web` `SideNav` or
+  the `primary-navigation` application** — it was written from the rail's side of the question
+  alone. Both are real, additional evidence for the same open decision, found while researching
+  this page, and worth folding into that entry's "What ships today" the next time it is revised.
+- **Whether `primary-navigation` is meant to be the system's long-term answer, or a piece of
+  legacy infrastructure being phased out, was not determined.** Its changelog shows active,
+  recent production deploys, which argues against calling it purely legacy — but nothing states
+  whether new applications are expected to plug into it or build their own chrome.
+- **No accessibility pattern has been verified against any real Titan implementation**, since
+  none exists. The WAI-ARIA guidance cited on the main page is general, external guidance, not a
+  Titan-specific rule.

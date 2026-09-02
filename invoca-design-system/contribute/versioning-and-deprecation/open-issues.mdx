@@ -1,0 +1,41 @@
+---
+title: "Versioning & deprecation"
+description: "Divergences, open decisions, and undocumented gaps for Versioning & deprecation."
+icon: "history"
+---
+
+See [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | The SCSS token surface is frozen at 82 names |
+| [**TITAN-GAP-04**](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Open decision | Seven groups of tokens share one value, and cannot be consolidated safely |
+| [**TITAN-GAP-19**](/invoca-design-system/foundations/open-decisions#titan-gap-19) | Open decision | Tokens have no lifecycle metadata and no deprecation path |
+
+## Gaps in the current rules
+
+- **No token deprecation mechanism exists.** No field, no marker, no convention — verified,
+  not assumed: no token carries a deprecation marker (zero matches across `primitives`,
+  `semantic`, `component`, and `typography` source files), and the token manifest has no
+  lifecycle field (each entry is `name`, `tier`, `axis`, `$type`, and `values` — no `status`,
+  no `since`, no `deprecated`, no `replacedBy`). See
+  [TITAN-GAP-19](/invoca-design-system/foundations/open-decisions#titan-gap-19).
+- **No component deprecation convention is documented** either, though the component pages
+  carry a `tag` in frontmatter that could hold one.
+- **No breaking-change policy.** What counts as breaking at the token layer — a value change,
+  a rename, a removal — is not stated.
+- **No supported-version window.** How long a consumer can stay behind is undecided.
+- **No migration-guide convention.** When a name changes, nothing says where the old-to-new
+  mapping is published.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-VER-01** | A constraint ID is never renumbered or reused. | A CI script maintaining an ID registry, failing if an ID is reused with different content or vanishes without a Retired-table entry. |
+| **TITAN-VER-02** | A retired rule keeps its original wording plus a stated reason. | A script hashing the original wording at first publish and verifying the Retired entry matches; requiring a non-empty reason. |
+| **TITAN-VER-03** | The changelog is generated from the repo, never hand-written. | A CI check restricting changelog-file commits to an automated bot, or diffing against generator output. |

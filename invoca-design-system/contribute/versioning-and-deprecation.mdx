@@ -36,7 +36,7 @@ means it stays visible with its original wording and a reason.
 | Keep the original wording | Reword it to fit the new position |
 | State why it was retired, and what supersedes it | Reuse the number for a new rule |
 
-A missing number therefore means a retired rule, not an error. Four are retired today:
+A missing number therefore means a retired rule, not an error. Ten are retired today:
 
 | ID | Was | Why |
 |---|---|---|
@@ -44,6 +44,12 @@ A missing number therefore means a retired rule, not an error. Four are retired 
 | `TITAN-FND-05` | Density is set by `data-density`, never by swapping a theme | Same |
 | `TITAN-SPC-02` | Raw CSS uses `var(--titan-tokens-spacing-N)` | Superseded by [TITAN-FND-02](/invoca-design-system/foundations/overview#constraints) |
 | `TITAN-SPC-06` | Never scale `spacing-1` or `spacing-2` for compact | Governs density behaviour, out of scope |
+| [`TITAN-BTN-07`](/invoca-design-system/components/actions/button#constraints) | `loading` disables the Button and preserves its rendered width | Automatic library behaviour, not a discretionary choice |
+| [`TITAN-BTN-14`](/invoca-design-system/components/actions/button#constraints) | A button label occupies one line and never wraps | The theme already enforces this with `nowrap` |
+| [`TITAN-TBL-06`](/invoca-design-system/components/data-display/table#constraints) | Cells truncate; column headers do not | DataGridPro's shipped themed default, not a per-table choice |
+| [`TITAN-FLD-02`](/invoca-design-system/components/forms/field-label#constraints) | Fields are required by default; optional is marked explicitly, never the reverse | The API exposes only an "optional marker" — there is no "required marker" to misuse |
+| [`TITAN-MOT-05`](/invoca-design-system/foundations/motion#constraints) | Nothing exceeds `motion-duration-complex` (375ms) | The 7 duration tokens already top out there, guaranteed by the closed token set |
+| [`TITAN-TOK-06`](/invoca-design-system/contribute/token-workflow#constraints) | Documentation is re-emitted in the same change that adds the token | Already guaranteed by the `emit-tokens.mjs --check` gate described on that page |
 
 **Retired is not reversed.** Each of those rules still describes what the code does. They
 stopped being *documentation policy* because the subject moved out of scope.
@@ -65,20 +71,11 @@ it is simply frozen. See [TITAN-DIV-05](/invoca-design-system/foundations/diverg
 
 ## What has no retirement path
 
-<Warning>
-  **Tokens cannot be deprecated.** This was verified, not assumed:
-
-  - **No token carries a deprecation marker.** Zero matches across `primitives`, `semantic`,
-    `component`, and `typography` source files.
-  - **The token manifest has no lifecycle field.** Each entry is `name`, `tier`, `axis`,
-    `$type`, and `values` — no `status`, no `since`, no `deprecated`, no `replacedBy`.
-
-  So a token can be added and it can be deleted. There is no state in between, which means no
-  way to say "this still works, stop using it, here is what to use instead." Deleting it is a
-  breaking change with no warning period; leaving it is permanent.
-
-  See [TITAN-GAP-19](/invoca-design-system/foundations/open-decisions#titan-gap-19).
-</Warning>
+**Tokens cannot be deprecated** — verified, not assumed; see
+[Open issues](/invoca-design-system/contribute/versioning-and-deprecation/open-issues) for how
+that was checked. So a token can be added and it can be deleted. There is no state in
+between, which means no way to say "this still works, stop using it, here is what to use
+instead." Deleting it is a breaking change with no warning period; leaving it is permanent.
 
 This is why [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04) — seven groups of tokens
 sharing one value — has no obvious resolution. Consolidating them would mean deleting names
@@ -96,23 +93,9 @@ that consumers may use, with no mechanism to warn first.
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-05**](/invoca-design-system/foundations/divergences#titan-div-05) | Divergence | The SCSS token surface is frozen at 82 names |
-| [**TITAN-GAP-04**](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Open decision | Seven groups of tokens share one value, and cannot be consolidated safely |
-| [**TITAN-GAP-19**](/invoca-design-system/foundations/open-decisions#titan-gap-19) | Open decision | Tokens have no lifecycle metadata and no deprecation path |
-
-## Gaps in the current rules
-
-- **No token deprecation mechanism exists.** No field, no marker, no convention. See
-  [TITAN-GAP-19](/invoca-design-system/foundations/open-decisions#titan-gap-19).
-- **No component deprecation convention is documented** either, though the component pages
-  carry a `tag` in frontmatter that could hold one.
-- **No breaking-change policy.** What counts as breaking at the token layer — a value change,
-  a rename, a removal — is not stated.
-- **No supported-version window.** How long a consumer can stay behind is undecided.
-- **No migration-guide convention.** When a name changes, nothing says where the old-to-new
-  mapping is published.
+<Card title="Versioning & deprecation: open issues" icon="triangle-exclamation" href="/invoca-design-system/contribute/versioning-and-deprecation/open-issues">
+  Divergences, open decisions, and undocumented gaps for Versioning & deprecation.
+</Card>
 
 ## Related
 

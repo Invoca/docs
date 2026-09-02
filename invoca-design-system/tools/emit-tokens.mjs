@@ -32,7 +32,7 @@ import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DOCS = join(HERE, "..", "docs");
+const DOCS = join(HERE, "..");
 const OUT_DIR = join(DOCS, "snippets", "generated", "tokens");
 
 // ---------------------------------------------------------------- args

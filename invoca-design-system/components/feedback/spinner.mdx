@@ -1,15 +1,213 @@
 ---
 title: "Spinner"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A small, circular, always-indeterminate mark showing that something is working, with no shape or duration to report."
+icon: "spinner"
+tag: "Stable"
+keywords: ["spinner", "circular progress", "loading indicator", "busy indicator", "indeterminate"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+A **Spinner** is a small circular mark that animates continuously to show that something is
+working. It carries no information beyond "in progress" — no percentage, no shape of what's
+coming, nothing about how much longer. It has one form: indeterminate. There is a determinate
+mode in the underlying type interface, but nothing in this codebase demonstrates or themes it —
+see [Variants, sizes, and states](#variants-sizes-and-states).
+
+That single-purpose narrowness is what separates it from its two neighbors in this category. A
+[ProgressBar](/invoca-design-system/components/feedback/progress-bar) can show a real value; a
+Spinner never does. A [Skeleton](/invoca-design-system/components/feedback/skeleton) previews the
+shape of content that hasn't arrived; a Spinner previews nothing about shape at all — it is for
+a wait too small, too compact, or too shapeless for either of those to fit.
+
+## Live example
+
+<Warning>
+  **No live example is available.** This page's real export, `CircularProgress`, has no
+  Storybook story anywhere in this checkout — confirmed against both the source tree and the
+  live Storybook index. See the warning below and
+  [Open issues](/invoca-design-system/components/feedback/spinner/open-issues).
 </Warning>
+
+## Exports
+
+Verified directly from `CircularProgress.overrides.ts` and the package's top-level export list —
+no per-component prop emitter exists yet for this concept, so this table is hand-confirmed
+rather than generated.
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `variant` | `"determinate" \| "indeterminate"` | `"indeterminate"` | Only the default is themed or demonstrated anywhere in this codebase. |
+| `value` | `number` (0–100) | `0` | `determinate` only. No Titan usage found. |
+| `size` | `number \| string` | `40` | Pixels if a number; needs a CSS unit if a string. No small/medium scale — this is the raw underlying default, not a Titan-decided size axis. |
+| `thickness` | `number` | `3.6` | Stroke thickness of the ring. |
+| `color` | `"primary" \| "secondary" \| "error" \| "info" \| "success" \| "warning" \| "inherit"` | `"primary"` | Only `primary` is themed by name in `CircularProgress.overrides.ts` — see [Tokens](#tokens). |
+| `disableShrink` | `boolean` | `false` | Disables the shrink phase of the indeterminate animation. Undemonstrated. |
+
+<Warning>
+  **The package exports this component as `CircularProgress`, re-exported directly from the
+  underlying framework with no Titan wrapper file of its own** — there is a
+  `CircularProgress.overrides.ts` that themes it, but no `CircularProgress.tsx`. Import
+  `CircularProgress` for the component this page documents; there is no export literally named
+  `Spinner`. This is the same pattern
+  [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) records for
+  Table/`DataGrid` and others, and it already lists this exact mapping — Spinner is
+  `CircularProgress`.
+</Warning>
+
+## Choose Spinner when
+
+- Something is working, its duration is unknown, and there is no shape of incoming content to
+  preview.
+- The space available is small or inline — a button, a compact region, a line of text — where a
+  full-width [ProgressBar](/invoca-design-system/components/feedback/progress-bar) would not
+  fit.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Report a real percentage as it advances | [ProgressBar](/invoca-design-system/components/feedback/progress-bar) | A Spinner never carries a value in this codebase's usage — see the variant note above. |
+| Preview the shape of content that's about to arrive | [Skeleton](/invoca-design-system/components/feedback/skeleton) | A Spinner communicates nothing about shape. Guessing at layout from a spinner is not what it's for. |
+| Cover a whole page or a large region while it loads | Not this component — see [Open issues](/invoca-design-system/components/feedback/spinner/open-issues) | This codebase's actual heavily-used full-page loading primitive is a separate, unrelated component (`Loader`) that this page does not document — see the warning below. |
+
+<Warning>
+  **This codebase's real full-page loading indicator is not this component.** A separate,
+  unrelated component called `Loader` (a five-bar bounce animation, exported alongside
+  `LoaderOverlay`) is used dozens of times across many applications, per its own generated
+  adoption data — while `CircularProgress`, the export this page documents, has exactly **one**
+  recorded usage anywhere. `Loader`/`LoaderOverlay` have no page in this documentation site.
+  Readers looking for "the spinner everyone actually uses" are very likely looking for `Loader`,
+  not `CircularProgress` — see
+  [Open issues](/invoca-design-system/components/feedback/spinner/open-issues).
+</Warning>
+
+## Anatomy
+
+One element: a spinning ring. There is no label slot, no icon, and no container — a caption or
+surrounding message, if one is needed, is separate content placed beside it.
+
+## Variants, sizes, and states
+
+<Warning>
+  **The default color renders green, not the brand blue.** `CircularProgress.overrides.ts` maps
+  `colorPrimary` to `theme.vars.palette.success.main`. A Spinner with no `color` prop set — which
+  is the common case, since `primary` is the default — spins in the same green used for success
+  states, not a neutral color. The same choice appears in `ProgressBar`'s override for its own
+  `primary` color, and in the `Loader` component's bar color — a consistent house habit across
+  this codebase's loading primitives, not something decided for this component specifically.
+</Warning>
+
+**One variant demonstrated: indeterminate.** `determinate` exists in the type interface and is
+un-themed and un-storied. **One themed color: `primary`.** The other five accepted `color` values
+were not confirmed to route through any Titan-named token — `CircularProgress.overrides.ts`
+themes only `colorPrimary`.
+
+**No size scale.** `size` is a raw pixel number or CSS-unit string with no Titan-decided
+small/medium/large tier — whatever number is passed renders at that size.
+
+## Edge and failure states
+
+<Note>
+  No Titan test file exists for this component (there is no `.test.tsx` in its source
+  directory), and no story exercises it — so nothing here is confirmed against this codebase's
+  own tests. The table below states what the underlying framework's own type contract and
+  source code say, not what Titan has verified.
+</Note>
+
+| Condition | What happens | What to do |
+|---|---|---|
+| The wait never resolves | The ring spins indefinitely — there is no built-in timeout | Time out in the calling code and show an [Alert](/invoca-design-system/components/feedback/alert), the same rule as [Skeleton](/invoca-design-system/components/feedback/skeleton#constraints) and [ProgressBar](/invoca-design-system/components/feedback/progress-bar#edge-and-failure-states). |
+| `variant="determinate"` with no `value` | Renders at the type's default, `0` | Not a demonstrated combination for this component. Prefer `ProgressBar` if a real value exists to report. |
+
+## Tokens
+
+Verified directly from `CircularProgress.overrides.ts` — no per-component token emitter exists
+yet for this concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `radius-circle` | Corner radius on the root element |
+| `circular-progress-track-ring` | An inset ring shadow on the track — a Tier-3 component token, deliberately not on the elevation shadow scale, per its own source comment |
+| `background-disabled` | The circle's own background color |
+| `theme.vars.palette.success.main` (not a `tokens.*` value) | The ring color when `color="primary"` (the default) |
+
+<Warning>
+  **The default color resolves through the underlying palette, not the `tokens.*` semantic layer** most
+  of this system's other color decisions go through. It is the one line in this override file
+  that reaches `theme.vars.palette` directly instead of `theme.vars.tokens`.
+</Warning>
+
+## Composition
+
+No Titan component in this codebase composes `CircularProgress` internally — it was not found
+inside any other component's source during this pass. It is not used inside `Button`'s loading
+state, `LoaderOverlay`, or any other component checked.
+
+## Content
+
+A Spinner carries no text. If a wait needs an explanation, put it beside the spinner as separate
+content — never inside it, and never a "Loading…" label overlapping the mark itself.
+
+## Accessibility
+
+**Renders `role="progressbar"` unconditionally**, confirmed directly in the underlying
+component's source — the same as `LinearProgress`. In `indeterminate` mode (the only mode this
+codebase demonstrates), no `aria-valuenow`/`min`/`max` are set, which is correct for a value that
+doesn't exist.
+
+**No accessible name is set by the component itself.** The underlying framework's own
+documentation for this component states that a spinner describing a specific region's loading
+state should be paired with `aria-describedby` pointing at it, and the region itself should carry
+`aria-busy`. Neither is wired up automatically by anything in this codebase — it is a pattern to
+apply at the call site, not something the component provides.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SPIN-01** | A Spinner never runs indefinitely without a timeout in the calling code. | There is no built-in timeout. An indefinite spin looks identical to a hang, and the reader has no way to distinguish the two. |
+| **TITAN-SPIN-02** | Treat the default color as an active decision, not a neutral default. | `color="primary"` (the default) renders the same green used for success states elsewhere in the product — a spinner rendered before anything has succeeded may misread as already-successful. |
+| **TITAN-SPIN-03** | Pair a Spinner describing a region's state with `aria-describedby` on that region and `aria-busy="true"` while it loads. | Neither is automatic. Without them, a screen-reader user gets no indication that the region is loading at all. |
+
+## Known issues
+
+<Card title="Spinner: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/spinner/open-issues">
+  Divergences, open decisions, and undocumented gaps for Spinner.
+</Card>
+
+## Why it works this way
+
+**A Spinner says less than a ProgressBar on purpose.** The moment a process can report real
+progress, a bar communicates more — which is why nothing in this codebase pairs a determinate
+value with the circular form. The circular mark is reserved for exactly the case where there is
+nothing more specific to say than "working."
+
+**Its size taking a raw number rather than a themed scale is a real gap, not a deliberate
+minimalism.** Compare [ProgressBar](/invoca-design-system/components/feedback/progress-bar),
+which has no size prop either but is at least pinned to one uniform track-height token — a
+Spinner has neither a scale nor a single decided size, so every call site picks its own number.
+
+## Status
+
+| | |
+|---|---|
+| Package | `@invoca/titan-core` |
+| Version | `3.6.3` |
+| Exports covered | `CircularProgress` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+The generated adoption report for this component shows **exactly one usage**, in a single
+application. Unlike the Toast and ProgressBar figures elsewhere in this category, this count is
+not suspected of a tag-matching problem — the real import name (`CircularProgress`) matches what
+the report looked for. Genuinely low adoption, not an artifact of the measurement.
+
+- [ProgressBar](/invoca-design-system/components/feedback/progress-bar) · [Skeleton](/invoca-design-system/components/feedback/skeleton) — the other two loading primitives, split by whether a value or a shape is known
+- **`Loader`** — a separate, unrelated component in this same package that is this codebase's actual heavily-adopted loading indicator, and has no page in this documentation yet; see the warning above

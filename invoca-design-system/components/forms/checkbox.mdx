@@ -8,13 +8,6 @@ keywords: ["multi-select", "toggle", "checklist", "select all", "tri-state", "in
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source.**
-  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
-  Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 A control for an independent binary choice, checked or not, that also stands as one row in a
@@ -23,12 +16,7 @@ separates it from [Radio](/invoca-design-system/components/forms/radio).
 
 ## Live example
 
-<StorybookFrame story="components-checkbox--default" height={120} />
-
-<Note>
-  Story ID `pending`. This session did not have access to
-  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
-</Note>
+<StorybookFrame story="components-form-elements-checkboxes--checkbox-input" height={120} />
 
 ## Exports
 
@@ -40,16 +28,9 @@ separates it from [Radio](/invoca-design-system/components/forms/radio).
 |---|---|---|
 | **Select-all** | Header checkbox, master checkbox | **Select-all checkbox** |
 
-<Warning>
-  **The design library's Checkbox has no indeterminate state at all.** Checked against the
-  Figma library's own `Checkbox` component (`Checked=false/true` × `State=Default/Hover/
-  Disabled/Focused` — 8 combinations, exhaustively named, none of them a third value) and its
-  `Checkbox + Label` composite (`Selected=false/true` × the same four states). Neither carries
-  an indeterminate or mixed axis. An earlier pass of this page treated indeterminate as an
-  established feature; that was written from general checkbox conventions, not from any Titan
-  evidence, and was wrong to state as settled. See
-  [Gaps](#gaps-in-the-current-rules).
-</Warning>
+The design library's Checkbox has no indeterminate state at all — see
+[Open issues](/invoca-design-system/components/forms/checkbox/open-issues) for how that was
+verified and an earlier correction to this page.
 
 <Info>
   **The bare box and the labeled composite name the same property differently.** The
@@ -73,11 +54,6 @@ separates it from [Radio](/invoca-design-system/components/forms/radio).
 
 ## Anatomy
 
-<Note>
-  Anatomy diagram `pending` — `/images/components/checkbox-anatomy.png`. The images directory
-  is empty; nothing is published to generate it from yet.
-</Note>
-
 | # | Part | Required |
 |---|---|---|
 | 1 | Box | Yes |
@@ -99,7 +75,7 @@ separates it from [Radio](/invoca-design-system/components/forms/radio).
 | No visible label (e.g., a table row-selection checkbox) | The box alone | Must still carry an explicit accessible name — see [TITAN-CHK-02](#constraints) |
 | A select-all checkbox whose group is partially checked | **Undefined.** No mixed or indeterminate rendering exists in the design library. | See [TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33) |
 | Disabled and checked | Renders at the disabled opacity applied over the checked fill | No dedicated disabled-checked colour exists as its own token — the two compose |
-| A group with zero items | **Undefined** whether the select-all control hides or disables itself | See [Gaps](#gaps-in-the-current-rules) |
+| A group with zero items | **Undefined** whether the select-all control hides or disables itself | See [Gaps](/invoca-design-system/components/forms/checkbox/open-issues#gaps-in-the-current-rules) |
 
 ## Tokens
 
@@ -112,6 +88,9 @@ Pairs with a control label immediately trailing it (LTR) — see
 related Checkboxes is exposed as a set with its own group name, distinct from any individual
 option's label — see [TITAN-CHK-05](#constraints). A select-all checkbox sits at the head of
 the list it controls.
+
+For a complete field rather than the bare control, compose through `FormInput` with
+`type="checkbox"` — see [TITAN-CHK-07](#constraints).
 
 ## Content
 
@@ -145,6 +124,7 @@ that belongs to [Form validation](/invoca-design-system/patterns/form-validation
 | **TITAN-CHK-02** | A Checkbox with no visible label carries an explicit accessible name describing what it selects. | Without one, a screen reader announces "checkbox" and nothing else — indistinguishable from every other unlabeled checkbox on the page. |
 | **TITAN-CHK-04** | A disabled Checkbox is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints). |
 | **TITAN-CHK-05** | A group of related Checkboxes is exposed as a set with its own name, separate from any individual option's label. | Without a group name, a reader navigating by label alone cannot tell that "Email" and "SMS" belong to the same "Notification channels" decision. |
+| **TITAN-CHK-07** | A complete field — label, helper text, and error state together — is composed via [Form](/invoca-design-system/components/forms/form)'s `FormInput` with `type="checkbox"` (single, or with `options` for a group), never by hand-assembling a raw Checkbox and FormControlLabel. | Source publishes `DoNotUse_RawCheckbox` as a named anti-pattern story, stating directly that the raw combination skips batch select tools, standardized label/helper/error display, and token-matched disabled styling. |
 
 <Note>
   **TITAN-CHK-03 and TITAN-CHK-06 are retired.** Both asserted rules about an indeterminate
@@ -155,16 +135,9 @@ that belongs to [Form validation](/invoca-design-system/patterns/form-validation
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Two independent disabled-opacity values exist for form controls, with no rule for which applies |
-| [**TITAN-GAP-33**](/invoca-design-system/foundations/open-decisions#titan-gap-33) | Open decision | No mixed/indeterminate state exists for showing a partially-checked group |
-
-## Gaps in the current rules
-
-- **No stated rule for an empty group.** Whether a select-all checkbox hides, disables, or
-  renders unchecked with nothing to check is undecided.
-- **No indeterminate state exists** — see [TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33).
+<Card title="Checkbox: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/checkbox/open-issues">
+  Divergences, open decisions, and undocumented gaps for Checkbox.
+</Card>
 
 ## Why it works this way
 

@@ -1,0 +1,48 @@
+---
+title: "Skeleton"
+description: "Divergences, open decisions, and undocumented gaps for Skeleton."
+icon: "component"
+---
+
+See [Skeleton](/invoca-design-system/components/feedback/skeleton) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-31**](/invoca-design-system/foundations/open-decisions#titan-gap-31) | Open decision | The component has no tokens, no theme overrides, and no design representation |
+| [**TITAN-GAP-01**](/invoca-design-system/foundations/open-decisions#titan-gap-01) | Open decision | Modes are undesigned, so no dark-scheme skeleton colour is specified |
+
+**Also true and not yet recorded as either:** it has no theme overrides, no tokens, and no
+representation in the design library — verified across the component's own directory, the
+twenty-six components that do carry overrides, the token set, and the shared and legacy
+packages; it is also the most heavily used component in this area (see the generated
+adoption figures at the foot of the main page), so the system's most-used loading primitive
+is the one it has decided least about; the animation does not respond to
+`prefers-reduced-motion`; and three applications carry what appears to be the same
+`TabLoadingSkeleton` file.
+
+## Gaps in the current rules
+
+- **No colour decision.** The skeleton grey comes from the framework and no token names it, so it is
+  the one grey in the product outside the palette.
+- **`pulse` or `wave` is undecided.** Both ship, both are used, and neither is recorded as the
+  system's.
+- **No radius decision.** `rounded` does not use the [radius](/invoca-design-system/foundations/radius) scale.
+- **No duration threshold.** "Do not show one under about a second" is this page's proposal;
+  nothing upstream states when a skeleton is warranted.
+- **No sanctioned skeleton screens.** A table, a card, and a form all have knowable skeletons and
+  the system provides none, which is why applications keep writing their own.
+- **Whether a skeleton may be reused as a disabled or placeholder state is unstated**, and it is a
+  common misuse.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-SKL-04** | One animation style per screen. | A lint rule scanning a view for mixed `pulse`/`wave` values. |
+| **TITAN-SKL-05** | Respects `prefers-reduced-motion`. | A default `animation` value driven by a shared reduced-motion hook. |
+| **TITAN-SKL-06** | Hidden from assistive technology. | An automated accessibility test asserting `aria-hidden` on rendered Skeletons. |

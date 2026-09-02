@@ -421,16 +421,42 @@ View archetypes. Constraint linting. Track generated-to-merged delta as the heal
 
 ## 11. Open questions
 
-1. **Titan checkout access.** Not yet available; every reference table is a placeholder until it is.
-2. **Storybook story index.** `internal-docs.invocadev.com/Titan/core/index.json` is unreachable from this environment. It contains every component and story ID — pasting it converts the inferred component inventory in `docs.json` into the real one, and gives every component page a working embed. Highest-value single input remaining.
-3. **Storybook toolbar globals.** The parameter names controlling color scheme and density are unknown. `StorybookFrame` deliberately omits them — Storybook ignores unrecognized globals silently and renders the default, so a guess produces embeds that look correct while showing the wrong mode.
-4. **Sibling Storybooks.** The path `/Titan/core/` implies `/Titan/shared/` and `/Titan/legacy-web/` may also exist, matching the package structure. If so, `StorybookFrame` needs a package parameter.
-5. **Component naming.** The one confirmed story ID is `components-accordions--docs` — **plural**. The ~40 component names in `docs.json` were inferred and need correcting against the real index.
-6. **Mintlify plan.** Which tier gates custom CSS/JS could not be verified — the pricing page renders figures as animated counters. Confirm before depending on custom CSS.
-7. **Legacy library.** The "IDS – Core Components" Figma file may be referenced for design intent but is not a source for values or variant models. Confirm nothing in the new docs inherits its Purpose/Prominence/Type model.
+1. **Storybook toolbar globals.** The parameter names controlling color scheme and density are unknown. `StorybookFrame` deliberately omits them — Storybook ignores unrecognized globals silently and renders the default, so a guess produces embeds that look correct while showing the wrong mode.
+2. **Sibling Storybooks.** The path `/Titan/core/` implies `/Titan/shared/` and `/Titan/legacy-web/` may also exist, matching the package structure. If so, `StorybookFrame` needs a package parameter.
+3. **Mintlify plan.** Which tier gates custom CSS/JS could not be verified — the pricing page renders figures as animated counters. Confirm before depending on custom CSS.
+4. **Legacy library.** Confirm nothing in the new docs inherits the "IDS – Core Components" file's Purpose/Prominence/Type model — it is composition-intent evidence, per §5a's adjudication table, never a source for values or variant models.
 
 **Resolved**
 
-- **Audience** — internal. See §8 for what that changes.
-- **Component demos** — iframed Storybook at `https://internal-docs.invocadev.com/Titan/core`, story IDs of the form `components-<name>--docs`.
+- **Figma access** — a live connection to the real "IDS – Core Components" file exists via the
+  official Figma Dev Mode MCP server, confirmed by rendering a real screenshot from a real
+  page (`node-id=22525-6240`, "Form Elements - Form Input - Text Field"). It is queryable
+  evidence now, not an uncertain "may be referenced" — but its evidentiary status is unchanged:
+  composition intent where code is silent, never a source for values. **Do not use Code
+  Connect as part of this** — it has been confirmed inaccurate; query the file directly
+  instead. See `AGENTS.md`'s Figma access section for the access method (including why broad
+  page-discovery calls undercount and direct node IDs are the reliable path) and PLAN.md §5a
+  for how to weigh what it shows against what code says.
+
+- **Audience** — public (`docs.invoca.com`). See the 2026-09-01 migration note at the top of
+  this file — superseded the original "internal" framing in §8.
+- **Component demos** — iframed via the public Chromatic deployment
+  (`https://main--64e4dc66838839c721332d22.chromatic.com`), not the internal Storybook this
+  plan originally targeted. Story IDs are `components-<name-plural>--<story>` in most cases,
+  but verify against the deployment's own `/index.json` before shipping one — pluralization is
+  not fully predictable (`Menu`'s is singular: `components-menu--docs`), and a component's own
+  `utilization.md` self-link has been found stale against what the deployment actually serves.
+  See `snippets/StorybookFrame.jsx`'s header for the verification method.
+- **Titan checkout access** — a working checkout exists locally at `~/invoca/Titan` (verify per
+  environment; this is a local path, not a portable guarantee). `tools/emit-components.mjs` and
+  `tools/emit-tokens.mjs` both run against it for real — reference tables are no longer
+  placeholders by default. Do not hand-simulate "pending" content going forward; add a
+  `component-concepts.json` entry and run the emitter, or state the gap in authored prose.
+- **Storybook story index** — the internal `internal-docs.invocadev.com/Titan/core/index.json`
+  remains unreachable from this environment, but the public deployment's own `/index.json`
+  serves the same purpose (311 entries confirmed) and is what `StorybookFrame` actually embeds
+  against — use that one, not the internal one.
+- **Component naming** — the inferred component inventory in `docs.json` has not been fully
+  reconciled against the real index; treat any component name there as unverified until checked
+  the same way the three Actions-category pages (Link/TextLink, ButtonGroup, Menu) were.
 - **zeroheight** — only the Dates/Times and Numbers pages are in scope for this pass; both are transcribed and live at `/invoca-design-system/content/*`. The rest is deferred, not blocked.

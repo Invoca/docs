@@ -26,7 +26,7 @@ import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DOCS = join(HERE, "..", "docs");
+const DOCS = join(HERE, "..");
 const SNIPPETS = join(DOCS, "snippets", "generated");
 
 const argv = process.argv.slice(2);
@@ -91,13 +91,13 @@ function analyseProps(dirAbs, exportName) {
     const plain = src.match(new RegExp(`interface ${exportName}Props\\s*\\{([\\s\\S]*?)\\n\\}`));
     const plainBody = plain ? plain[1] : null;
     const own = plainBody
-      ? [...stripIndexSignature(plainBody).matchAll(/(\w+)\??:/g)].map((m) => m[1])
+      ? [...stripIndexSignature(plainBody).matchAll(/^\s*(\w+)\??:/gm)].map((m) => m[1])
       : [...src.matchAll(/^\s{2}(\w+)\??:/gm)].map((m) => m[1]).filter((n) => !INDEX_SIGNATURE.test(n));
     const rest = plainBody ? INDEX_SIGNATURE.test(plainBody) : false;
     return { kind: own.length ? "declares" : "unknown", own: [...new Set(own)], rest };
   }
   const body = iface[2].trim();
-  const own = [...stripIndexSignature(body).matchAll(/(\w+)\??:/g)].map((m) => m[1]);
+  const own = [...stripIndexSignature(body).matchAll(/^\s*(\w+)\??:/gm)].map((m) => m[1]);
   return {
     kind: own.length ? "extends-and-declares" : "passthrough",
     extendsFrom: iface[1],
@@ -254,7 +254,7 @@ ${table(
 <Warning>
   **Decided is narrower than accepted.** The table above is the surface that carries values and
   rules. Everything else the props accept still renders — with no token behind it, and no
-  decision recorded. See [TITAN-GAP-21](/foundations/open-decisions#titan-gap-21).
+  decision recorded.
 </Warning>`
     : ""
 }
@@ -304,8 +304,7 @@ ${table(
 <Note>
   **No lifecycle metadata exists.** There is no \`status\`, \`since\`, \`deprecated\`, or
   \`replacedBy\` field on a Titan token or component, so this table cannot report when an export
-  arrived or whether it is on the way out. See
-  [TITAN-GAP-19](/foundations/open-decisions#titan-gap-19).
+  arrived or whether it is on the way out.
 </Note>
 `
   );

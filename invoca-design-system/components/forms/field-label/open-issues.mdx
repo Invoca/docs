@@ -1,0 +1,34 @@
+---
+title: "FieldLabel"
+description: "Divergences, open decisions, and undocumented gaps for FieldLabel."
+icon: "type"
+---
+
+See [FieldLabel](/invoca-design-system/components/forms/field-label) for the decided part of this page.
+
+## Known issues
+
+| Kind | What |
+|---|---|
+| Known defect | `form-label-font-weight`'s captured value carries an invalid `px` unit — see [Known defects](/invoca-design-system/foundations/open-decisions#known-defects). |
+
+## Gaps in the current rules
+
+- **No spacing token for label-to-field or field-to-helper-text gaps.** Both render at
+  whatever the framework defaults to.
+- **What the tooltip icon actually opens is unconfirmed** — a native tooltip, a popover, or
+  something else, and whether its content is itself subject to any content rules.
+- **Two independent disabled-opacity values exist across the Forms group** — see
+  [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32).
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-FLD-01** | Every field has a visible FieldLabel. | A lint rule requiring a FieldLabel/`aria-label` alongside every input. |
+| **TITAN-FLD-03** | Error text and helper text share one slot and never render together. | Replacing the two independent optional props with one discriminated `message: {type: 'error' \| 'helper', text}` prop. |
+| **TITAN-FLD-05** | Field labels are sentence case with no terminal punctuation (Proposed). | A lint/formatter for casing and trailing punctuation on label strings. |
+| **TITAN-FLD-06** | The label is programmatically associated with its field, not just visually adjacent. | A `jsx-a11y/label-has-associated-control`-style lint rule. |

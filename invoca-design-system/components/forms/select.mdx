@@ -8,13 +8,6 @@ keywords: ["dropdown", "picker", "multi-select", "options list", "combobox"]
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-<Note>
-  **Props, variants, status, and adoption on this page are generated from Titan source.**
-  Guidance and constraints are authored, and constraints are **Proposed** until signed off.
-  Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
-
 ## What it is
 
 A control that chooses from a fixed, enumerable set of options, collapsed behind a trigger
@@ -27,12 +20,7 @@ one decision about the same field.
 
 ## Live example
 
-<StorybookFrame story="components-select--default" height={160} />
-
-<Note>
-  Story ID `pending`. This session did not have access to
-  `internal-docs.invocadev.com/Titan/core/index.json` to confirm the real story group.
-</Note>
+<StorybookFrame story="components-form-elements-select--basic-select" height={160} />
 
 ## Exports
 
@@ -47,15 +35,9 @@ one decision about the same field.
 | **Option group** | Section, category | **Option group** |
 | **Autocomplete** | Searchable, typeahead, filterable | **Autocomplete** — a mode of Select, not a separate component. See warning below. |
 
-<Warning>
-  **This page previously pointed to a separate, undocumented "Combobox" for typing to filter
-  options — that was wrong.** The Figma library's `Select Input` component has an
-  `Autocomplete` variant (`false`/`true`), applied to the *same* component as everything else
-  on this page, not a different one. There is no `Combobox` page or component anywhere in the
-  library's 49 pages. Titan's actual code structure for this is unconfirmed without a
-  checkout, so treat "Select has an autocomplete mode" as library-evidenced and
-  **needs sign-off**, not yet settled — see [Known issues](#known-issues).
-</Warning>
+Autocomplete is a mode of this same component, not a separate "Combobox" — see
+[Vocabulary](#vocabulary) and [Open issues](/invoca-design-system/components/forms/select/open-issues)
+for the correction and its sign-off status.
 
 ## Choose Select when
 
@@ -73,11 +55,6 @@ one decision about the same field.
 | Capture a single, immediately-applied binary setting | Switch | Two options is Select's least useful case, and Switch is the lighter control for exactly two |
 
 ## Anatomy
-
-<Note>
-  Anatomy diagram `pending` — `/images/components/select-anatomy.png`. The images directory is
-  empty; nothing is published to generate it from yet.
-</Note>
 
 | # | Part | Required |
 |---|---|---|
@@ -112,11 +89,11 @@ one decision about the same field.
 
 | Situation | What renders | Recovery |
 |---|---|---|
-| No options available | **Undefined.** See [Gaps](#gaps-in-the-current-rules). | Should likely disable the trigger with a reachable explanation, matching [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints)'s reasoning |
-| An option's label is longer than the list is wide | **Undefined** whether it wraps or truncates | See [Gaps](#gaps-in-the-current-rules) |
-| A very long option list | **Undefined** cutover to Autocomplete or virtualization | See [TITAN-SELECT-01](#constraints) and [Gaps](#gaps-in-the-current-rules) |
-| Many options selected (multi-select) | **Undefined** trigger summary format — a count, chips, or a truncated list | See [Gaps](#gaps-in-the-current-rules) |
-| Options loading asynchronously | **Undefined.** No affordance found, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) same gap. | See [Gaps](#gaps-in-the-current-rules) |
+| No options available | **Undefined.** See [Gaps](/invoca-design-system/components/forms/select/open-issues#gaps-in-the-current-rules). | Should likely disable the trigger with a reachable explanation, matching [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints)'s reasoning |
+| An option's label is longer than the list is wide | **Undefined** whether it wraps or truncates | See [Gaps](/invoca-design-system/components/forms/select/open-issues#gaps-in-the-current-rules) |
+| A very long option list | **Undefined** cutover to Autocomplete or virtualization | See [TITAN-SELECT-01](#constraints) and [Gaps](/invoca-design-system/components/forms/select/open-issues#gaps-in-the-current-rules) |
+| Many options selected (multi-select) | **Undefined** trigger summary format — a count, chips, or a truncated list | See [Gaps](/invoca-design-system/components/forms/select/open-issues#gaps-in-the-current-rules) |
+| Options loading asynchronously | **Undefined.** No affordance found, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) same gap. | See [Gaps](/invoca-design-system/components/forms/select/open-issues#gaps-in-the-current-rules) |
 | Disabled | Renders at the disabled tokens shared with [Input](/invoca-design-system/components/forms/input#tokens) | Pair with a reachable explanation |
 
 ## Tokens
@@ -131,6 +108,9 @@ not re-declared. Always paired with [FieldLabel](/invoca-design-system/component
 open option list's items are named `Menu Item` / `Menu Sub-Item` in the design library — the
 same vocabulary [Menu](/invoca-design-system/components/actions/menu) uses — suggesting shared overlay
 implementation. Unconfirmed against source; treat as likely, not settled.
+
+For a complete field rather than the bare control, compose through `FormInput` with
+`type="select"` — see [TITAN-SELECT-09](#constraints).
 
 ## Content
 
@@ -171,23 +151,13 @@ whether the field is required — both belong to
 | **TITAN-SELECT-06** | A disabled Select is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints). |
 | **TITAN-SELECT-07** | Choosing an option closes the trigger for single-select. For multi-select, the list stays open until the reader dismisses it. | Closing after every pick in multi-select would force reopening the list once per selection, which is the interaction cost Select exists to avoid. |
 | **TITAN-SELECT-08** | A sub-option is nested exactly one level under a parent option, never deeper. **Needs confirmation** — evidenced by the library's `Menu Sub-Item` type, but no third level was found to confirm the limit is one rather than simply "as deep as this file happened to model." | An option list deeper than one level stops being scannable at a glance, which is most of Select's value over a nested menu. |
+| **TITAN-SELECT-09** | A complete field — label, helper text, and error state together — is composed via [Form](/invoca-design-system/components/forms/form)'s `FormInput` with `type="select"`, never by hand-assembling a raw, unwrapped Select or a `TextField select`. | Source publishes `DoNotUse_RawSelect` as a named anti-pattern story, stating directly that a raw, unwrapped Select "drops keyboard search, group/header support, and consistent styling." |
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-DIV-24**](/invoca-design-system/foundations/divergences#titan-div-24) | Divergence | The trigger's error focus ring is a third red, unaliased to the semantic error tokens — inherited from the field chrome it shares with Input |
-| — | Needs sign-off | Autocomplete is modeled as a mode of Select in the design library, not a separate Combobox component — see [Vocabulary](#vocabulary). Titan's actual code structure is unconfirmed. |
-
-## Gaps in the current rules
-
-- **No decided behavior for zero available options.**
-- **No truncation rule for a long option label**, in either the trigger or the list.
-- **No decided threshold for turning Autocomplete on** — the design library shows it as a
-  binary mode, not a rule tied to option count.
-- **Multi-select's trigger summary format is undecided** — a count, chips, and a truncated
-  label list all satisfy [TITAN-SELECT-05](#constraints) without choosing between them.
-- **Whether the option-list overlay shares implementation with Menu** — the shared naming is suggestive, not confirmed against source.
+<Card title="Select: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/select/open-issues">
+  Divergences, open decisions, and undocumented gaps for Select.
+</Card>
 
 ## Why it works this way
 

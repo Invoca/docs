@@ -36,12 +36,9 @@ label, and which one applies follows directly from what the control *does*:
 | Performs an action | **Verb-first imperative phrase** | "Save Changes," "Delete Campaign" | [TITAN-BTN-03](/invoca-design-system/components/actions/button#constraints) |
 | Represents a persistent thing, state, or setting | **Noun phrase** — never a question, never an instruction to act | "Email notifications," "Dark mode," "Routing" | [Checkbox](/invoca-design-system/components/forms/checkbox#content), [Switch](/invoca-design-system/components/forms/switch#constraints), [Radio](/invoca-design-system/components/forms/radio#content), [Tabs](/invoca-design-system/components/navigation/tabs#content) |
 
-<Warning>
-  **This table is a synthesis, not a rule stated anywhere directly.** Six different component
-  pages independently converged on this split while describing their own content rules. No
-  single source states the general principle — this page is what makes it explicit and
-  citable in one place. Needs sign-off before treating it as more than a strong pattern.
-</Warning>
+**This table is a synthesis**, citable in one place because six different component pages
+independently converged on this split — see
+[Open issues](/invoca-design-system/content/ui-labels/open-issues) for its sign-off status.
 
 ## Rules that already apply everywhere
 
@@ -50,7 +47,7 @@ form, cited back to where they were established rather than re-argued:
 
 | Rule | Established on |
 |---|---|
-| Prefer the specific word over a generic one ("Delete campaign," not "OK") | [TITAN-BTN](/invoca-design-system/components/actions/button#content) |
+| Prefer the specific word over a generic one ("Delete campaign," not "OK") | [Button](/invoca-design-system/components/actions/button#content) |
 | Use the reader's word for the thing, never the underlying library's internal name | [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) |
 | No terminal punctuation on any label | [TITAN-CASE-04](/invoca-design-system/content/capitalization-and-punctuation#constraints) |
 | Casing follows the per-content-type model — it is not one global rule | [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#casing-by-content-type) |
@@ -67,12 +64,9 @@ form, cited back to where they were established rather than re-argued:
 
 ## Gaps in the current rules
 
-| Gap | Why it matters | Status |
-|---|---|---|
-| **No word-count ceiling for non-button labels.** Button has one (1–3 words); no equivalent has been stated for a checkbox option, a tab name, or a column header. | Without one, an unusually long option label is a style choice on one screen and a bug on another. | Open |
-| **No pluralization convention.** Whether a section is named "Setting" or "Settings" is not addressed anywhere. | A small, constant source of inconsistency across a large surface of labels. | Open |
-| **No truncation-safety guidance for translated or localized labels.** Every length guidance so far assumes English. | A label that fits in English at 3 words may run considerably longer in another language. | Open |
-| **The verb/noun table above is inferred, not sourced.** See the warning under [The one decision every label makes](#the-one-decision-every-label-makes-verb-or-noun). | Six pages agreeing independently is strong evidence, not confirmation. | Open |
+<Card title="UI labels: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/ui-labels/open-issues">
+  Divergences, open decisions, and undocumented gaps for UI labels.
+</Card>
 
 ## Why it works this way
 

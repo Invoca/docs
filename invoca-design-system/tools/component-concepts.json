@@ -295,6 +295,78 @@
         }
       ],
       "stories": "Skeleton.stories.js"
+    },
+    "components/actions/link": {
+      "title": "Link",
+      "$comment": "Reader-facing name is Link — the design vocabulary's term for a styled hyperlink. The package's own export named `Link` is a different thing entirely (a React Router wrapper); the styled element is exported as `TextLink`. See TITAN-DIV-25.",
+      "sourceDir": "TextLink",
+      "covers": [
+        {
+          "export": "TextLink",
+          "role": "A styled hyperlink with an optional trailing icon",
+          "implementation": "declares",
+          "decides": "Underline behaviour, hover and visited colour, trailing icon spacing"
+        }
+      ],
+      "excludes": [
+        {
+          "export": "Link",
+          "why": "A React Router wrapper that preserves titan-* query params on internal navigation. Routing plumbing, not a styled element — no size, colour, or state is themed. See TITAN-DIV-25."
+        }
+      ],
+      "stories": "TextLink.stories.js"
+    },
+    "components/actions/button-group": {
+      "title": "ButtonGroup",
+      "sourceDir": "ButtonGroup",
+      "covers": [
+        {
+          "export": "ButtonGroup",
+          "role": "Groups related Buttons into one visually cohesive control",
+          "implementation": "passthrough",
+          "decides": "Grouped spacing and font weight, touch ripple colour, and the border between adjacent contained buttons — for the default and destructive colours only"
+        }
+      ],
+      "stories": "ButtonGroup.stories.js"
+    },
+    "components/forms/file-upload": {
+      "title": "FileUpload",
+      "$comment": "Reader-facing name is FileUpload — the design vocabulary's term for this concept. The package exports it as Dropzone. See TITAN-DIV-26.",
+      "sourceDir": "Dropzone",
+      "covers": [
+        {
+          "export": "Dropzone",
+          "role": "A drag-and-drop file upload target with an inline file list and remove control",
+          "implementation": "declares",
+          "decides": "Border style and radius, icon size and color, spacing, and the drop target's transition"
+        }
+      ],
+      "stories": "Dropzone.stories.js"
+    },
+    "components/actions/menu": {
+      "title": "Menu",
+      "sourceDir": "Menu",
+      "covers": [
+        {
+          "export": "Menu",
+          "role": "A temporary surface listing choices, anchored to a triggering element",
+          "implementation": "passthrough",
+          "decides": "Nothing — no theme overrides exist for the surface itself"
+        },
+        {
+          "export": "MenuItem",
+          "role": "One choice within the menu",
+          "implementation": "re-export",
+          "decides": "Hover and focus background colour only"
+        }
+      ],
+      "excludes": [
+        {
+          "export": "DropdownMenus",
+          "why": "Deprecated in source — its own Storybook entry directs consumers to Select instead. Not a Menu concept."
+        }
+      ],
+      "stories": "Menu.stories.js"
     }
   }
 }

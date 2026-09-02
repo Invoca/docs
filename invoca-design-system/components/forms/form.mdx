@@ -1,15 +1,146 @@
 ---
 title: "Form"
-description: "TODO — one sentence. What it is and what it is for."
+description: "The shared label, group, and helper-text theming beneath every field — and why FormInput, not this, is how you compose one."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
+keywords: ["form control", "form group", "form label", "fieldset", "form field"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+## What it is
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+Not a component with its own props — a set of theme overrides applied to the underlying primitives
+every field is built from: `FormControl`, `FormGroup`, and `FormLabel`. Label color and weight,
+disabled-label spacing, and helper-text typography are decided here, once, so every field page
+in this category inherits them rather than restating them.
+
+**The primitives this page themes are deprecated for direct use.** Titan re-exports
+`FormControl` and `FormLabel` from a source module named, verbatim, `DeprecatedFormControls`,
+and their own JSDoc says so directly: *"Use FormInput for label + input + helper/error text
+patterns."* If you are assembling a labeled field by hand from these pieces, you are using the
+retired path.
+
+## Exports
+
+This page has no exports of its own. Two things share its name in ways worth being precise
+about:
+
+<Warning>
+  **`FormControl` and `FormLabel` are exported, but from `DeprecatedFormControls`, and are
+  retired.** Their own source JSDoc names the replacement directly: `FormInput`. Do not use
+  either to hand-assemble a field.
 </Warning>
+
+The current, real way to compose a labeled field is [FormInput](#composing-a-field) — a single
+component that renders one of six input types and handles the label, helper text, error state,
+and accessibility wiring uniformly. It is not this page's export, and it does not get its own
+page — see [Composing a field](#composing-a-field) below for where each type is documented.
+
+## Composing a field
+
+Verified directly from `FormInput`'s own source and its published Storybook stories, three of
+which are explicit, named anti-patterns:
+
+| FormInput `type` | Documented on | Anti-pattern story exists? |
+|---|---|---|
+| `text` | [Input](/invoca-design-system/components/forms/input) | Yes — `DoNotUse_RawTextField` |
+| `select` | [Select](/invoca-design-system/components/forms/select) | Yes — `DoNotUse_RawSelect` |
+| `checkbox` | [Checkbox](/invoca-design-system/components/forms/checkbox) | Yes — `DoNotUse_RawCheckbox` |
+| `radio` | [Radio](/invoca-design-system/components/forms/radio) | No — no anti-pattern story published, but the same composition applies |
+| `segmentedButton` | Not documented as its own concept — renders a `ToggleButtonGroup` | No |
+| `custom` | Not applicable — renders caller-supplied children | — |
+
+**Switch has no corresponding `type`.** FormInput's six types do not include one for a binary
+toggle — see [Switch's open issues](/invoca-design-system/components/forms/switch/open-issues) for what that means for
+composing a labeled Switch field today.
+
+## Live example
+
+No Storybook story exists for this page — there is no `Form` component to demonstrate. See
+[FormInput's own stories](#composing-a-field) on each field's page instead.
+
+## Choose Form when
+
+Never, directly. This page exists to be linked to, not reached for. If you are building a
+labeled field, go to that field's own page and its `type` row above.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Compose a labeled field with helper or error text | [FormInput](#composing-a-field), via the field's own page | Assembling `FormControl` + `FormLabel` by hand is the explicitly deprecated path — see What it is. |
+| Group unrelated fields visually on a page | Page-level layout (a `Stack` or `Grid`), not this | This page's theming applies wherever `FormControl`/`FormGroup` render underneath — it is not a layout container you reach for on purpose. |
+
+## Anatomy
+
+Not applicable — this page has no component structure of its own. Its effect is the theming
+inherited by `FormControl`, `FormGroup`, and `FormLabel` wherever a field renders them.
+
+## Variants, sizes, and states
+
+Not applicable — see each field's own page.
+
+## Edge and failure states
+
+Not applicable — see each field's own page.
+
+## Tokens
+
+Verified directly from `Form.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `form-control-label-min-height` | Minimum height of a `FormControlLabel` row (checkbox/radio label rows) |
+| `text-primary` | `FormLabel` color, including while focused |
+| `form-label-font-weight` | `FormLabel` font weight — a lone Tier-3 weight override, not the full typography variant, because the underlying `FormLabel` pins `lineHeight` separately |
+| `spacing-1` | `FormLabel` bottom padding |
+
+## Composition
+
+Every field page in this category (Input, Select, Checkbox, Radio, Switch, DatePicker,
+FileUpload) inherits this theming through the underlying primitives it wraps. FieldLabel's own
+component page covers the visible label element itself in more depth; this page covers the
+`FormControl`/`FormGroup` container theming around it.
+
+## Content
+
+Not applicable — see each field's own page for label and helper-text copy rules.
+
+## Accessibility
+
+Not applicable on its own — the accessibility behavior this page's theming supports (label
+association, disabled-state opacity, error-text color) is exercised and documented on each
+field's own page.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-FORM-01** | A labeled field is composed via `FormInput`, never by hand-assembling `FormControl` and `FormLabel`. | Both are exported from a module named `DeprecatedFormControls`, whose own JSDoc names `FormInput` as the replacement. |
+
+## Known issues
+
+<Card title="Form: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/form/open-issues">
+  Divergences, open decisions, and undocumented gaps for Form.
+</Card>
+
+## Why it works this way
+
+**Theming the shared primitives once, separately from any single field's page, is what lets
+every field page stay silent about label color and helper-text type.** If Input's page had to
+restate what Select's page also states about label styling, the two would drift the first time
+either was edited alone. Centralizing it here — even without a component of its own to hang it
+on — is the same reasoning as Foundations existing separately from Components.
+
+## Status
+
+| | |
+|---|---|
+| Package | `@invoca/titan-core` |
+| Version | See [FormInput's status](/invoca-design-system/components/forms/input#status) for the shared package version |
+
+## Related
+
+- [FormInput's usage](#composing-a-field) — 66 usages across 19 applications, the most-adopted way to compose a field in this category
+- [Input](/invoca-design-system/components/forms/input) · [Select](/invoca-design-system/components/forms/select) · [Checkbox](/invoca-design-system/components/forms/checkbox) · [Radio](/invoca-design-system/components/forms/radio) · [Switch](/invoca-design-system/components/forms/switch)
+- [FieldLabel](/invoca-design-system/components/forms/field-label) — the visible label element itself

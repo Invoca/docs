@@ -1,15 +1,180 @@
 ---
 title: "List"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A short, flat, vertically stacked set of simple rows — text, an icon and text, or a clickable row — with a bottom border between items."
+icon: "list"
+tag: "Stable"
+keywords: ["list item", "rows", "bulleted list", "vertical stack", "list group"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A flat, vertically stacked set of simple rows, each separated by a bottom border, most often
+holding an icon and a line of text or a clickable action. It wraps the underlying element's own
+`List`, `ListItem`, and related parts; Titan's own file adds three boolean props on top.
+
+## Live example
+
+<StorybookFrame story="components-lists--basic-list" height={220} />
+
+## Exports
+
+| Export | Implementation | Props it declares | What Titan decided |
+|---|---|---|---|
+| `List` | Wraps the underlying element, adding three boolean props, verified directly in `List.tsx` | `disableBorder`, `disableHover`, `bulleted` (plus the full native `ListProps` surface) | The row bottom-border and the icon-slot width (see [Tokens](#tokens)) — **not** what the three props above imply, see the warning below |
+| `ListItem`, `ListItemButton`, `ListItemIcon`, `ListItemText`, `ListItemAvatar`, `ListSubheader` | Re-exported directly from the underlying package | — | Only `ListItem` and `ListItemIcon` carry a Titan override; the rest are unthemed |
+
+<Warning>
+  **`disableBorder`, `disableHover`, and `bulleted` currently change nothing visually.** Each sets
+  a CSS class (`titan-list-no-border`, `titan-list-no-hover`, `titan-list-bulleted`) and a matching
+  `data-*` attribute, but a repo-wide search of the Titan checkout finds no CSS rule anywhere that
+  targets any of the three classes. The component's own `BasicListNoBorder` story — the one whose
+  name implies it demonstrates `disableBorder` — doesn't use the Titan `List` component or the prop
+  at all; it renders a plain native `<ul>`/`<li>` instead. See
+  [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30).
 </Warning>
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disableBorder` | `boolean` | `false` | Intended to remove the row border — see the warning above |
+| `disableHover` | `boolean` | `false` | Intended to remove the hover effect — see the warning above |
+| `bulleted` | `boolean` | `false` | Intended to render bullet points — see the warning above |
+| `dense` | `boolean` | `false` | Native prop from the underlying element — compact vertical padding on items |
+| `disablePadding` | `boolean` | `false` | Native prop from the underlying element — removes the List container's own vertical padding |
+
+## Vocabulary
+
+| Term | Also called | The system uses | In code |
+|---|---|---|---|
+| **List** | List group, item list, rows | **`list`** | `List` |
+| **Row** | List item, entry | **`row`** | `ListItem` |
+
+**"List" names two unrelated things in this package.** This page's `List` is a static, flat
+display of rows. `AddList` — a separate, form-oriented component with its own add/remove/row-limit
+model — shares the word by coincidence, not by relation. See [Choose something else
+when](#choose-something-else-when) for the distinction; if you mean editable, repeatable form
+rows, you mean `AddList`, not this page.
+
+## Choose List when
+
+- Showing a short, vertically stacked set of simple items — text, an icon-and-text row, or a
+  clickable row — where comparing a column of values across many records isn't the task.
+- The items are largely uniform in structure but don't need a table's alignment, sorting, or
+  per-cell rendering.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show many records of the same kind, compared attribute by attribute | [Table](/invoca-design-system/components/data-display/table) | Table is the only place with column alignment, sorting, and per-cell rendering. |
+| Let a reader add or remove repeatable rows of form fields | `AddList` (a separate, form-oriented Titan component — see [Known issues](/invoca-design-system/components/data-display/list/open-issues)) | AddList is dynamic and editable, with its own add/remove/row-limit model. List is static display, not an editable set. |
+| Give each item its own bordered container, hover/selected/error states, or richer internal layout | [Card](/invoca-design-system/components/data-display/card) | List rows share one flat surface with a shared border rule; Card rows are independent, each with their own border and states. |
+| Show a compact inline label rather than a full row | [Tag](/invoca-design-system/components/data-display/tag) | A Tag names one attribute; a List row is a whole item. |
+
+## Anatomy
+
+| # | Part | In code | Required |
+|---|---|---|---|
+| 1 | Container | `List` | Yes |
+| 2 | Item | `ListItem` (with `disablePadding` when it wraps a `ListItemButton`) | Yes |
+| 3 | Icon or avatar slot | `ListItemIcon` or `ListItemAvatar` | No |
+| 4 | Text | `ListItemText` | No |
+| 5 | Interactive row | `ListItemButton` | No |
+| 6 | Group heading | `ListSubheader` | No |
+
+`ListItemAvatar` has no Titan theme override — confirmed: only the list-item and list-item-icon
+slots appear as theme override entries in `List.overrides.ts`.
+
+## Variants, sizes, and states
+
+Hand-confirmed from `List.overrides.ts` and the component's own stories — no per-component matrix
+emitter exists yet for this concept.
+
+| Axis | Values |
+|---|---|
+| Row border | `border-width-sm` / `border-default` bottom border on every `ListItem` — the one thing this component actually themes visually |
+| Icon gutter | `spacing-7` minimum width on `ListItemIcon` |
+| `dense` | Native compact padding from the underlying element — untouched by Titan's override |
+| `disableBorder` / `disableHover` / `bulleted` | Render no visual change — see the warning in [Exports](#exports) |
+
+## Edge and failure states
+
+| Condition | What happens | What to do |
+|---|---|---|
+| `bulleted` set | No visual change | Don't rely on it — render a plain `<ul>`/`<li>` (as the component's own `BasicListNoBorder` story does) if bullets are genuinely needed |
+| `disableBorder` set | No visual change | Same |
+| `disableHover` set | No visual change | Same |
+| Empty `List` (no `ListItem` children) | Renders an empty container with no border, since the border lives on each `ListItem`, not on `List` itself | No List-specific empty-state guidance exists — treat as a general [empty & zero state](/invoca-design-system/patterns/empty-and-zero-states) |
+
+## Tokens
+
+Hand-confirmed from `List.overrides.ts` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `border-width-sm` | `ListItem` bottom border width |
+| `border-default` | `ListItem` bottom border color |
+| `text-primary` | `ListItem` text color |
+| `spacing-7` | `ListItemIcon` minimum width |
+
+## Composition
+
+A List's items may hold `ListItemIcon`, `ListItemAvatar` (unthemed), and `ListItemText`. A
+clickable row wraps its content in `ListItemButton`, with `disablePadding` set on the parent
+`ListItem` — the pattern both `BasicList` and `BasicListNoIcons` use, so the button owns the row's
+own padding rather than doubling it with the item's. A `ListSubheader` groups related items under
+a label.
+
+## Content
+
+No explicit content rule is recorded in source beyond what the demonstrated stories show: short,
+single-line primary text per row (`ListItemText`'s `primary`), with an optional icon. Treat
+general copy guidance as what applies otherwise.
+
+## Accessibility
+
+- Confirmed: `List` renders with `role="list"` — verified directly in `List.test.tsx`, which
+  queries it with `screen.getByRole('list')`.
+- No test or story exercises keyboard navigation of a row wrapped in `ListItemButton` — the
+  component's own test suite only asserts CSS class presence, not interaction.
+- **Unconfirmed:** whether a `ListSubheader` is exposed to assistive technology as a group name for
+  the items beneath it. No test confirms this.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-LST-01** | Do not set `disableBorder`, `disableHover`, or `bulleted` expecting a visual change. | No CSS rule anywhere in the checked-out Titan source targets `titan-list-no-border`, `titan-list-no-hover`, or `titan-list-bulleted` — confirmed by a repo-wide search. See [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30). |
+| **TITAN-LST-02** | Pair `ListItemButton` with `disablePadding` on its parent `ListItem`. | Every real example in source (`BasicList`, `BasicListNoIcons`) does this; without it, the button's own padding stacks with the item's. |
+
+## Known issues
+
+<Card title="List: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/data-display/list/open-issues">
+  Divergences, open decisions, and undocumented gaps for List.
+</Card>
+
+## Why it works this way
+
+List's real, working decision is small: a bottom border under every row and a wider icon gutter,
+both pulled from tokens. The three props that read as bigger decisions — no border, no hover,
+bulleted — were written into the component and its own JSDoc comment ("Optional border removal,"
+"Hover effect toggle," "Bulleted list style option") but never wired to any style rule. This page
+records that as [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30) rather
+than papering over it.
+
+## Status
+
+Package `@invoca/titan-core`, version **3.6.3**. Primary export: `List`. No deprecation marker or
+`since` field is recorded in source.
+
+## Related
+
+Titan's own `utilization.md` records **15 usages across 9 products**: dashboard-header (3),
+auth-management (3), ai-model-management (2), manage-invoca-tags (2), ivr-campaigns (1), ai-labs
+(1), intent-detection (1), developer-tools (1), and signals (1).
+
+- [Table](/invoca-design-system/components/data-display/table) — for records compared attribute by attribute
+- [Card](/invoca-design-system/components/data-display/card) — for rows that need their own border, states, or richer layout
+- [Avatar](/invoca-design-system/components/data-display/avatar) — the common leading element in a list row

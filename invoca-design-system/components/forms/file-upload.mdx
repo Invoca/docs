@@ -1,15 +1,150 @@
 ---
 title: "FileUpload"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A drag-and-drop target for attaching files, with an inline list and per-file removal."
+icon: "upload"
+tag: "Stable"
+keywords: ["dropzone", "drag and drop", "attachment", "upload files", "file picker"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A drag-and-drop target for attaching files to a form: drop a file or click to browse, and it
+appears in a list below with a remove control. It does not upload anywhere itself — attaching a
+file only adds it to local state and reports the full list back through a callback.
+
+## Live example
+
+<StorybookFrame story="components-dropzones--dropzone-story" height={220} />
+
+## Exports
+
+<Snippet file="generated/props/file-upload.mdx" />
+
+<Warning>
+  **The package exports this as `Dropzone`, not `FileUpload`.** This page's name is the design
+  vocabulary's term for the concept; `Dropzone` is the import. See
+  [TITAN-DIV-26](/invoca-design-system/foundations/divergences#titan-div-26).
 </Warning>
+
+## Choose FileUpload when
+
+- A reader needs to attach one or more files to something they're submitting, and dragging a
+  file onto a target (or clicking to browse) is a natural way to do it.
+- The set of accepted files is a small, add-and-remove list shown in place — not a long-running
+  upload with progress reporting.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Show upload progress, retries, or a failed-upload state | Not available in this component | It has no progress, error, or retry state at all — see [Edge and failure states](#edge-and-failure-states). |
+| Compose the file field into `FormInput`'s unified label/helper/error pattern | Not available | `FormInput`'s types are `text`, `radio`, `segmentedButton`, `select`, `checkbox`, and `custom` — none cover file selection. See [Form](/invoca-design-system/components/forms/form#composing-a-field). |
+| Let a reader pick a value from a fixed list | [Select](/invoca-design-system/components/forms/select) | This component's job is attaching files, not choosing among known options. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Drop target | — (renders when the file list is empty) | Yes |
+| 2 | Primary text | `primaryText` | No — defaults to "Drag file here or click to browse files" |
+| 3 | Secondary text | `secondaryText` | No — renders empty when omitted |
+| 4 | File list | — (renders once at least one file is attached) | Yes, once files exist |
+| 5 | Remove control | — (per file row) | Yes, once files exist |
+
+The drop target and the file list are mutually exclusive — verified directly from source, which
+renders one or the other, never both. There is no "add another file" affordance once the list
+is showing other than the same target reappearing when the list is emptied.
+
+## Edge and failure states
+
+Verified directly against the component's own test suite, not inferred:
+
+| Condition | What happens | What to do |
+|---|---|---|
+| A dropped file doesn't match `fileFormat` | Silently not added — no error, no message, confirmed by the component's own test asserting only that the file is absent | Not handled by the component. Nothing today tells the reader why their file didn't appear. |
+| A file is dropped after `maxFileCount` is reached | Silently ignored — same test pattern, no message shown | Not handled by the component. |
+| A file is removed | Removed from the list and from the object-URL cache; `onFilesChange` fires with the updated list | — |
+| The component unmounts with files attached | Every file's preview object URL is revoked | Automatic, not something to configure. |
+
+<Warning>
+  **A preview URL is created for every file but never rendered.** Source creates an object URL
+  per file (`file.preview`) and revokes it on cleanup, but no `<img>` or other element in the
+  component ever reads it — the file list shows only a name and a remove icon, never a
+  thumbnail. The preview machinery exists with no visible effect.
+</Warning>
+
+## Tokens
+
+Verified directly from `Dropzone.tsx` — no per-component token emitter exists yet for this
+concept, so this table is hand-confirmed rather than generated.
+
+| Token | Applies to |
+|---|---|
+| `dropzone-border-width` | Border width, drop target and each file row |
+| `border-default` | Border color, drop target and each file row |
+| `radius-sm` | Corner radius, drop target and each file row |
+| `dropzone-icon-size` | The cloud-upload icon |
+| `icon-default` | The cloud-upload icon's color |
+| `text-secondary` | Drop target text color |
+| `text-primary` | File row text color |
+| `motion-duration-short`, `motion-easing-ease-in-out` | The border transition on the drop target |
+| `spacing-10`, `spacing-5`, `spacing-3`, `spacing-4` | Drop target padding, primary-text margin, and file-row padding |
+
+## Composition
+
+Renders standalone — verified against source, it accepts no label prop and does not compose
+with [FieldLabel](/invoca-design-system/components/forms/field-label) the way other fields in
+this category do. A caller wanting a labeled field must wrap it with a label themselves; nothing
+in this component or in `FormInput` does that composition today — see
+[Open issues](/invoca-design-system/components/forms/file-upload/open-issues).
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Secondary text states the actual restriction, not a generic hint | .xlsx or .xls only. | Please upload a valid file. |
+| Primary text names the action, not just the mechanism | Drag file here or click to browse files | Upload |
+
+## Accessibility
+
+- The visible primary and secondary text are not confirmed to be programmatically associated
+  with the underlying file input — no `aria-labelledby` or `<label>` wiring was found in
+  source. Whether a screen reader announces the drop target's purpose is unconfirmed.
+- No accessible name is required or validated for the component as a whole — there is no
+  `label` or `aria-label` prop.
+- The remove control is a clickable icon with a keyboard handler in its test mock, but
+  production source renders it as a plain icon with an `onClick`, not a `<button>` — whether it
+  is keyboard-reachable in the shipped component (not just the test mock) is unconfirmed.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-UPLOAD-01** | `secondaryText` states the actual accepted format and any count limit — never left blank when `fileFormat` or `maxFileCount` is set. | Rejected files fail silently (see Edge and failure states); the secondary text is the only place a reader can learn the restriction before hitting it. |
+
+## Known issues
+
+<Card title="FileUpload: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/forms/file-upload/open-issues">
+  Divergences, open decisions, and undocumented gaps for FileUpload.
+</Card>
+
+## Why it works this way
+
+**Silent rejection is a real gap, not a hidden feature.** Nothing about drag-and-drop upload
+requires failing quietly — the component simply doesn't wire up `useDropzone`'s own
+`fileRejections` callback, which would carry exactly this information. Restating the
+restriction in `secondaryText` is the only mitigation available until that's addressed, which
+is why TITAN-UPLOAD-01 exists as a constraint rather than a suggestion.
+
+## Status
+
+<Snippet file="generated/status/file-upload.mdx" />
+
+## Related
+
+<Snippet file="generated/utilization/file-upload.mdx" />
+
+- [Form](/invoca-design-system/components/forms/form) — the shared field-composition pattern this component does not participate in
+- [FieldLabel](/invoca-design-system/components/forms/field-label) — for labeling this component by hand, since it has no built-in label

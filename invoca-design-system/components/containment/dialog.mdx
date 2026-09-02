@@ -1,15 +1,190 @@
 ---
 title: "Dialog"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A modal surface that blocks the rest of the page and asks the reader to finish or cancel a task before continuing."
+icon: "window-maximize"
+tag: "Stable"
+keywords: ["modal", "confirmation", "prompt", "overlay", "modal dialog"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
+## What it is
+
+A surface that sits on top of the page and blocks interaction with everything behind it until
+the reader finishes or cancels. It ships with a title row, a content area with configurable top
+and bottom dividers, and a footer carrying up to three buttons — an optional left-side action,
+Cancel, and Save — so a caller assembles a complete confirmation or edit flow from one component
+rather than building the layout by hand each time.
+
+## Live example
+
+<StorybookFrame story="components-modals--medium-modal" height={280} />
+
+## Exports
+
+<Warning>
+  **The package's `Dialog` export is a different, unstyled primitive, not this component.**
+  This page documents the real export `Modal`. Source publishes a named anti-pattern story
+  (`DoNotUse_RawDialog`) stating directly that importing the raw primitive loses the
+  standardized title/action layout, the sizing presets, the dividers, and the padding this page
+  documents. Import `Modal` for everything this page describes. See
+  [TITAN-DIV-27](/invoca-design-system/foundations/divergences#titan-div-27).
 </Warning>
+
+Hand-confirmed from source — no prop emitter has run for this component yet.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `children` | `ReactNode` | Required. |
+| `open` | `boolean` | Required. |
+| `title` | `string` | Optional. Renders the title row only when present. |
+| `onClose` | `() => void` | Fires from the Cancel button and the primitive's own dismiss triggers (backdrop click, Escape). Defaults to a no-op. |
+| `onConfirm` | `() => void` | Fires from the Save button. |
+| `maxWidth` | `"sm" \| "md" \| "lg" \| "xl" \| "xxl" \| "fullscreen"` | Size preset. Defaults to the `md` branch. See [Tokens](#tokens) for exact dimensions. |
+| `dividersTop` / `dividersBottom` | `boolean` | Both default `true`. Toggle the horizontal rules above and below the content area. |
+| `contentPadding` | `string` | Overrides the content area's padding directly, bypassing the token-driven default. |
+| `hideModalActions` | `boolean` | Default `false`. Hides the entire footer, including Cancel and Save. |
+| `hideConfirmButton` | `boolean` | Default `false`. Hides Save while keeping Cancel. |
+| `disableCloseButton` / `disableConfirmButton` | `boolean` | Disable Cancel or Save without hiding them. |
+| `onCloseText` / `onConfirmText` | `string` | Default to "Cancel" and "Save". |
+| `closeButtonProps` | Props forwarded to the Cancel button | Merged onto the button, e.g. to add test ids. |
+| `confirmButtonColor` | `"inherit" \| "primary" \| "secondary" \| "success" \| "error" \| "info" \| "warning"` | Defaults to `"primary"`. |
+| `leftButtonText` / `leftButtonAction` / `leftButtonColor` / `leftButtonProps` | — | An optional third, left-aligned footer button. `leftButtonColor` defaults to `"secondary"`, which renders as a text-styled button rather than a filled one — confirmed by the component's own test asserting the `MuiButton-textPrimary` class in that case. |
+| `onCloseDataTrack` / `onConfirmDataTrack` / `dataTrackPath` | `string` | Analytics tracking attributes on the footer buttons. |
+
+## Choose Dialog when
+
+- The reader must make a decision — confirm, cancel, or complete a short task — before anything
+  else on the page should be usable.
+- The task is short enough to finish in an overlay rather than navigating to its own page.
+- Losing the reader's place on the page behind it is an acceptable cost for the interruption.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Let the reader keep the list, table, or page behind visible while they work | [Drawer](/invoca-design-system/components/containment/drawer) | A Drawer stays anchored to one side; Dialog covers and blocks the whole page. |
+| Show supplementary information the reader did not ask to act on | [Popover](/invoca-design-system/components/containment/popover) or [Tooltip](/invoca-design-system/components/containment/tooltip) | Neither blocks the page or demands a decision — both dismiss on their own without a Cancel/Save choice. |
+| Offer a list of actions or destinations from a trigger | [Menu](/invoca-design-system/components/actions/menu) | A Menu's job is picking one of several actions, not confirming or completing one longer task. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Title | `title` | No — the title row does not render at all when omitted |
+| 2 | Content | `children` | Yes |
+| 3 | Top divider | `dividersTop` | No — on by default |
+| 4 | Bottom divider | `dividersBottom` | No — on by default |
+| 5 | Left action | `leftButtonText` + `leftButtonAction` | No |
+| 6 | Cancel | `onCloseText` (default "Cancel") | No — hidden only via `hideModalActions` |
+| 7 | Save | `onConfirmText` (default "Save") | No — hidden via `hideConfirmButton` alone, or with the rest of the footer via `hideModalActions` |
+
+## Variants, sizes, and states
+
+Six size presets, confirmed against both source and the token file: `sm`, `md` (default), `lg`,
+`xl`, `xxl`, and `fullscreen`. Each sets both a width (or `100%` for `fullscreen`) and a content
+minimum height — see [Tokens](#tokens) for the literal values. Published stories additionally
+demonstrate: hiding the entire footer, a custom left-button color, custom close-button props for
+testing, and disabled dividers with padding removed to host tabbed content instead of prose.
+
+## Edge and failure states
+
+- **No left button unless both `leftButtonAction` and `leftButtonText` are supplied.** Confirmed
+  from source — the left button area renders empty otherwise, leaving visible empty space in the
+  footer's flex layout rather than collapsing.
+- **`disableConfirmButton` disables Save without hiding it** — confirmed by the component's own
+  test. A reader sees the option and cannot use it, with no stated reason shown by the component
+  itself.
+- **Closing behavior with no `onClose` handler is not a no-op error** — the prop defaults to an
+  empty function, so a Dialog missing `onClose` fails silently rather than throwing; the Cancel
+  button and backdrop dismiss visually but change nothing in the caller's state.
+
+## Tokens
+
+Hand-confirmed from `Modal.overrides.ts` and `component.tokens.json` — no per-component token
+emitter exists yet for this concept, so this table is hand-confirmed rather than generated.
+
+| Token | Value | Applies to |
+|---|---|---|
+| `modal-width-sm` / `modal-min-height-sm` | 400px / 170px | `sm` preset |
+| `modal-width-md` / `modal-min-height-md` | 500px / 310px | `md` preset (default) |
+| `modal-width-lg` / `modal-min-height-lg` | 680px / 450px | `lg` preset |
+| `modal-width-xl` / `modal-min-height-xl` | 964px / 450px | `xl` preset |
+| `modal-width-xxl` / `modal-min-height-xxl` | 1298px / 1450px | `xxl` preset |
+| `modal-min-height-fullscreen` | 80vh | `fullscreen` preset (width and max-width are a literal `100%`, not a token) |
+| `modal-content-padding-x` | 0.85rem | Content area horizontal padding — off the standard spacing scale, adopted unchanged |
+| `modal-action-font-weight` | 700 | Font weight on every footer button |
+| `spacing-4` | — | Title and footer vertical padding |
+| `spacing-5` | — | Content area's top/bottom inset when a divider on that side is enabled |
+| `border-width-sm`, `border-default` | — | Content area's top and bottom dividers |
+
+## Composition
+
+Dialog is a standalone overlay — it does not compose into `Form`'s field pattern. A published
+story shows Tabs rendered inside the content area with dividers disabled and padding cleared, so
+tabbed content is a supported composition, not just prose or a single form.
+
+## Content
+
+| Rule | ✅ | ❌ |
+|---|---|---|
+| Title names the task or object, not the mechanism | Delete this campaign? | Confirmation |
+| Save/Cancel labels state the actual action when the defaults are ambiguous | "Delete", "Keep" | The unmodified default "Save" on a destructive action |
+
+## Accessibility
+
+- The underlying primitive provides the page-blocking and focus-containment behavior; no test in
+  source specifically asserts focus is trapped inside an open Dialog or restored to the trigger
+  on close, so that behavior, while expected of the pattern, is unconfirmed at the Titan layer.
+- The title renders inside a `span` with a `data-testid`, not as a heading element bound to the
+  dialog via `aria-labelledby` — whether the title is programmatically associated with the
+  dialog for assistive technology is unconfirmed from source.
+- Confirmed from the test suite: Cancel and Save render as real, focusable, nameable buttons,
+  and `disableCloseButton` / `disableConfirmButton` produce a genuinely disabled button state.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DIALOG-01** | Import `Modal`, never the package's raw `Dialog` export, for anything this page describes. | Source publishes `DoNotUse_RawDialog` as a named anti-pattern story, stating the raw primitive has no sizing presets, no standardized footer, and no dividers. |
+| **TITAN-DIALOG-02** | A destructive or irreversible action's confirm button uses a color other than the default `primary`, and its label states the actual action. | The component defaults `confirmButtonColor` to `"primary"` for every use; nothing about the default warns a reader that a given confirmation is destructive. |
+
+## Known issues
+
+<Card title="Dialog: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/containment/dialog/open-issues">
+  Divergences, open decisions, and undocumented gaps for Dialog.
+</Card>
+
+## Why it works this way
+
+**The three-button footer is a fixed contract, not a layout convention teams re-invent.** Left
+action, Cancel, and Save are named, positioned, and colored by the component itself — a caller
+supplies text and handlers, not markup. That is also why an anti-pattern story exists here and
+not on every component: the raw primitive underneath renders visually similarly enough that
+bypassing `Modal` produces something that looks plausible in review but silently drops the
+sizing presets, the divider tokens, and the footer layout this page documents.
+
+## Status
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core` |
+| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Exports covered on this page** | `Modal` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+Hand-confirmed from `utilization.md` — no utilization emitter has run for this component yet.
+Roughly 99 usages across 24 applications, the heaviest being **ai-model-management** (12),
+**ai-agent-studio** (11), **dashboard-header** (11), **agent-management-v2** (10), and
+**manage-integrations** (10) — overwhelmingly confirmation and edit flows (archive, delete,
+rename, share, schedule).
+
+- [Drawer](/invoca-design-system/components/containment/drawer) — for a task that should leave the page behind it visible
+- [Menu](/invoca-design-system/components/actions/menu) — for choosing among several actions rather than confirming one

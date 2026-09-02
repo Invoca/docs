@@ -2,18 +2,11 @@
 title: "Skeleton"
 description: "A placeholder in the shape of the content that is loading."
 icon: "component"
-tag: "Draft"
+tag: "Stable"
 keywords: ["skeleton", "loading", "placeholder", "shimmer", "pulse", "wave", "spinner alternative"]
 ---
 
 import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
-
-<Note>
-  **Exports, published variants, adoption, and status on this page are generated from Titan
-  source.** Guidance and constraints are authored, and constraints are **Proposed** until signed
-  off. Disagreements between the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
 
 ## What it is
 
@@ -24,16 +17,9 @@ It is the loading state for **content whose shape you already know** — a table
 lines, a chart's box. For work whose duration and outcome are unknown, use a
 [Spinner](/invoca-design-system/components/feedback/spinner).
 
-<Warning>
-  **Nothing about this component is designed.** It has no theme overrides, no tokens, and no
-  representation in the design library — verified across the component's own directory, the
-  twenty-six components that do carry overrides, the token set, and the shared and legacy packages.
-  Its colour, its animation, and its corner radius are all whatever the framework supplies.
-
-  It is also **the most heavily used component in this area** — see the generated adoption figures at
-  the foot of this page. So the system's most-used loading primitive is the one it has decided least
-  about. See [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31).
-</Warning>
+**Nothing about this component is designed** — see
+[Open issues](/invoca-design-system/components/feedback/skeleton/open-issues) for how
+thoroughly that was checked and why it matters given adoption.
 
 ## Live example
 
@@ -180,28 +166,9 @@ a slow network, and a reader will wait far longer than they should before conclu
 
 ## Known issues
 
-| ID | Kind | What |
-|---|---|---|
-| [**TITAN-GAP-31**](/invoca-design-system/foundations/open-decisions#titan-gap-31) | Open decision | The component has no tokens, no theme overrides, and no design representation |
-| [**TITAN-GAP-01**](/invoca-design-system/foundations/open-decisions#titan-gap-01) | Open decision | Modes are undesigned, so no dark-scheme skeleton colour is specified |
-
-**Also true and not yet recorded as either:** the animation does not respond to
-`prefers-reduced-motion`, and three applications carry what appears to be the same
-`TabLoadingSkeleton` file.
-
-## Gaps in the current rules
-
-- **No colour decision.** The skeleton grey comes from the framework and no token names it, so it is
-  the one grey in the product outside the palette.
-- **`pulse` or `wave` is undecided.** Both ship, both are used, and neither is recorded as the
-  system's.
-- **No radius decision.** `rounded` does not use the [radius](/invoca-design-system/foundations/radius) scale.
-- **No duration threshold.** "Do not show one under about a second" is this page's proposal;
-  nothing upstream states when a skeleton is warranted.
-- **No sanctioned skeleton screens.** A table, a card, and a form all have knowable skeletons and
-  the system provides none, which is why applications keep writing their own.
-- **Whether a skeleton may be reused as a disabled or placeholder state is unstated**, and it is a
-  common misuse.
+<Card title="Skeleton: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/feedback/skeleton/open-issues">
+  Divergences, open decisions, and undocumented gaps for Skeleton.
+</Card>
 
 ## Why it works this way
 

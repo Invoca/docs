@@ -1,15 +1,151 @@
 ---
 title: "Drawer"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "component"
-tag: "Draft"
+description: "A side panel that slides in from the right, keeping the page behind it in place while the reader works."
+icon: "table-columns"
+tag: "Stable"
+keywords: ["side panel", "slide-out", "flyout", "side sheet"]
 ---
 
-<Warning>
-  **Stub.** This page is scaffolded but not written. Author it from
-  `_templates/component.mdx`.
+import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.jsx";
 
-  Do not remove this warning until the Decision layer is complete — a stub that
-  looks finished is worse than a stub that admits it. A reader, and an agent,
-  cannot tell a considered omission from an unwritten page.
-</Warning>
+## What it is
+
+A panel that slides in from the right edge of the screen and stays anchored there while the
+page behind it remains in place. It is built for editing or inspecting one item — a workflow
+step, a version, a configuration — without leaving the list or table the reader opened it from.
+
+## Live example
+
+<StorybookFrame story="components-drawer--render-with-args" height={280} />
+
+## Exports
+
+Hand-confirmed from source — no prop emitter has run for this component yet.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `children` | `ReactNode` | Required. |
+| `open` | `boolean` | Required. |
+| `onClose` | `() => void` | Callback fired when the Drawer requests to close. |
+| `width` | `"small" \| "medium" \| "large"` | Default `"small"`. Maps to 500px / 800px / 1200px — see [Tokens](#tokens). |
+| `footerContent` | `ReactNode` | Optional. Rendered after the scrollable content area, outside its padding. |
+| `wrapContent` | `boolean` | Default `true`. When `true`, children render inside a `Typography` wrapper; when `false`, children render directly, for a custom layout. |
+
+Every other prop of the underlying side-panel primitive is forwarded through except `anchor`,
+which the component hardcodes — see [Constraints](#constraints).
+
+## Choose Drawer when
+
+- The reader is editing, configuring, or reviewing one item and benefits from still seeing the
+  list or page they opened it from.
+- The task is more involved than a Popover's supplementary content but does not need to fully
+  block the page the way a Dialog does.
+
+## Choose something else when
+
+| If you need to… | Use | Why |
+|---|---|---|
+| Block the page and demand a decision before the reader continues | [Dialog](/invoca-design-system/components/containment/dialog) | Dialog covers and blocks the whole page; Drawer stays anchored to one side and leaves the rest reachable. |
+| Show a small amount of supplementary content anchored to a trigger | [Popover](/invoca-design-system/components/containment/popover) | A Drawer is a full-height side panel meant to hold a real task; a Popover is a small, transient surface. |
+| Show a persistent region that is always part of the page layout | [Panel](/invoca-design-system/components/containment/panel) | A Drawer opens and closes on demand; a Panel is always rendered, never an overlay. |
+
+## Anatomy
+
+| # | Part | Prop | Required |
+|---|---|---|---|
+| 1 | Content area | `children` | Yes |
+| 2 | Footer | `footerContent` | No |
+
+There is no title or header prop — a Drawer with a heading renders it as part of `children`,
+which is why `wrapContent={false}` exists for callers who need something other than the default
+`Typography`-wrapped body.
+
+## Variants, sizes, and states
+
+Three width presets — `small` (500px, default), `medium` (800px), `large` (1200px) — confirmed
+against both source and the token file. No responsive behavior below these widths is recorded in
+source. Height is always full-viewport; there is no size preset for height.
+
+## Edge and failure states
+
+- **Only one anchor exists.** The component hardcodes `anchor="right"` and omits `anchor` from
+  its own prop type entirely — a left, top, or bottom Drawer is not possible through this
+  component. See [TITAN-DRAWER-01](#constraints).
+- **The footer is unstyled.** `footerContent` renders with no padding, border, or background of
+  its own — confirmed from source, which places it as a plain sibling after the padded content
+  `Box`. Any visual separation from the content area is the caller's responsibility.
+
+## Tokens
+
+Hand-confirmed from `Drawer.tsx` and `component.tokens.json` — no per-component token emitter
+exists yet for this concept, so this table is hand-confirmed rather than generated. Unlike
+[Dialog](/invoca-design-system/components/containment/dialog) and
+[Accordion](/invoca-design-system/components/containment/accordion), these are applied as inline
+styles inside the component itself, not registered as a theme override — there is no
+`Drawer.overrides.ts` file.
+
+| Token | Value | Applies to |
+|---|---|---|
+| `drawer-width-sm` | 500px | `width="small"` (default) |
+| `drawer-width-md` | 800px | `width="medium"` |
+| `drawer-width-lg` | 1200px | `width="large"` |
+| `spacing-6` | — | Content area padding on all sides |
+
+## Composition
+
+Drawer is a standalone overlay. It does not compose into `Form`'s field pattern, though its
+content area commonly hosts a form for the item being edited — that composition is left entirely
+to the caller.
+
+## Content
+
+No copy rules are recorded in source.
+
+## Accessibility
+
+- No test in source asserts focus containment, focus return to the trigger on close, or any ARIA
+  role beyond what the underlying side-panel primitive provides by default — unconfirmed at the
+  Titan layer.
+- The one published test confirms only that the Drawer renders and that its content is present
+  once open; it does not exercise closing, focus, or keyboard behavior.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DRAWER-01** | A Drawer always opens from the right. There is no left, top, or bottom variant. | The component's own prop type explicitly omits `anchor` from what it forwards and hardcodes it to `"right"` — a caller cannot override this without bypassing the component. |
+
+## Known issues
+
+<Card title="Drawer: open issues" icon="triangle-exclamation" href="/invoca-design-system/components/containment/drawer/open-issues">
+  Divergences, open decisions, and undocumented gaps for Drawer.
+</Card>
+
+## Why it works this way
+
+**A single fixed anchor keeps every Drawer in the product predictable.** Because `anchor` is not
+exposed, a reader who has learned that a Drawer slides in from the right can rely on that being
+true everywhere it appears, rather than checking each instance.
+
+## Status
+
+| | |
+|---|---|
+| **Package** | `@invoca/titan-core` |
+| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Exports covered on this page** | `Drawer` |
+
+<Note>
+  **No lifecycle metadata exists.** There is no `status`, `since`, `deprecated`, or
+  `replacedBy` field on a Titan component, so this table cannot report when an export arrived or
+  whether it is on the way out.
+</Note>
+
+## Related
+
+Hand-confirmed from `utilization.md` — no utilization emitter has run for this component yet.
+22 usages across 9 applications, the heaviest being **ai-agent-studio** (9, mostly editing
+workflow actions, intents, and version comparisons) and **reporting-thoughtspot** (3).
+
+- [Dialog](/invoca-design-system/components/containment/dialog) — for a task that should block the rest of the page
+- [Panel](/invoca-design-system/components/containment/panel) — for a persistent region that is not an overlay

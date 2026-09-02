@@ -1,0 +1,29 @@
+---
+title: "Popover"
+description: "Divergences, open decisions, and undocumented gaps for Popover."
+icon: "note-sticky"
+---
+
+See [Popover](/invoca-design-system/components/containment/popover) for the decided part of this
+page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-29**](/invoca-design-system/foundations/divergences#titan-div-29) | Divergence | No Titan-specific theme override, story, test, or token exists for this component — it renders as an unstyled, un-verified passthrough |
+
+## Gaps in the current rules
+
+- **Whatever this component actually looks like in the product today is unconfirmed.** With no
+  override and no story, its rendered appearance is entirely the underlying primitive's own
+  default — elevation, radius, spacing, color — none of which has been checked against, or
+  reconciled with, this design language's visual decisions elsewhere.
+- **Accessibility behavior — focus handling, ARIA role, keyboard dismissal — is completely
+  unverified within Titan.** No test exists to confirm any of it.
+- **Whether any application in the product actually uses this component directly is unknown.**
+  There is no `utilization.md` for it and no source file within this package's own components
+  imports or wraps it, so its real-world usage (if any) is untracked from here.
+- **Whether the product wants a themed Popover at all, or considers this gap acceptable because
+  Tooltip and Menu cover the common cases, is an undecided product question, not something
+  source can answer.**

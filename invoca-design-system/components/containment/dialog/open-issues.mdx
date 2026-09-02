@@ -1,0 +1,26 @@
+---
+title: "Dialog"
+description: "Divergences, open decisions, and undocumented gaps for Dialog."
+icon: "window-maximize"
+---
+
+See [Dialog](/invoca-design-system/components/containment/dialog) for the decided part of this
+page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-27**](/invoca-design-system/foundations/divergences#titan-div-27) | Divergence | The package's `Dialog` export is a different, unstyled primitive — the real component is `Modal` |
+
+## Gaps in the current rules
+
+- **Focus containment and focus return are unconfirmed at the Titan layer.** No test in source
+  asserts that focus is trapped inside an open Modal or restored to the trigger element on
+  close — expected of the pattern, but not verified here.
+- **The title's programmatic association with the dialog is unconfirmed.** It renders inside a
+  `span` with a `data-testid`, not obviously wired to the dialog via `aria-labelledby` — whether
+  assistive technology announces the title when the dialog opens has not been checked.
+- **Whether every real confirm action uses a non-default `confirmButtonColor` for destructive
+  operations is unrecorded.** The component defaults to `"primary"` for every use; nothing
+  enforces the recommendation in TITAN-DIALOG-02 beyond the constraint itself.

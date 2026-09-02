@@ -83,12 +83,6 @@ depend on a snapshot of a spreadsheet rather than on the package.
 | **Done when** | The coverage table below reports **0** definitions sourced from the specification and 127 from Titan source. That is a generated figure, so it is self-verifying — nobody has to remember to update a count. |
 | **Not this repo** | This is a change to Titan, not to the documentation. Raise it there. |
 
-<Note>
-  **The mechanism for proposing a token change belongs on
-  [Token workflow](/invoca-design-system/contribute/token-workflow)**, which is unwritten. Until it is, treat this
-  entry as the record of *what* to do and find *how* by asking.
-</Note>
-
 ### Step 2 — define what neither source defines
 
 The remaining 112 have no definition in code and none in the specification. Four token families
@@ -118,12 +112,6 @@ second and larger than the first.
 | **Why it matters** | This was recorded as "the system has not adjudicated its contested terms." It had. `alt` is a **state**, not a weight; `primary`/`secondary`/`tertiary` are a **prominence** axis that reading names does not reveal. A reader guessing from names will misclassify both. |
 | **Direction** | Largely closed: the grammar is now on [Foundations overview](/invoca-design-system/foundations/overview#the-naming-grammar) and each foundation carries a Vocabulary section. What remains is deciding the terms the spec does *not* cover — component-token naming, and the `neutral` vs `disabled` overlap. |
 | **Surfaces on** | [Foundations overview](/invoca-design-system/foundations/overview), and every foundation page's Vocabulary section |
-
-<Note>
-  **This entry is a correction.** It previously claimed the terms were unadjudicated. They
-  were adjudicated and undocumented, which is a much cheaper problem. Kept rather than
-  deleted, because the reason the docs inferred a grammar is worth remembering.
-</Note>
 
 ## TITAN-GAP-04
 
@@ -288,11 +276,6 @@ second and larger than the first.
 | **Why it matters** | This entry previously read "no page-region model exists; the Views tier is entirely unwritten." The *documentation* was unwritten; the model was not. Anyone acting on the old wording would have built a bespoke page shell alongside a frame that already existed. |
 | **Direction** | Largely closed: the frame, its vocabulary, and its expectations are on [Views overview](/invoca-design-system/views/overview). What remains is the seven archetypes, still stubs. |
 | **Surfaces on** | [Views overview](/invoca-design-system/views/overview), [Layout & grid](/invoca-design-system/foundations/layout-and-grid) |
-
-<Note>
-  **This entry is a correction.** Kept rather than deleted, because "we looked and found nothing"
-  and "we did not look in the right place" are different failures and the second one recurs.
-</Note>
 
 ## TITAN-GAP-23
 
@@ -540,12 +523,6 @@ second and larger than the first.
 | **Direction** | Decide whether Checkbox gains a third visual state or whether partial selection is communicated some other way (a count, a label change) that doesn't require one. |
 | **Surfaces on** | [Checkbox](/invoca-design-system/components/forms/checkbox), [Bulk selection](/invoca-design-system/patterns/bulk-selection) |
 
-<Note>
-  **Found from Figma, not source.** This session had the design library's variant structure but
-  not the Titan checkout, so absence in the library is confirmed; absence in code is inferred,
-  not verified directly.
-</Note>
-
 
 # Known defects
 
@@ -574,9 +551,3 @@ is one — deleting it loses the reason the system looks the way it does.
 | **Decided** | The bar belongs to the **header**, below the header row, inset to the header's gutter, and its underline is the header's lower edge. The design library's page template carries it as a `Header Type` property, and the header grows to accommodate the bar rather than the bar sitting outside it. |
 | **Where it lives now** | [Views overview](/invoca-design-system/views/overview), under *Header — Tab bar*, as [TITAN-VIEW-11](/invoca-design-system/views/overview#constraints) through [TITAN-VIEW-13](/invoca-design-system/views/overview#constraints). |
 | **What replaced it** | [TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16) — the code has no such slot, so the arrangement is composed by hand. The question is no longer open; the implementation is behind it. |
-
-<Note>
-  **This entry was opened on incomplete evidence.** It was written from the code and the published
-  story alone, before the design library's page templates were read. The templates answer it
-  directly, which is why it closed as a divergence rather than a decision.
-</Note>

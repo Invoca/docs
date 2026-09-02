@@ -6,16 +6,6 @@ tag: "Stable"
 keywords: ["tone", "brand voice", "personality", "writing style", "copywriting"]
 ---
 
-<Info>
-  **Source: the zeroheight IDS documentation** (`Voice and Tone`). The rules below are
-  transcribed from the existing design system documentation and are `verified` against it.
-  They have been reformatted into constraints with IDs — the substance is unchanged.
-
-  Where the source is silent on how these rules apply to interface copy specifically, that is
-  called out in [Gaps in the current rules](#gaps-in-the-current-rules) rather than resolved
-  silently.
-</Info>
-
 ## The core rule
 
 **"Speak human, not robot."** That is the source's own framing, and everything else on this
@@ -36,15 +26,9 @@ guides its look, feel, and voice.
 | **Eye-opening** | Fresh, thought-provoking | Causes radical shifts in perspective. Challenges the status quo. Creates interest and heightens awareness. |
 | **Bold** | Clear, assertive, direct | Leaves no room for ambiguity or misunderstanding. Gets to the point quickly. Willing to take risks. |
 
-<Warning>
-  **These three traits are stated at the brand level, and the source does not map them onto
-  interface copy specifically.** "Bold" — assertive, willing to take risks — is a reasonable
-  fit for marketing headlines and a much less obvious fit for, say, a destructive-confirmation
-  dialog, where the system's own decision is to be cautious rather than assertive (see
-  [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)). Which traits govern
-  transactional UI text, and how, is not decided — see
-  [Gaps](#gaps-in-the-current-rules).
-</Warning>
+These three traits are stated at the brand level; which ones govern transactional UI text,
+and how, is not decided — see
+[Open issues](/invoca-design-system/content/voice-and-tone/open-issues).
 
 ## Resources
 
@@ -66,11 +50,9 @@ they are general writing references, not Invoca-specific rules.
 
 ## Gaps in the current rules
 
-| Gap | Why it matters | Status |
-|---|---|---|
-| **No mapping from brand personality to interface copy.** The three traits describe the brand; nothing in the source says how "Eye-opening" or "Bold" should show up in a button label, an error message, or an empty state. | Without it, two writers can both claim to be "on brand" while producing very different copy for the same screen. | Open |
-| **No worked examples.** The source states the traits but does not show a "sounds like us" / "doesn't sound like us" comparison for any real screen. | Traits without examples are hard to apply consistently across a team. | Open |
-| **Possible tension with caution-first patterns.** "Bold" is not reconciled against places the system deliberately asks for restraint — see the warning above. | An untested tension is one a writer discovers by shipping the wrong tone, not by reading the docs. | Open |
+<Card title="Voice and tone: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/voice-and-tone/open-issues">
+  Divergences, open decisions, and undocumented gaps for Voice and tone.
+</Card>
 
 ## Why it works this way
 

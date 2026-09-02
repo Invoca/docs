@@ -1,0 +1,38 @@
+---
+title: "Toast"
+description: "Divergences, open decisions, and undocumented gaps for Toast."
+icon: "bell"
+---
+
+See [Toast](/invoca-design-system/components/feedback/toast) for the decided part of this page.
+
+## Known issues
+
+No divergence is currently recorded specifically for Toast. It shares the `-alt` severity token
+family with Alert (see
+[TITAN-DIV-21](/invoca-design-system/foundations/divergences#titan-div-21), which is about
+Alert's variants but touches the same family), but nothing about Toast itself is currently
+recorded as a divergence.
+
+## Gaps in the current rules
+
+- **The generated adoption figure for Toast reads zero usages.** That is very likely a
+  tag-matching artifact — real call sites invoke `showToast(...)` as a function rather than
+  rendering a `<Toast>` JSX element — but this page cannot confirm actual adoption one way or
+  the other without a corrected scan.
+- **The trailing/variant icon's accessibility treatment is unconfirmed.** Nothing in
+  `ToastComponent.tsx` marks it `aria-hidden`, and no test exercises how a screen reader
+  announces it alongside the message.
+- **Whether `TitanToastProvider` can safely be mounted more than once, or nested, is
+  unconfirmed.** No test or story demonstrates this; the safe assumption is a single provider
+  near the application root.
+- **The exact behavior when `TitanToastProvider` is missing is unconfirmed.** `showToast` almost
+  certainly has nothing to render into, but no error message or fallback behavior was found in
+  source to describe precisely.
+- **Whether `anchorOrigin` or `autoHideDuration` may safely be overridden per call, and whether
+  any application actually does, is unconfirmed.** They are accepted because they pass through
+  to the underlying queue's own options, not because Titan has a stated position on overriding
+  the shared top-right, 5-second defaults.
+- **No design-side confirmation of this component was possible in this pass.** Figma
+  verification was out of scope for this research; everything on the main page is sourced from
+  code, tests, and stories only.
