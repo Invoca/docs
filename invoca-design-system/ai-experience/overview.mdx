@@ -6,10 +6,13 @@ keywords: ["ai", "agentic", "llm", "assistant", "signal ai", "trust", "disclosur
 ---
 
 <Warning>
-  **Exemplar section — first pass, entirely proposal.** Nothing below is built. There is no
-  shipped surface yet for any pattern in this section, which means there is no code fact and
-  no evaluation data behind any of it — every statement here is design intent, offered for
-  review, not established policy. See [Coverage, stated honestly](#coverage-stated-honestly).
+  **Exemplar section — first pass, entirely proposal, with one narrow exception.** No pattern
+  in this section is built as an experience, which means none of them carry code fact or
+  evaluation data — every statement here is design intent, offered for review, not established
+  policy. The one exception is [Signal AI](/invoca-design-system/ai-experience/actions/summarize)'s
+  transcript-summary capability, which is shipped and named — but even there, only its external
+  API contract is verified; the experience around it (disclosure, outcome states, correction)
+  is proposal like everything else. See [Coverage, stated honestly](#coverage-stated-honestly).
 </Warning>
 
 ## What this section governs
@@ -112,7 +115,7 @@ delivered with no visible seam is the characteristic failure of this whole secti
 pattern page states how a user notices and corrects one. "The model is usually right" does not
 count as an answer.
 
-### Disclosure & recourse
+### Disclosure & recourse {#disclosure-recourse}
 
 Six questions, on every interactive page, answered or explicitly marked not applicable:
 

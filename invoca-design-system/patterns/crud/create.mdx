@@ -79,11 +79,17 @@ flowchart TD
 </Steps>
 
 <Note>
-  **"Modal" is this page's word for what Titan's design language calls Dialog** — and what the
-  package itself exports as `Modal`, per [TITAN-DIALOG-01](/invoca-design-system/components/containment/dialog#constraints).
-  All three names point at the same thing. This page uses "Modal" because that's the term this
-  request used and the one most readers reach for; every link below goes to the real Dialog
-  page.
+  **"Modal" is this page's word for what Titan's design language calls Dialog.** Two of the
+  three names in play point at the same thing; the third is a trap. "Modal" (this page) and
+  "Dialog" (the design term, and the docs page this page links to) both mean the styled,
+  themed surface — imported from the package as `Modal`, per
+  [TITAN-DIALOG-01](/invoca-design-system/components/containment/dialog#constraints). The
+  package **also** exports something literally named `Dialog` — a raw, unstyled primitive with
+  none of `Modal`'s sizing presets, footer contract, or divider tokens. That export is not a
+  fourth name for the same thing; it's a different component that happens to share a word with
+  the design term. See [TITAN-DIV-27](/invoca-design-system/foundations/divergences#titan-div-27)
+  for the full case. Every link on this page to "Dialog" goes to the design-language page, and
+  every actual import belongs on `Modal` — never on the package's raw `Dialog` export.
 </Note>
 
 ## When this applies
