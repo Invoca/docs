@@ -1,0 +1,232 @@
+---
+title: "Recommend"
+description: "Proposing a specific next action from a pattern the system observed in call data — never applying it, only naming it."
+icon: "thumbs-up"
+keywords: ["recommendation", "suggested action", "next best action", "insight", "proactive suggestion", "trend"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  today. Nothing below is code fact or measured behavior — it is a proposal offered for
+  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+Call volume carrying a "confused about pricing"
+[Signal](/invoca-design-system/ai-experience/actions/summarize) is up 40% this week. Nothing
+requires a person to notice that on their own — the pattern is sitting in data the system
+already has. Recommend is the system surfacing it with a specific, actionable next step
+attached: consider updating the IVR prompt to clarify pricing before the call routes to an
+agent. The same shape applies to a routing suggestion ("shift 15% of paid search budget toward
+the campaign converting at twice the rate") or a budget-shift suggestion drawn from
+attribution data.
+
+Recommend is not a dashboard chart and not a generic alert. A chart says "this number moved."
+Recommend says "this number moved, and here's what to do about it" — it names a specific,
+concrete action, not just an observation. That's what separates it from ordinary reporting: the
+system has done the work of connecting an observed pattern to a candidate response.
+
+Recommend is also not the system doing the thing. It stops at naming the action. Acting on a
+40% increase in a confusion Signal by actually rewriting the IVR prompt, or acting on an
+attribution pattern by actually moving budget, requires business judgment about brand voice,
+customer experience, and risk tolerance that the system has no basis to make on its own —
+crossing into that requires leaving this pattern and using the actual editing surface.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The system found more than one plausible reading of a request, not a proactive insight | [Disambiguate](/invoca-design-system/ai-experience/actions/disambiguate) | Disambiguate resolves an existing request; Recommend originates a new one from observed data. |
+| The trend is worth showing but there's no specific action to attach to it | [Table](/invoca-design-system/components/data-display/table) or [Card](/invoca-design-system/components/data-display/card) | A number with no actionable direction is reporting, not a recommendation — attaching an action anyway when none exists produces noise the user learns to ignore. |
+| The action is well-understood, low-risk, and cheaply undoable | An ordinary Suggests-to-Acts flow with [Undo](/invoca-design-system/patterns/destructive-confirmation#decide-first-undo-or-confirm), not a standing recommendation card | If the system is confident enough to act and the user can cheaply reverse it, asking permission via a recommendation adds friction without adding safety — see [Agency tier](#agency-tier). |
+| There's nothing notable to recommend this period | [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state) | Recommend's own [Empty](#outcome-states) state hands off to this pattern rather than forcing a recommendation where none exists. |
+
+## Agency tier
+
+**Suggests, and it stays there deliberately.** Recommend names a direction — "consider updating
+the IVR prompt" — without producing the edited prompt itself. That's what keeps it at Suggests
+rather than [Drafts](/invoca-design-system/ai-experience/overview#the-four-sections-nothing-else-in-this-design-language-has):
+a Draft would be a reviewable, ready-to-submit IVR script; Recommend is the observation and the
+direction, with the actual editing left to the tool that already exists for it. Implementing a
+recommendation always means leaving this surface.
+
+This is a design choice, not an inevitability, and it's worth stating why it doesn't move up a
+tier here. Producing a draft of the changed artifact — the rewritten IVR prompt, the specific
+budget reallocation — would put this pattern at Drafts instead, and that is plausible future
+work. Until that draft step exists, presenting a recommendation as if it were already reviewable
+output overstates what the system has actually produced.
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────┐
+│  ◆ Recommendation                              │
+│                                                 │
+│  Calls with a "Confused about pricing" Signal   │
+│  are up 40% this week.        [ Confused about  │
+│                                  pricing ]       │
+│  Consider updating your IVR prompt to clarify    │
+│  pricing before the call routes to an agent.     │
+│                                                 │
+│   [ Review IVR settings ]        [ Not now ]    │
+│        outlined                    text          │
+└───────────────────────────────────────────────┘
+```
+
+| # | Part | Component | Required |
+|---|---|---|---|
+| 1 | Container | [Card](/invoca-design-system/components/data-display/card) | Yes |
+| 2 | AI identifier mark | See [Identifiers](/invoca-design-system/ai-experience/identifiers/avatar) | Yes — see [Disclosure & recourse](#disclosure-recourse) |
+| 3 | The observed evidence, stated as a number and a period | Text content, no component | Yes |
+| 4 | The Signal or metric named | [Tag](/invoca-design-system/components/data-display/tag) | Yes, when the evidence traces to a specific Signal |
+| 5 | The recommended action, framed as "consider," not a command | Text content, no component | Yes |
+| 6 | Route to the real editing surface | [Button](/invoca-design-system/components/actions/button) `outlined` | Yes — never `contained`, per [Agency tier](#agency-tier) |
+| 7 | Dismiss | [Button](/invoca-design-system/components/actions/button) `text`, or [Link](/invoca-design-system/components/actions/link) | Yes |
+
+The action button is never `contained` — per
+[TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints)'s reasoning at a
+different axis: weight here should not overstate a proposal the system cannot commit to on its
+own. It navigates to the real settings surface; it does not apply the change itself.
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | The region where recommendations appear shows a [Skeleton](/invoca-design-system/components/feedback/skeleton), not a spinner over blank space, while the trend detection runs. |
+| Streaming / partial | **Not applicable.** A recommendation is short enough that it renders complete or not at all; a partial recommendation card is not something a user can act on. |
+| Confident and right | The evidence is real, the direction is genuinely useful for this business — the easy case, and the one it's tempting to design exclusively for. |
+| Confident and wrong | **The case that matters most.** The recommendation reads exactly as confidently as a correct one — same layout, same tone, same evidence framing — while being wrong for this specific business: the 40% increase was a one-week seasonal spike, not a durable trend; the IVR prompt was already updated last week and the system doesn't know; or the Signal itself is mislabeled and the "confused about pricing" tag is catching a different intent. Nothing in the card distinguishes this from a right recommendation. The user only notices by checking the underlying evidence themselves (the Signal detail, the transcripts it's drawn from) or by acting on it and observing, over time, that nothing improved. |
+| Uncertain | A recommendation built on a small sample or a short observation window is framed with weaker language ("early signal" rather than a flat claim) or suppressed below a stated evidence threshold — see [TITAN-RECOMMEND-04](#constraints). |
+| Refused | A change was detected but no specific, actionable direction could be identified. The system says so rather than manufacturing a recommendation to fill the space — see [TITAN-RECOMMEND-05](#constraints). |
+| Empty | No notable pattern this period. Hands off to [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state)'s no-results treatment rather than rendering a blank card. |
+| Interrupted | **Mostly not applicable.** A recommendation isn't a running task the user watches; dismissing it mid-read is equivalent to "Not now," not a cancellation of anything in flight. |
+| Degraded | The system falls back to a simple threshold rule (e.g., "this metric crossed a fixed line") instead of full trend analysis. Disclosed in the card's own copy — "based on a simple threshold" — rather than presented with the same evidence framing as a modeled recommendation. |
+| Rate-limited / over budget | Recommendation generation runs on a batch cadence (e.g., daily) rather than continuously. The card states the cadence and when it last refreshed, rather than implying real-time analysis. |
+| Stale | The evidence window has closed or the business has already acted since the recommendation was generated. Every card carries a generated timestamp so the user can judge whether it's still current — see [TITAN-RECOMMEND-06](#constraints). |
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI, at the moment it matters?** Yes — the identifier mark and
+   the framing ("Recommendation," "Consider…") are part of the card, not disclosed elsewhere.
+2. **What did it use?** The specific Signal, metric, or data window the evidence is drawn from,
+   named in the card — "calls with a 'Confused about pricing' Signal," not "your data."
+3. **How sure is it, and does that change behavior?** Weak evidence changes the framing
+   (see [Uncertain](#outcome-states)) or suppresses the recommendation entirely below a stated
+   threshold — see [TITAN-RECOMMEND-04](#constraints). A confidence number with no behavior
+   attached to it is not shown.
+4. **How does the user check it?** The Signal tag and the evidence line route to the underlying
+   data — the calls or transcripts the pattern was drawn from — so the claim is checkable, not
+   just stated.
+5. **How does the user correct it?** Dismissing ("Not now") suppresses that specific
+   recommendation; it does not need to persist as a standing preference to be useful. Whether a
+   dismissal should reduce the likelihood of similar future recommendations is undecided — see
+   [Gaps](#gaps).
+6. **How does the user get out?** Ignoring the card costs nothing — no action is taken on the
+   user's behalf, and the underlying settings (IVR, budget, routing) remain exactly where the
+   user left them.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+
+## Evaluation
+
+Not evaluated. No eval set exists for trend detection or recommendation quality, and no
+threshold has been set for what counts as sufficient evidence to surface a recommendation at
+all.
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Evidence line | Calls with a "Confused about pricing" Signal are up 40% this week. | Something seems off with pricing calls. |
+| Recommendation framing | Consider updating your IVR prompt to clarify pricing before the call routes to an agent. | You should update your IVR prompt. |
+| Action button | Review IVR settings | Fix it |
+| Dismiss | Not now | Ignore |
+
+"Consider," not a command — the recommendation is a proposal, and the copy should not read as
+an instruction the system is issuing. State the evidence as a specific, checkable number and
+period, never a vague "recently" or "lately." Follows
+[Voice and tone](/invoca-design-system/content/voice-and-tone): plain language, no urgency
+manufactured beyond what the evidence supports.
+
+## Accessibility
+
+- A new recommendation appearing in an already-visible region is announced via a polite live
+  region — not an assertive one, since it is not an error and does not need to interrupt.
+- The evidence line and the recommendation framing are both in the accessible text of the card;
+  neither is conveyed only through the Tag's color.
+- The action button and the dismiss control are both reachable by keyboard in the order they
+  read visually — action before dismiss, matching the visual left-to-right order.
+- A generated timestamp (for staleness) is in the accessible text, not only a hover tooltip.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-RECOMMEND-01** | A recommendation states the evidence — a specific number and time period — in its own text, not just the proposed action. | An action with no stated basis asks for trust the reader can't evaluate against anything. |
+| **TITAN-RECOMMEND-02** | The action control routes to the real editing surface for that setting; it never applies the change directly. | Applying the change directly would move this pattern to Acts tier, which needs to be a recorded decision, not a default. See [Agency tier](#agency-tier). |
+| **TITAN-RECOMMEND-03** | The action button is never `contained`. | Matches [TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints)'s reasoning: visual weight should not overstate a proposal the system cannot commit to. |
+| **TITAN-RECOMMEND-04** | A recommendation built on evidence below a stated sufficiency threshold is either framed as tentative or not shown at all. | An unqualified claim built on a small sample reads as equally confident to one built on a real trend, and the reader has no way to tell them apart without the qualifier. |
+| **TITAN-RECOMMEND-05** | If a change is detected but no specific action can be identified, the system says so rather than manufacturing a recommendation to fill the space. | A recommendation invented to have something to show trains the reader to distrust every recommendation, including the useful ones. |
+| **TITAN-RECOMMEND-06** | Every recommendation card carries a generated timestamp. | A recommendation that was right when generated can be wrong by the time it's read; the timestamp is what lets the reader judge that for themselves. |
+| **TITAN-RECOMMEND-07** | Dismissing a recommendation never changes the underlying setting it was proposing to change. | The proposal and the change are two different actions with two different levels of consequence — conflating them removes the "the user decides" guarantee the Suggests tier depends on. |
+
+## Divergences
+
+Not applicable — nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether dismissing a recommendation should reduce the likelihood of similar future ones, or
+  whether every dismissal is independent, is undecided.
+- What evidence-sufficiency threshold (see [TITAN-RECOMMEND-04](#constraints)) gates whether a
+  recommendation shows at all has no stated number.
+- Whether recommendations should ever escalate to Drafts tier — producing the actual edited
+  artifact (a rewritten IVR script, a computed budget split) rather than only naming the
+  direction — is undecided; see [Agency tier](#agency-tier).
+- How the system distinguishes a durable trend from a seasonal or one-off spike before
+  recommending against it is undecided — this is the mechanism behind the
+  [Confident and wrong](#outcome-states) case and currently has no stated answer.
+
+## Volatility
+
+This page assumes trend detection can identify not just that a metric moved but that a specific,
+concrete action is plausibly connected to it — a much harder capability than surfacing the
+number alone. If that connection can't be made reliably, [TITAN-RECOMMEND-05](#constraints)
+governs more of this pattern's real-world behavior than the happy path does. Dated 2026-09-02;
+revisit on the first real implementation of any trend-to-action mapping, or if an evaluation
+framework for recommendation quality is established.
+
+## Related
+
+- [AI Experience overview](/invoca-design-system/ai-experience/overview) — vocabulary, agency
+  tiers, and the six disclosure questions this page answers
+- [Disambiguate](/invoca-design-system/ai-experience/actions/disambiguate) — resolving an
+  existing request, rather than originating a new one from observed data
+- [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state) —
+  what renders when there's nothing notable to recommend
+- [Governors: Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) —
+  for showing the reasoning behind a recommendation in more depth than the evidence line alone
+- [Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) — for
+  qualifying a recommendation's confidence in the interface's own words
+- [Card](/invoca-design-system/components/data-display/card), [Tag](/invoca-design-system/components/data-display/tag),
+  [Button](/invoca-design-system/components/actions/button), [Table](/invoca-design-system/components/data-display/table) —
+  the components this pattern composes
+
+## Why it works this way
+
+**Stopping at the proposal, rather than at the applied change, is what keeps the tier honest.**
+A recommendation that stopped short of naming a specific action would be indistinguishable from
+a chart; one that went further and applied the change would need the business judgment about
+risk and voice that nothing in this pattern has a basis to supply. Naming the action and routing
+to the real editing surface is the one point on that spectrum where the system's contribution
+(noticing the pattern, connecting it to a plausible direction) and the human's contribution
+(deciding whether it's actually right for this business) are each doing the part they're
+actually equipped for.
+
+**The evidence line exists so the recommendation can be checked, not just trusted.** A number
+and a period are falsifiable in a way "call volume is up" is not — the reader can go look at the
+calls behind the Signal and decide for themselves whether the system's read on the data matches
+their own.

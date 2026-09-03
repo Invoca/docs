@@ -1,12 +1,247 @@
 ---
 title: "Dashboard"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "layers"
+description: "Multiple summaries read at a glance — the shape of something, not an enumeration of its members."
+icon: "layout-dashboard"
 tag: "Draft"
+keywords: ["dashboard", "summary", "overview page", "widgets", "metrics", "charts", "at a glance", "landing page", "widget grid"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+  page — Titan's design library was not available while writing it. It is built from general
+  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+  [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons),
+  [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states), and
+  [Error handling](/invoca-design-system/patterns/error-handling) already establish. Treat every
+  constraint below as a starting point to check against real product screens, not as a rule
+  already enforced.
 </Warning>
+
+## What it is
+
+A page whose job is **giving the shape of something, not enumerating its members.**
+[List view](/invoca-design-system/views/list-view#why-it-works-this-way) states the boundary
+from the other side: a list page that accumulates a summary strip, a chart, and a panel of
+recent activity has stopped being a list and become a dashboard with a table on it
+([TITAN-LSTVIEW-01](/invoca-design-system/views/list-view#constraints)). That is the test this
+archetype exists on the far side of — a Dashboard is what that accumulation was reaching for
+all along.
+
+You are building one if the page answers "what's the shape of this?" — an account's health, a
+campaign's performance this month, an integration's recent activity — rather than "which of
+these?" ([List view](/invoca-design-system/views/list-view)) or "what about this one?"
+([Detail view](/invoca-design-system/views/detail-view)). Its subject is typically an account,
+a time range, or a product area — not a single record.
+
+## Region vocabulary
+
+This archetype adds no regions to the [page frame](/invoca-design-system/views/overview#the-page-frame).
+What it adds is a name for what fills `Contents`: a **widget** — one self-contained summary that
+answers a single question at a glance. A widget is not a frame region and not a named export in
+this system; it is this archetype's own word for one grid cell.
+
+| Region | Also called | The system uses |
+|---|---|---|
+| One grid cell | Tile, panel, summary card | **Widget** (this archetype's term, not a system export) |
+| The grid | Widget grid, summary grid | **`Contents`** |
+
+## Choose this view when
+
+- The page's subject is a **whole**, not a member of a collection — an account, a time range, a
+  product area — and the reader's job is reading its shape, not finding one item inside it.
+- What answers the reader's question is several independent summaries, each readable at a
+  glance, rather than one continuous body of rows or one record's own attributes.
+- Acting further means navigating away to a list or detail view. The dashboard itself commits
+  to nothing.
+
+## Choose something else when
+
+| If the page also needs to… | Use | Why |
+|---|---|---|
+| Let the reader find or compare individual members of a collection | [List view](/invoca-design-system/views/list-view) | A reader who wants the shape of the data doesn't need rows; a reader who wants a specific member doesn't need widgets. Building both into one page is exactly the accumulation [List view's own rationale](/invoca-design-system/views/list-view#why-it-works-this-way) warns against — a list with a summary strip and a chart bolted on has become this archetype without admitting it. |
+
+## Regions
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| `Header` — `Left` | Yes | `banner` | `Title` naming the account, time range, or area being summarized. `Breadcrumb` typically omitted when this is a section's own landing page. |
+| `Header` — `Right` | No | — | `Actions` on the page itself — export, customize. Never a control that changes what the widgets show. |
+| `Controls` | No | `search` when primarily search, otherwise none | A time-range or scope selector, when the page has one — see [Header — Right, or Controls](#header-right-or-controls). |
+| `Contents` | Yes | `main` | The widget grid. Nothing else shares this region — no standalone table of rows, which is what would make this a list view with extras rather than a dashboard. |
+| `Footer` | No | `contentinfo` | Absent by default. A dashboard summarizes; it has no single, whole-page commit for a footer to hold. |
+
+## What fills each region
+
+### Header — Right, or Controls
+
+A time-range or scope selector changes what the widgets display — it reshapes what's rendered
+without changing any underlying data. That is the job [Views overview](/invoca-design-system/views/overview#region-vocabulary)
+assigns to `Controls`: *"`Controls` changes what the body shows, never what the data is."*
+Switching a dashboard from "last 7 days" to "last 30 days" doesn't touch the data; it changes
+which slice of it the widgets summarize. That puts the selector in `Controls`, not `Right` —
+`Right` is reserved for an action *on* the page itself (export the current view, customize which
+widgets show), never for something that reshapes what the widgets are summarizing.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Time-range or scope selector | `Controls` | Changes what the widgets show. Never in `Right` — see [TITAN-VIEW-05](/invoca-design-system/views/overview#constraints). |
+| Export, customize, or another page-level action | `Actions` in `Right` | At most one primary — [TITAN-VIEW-04](/invoca-design-system/views/overview#constraints). Many dashboards legitimately have none. |
+
+### Contents — the widget grid
+
+A responsive grid of summary widgets — stat tiles, charts, small tables — each answering one
+question at a glance. [Card](/invoca-design-system/components/data-display/card) is the
+system's container for a self-contained unit of content and is the natural widget shell; a
+widget's own content might be a number and a trend, a small
+[Table](/invoca-design-system/components/data-display/table), or a chart. Charting itself isn't
+a documented component in this system yet, so a chart widget's internal rendering is out of this
+page's scope.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| One widget | [Card](/invoca-design-system/components/data-display/card), holding a number, a chart, or a small table | Answers exactly one question. A widget trying to answer two is starting to need its own detail view. |
+| The grid | `Contents` | Responsive columns — see [Responsive and density behavior](#responsive-and-density-behavior). Capped at a stated maximum before the page needs splitting — see [Constraints](#constraints). |
+
+<Note>
+  **Whether widgets can be individually configured or rearranged by the reader is an open
+  question this page does not resolve.** Nothing already documented gives grounds to assert
+  either answer. Treat a fixed, page-defined widget set as the default until a real case forces
+  the question.
+</Note>
+
+### Contents — loading
+
+A dashboard's widgets load independently and at different speeds — a stat tile might resolve in
+200ms while a chart's query takes three seconds. Each widget gets its own
+[Skeleton](/invoca-design-system/components/feedback/skeleton) matching its own eventual shape —
+a chart-shaped skeleton, a stat-tile-shaped skeleton — per
+[Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons#when-this-applies),
+rather than one page-level spinner blocking the whole grid until every widget resolves. A reader
+who wants one number should not wait on the slowest chart to see it.
+
+### Contents — empty widget vs. failed widget
+
+A widget with nothing to show and a widget that failed to load are different states, and the
+distinction is made at the *widget* level, not the page's:
+
+- **Nothing to show.** The underlying query succeeded and returned nothing to summarize — no
+  calls in the selected range. Follows
+  [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states#when-this-applies),
+  scoped to that one widget.
+- **Failed to load.** The widget's own request errored. Follows
+  [Error handling](/invoca-design-system/patterns/error-handling#deciding-where-a-failure-shows),
+  scoped to that one widget, with its own retry.
+
+**One widget's failure must not block the others from rendering.** Each widget owns its own
+load, its own empty case, and its own failure independently — see [Constraints](#constraints).
+
+## Responsive and density behavior
+
+Titan is desktop-first — most surfaces live at `lg` and `xl`, and `xs`/`sm` are rarely
+exercised (see [Layout & grid](/invoca-design-system/foundations/layout-and-grid#breakpoints)).
+What follows is proposed with that in mind: it answers "does it still work at all" below `md`
+rather than describing a deliberate phone-first behavior.
+
+| Breakpoint | Collapses | Stacks | Dropped |
+|---|---|---|---|
+| `md` and below | Column count reduces (for example 4 columns to 2) | Widgets reflow into fewer columns, a taller grid | Nothing — every widget stays reachable by scrolling |
+| `sm` and below | Grid becomes a single column | Every widget stacks vertically in source order | Nothing |
+| Compact density | Widget internal padding only | — | — |
+
+<Note>
+  **Widget order at narrow widths is the page's decision, not the reader's**, until the open
+  question above about rearrangement is resolved. Absent that, the most important widget renders
+  first in source order, since a single column reads top to bottom.
+</Note>
+
+## Accessibility
+
+The page-level decisions are the frame's, and they apply unchanged — see
+[Views overview → Accessibility](/invoca-design-system/views/overview#accessibility). One
+`main`, one `h1` on `Title`, region order matching visual order.
+
+What is **specific to this archetype**:
+
+- **Each widget has its own heading**, descending from `Title`'s `h1` without skipping a level,
+  so a screen-reader user outlining the page can tell the widgets apart and jump between them.
+  A dashboard built from a dozen unlabeled `Card`s is a dozen indistinguishable regions.
+- **Each widget's loading state carries its own `aria-busy`**, per
+  [Loading & skeletons → Accessibility](/invoca-design-system/patterns/loading-and-skeletons#accessibility) —
+  a dozen simultaneous, independent loads should announce as a dozen independent completions,
+  not one.
+- **A failed widget's retry action has an accessible name naming what it retries** — "Retry call
+  volume," not "Retry" — the same reasoning
+  [List view](/invoca-design-system/views/list-view#accessibility) applies to a row action among
+  several identical ones.
+- **An empty or failed widget does not disappear.** The region stays, with its own EmptyState or
+  error message in place, so a screen-reader user tabbing through the grid encounters a stated
+  reason rather than a missing widget.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DASHVIEW-01** | `Contents` holds a grid of independent summary widgets — never a table's rows, and never one record's own attributes. | Rows belong to [List view](/invoca-design-system/views/list-view); a record's own attributes belong to [Detail view](/invoca-design-system/views/detail-view). A dashboard that grows either has stopped summarizing and become the other archetype with decoration on it. |
+| **TITAN-DASHVIEW-02** | A widget's loading state is its own [Skeleton](/invoca-design-system/components/feedback/skeleton), matching its own shape. No single page-level spinner gates the whole grid. | Per [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons#when-this-applies) — widgets resolve at different speeds, and blocking the fast ones on the slowest throws away the independence that makes a grid faster to read than a list. |
+| **TITAN-DASHVIEW-03** | A widget that fails to load renders its own error state, in place, without hiding or blocking the other widgets. | Per [Error handling](/invoca-design-system/patterns/error-handling#deciding-where-a-failure-shows) — one query failing is not evidence the other eleven did. |
+| **TITAN-DASHVIEW-04** | An empty widget and a failed widget are visibly and textually distinguished — never the same generic blank tile. | Per [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states#the-problem) — "nothing to summarize" and "couldn't load this" send the reader in different directions. |
+| **TITAN-DASHVIEW-05** | A control that changes what the widgets show — a time range, a scope selector — goes in `Controls`, never `Right`. | Per [TITAN-VIEW-05](/invoca-design-system/views/overview#constraints) — it changes the view, not the data. |
+| **TITAN-DASHVIEW-06** | At most one primary action in `Right`, and a dashboard may legitimately have none. | Per [TITAN-VIEW-04](/invoca-design-system/views/overview#constraints) — a page whose job is reading, not acting, often has nothing that rises to a page-level action. |
+| **TITAN-DASHVIEW-07** | The widget grid is capped at a stated maximum — proposed at 12 — before the page is split into scoped dashboards or a widget is promoted to its own view. | An unbounded grid stops being readable at a glance, which is the one thing a dashboard exists to be. Past that point the reader is scrolling and comparing, which is [List view](/invoca-design-system/views/list-view)'s job, not this one. |
+
+## Composed example
+
+<Warning>
+  **No live embed exists yet.** Per this page's own rule, a composed example should be a real
+  screen or a live embed rather than a static image — the diagram below is structural (region
+  names and what's in them, no measurements or visual styling) for exactly that reason, the same
+  way every Structure diagram in [Patterns](/invoca-design-system/patterns/overview) is. Replace
+  it with a live embed the first time this archetype is built.
+</Warning>
+
+```
+┌───────────────────────────────────────────────────────┐
+│ Account overview                        [Export ▾]     │  ← Header: Left (Title) / Right (Actions)
+├───────────────────────────────────────────────────────┤
+│ [Last 30 days ▾]                                        │  ← Controls: scope selector
+├───────────────────────────────────────────────────────┤
+│ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
+│ │ Total calls    │ │ Conversion     │ │ Avg. duration  │ │  ← Contents: widgets
+│ │ 12,480    ▲4%  │ │ 3.2%      ▼0.1%│ │ 2m 14s    ▲6%  │ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ │
+│ ┌─────────────────────────────┐ ┌───────────────────┐ │
+│ │ Calls over time (chart)      │ │ Recent campaigns    │ │
+│ │ ░░░░▓▓▓▓░░░░▓▓▓▓░░░░▓▓        │ │ (small table)        │ │
+│ └─────────────────────────────┘ └───────────────────┘ │
+└───────────────────────────────────────────────────────┘
+```
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame this archetype fills
+- [List view](/invoca-design-system/views/list-view) — the boundary this archetype sits across
+  from, and the destination once a reader wants a specific member rather than the shape of the
+  whole
+- [Card](/invoca-design-system/components/data-display/card) — the widget shell
+- [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) ·
+  [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) ·
+  [Error handling](/invoca-design-system/patterns/error-handling) — the three states each widget
+  owns independently
+
+## Why it works this way
+
+**A widget's independence is the point, not an implementation detail.** The reason to load,
+empty, and fail each widget on its own, rather than gating the grid on the slowest widget or the
+first one to error, is the same reason the page exists at all: a dashboard's value is that
+several different questions can each get answered the moment their own answer is ready, without
+waiting on each other. A page-level spinner or a page-level error state would make every widget
+only as fast, or as reliable, as the worst one on the page — which throws away the one advantage
+a grid of independent summaries has over a single query that has to succeed all at once.
+
+**The cap on widget count exists because "at a glance" is a real claim, not a slogan.**
+[List view](/invoca-design-system/views/list-view#why-it-works-this-way) names the failure mode
+from the other side — a list that keeps gaining widgets has stopped being a list. The matching
+failure here is a dashboard that keeps gaining widgets until reading it takes as long as reading
+the underlying data would have. A stated ceiling forces that overflow into a decision — split
+the dashboard, or promote a widget to its own page — instead of letting the grid grow until it
+quietly stops working.

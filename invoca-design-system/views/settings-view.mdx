@@ -1,12 +1,285 @@
 ---
 title: "Settings view"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "layers"
+description: "Configuration grouped into independent sections, on one scrollable page — each section committed on its own."
+icon: "settings"
 tag: "Draft"
+keywords: ["settings", "configuration", "preferences", "table of contents", "anchor nav", "sections", "account settings"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+  page — Titan's design library was not available while writing it. It is built from general
+  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+  [CRUD: Create](/invoca-design-system/patterns/crud/create), and
+  [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) already
+  establish. It also builds directly on [Full-page form](/invoca-design-system/views/full-page-form),
+  the sibling archetype that already resolves "several independent sections, one scrollable
+  page" for a bounded creation task — read below for where this page follows that precedent and
+  where it deliberately diverges. Treat every constraint below as a starting point to check
+  against real product screens, not as a rule already enforced.
 </Warning>
+
+## What it is
+
+A page that configures an **already-existing** subject's standing settings — an account's
+settings, a campaign's settings, an integration's configuration — grouped into independent
+sections a reader visits selectively over that subject's ongoing life, not filled in once toward
+a single commit. This is the concrete answer to
+[CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints):
+*"A form with several independent sections is one page with a Table of Contents, not a
+Wizard."* Settings view is what that Table of Contents looks like when the subject is standing
+configuration rather than a form being filled in once.
+
+Settings are almost always settings **of** something — an account, a campaign, an integration —
+never a freestanding subject of their own. `Breadcrumb` back to that thing is required; see
+[Header — Left](#header-left).
+
+You are building one if the page's sections are independent (no fixed order, each meaningful on
+its own) and the subject already exists and will be reconfigured repeatedly over time, not
+created once and then left. A page that is filled in once toward a single commit, for an object
+that does not yet exist, is [Full-page form](/invoca-design-system/views/full-page-form) even
+when it also has several independent sections — see
+[Choose something else when](#choose-something-else-when).
+
+## Region vocabulary
+
+This archetype adds no regions to the [page frame](/invoca-design-system/views/overview#the-page-frame).
+It reuses a structural pattern [Full-page form](/invoca-design-system/views/full-page-form#contents-the-form)
+already established for independent sections on one page — an in-page navigation aid inside
+`Contents`, not a frame region — rather than inventing a second answer to the same shape of
+problem. Two terms are worth naming even though neither is a frame region:
+
+| Region | Also called | The system uses |
+|---|---|---|
+| One labeled group of related fields | Group, panel, block | **Section** (this archetype's term, following [Full-page form](/invoca-design-system/views/full-page-form#region-vocabulary)'s own usage — not a system export) |
+| In-page navigation between sections | Table of contents, section nav, jump links | Not a named region — an anchor nav inside `Contents`, the same pattern [Full-page form](/invoca-design-system/views/full-page-form#region-vocabulary) names |
+
+## Choose this view when
+
+- The subject already exists and is being configured on an ongoing basis, not created for the
+  first time.
+- Configuration breaks into independent sections — notification preferences, billing, API
+  access — with no fixed order between them.
+- A reader typically comes back to change one section at a time, on separate occasions, rather
+  than filling in the whole page once.
+
+## Choose something else when
+
+| If the page also needs to… | Use | Why |
+|---|---|---|
+| Configure only one thing — nothing to group into sections | [Full-page form](/invoca-design-system/views/full-page-form) | Full-page form's own `Contents` already collapses to a plain form with no anchor nav once there is only one section — see [that page's Regions table](/invoca-design-system/views/full-page-form#regions). Settings view's grouping has nothing to organize once there is only one thing to configure. |
+| Be filled in once, toward a single commit, for an object that does not yet exist | [Full-page form](/invoca-design-system/views/full-page-form) | [TITAN-FPFORM-02](/invoca-design-system/views/full-page-form#constraints) already resolves several independent sections onto one page with an anchor nav — for exactly the bounded, one-time case. Settings view is the same structural shape turned to the opposite case: standing configuration edited piecemeal, indefinitely, which is why its footer diverges — see [Footer](#footer). |
+| Walk the reader through sections that genuinely depend on each other, in order | [Wizard](/invoca-design-system/views/wizard) | Per [TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) — order-dependent sections need a Wizard regardless of which archetype would otherwise hold them. |
+
+## Regions
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| `Header` — `Left` | Yes | `banner` | `Title` naming the scope being configured. `Breadcrumb` back to the thing these settings belong to — required, not optional, on this archetype. |
+| `Header` — `Right` | No | — | A secondary, non-committing action if one exists. Never a section's Save. |
+| `Header` — second row | No, in the default case | `tablist` only if the Tabs threshold below is met | Nothing, in the default case — see [Header — second row](#header-second-row). |
+| `Controls` | No | `search` when primarily search | A search box across all settings, when the number of fields makes one worth having — not required by this archetype. |
+| `Contents` | Yes | `main` | The sections, each a labeled group of fields, plus an anchor nav when there is more than one. |
+| `Footer` | No | — | Absent. There is no single, whole-page commit — see [Footer](#footer). |
+
+## What fills each region
+
+### Header — Left
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Title | `Title` | **Required.** Names the scope — "Notification settings," "Campaign settings" — not a bare "Settings" with nothing to anchor it. |
+| Breadcrumb | `Breadcrumb` | **Required on this archetype**, pointing to the thing these settings configure. Settings are settings *of* an account, a campaign, an integration — omitting the breadcrumb strands the reader with no path back to what they're configuring. |
+
+### Header — second row
+
+The default state is **nothing** — per [Views overview](/invoca-design-system/views/overview#header-tab-bar)'s
+own three states (nothing, tabs, filters), Settings view's header carries no second row in the
+common case. The Table of Contents is not a header occupant at all; it lives inside `Contents`,
+following [Full-page form](/invoca-design-system/views/full-page-form#contents-the-form)'s
+precedent — see [Contents — sections and navigation](#contents-sections-and-navigation) below.
+
+**Why not a tab bar**, when [Views overview](/invoca-design-system/views/overview#header-tab-bar)
+already defines one as exactly "a section of the page's subject" — which a settings section
+plainly is. The reason is [TITAN-VIEW-16](/invoca-design-system/views/overview#constraints):
+*"Exactly one `TabPanel` is visible at a time."* That property is the wrong fit here, even
+though the section-of-a-subject test passes. A reader configuring settings often needs to see
+two related sections at once — checking who's on the notification list while editing the
+escalation rule that pages them — or wants to search across every setting at once, not just the
+one section currently active. A tab bar hides everything but the active panel by design; an
+anchor nav inside `Contents` keeps every section on the page, reachable by scroll and by search,
+which is the property this archetype actually needs.
+
+**Tabs are still the right call when sections are numerous and truly unrelated** — each large
+enough to be worth its own screen, not just a labeled group of fields on one coherent
+configuration surface. That is the same threshold
+[Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure#structure)
+already states for its own "Settings tab over Accordion" variation: a secondary area large
+enough that most users never open it is worth a dedicated tab, not a scroll-triggered reveal.
+"Billing" and "Notification preferences" on one account settings surface are related enough to
+stay on one page; an entire "Integrations" configuration area with its own object model might
+cross that threshold and deserve its own tab, its own URL, and its own Settings view underneath
+it.
+
+### Contents — sections and navigation
+
+Each section is a labeled group of related fields — a heading, then its fields, visually
+distinguished the same way [Full-page form](/invoca-design-system/views/full-page-form#contents-the-form)
+already specifies: headings, dividers, or grouped cards, never hidden behind tabs or steps. An
+anchor nav, when there is more than one section, is a shortcut to a section, never a gate in
+front of it — clicking an entry scrolls to that section; it never hides the others. This is the
+same structure [Full-page form](/invoca-design-system/views/full-page-form#constraints)
+([TITAN-FPFORM-02](/invoca-design-system/views/full-page-form#constraints),
+[TITAN-FPFORM-05](/invoca-design-system/views/full-page-form#constraints)) already establishes;
+Settings view follows it rather than re-deciding it.
+
+| Slot | Use | Constraint |
+|---|---|---|
+| A section | Heading, then its fields | Independent of every other section — no fixed order, and no section depends on another's value to make sense. |
+| Section anchor nav | An in-page jump list | Present once there is more than one section. Scrolls to a section; never hides the others — see [TITAN-FPFORM-05](/invoca-design-system/views/full-page-form#constraints). |
+
+**Whether a section starts collapsed follows [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure#when-this-applies)'s
+own threshold directly, rather than a rule invented here**: collapse a section only if it is
+genuinely secondary — used by a minority of readers in a minority of sessions
+([TITAN-DISCLOSE-01](/invoca-design-system/patterns/progressive-disclosure#constraints)) — and
+never collapse the section a reader most likely came to this page to change
+([TITAN-DISCLOSE-03](/invoca-design-system/patterns/progressive-disclosure#constraints)). A
+settings page whose every section is something most accounts touch regularly should show every
+section open by default; disclosure earns its place only for the sections most accounts never
+adjust.
+
+### Footer
+
+**Absent.** Per [Choose something else when](#choose-something-else-when), Settings view is
+standing configuration a reader returns to selectively, not a form filled in once toward a
+single commit — the frame's page-level `Footer`, built for exactly that single commit
+([Views overview → Footer](/invoca-design-system/views/overview#footer)), has no whole-page
+action to hold here.
+
+**Each section commits independently instead** — its own Save and Cancel, scoped to that
+section's own fields, composed inside `Contents` next to the section itself rather than in a
+shared page-level region. This is closer to
+[Inline editing](/invoca-design-system/patterns/inline-editing)'s territory than to a form's:
+the commit sits next to what changed, and a save is scoped to exactly the fields the reader
+touched. It is not literally inline editing's single-field mechanism — a settings section
+usually groups several related fields that make sense committed together — but it borrows the
+same governing idea: **commit close to the change, and never let one section's problem block
+another's already-valid edit.**
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Section-level Save and Cancel | `Button` pair, inside `Contents`, at the foot of each section | Commits or discards only that section's fields. Cancel reverts to the section's last-saved values, never to the whole page's. |
+
+## Responsive and density behavior
+
+Titan is desktop-first — most surfaces live at `lg` and `xl`, and `xs`/`sm` are rarely
+exercised (see [Layout & grid](/invoca-design-system/foundations/layout-and-grid#breakpoints)).
+What follows is proposed with that in mind.
+
+| Breakpoint | Collapses | Stacks | Dropped |
+|---|---|---|---|
+| `md` and below | The anchor nav collapses from a persistent side rail into a dropdown or a collapsible list above the sections — the same collapse [Full-page form](/invoca-design-system/views/full-page-form#responsive-and-density-behavior) already specifies | Multi-column field layouts within a section stack to one column | Nothing — every section stays reachable; only the nav's presentation changes |
+| Compact density | Field and section spacing only | — | — |
+
+## Accessibility
+
+The page-level decisions are the frame's, and they apply unchanged — see
+[Views overview → Accessibility](/invoca-design-system/views/overview#accessibility). One
+`main`, one `h1` on `Title`, region order matching visual order.
+
+What is **specific to this archetype**:
+
+- **Each section heading is a real heading**, descending from `Title`'s `h1` without skipping a
+  level, so a screen-reader user outlining the page sees the same structure the anchor nav
+  exposes visually — the same requirement
+  [Full-page form](/invoca-design-system/views/full-page-form#accessibility) already states.
+- **The anchor nav is a navigation landmark with an accessible name** — "Settings sections," not
+  "Navigation" — whose links move focus to the target section's heading, not just scroll
+  position. Same reasoning as [Full-page form](/invoca-design-system/views/full-page-form#accessibility).
+- **A collapsed section's trigger states what it reveals**, and a validation error inside a
+  collapsed section forces it open and is announced — per
+  [TITAN-DISCLOSE-04](/invoca-design-system/patterns/progressive-disclosure#constraints) and
+  [TITAN-DISCLOSE-05](/invoca-design-system/patterns/progressive-disclosure#constraints), cited
+  rather than restated.
+- **A section's Save and Cancel are icon-and-label or clearly labeled controls with an
+  accessible name naming the section** — "Save notification settings," not "Save" — the same
+  reasoning [Inline editing](/invoca-design-system/patterns/inline-editing#accessibility) applies
+  when a page has more than one identically-labeled commit control.
+- **A section save failure is announced** via a live region or the error text's own
+  association to the section, not shown only visually — matching
+  [Inline editing](/invoca-design-system/patterns/inline-editing#accessibility)'s equivalent
+  rule for a failed field-level save.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SETVIEW-01** | `Breadcrumb` is required in `Header` — `Left`, pointing to the thing these settings configure. | Settings are settings *of* something. A page naming only "Settings" with no ancestry strands the reader with no path back to the account, campaign, or integration it belongs to. |
+| **TITAN-SETVIEW-02** | Independent sections get a Table of Contents inside `Contents`, not a tab bar in the header's second row — unless sections are numerous and truly unrelated, each substantial enough to be worth its own screen, per [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure#structure)'s own "Settings tab" threshold. | Per [TITAN-VIEW-16](/invoca-design-system/views/overview#constraints) — a tab bar shows exactly one panel at a time, which hides related settings from each other and blocks searching across them. An anchor nav keeps every section visible and searchable, which is what a reader configuring related settings needs. |
+| **TITAN-SETVIEW-03** | A section starts collapsed only when it meets [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure#constraints)'s own threshold for genuinely secondary content; a section most readers actually came to change starts expanded. | Cited directly per [TITAN-DISCLOSE-01](/invoca-design-system/patterns/progressive-disclosure#constraints) and [TITAN-DISCLOSE-03](/invoca-design-system/patterns/progressive-disclosure#constraints) — this archetype does not re-decide the threshold, it applies it. |
+| **TITAN-SETVIEW-04** | Each section commits independently, with its own Save and Cancel scoped to that section's fields. The page carries no single, page-level `Footer` commit. | A whole-page commit would force revalidating and resubmitting sections nobody touched, and a validation failure in one section would block saving an unrelated, already-valid change in another. |
+| **TITAN-SETVIEW-05** | Cancelling a section reverts only that section's uncommitted edits, never any other section's. | Sections are independent; a shared Cancel would make an accidental click in one section discard work in another that the reader never intended to touch. |
+| **TITAN-SETVIEW-06** | A validation error inside a collapsed section forces that section open and is announced. | Per [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure#constraints) — the same rule that page states, applied here rather than re-decided. |
+| **TITAN-SETVIEW-07** | A failed section save keeps that section's fields in their edited, unsaved state, with the error rendered inline in that section. It never silently reverts to the last-saved value. | Same reasoning as [TITAN-INLINE-05](/invoca-design-system/patterns/inline-editing#constraints) — reverting on failure discards a correction the reader believed they'd made, with no way to recover it. |
+
+## Composed example
+
+<Warning>
+  **No live embed exists yet.** Per this page's own rule, a composed example should be a real
+  screen or a live embed rather than a static image — the diagram below is structural (region
+  names and what's in them, no measurements or visual styling) for exactly that reason, the same
+  way every Structure diagram in [Patterns](/invoca-design-system/patterns/overview) is. Replace
+  it with a live embed the first time this archetype is built.
+</Warning>
+
+```
+┌───────────────────────────────────────────────────────┐
+│ Acme Inc. / Settings                                    │  ← Header: Left (Breadcrumb, Title). No second row.
+├───────────────────────────────────────────────────────┤
+│ ┌───────────┐ ┌─────────────────────────────────────┐ │
+│ │ Profile   │ │  Profile                              │ │
+│ │ Notif.    │ │  Name:  [_______________________]     │ │
+│ │ Billing   │ │                    [Cancel] [Save]    │ │  ← section-level commit
+│ │ API keys  │ │                                        │ │
+│ └───────────┘ │  Notifications                         │ │
+│               │  ▸ Advanced routing (collapsed)         │ │  ← Progressive disclosure
+│               │  ...                                    │ │
+│               │                    [Cancel] [Save]      │ │  ← section-level commit
+│               └─────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────┘
+     No page-level Footer — each section commits on its own.
+```
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame this archetype fills
+- [Full-page form](/invoca-design-system/views/full-page-form) — the sibling archetype for the
+  same "several independent sections, one scrollable page" shape, applied to a bounded,
+  one-time commit instead of standing configuration
+- [CRUD: Create — TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) — the
+  constraint this page resolves concretely
+- [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) — the
+  collapsed/expanded threshold this page applies rather than re-deriving
+- [Inline editing](/invoca-design-system/patterns/inline-editing) — the closer territory for a
+  scoped, section-level commit than a page-level form submit
+- [Wizard](/invoca-design-system/views/wizard) — where sections genuinely depend on each other
+  in order
+
+## Why it works this way
+
+**The anchor nav is borrowed, not reinvented, because the underlying shape is identical.**
+[Full-page form](/invoca-design-system/views/full-page-form#why-it-works-this-way) already
+worked out that independent sections belong on one scrollable page with a jump list rather than
+behind tabs or steps, for the reason that hiding them teaches a relationship — order, or
+boundary — that independent sections don't have. Settings view's sections are just as
+independent of each other; re-deriving a second answer to the same question would only invite
+the two pages to quietly drift apart over time.
+
+**The footer is where Settings view actually diverges, and the reason is how long the page
+lives.** A [Full-page form](/invoca-design-system/views/full-page-form) is filled in once, on
+the way to creating something that does not yet exist — a single commit matches a single visit.
+Settings view's subject already exists and gets reconfigured indefinitely, in separate visits,
+by readers who came to change one section and have no reason to re-touch the rest. A page-level
+commit assumes the whole page was just filled in together; nothing about standing configuration
+matches that assumption, so the commit moves to where the actual unit of change is — the
+section.

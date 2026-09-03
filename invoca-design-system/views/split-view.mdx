@@ -1,12 +1,257 @@
 ---
 title: "Split view"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "layers"
+description: "A list and a detail pane side by side."
+icon: "columns-2"
 tag: "Draft"
+keywords: ["split view", "master detail", "list detail", "two pane", "side by side", "selection"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+  page — Titan's design library was not available while writing it. It is built from general
+  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+  [List view](/invoca-design-system/views/list-view), [Detail view](/invoca-design-system/views/detail-view),
+  and [CRUD: Read](/invoca-design-system/patterns/crud/read) already establish. Treat every
+  constraint below as a starting point to check against real product screens, not as a rule
+  already enforced.
 </Warning>
+
+## What it is
+
+A page whose body holds a **list and a detail pane side by side** — a narrower version of
+[List view](/invoca-design-system/views/list-view)'s table next to a narrower version of
+[Detail view](/invoca-design-system/views/detail-view)'s content, so a reader can move between
+records without losing the collection they're choosing from. [List view](/invoca-design-system/views/list-view)'s
+own [Choose something else when](/invoca-design-system/views/list-view#choose-something-else-when)
+table already names this page for exactly this case — "keep the list visible while working in a
+record" — because repeated navigation back to the list is the signal that the two belong side
+by side. This page is that destination.
+
+You are building one if the reader's job alternates between "which of these" and "what about
+this one" often enough that a full-page trip between [List view](/invoca-design-system/views/list-view)
+and [Detail view](/invoca-design-system/views/detail-view) costs more than it's worth.
+
+## Region vocabulary
+
+**This archetype adds no regions, but it changes how one is used.** Per
+[TITAN-VIEW-06](/invoca-design-system/views/overview#constraints), a page has exactly one
+`Contents`, and a split view does not violate that by having a list and a detail pane — it is
+**one `Contents` region, internally divided into two panes**: a narrower list pane and a wider
+detail pane. The panes are not two `Contents` regions any more than a tabbed body's `TabPanel`s
+are — they are how this one region's job is laid out. Say this explicitly, the way
+[List view](/invoca-design-system/views/list-view#contents-the-table)'s own page states its
+table is "the whole body" of its `Contents`.
+
+| Region | Also called | The system uses |
+|---|---|---|
+| Page body | Master-detail, two-pane layout | **`Contents`**, divided into two panes |
+| List pane | Master pane, left pane | The narrower pane inside `Contents` |
+| Detail pane | Detail pane, right pane | The wider pane inside `Contents` |
+
+## Choose this view when
+
+- The reader switches between records often enough that losing the list on every switch is the
+  actual cost, not a hypothetical one — per [List view](/invoca-design-system/views/list-view#choose-something-else-when)'s
+  own framing.
+- Comparing records matters — checking one, then the next, then back — more than committing to
+  one and leaving the collection behind.
+- The list and detail content are both simple enough to fit their respective pane widths without
+  each one degrading the other — see [Responsive and density behavior](#responsive-and-density-behavior).
+
+## Choose something else when
+
+| If the page also needs to… | Use | Why |
+|---|---|---|
+| Browse or act on a collection, with detail-switching rare | [List view](/invoca-design-system/views/list-view) alone | If a reader picks a row and moves on, rather than checking several in sequence, a permanent second pane costs width for a case that doesn't recur. |
+| Show one record's full context, with no need to browse while viewing | [Detail view](/invoca-design-system/views/detail-view) alone | A reader who arrived at exactly the record they wanted, with no "which one next," has no use for the list pane taking up room. |
+| Fit a narrow viewport | The collapsed behavior in [Responsive and density behavior](#responsive-and-density-behavior) | The two-pane layout is a wide-viewport composition — see below. |
+
+## Regions
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| `Header` — `Left` | Yes | `banner` | `Title` naming the collection (not the selected record — see [The list pane](#the-list-pane)). `Breadcrumb` when the section has ancestry. |
+| `Header` — `Right` | Yes | — | `Actions` — the action that creates a new member of the collection, same as [List view](/invoca-design-system/views/list-view#regions). |
+| `Controls` | Yes | `search` when primarily search | Search, filters, view switches — scoped to the list pane, same composition as [List view](/invoca-design-system/views/list-view#controls-narrowing-the-list). |
+| `Contents` | Yes | `main` | One region, two panes: the list pane and the detail pane. |
+| `Footer` | No | `contentinfo` | Absent by default, for the same reason [List view](/invoca-design-system/views/list-view#regions) and [Detail view](/invoca-design-system/views/detail-view#footer) give theirs — neither pane has a single whole-page commit. |
+
+## What fills each region
+
+### The list pane
+
+The list pane is [List view](/invoca-design-system/views/list-view)'s own table composition,
+narrowed. Same `Controls` above it — search, filters, result count — and the same row model:
+one row per record, selection state, row-level actions. The difference is width, not kind.
+
+**What survives at reduced width follows [List view](/invoca-design-system/views/list-view#responsive-and-density-behavior)'s
+own column-collapse logic, not a second answer derived here.** That page already states that
+lower-priority columns collapse out of the table before it's forced into horizontal scroll, and
+that a collapsed column's data stays reachable from the row rather than disappearing outright.
+A split view's list pane is simply operating at a narrower width sooner — often at the `lg`
+breakpoint rather than `md` — so it reaches that same collapse behavior earlier, not
+differently.
+
+In practice this usually means the list pane keeps an identifying column (name, status) and
+drops everything else behind the row, relying on the detail pane itself to show what the
+dropped columns held.
+
+### The detail pane
+
+**The detail pane shows what [Detail view](/invoca-design-system/views/detail-view) would show
+for the selected row, condensed for the pane's width.** The two pages are not two content
+models that happen to look similar — they are the same content model, laid out for two
+different widths, and they cite each other rather than duplicate:
+
+- Attribute groups, and related data rendered as a compact table or list — the exact composition
+  [Detail view](/invoca-design-system/views/detail-view#contents-attribute-groups-and-related-data)
+  already specifies.
+- The same threshold for tabbing versus a single scrolling section, per
+  [Detail view](/invoca-design-system/views/detail-view#header-tabs-versus-a-scrolling-page) —
+  though a narrower pane reaches that threshold sooner, the same way its list pane reaches
+  column-collapse sooner.
+- The same relationship to [CRUD: Update](/invoca-design-system/patterns/crud/update) and
+  [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) for the
+  pane's own record-level actions.
+
+Where the detail pane's layout genuinely cannot fit [Detail view](/invoca-design-system/views/detail-view)'s
+composition at the pane's width — a two-column attribute grid that only works past a certain
+width, for instance — that is the same narrow-viewport collapse [Detail view](/invoca-design-system/views/detail-view#responsive-and-density-behavior)
+already describes for itself, reached at the pane's width instead of the viewport's.
+
+**No record selected** is its own state, not an error: the detail pane shows an
+[EmptyState](/invoca-design-system/components/data-display/empty-state) inviting a selection,
+per [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states#when-this-applies)'s
+"nothing here yet" case.
+
+### Selecting a row
+
+Selecting a row in the list pane updates the detail pane in place — no navigation, no page
+reload of the list pane.
+
+**Selection changes the URL.** [TITAN-VIEW-14](/invoca-design-system/views/overview#constraints)
+requires this for tabs because a section that exists only in local state cannot be linked,
+survive a reload, or be reached by the back button. The same reasoning applies to a selected
+record: a reader who wants to send a colleague "this campaign, in this view" or refresh the page
+mid-review needs the selection to be more than component state. A split view's selected row is
+functionally the same kind of navigable state a tab is — a piece of "where am I" that the reader
+did not type into a URL bar but still depends on being restorable.
+
+## Responsive and density behavior
+
+**This is the load-bearing question for this archetype.** Two panes side by side is a
+wide-viewport composition, and it does not survive a narrow one — Titan is desktop-first and
+this proposal is scoped to `lg` and above for the two-pane layout itself, per
+[Layout & grid](/invoca-design-system/foundations/layout-and-grid#breakpoints).
+
+**Proposed behavior: the split collapses to the list alone below a threshold, and the detail
+pane becomes a separate destination instead of a second pane.**
+
+| Breakpoint | List pane | Detail pane |
+|---|---|---|
+| `lg` and above | Full list pane, per [The list pane](#the-list-pane) | Full detail pane, side by side with the list |
+| `md` and below | The list pane becomes the whole page — effectively [List view](/invoca-design-system/views/list-view) at this width | Selecting a row opens the record as a full-page navigation (its own [Detail view](/invoca-design-system/views/detail-view)) or as a [Drawer](/invoca-design-system/components/containment/drawer), per [CRUD: Read](/invoca-design-system/patterns/crud/read#choosing-a-surface)'s own drawer-preview option |
+
+<Warning>
+  **This is a proposal, not a decision read from a shipped screen.** Which of "full-page
+  navigation" or "Drawer" the collapsed detail pane becomes at narrow widths is genuinely open —
+  both are defensible, and [CRUD: Read](/invoca-design-system/patterns/crud/read#choosing-a-surface)'s
+  own tree does not settle it for this specific case, since that tree assumes the list is
+  already lost rather than being the reason the pane collapsed in the first place. Check this
+  against a real narrow-viewport build before treating either answer as settled.
+</Warning>
+
+The selection itself is not lost across the collapse — since [Selecting a row](#selecting-a-row)
+puts it in the URL, the same link that opened a specific record in the detail pane at `lg` still
+resolves to that record's own destination at `md`, whichever surface is chosen there.
+
+## Accessibility
+
+The page-level decisions are the frame's, and they apply unchanged — see
+[Views overview → Accessibility](/invoca-design-system/views/overview#accessibility). One `main`
+covering the whole `Contents` region — both panes share it, since they are one region, not two.
+
+What is **specific to this archetype**:
+
+- **Selecting a row is announced**, the same way [List view](/invoca-design-system/views/list-view#accessibility)
+  already requires for its own selection state — a live region stating which record is now shown
+  in the detail pane, so a screen-reader user does not have to traverse into the detail pane to
+  discover the selection changed.
+- **The list pane and detail pane are each their own landmark region** inside the shared `main`
+  — a `region` role with an accessible name ("Campaign list" and "Campaign detail," for
+  instance) — so a screen-reader user can jump directly to either pane rather than tabbing
+  through the entire list to reach the detail content, or vice versa.
+- **Keyboard focus can move from a list row directly to the detail pane's content** without
+  passing through every intervening row — following the row's own selection action, not a
+  separate tab stop per row.
+- **The detail pane's own accessibility requirements are [Detail view](/invoca-design-system/views/detail-view#accessibility)'s**,
+  applied inside the pane rather than to a full page — this page does not restate them.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SPLITVIEW-01** | The list pane and detail pane share one `Contents` region. They are never modeled as two separate `Contents`. | Per [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints) — one `Contents` per page, carrying the `main` landmark once. |
+| **TITAN-SPLITVIEW-02** | The list pane's column behavior at reduced width follows [List view](/invoca-design-system/views/list-view)'s own column-collapse logic. This archetype does not define a second one. | A second, slightly different collapse rule for the same table shape is the kind of drift that makes two pages of the same collection look inconsistent for no reason tied to the data. |
+| **TITAN-SPLITVIEW-03** | The detail pane's content model is [Detail view](/invoca-design-system/views/detail-view)'s, condensed for pane width. The two pages cite each other rather than each specifying attribute-group and related-data behavior independently. | Two independently-maintained descriptions of the same content for the same object type diverge the first time one of them is updated and the other isn't. |
+| **TITAN-SPLITVIEW-04** | Selecting a row changes the URL to a state that resolves back to that same selection on reload or when shared. | Matches [TITAN-VIEW-14](/invoca-design-system/views/overview#constraints)'s reasoning for tabs — a selection that exists only in local state cannot be linked, reloaded, or reached by the back button. |
+| **TITAN-SPLITVIEW-05** | Below the two-pane breakpoint, the split collapses to the list pane alone. The detail pane never squeezes into an unreadable sliver instead of collapsing. | Per [TITAN-VIEW-07](/invoca-design-system/views/overview#constraints) — a region dropped at a narrow viewport is never the only route to a function, so the detail content must still be fully reachable, just through a different surface. |
+| **TITAN-SPLITVIEW-06** | The header's primary action creates a member of the collection, same as [List view](/invoca-design-system/views/list-view), never an action on the currently selected record. | The header acts on the page's collection-level subject; the selected record's own actions belong inside the detail pane, following [Detail view](/invoca-design-system/views/detail-view#header-right)'s placement, not the page header. |
+
+## Composed example
+
+<Warning>
+  **No live embed exists yet.** Per this page's own rule, a composed example should be a real
+  screen or a live embed rather than a static image — the diagram below is structural (region
+  names and what's in them, no measurements or visual styling) for exactly that reason, the
+  same way every Structure diagram in [Patterns](/invoca-design-system/patterns/overview) is.
+  Replace it with a live embed the first time this archetype is built.
+</Warning>
+
+```
+┌───────────────────────────────────────────────────────────────────┐
+│ Campaigns                                          [New Campaign] │  ← Header: Left (Title) / Right (Actions)
+├───────────────────────────────────────────────────────────────────┤
+│ [Search...] [Status: Active ×]                          42 results│  ← Controls, scoped to the list pane
+├───────────────────────┬───────────────────────────────────────────┤
+│ Q3 Paid Search  Active│  Q3 Paid Search                    Active │  ← Contents: one region,
+│ Q3 Display      Active│                          [Edit] [Delete ▾]│    two panes
+│ Holiday Promo   Paused│  ─────────────────────────────────────── │
+│  (selected row         │  Identity                                 │
+│   highlighted)         │    Created    Jun 1, 2026                 │
+│                        │  Configuration                            │
+│  ← list pane, narrow   │    Budget     $12,000 / month             │
+│    columns collapsed   │  Recent calls                [View all →] │
+│                        │    CL-88213  2:14 PM  3:42  Completed     │
+│                        │  ← detail pane, condensed Detail view     │
+└───────────────────────┴───────────────────────────────────────────┘
+```
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame this archetype fills, and [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints)'s one-`Contents` rule this page follows explicitly
+- [List view](/invoca-design-system/views/list-view) — the composition the list pane narrows, and the page that names this archetype as its own alternative
+- [Detail view](/invoca-design-system/views/detail-view) — the content model the detail pane condenses
+- [CRUD: Read](/invoca-design-system/patterns/crud/read) — the drawer-preview option this page's collapsed narrow-viewport behavior draws on
+- [Drawer](/invoca-design-system/components/containment/drawer) — one candidate surface for the collapsed detail pane at narrow widths
+
+## Why it works this way
+
+**One `Contents`, two panes, is a layout decision inside the region — not a second region.**
+Treating the list and detail as two `Contents` would mean the page has two `main` landmarks,
+which breaks the one screen-reader navigation guarantee [Views overview](/invoca-design-system/views/overview#accessibility)
+makes for every page. The two-pane layout is real and the constraint still holds, because the
+constraint is about the region's cardinality, not about how much visual structure lives inside
+it.
+
+**The detail pane borrows its content model rather than inventing a narrower one.** A split
+view that specified its own version of "what a detail pane shows" would immediately drift from
+[Detail view](/invoca-design-system/views/detail-view) the first time either page changed — two
+places stating the same object's content, agreeing by coincidence rather than by citation. Making
+the detail pane condensed-Detail-view rather than a sibling concept means a change to how a
+campaign's attributes are grouped only has to be made once.
+
+**Collapsing to the list, rather than shrinking both panes, is what keeps the narrow layout
+usable.** Two panes each too narrow to read is worse than one pane that works and a second
+surface reached deliberately. The list survives the width; the detail pane changes surfaces
+instead of degrading in place.

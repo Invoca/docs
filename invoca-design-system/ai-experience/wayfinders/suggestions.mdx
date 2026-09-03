@@ -1,0 +1,215 @@
+---
+title: "Suggestions"
+description: "Contextual next-step chips offered once a user is already looking at AI output — proposing what to do with it, never requiring it."
+icon: "lightbulb"
+keywords: ["suggestions", "chips", "next steps", "quick actions", "prompt suggestions", "wayfinder", "follow-up"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  today. Nothing below is code fact or measured behavior — it is a proposal offered for
+  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+[Signal AI](/invoca-design-system/ai-experience/actions/summarize) has just summarized a call:
+a 40-second hold, the caller mentioned pricing twice, the call converted. Underneath that
+summary, a row of chips offers what a manager might plausibly want next — *Show similar
+calls*, *Flag for QA review*, *Draft a follow-up email* — without requiring the manager to
+think of those questions or type them out. A Suggestion is that chip: a proposed next action,
+attached to a specific piece of AI output, that the user can take with one tap or ignore
+entirely.
+
+The same shape recurs for a marketer running a natural-language search over call data: after
+an answer returns, suggested follow-up questions appear beneath it — narrowing the date range,
+comparing against a different campaign — phrased as things the marketer might ask next rather
+than as a menu of unrelated features.
+
+Suggestions differ from an [Initial CTA](/invoca-design-system/ai-experience/wayfinders/initial-cta)
+in exactly one way that matters: **they require an existing context to suggest from.** A CTA
+invites someone who has nothing yet; a Suggestion proposes what to do with something that
+already exists. A page cannot show Suggestions before it has shown anything.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The user hasn't engaged with the feature yet — there's no output to attach a suggestion to | [Initial CTA](/invoca-design-system/ai-experience/wayfinders/initial-cta) | Suggestions need existing context; a CTA is what creates that context in the first place |
+| The chip is really adjusting a parameter of the current or next run (tone, scope, depth) | [Controls](/invoca-design-system/ai-experience/tuners/controls) | A Suggestion proposes what to do next; a Control changes how the doing happens |
+| The option set is a fixed list the user is choosing to hold as a durable value, not a one-off action | [Select](/invoca-design-system/components/forms/select) | A Suggestion is a transient proposal attached to one output; a Select's value persists as form state |
+| The list is a general, always-available set of actions unrelated to any specific AI output | [Menu](/invoca-design-system/components/actions/menu) | A Suggestion is contextual to what's on screen; a Menu is a standing list of things to do, and Menu already exists for that job |
+
+## Agency tier
+
+**Suggests.** Tapping a chip proposes an action; by default it does not commit anything on its
+own — it starts a request the user still reviews (drafting a follow-up email opens a draft, it
+does not send one).
+
+**A chip that skips review and acts directly has moved to Drafts or Acts, and that escalation
+must be stated on the chip itself**, not left for the user to discover. Per
+[TITAN-AI overview](/invoca-design-system/ai-experience/overview#agency-tier), escalating a
+feature's tier is a decision, never a default — a Suggestion is the easiest place for that line
+to blur, because tapping a chip already feels like a small, safe action regardless of what it
+actually triggers.
+
+## Anatomy
+
+```
+┌─────────────────────────────────────────────┐
+│  This call converted after a 40-second       │
+│  hold. The caller mentioned pricing twice.   │
+│                                               │
+│  ( Show similar calls )  ( Flag for QA )     │
+│  ( Draft a follow-up )                       │
+└─────────────────────────────────────────────┘
+```
+
+| # | Part | Component | Required |
+|---|---|---|---|
+| 1 | Source output the suggestions attach to | [Card](/invoca-design-system/components/data-display/card) | Yes |
+| 2 | Suggestion chip | [Tag](/invoca-design-system/components/data-display/tag), clickable variant | Yes — one or more |
+| 3 | Overflow, when more suggestions exist than fit | [Menu](/invoca-design-system/components/actions/menu) | No |
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Tapped chip shows a loading affordance in place; the row of remaining chips stays interactive |
+| Streaming / partial | Chips may appear progressively as they're generated rather than all at once — each chip is fully formed the moment it renders, never a partial label |
+| Confident and right | The proposed action matches what the user would have picked manually |
+| Confident and wrong | **Most detail below.** |
+| Uncertain | **Not applicable as a per-chip signal.** Suggestions are not individually ranked with a shown confidence — see [Disclosure & recourse](#disclosure-recourse), question 3. |
+| Refused | **Not applicable to the chip itself.** If tapping a chip triggers an action that gets refused, that refusal belongs to the invoked Action's outcome states, not this page's. |
+| Empty | No suggestions were generated for this context. The row does not render at all — no placeholder chips, no "no suggestions available" message where the row would have been. |
+| Interrupted | User navigates away while suggestions are still being generated; the partial set already shown stays usable, the rest simply never arrives |
+| Degraded | Falls back to a generic, non-contextual suggestion set (e.g., always offering "Export" and "Share" rather than context-specific proposals) — disclosed by the suggestions visibly not referencing the specific record |
+| Rate-limited / over budget | Suggestion generation itself is skipped rather than queued or retried silently; the row simply does not appear that time |
+| Stale | Suggestions were generated against an earlier version of the underlying data (e.g., the call record was re-tagged since); tapping one may act on assumptions no longer true |
+
+**Confident and wrong.** A suggestion chip reads as a proposal, which already carries less
+weight than a stated answer — but a chip that is *contextually wrong* looks identical to one
+that is right, because the chip's label is plausible on its own ("Draft a follow-up email")
+even when it doesn't fit this record (the call has no email on file). The user notices only
+after tapping: the drafted action opens against no recipient, or the "similar calls" list
+returns results with nothing in common with the source call. **A wrong suggestion currently has
+no seam before the tap** — this is a named gap, not a solved case; see [Gaps](#gaps).
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI?** Yes — the chip row is visually distinct from the
+   record's own manual actions (e.g., a toolbar), and sits attached to AI-generated output the
+   user already knows is AI-generated.
+2. **What did it use?** The same source the attached output used, plus, for suggestions like
+   "show similar calls," a comparison across other records — state which, in the chip's own
+   label where practical ("similar calls" implies a comparison; "draft a follow-up" does not
+   need to).
+3. **How sure is it, and does that change behavior?** No per-chip confidence is shown. A
+   confidence number on a suggestion would decorate, not inform, unless it changed whether the
+   chip renders at all — which it currently does not. This is intentional, not an omission; see
+   [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints).
+4. **How does the user check it?** **Undecided.** Nothing today shows why a specific
+   suggestion was proposed. See [Gaps](#gaps).
+5. **How does the user correct it?** Dismissing a single chip removes it from view for that
+   session. Whether a dismissal is remembered, or whether the same wrong suggestion reappears
+   next time, is undecided.
+6. **How does the user get out?** Ignoring the entire row costs nothing — no chip is required
+   to proceed, and no suggestion blocks the surrounding content.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for how suggestions
+are generated.
+
+## Evaluation
+
+Not evaluated. No eval set exists for suggestion relevance or for the "confident and wrong"
+case named above.
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Chip label | Show similar calls | Similar |
+| Chip label | Draft a follow-up | You could draft a follow-up email |
+| Chip label | Flag for QA review | Flag |
+| Overflow trigger | More suggestions | ··· |
+
+Chip labels name the action, matching [Menu](/invoca-design-system/components/actions/menu#content)'s
+own content rule: a list of things to *do*, phrased as verbs, not as a sentence describing the
+option.
+
+## Accessibility
+
+- Suggestions arriving progressively are announced through a single `aria-live="polite"`
+  region summarizing that new suggestions are available, not one announcement per chip — a
+  screen reader user does not need every chip's arrival narrated individually.
+- Each chip is independently focusable and activatable by keyboard, in document order,
+  matching a standard [Tag](/invoca-design-system/components/data-display/tag)'s clickable
+  behavior.
+- No confidence is expressed by color alone, because none is expressed at all — see
+  [Disclosure & recourse](#disclosure-recourse), question 3. If that changes, any confidence
+  signal must pair with text per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Tapping a chip that opens a new surface (a draft, a filtered list) moves focus to that
+  surface's heading; tapping one that acts in place keeps focus on the chip through its
+  loading state.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-SUGGEST-01** | A Suggestion never renders without an existing output to attach to. | Suggestions require context to suggest from; without it, the pattern is actually an [Initial CTA](/invoca-design-system/ai-experience/wayfinders/initial-cta). |
+| **TITAN-SUGGEST-02** | A chip that acts immediately, without a review step, states that on the chip itself — never a bare verb indistinguishable from a chip that opens a draft. | Escalating past Suggests-tier is a decision that must be visible, not discovered after the tap — see [TITAN-AI overview, agency tier](/invoca-design-system/ai-experience/overview#agency-tier). |
+| **TITAN-SUGGEST-03** | An empty suggestion set renders no row at all — never an empty container or a "no suggestions" message in its place. | A visible empty state for an optional, ambient feature adds visual noise with nothing for the user to act on. |
+| **TITAN-SUGGEST-04** | A degraded, non-contextual suggestion set is only ever generic — it never fabricates a specific-sounding reference to the record it failed to actually analyze. | A generic suggestion that reads as specific is a confident-and-wrong case created by the fallback itself, not by the model. |
+| **TITAN-SUGGEST-05** | Suggestion chip labels are verbs naming the action, never a sentence describing the option. | Matches [Menu](/invoca-design-system/components/actions/menu#constraints)'s content rule — a list of things to do reads faster than a list of descriptions. |
+| **TITAN-SUGGEST-06** | Dismissing the suggestion row never blocks or delays the content it's attached to. | Suggestions are strictly additive; treating them as a gate the user must clear contradicts the Suggests tier itself. |
+
+## Divergences
+
+Not applicable — nothing is shipped yet to diverge from.
+
+## Gaps
+
+- **How a user checks why a specific suggestion was proposed is undecided.** No mechanism
+  (a tooltip, an expandable reason) exists even as a proposal yet — see question 4 above.
+- Whether a dismissed suggestion is remembered across sessions, or reappears every time the
+  same context recurs, is undecided.
+- How many chips may show at once before overflowing into a Menu, and how that threshold is
+  chosen, is undecided.
+- Whether suggestions should ever be ranked or reordered based on a per-user history of which
+  ones get tapped is undecided, and if so, whether that ranking should be disclosed.
+
+## Volatility
+
+This page assumes a model can generate several distinct, independently useful next-step
+proposals from one piece of output, cheaply enough to show a handful at once. If that
+generation step turns out to be too slow or expensive to run automatically for every AI output,
+Suggestions may need to become a pattern the user requests rather than one that appears
+unprompted — a different agency and disclosure shape. Dated 2026-09-02; revisit on the first
+real implementation or on any change to per-invocation cost for the underlying model.
+
+## Related
+
+- [AI Experience overview](/invoca-design-system/ai-experience/overview) — vocabulary, agency
+  tiers, and the six disclosure questions this page answers
+- [Initial CTA](/invoca-design-system/ai-experience/wayfinders/initial-cta) — the entry point
+  Suggestions assumes has already happened
+- [Open input](/invoca-design-system/ai-experience/inputs/open-input) — where a user types a
+  request a Suggestion chip might otherwise shortcut
+- [Controls](/invoca-design-system/ai-experience/tuners/controls) — for adjusting behavior
+  rather than proposing a next action
+- [Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) — how the
+  interface admits uncertainty, relevant to the confident-and-wrong gap named above
+- [Tag](/invoca-design-system/components/data-display/tag), [Menu](/invoca-design-system/components/actions/menu),
+  [Card](/invoca-design-system/components/data-display/card) — the components this pattern
+  composes
+
+## Why it works this way
+
+**A Suggestion's entire value is in costing less than typing the same request out.** The
+moment a chip requires the user to verify its relevance before tapping it, it has cost more
+than it saved — which is why the confident-and-wrong case above is not a minor edge case but
+the failure mode that determines whether this pattern is worth building at all. A Suggestion
+that is wrong often enough to require checking is a Suggestion nobody will trust the next time,
+including the times it would have been right.

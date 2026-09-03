@@ -387,6 +387,15 @@ Patterns
 Views
   List view · Detail view · Settings view · Wizard · Dashboard
   Split view · Full-page form
+AI Experience  (a fifth area, outside the four-tier ladder above — see §12)
+  Overview
+  Wayfinders     Initial CTA · Suggestions
+  Inputs         Open input
+  Tuners         Controls
+  Governors      Stream of thought · Verification
+  Trust builders Caveat
+  Identifiers    Avatar · Color · Iconography · Name · Personality
+  Actions        Search · Summarize · Draft · Update · Disambiguate · Recommend · Welcome/empty state
 Content
   Voice & tone · UI labels · Error messages · Empty state copy
   Capitalization & punctuation · Numbers, dates & units
@@ -460,3 +469,39 @@ View archetypes. Constraint linting. Track generated-to-merged delta as the heal
   reconciled against the real index; treat any component name there as unverified until checked
   the same way the three Actions-category pages (Link/TextLink, ButtonGroup, Menu) were.
 - **zeroheight** — only the Dates/Times and Numbers pages are in scope for this pass; both are transcribed and live at `/invoca-design-system/content/*`. The rest is deferred, not blocked.
+
+---
+
+## 12. AI Experience — a fifth area, added 2026-09-02
+
+`/invoca-design-system/ai-experience/*` documents Invoca's agentic AI surfaces: Wayfinders,
+Inputs, Tuners, Governors, Trust builders, and Identifiers (names and starting shape adopted
+from the public catalogue [Shape of AI](https://www.shapeof.ai/)), plus Actions — the seven
+jobs Invoca's own agentic features are known or expected to do (search, summarize, draft,
+update, disambiguate, recommend, welcome/empty state), which is not in Shape of AI and is
+authored from Invoca's actual product surface, principally [Signal AI](https://mynetwork.invoca.net).
+
+It does not slot into the four-tier ladder in §3. A Pattern page can assume the same input
+produces the same output, that every value is derivable from source, that failure is one state
+among several, and that documented behavior stays true. None of those hold for a model-backed
+feature. So AI Experience pages carry the same constraints/content/accessibility sections as a
+Pattern page, plus four this documentation had no prior section for: **agency tier** (Suggests
+/ Drafts / Acts-reversible / Acts-irreversible / Acts-unsupervised), **outcome states**
+(working, streaming, confident-and-right, confident-and-wrong, uncertain, refused, empty,
+interrupted, degraded, rate-limited, stale — with confident-and-wrong as the primary case, not
+an edge case), **disclosure & recourse** (six fixed questions — does the user know it's AI,
+what did it use, how sure is it, how do they check it, how do they correct it, how do they get
+out), and **evaluation** (the eval set, metric, threshold, and named failure classes behind any
+capability claim — or an explicit statement that none exists).
+
+Identifiers (Avatar, Color, Iconography, Name, Personality) is the exception within the
+exception: it describes how the AI presents itself rather than an interaction, so those five
+pages use the lighter foundation shape (what it governs, choosing a value, constraints)
+instead of the full pattern shape.
+
+**Status at authoring time: entirely proposal.** Nothing in this area is built. The only real
+thing it touches is Signal AI's shipped transcript-summary capability, cited on
+[Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize) — even there, only
+the external API contract is documented; no model, prompt, or eval data behind it is public.
+Every constraint, outcome-state treatment, and content rule in this area is offered for review,
+not established policy, the same standing the exemplar pages elsewhere in this plan have.

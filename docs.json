@@ -258,6 +258,24 @@
             ]
           },
           {
+            "tab": "Content",
+            "icon": "font",
+            "groups": [
+              {
+                "group": "Content",
+                "pages": [
+                  "invoca-design-system/content/voice-and-tone",
+                  "invoca-design-system/content/ui-labels",
+                  "invoca-design-system/content/error-messages",
+                  "invoca-design-system/content/empty-state-copy",
+                  "invoca-design-system/content/capitalization-and-punctuation",
+                  "invoca-design-system/content/numbers",
+                  "invoca-design-system/content/dates-and-times"
+                ]
+              }
+            ]
+          },
+          {
             "tab": "Components",
             "icon": "shapes",
             "groups": [
@@ -352,7 +370,16 @@
                   "invoca-design-system/patterns/bulk-selection",
                   "invoca-design-system/patterns/inline-editing",
                   "invoca-design-system/patterns/progressive-disclosure",
-                  "invoca-design-system/patterns/notifications"
+                  "invoca-design-system/patterns/notifications",
+                  {
+                    "group": "CRUD",
+                    "root": "invoca-design-system/patterns/crud/overview",
+                    "pages": [
+                      "invoca-design-system/patterns/crud/create",
+                      "invoca-design-system/patterns/crud/read",
+                      "invoca-design-system/patterns/crud/update"
+                    ]
+                  }
                 ]
               }
             ]
@@ -378,19 +405,59 @@
             ]
           },
           {
-            "tab": "Content",
-            "icon": "font",
+            "tab": "AI Experience",
+            "icon": "robot",
             "groups": [
               {
-                "group": "Content",
+                "group": "Overview",
+                "pages": ["invoca-design-system/ai-experience/overview"]
+              },
+              {
+                "group": "Wayfinders",
                 "pages": [
-                  "invoca-design-system/content/voice-and-tone",
-                  "invoca-design-system/content/ui-labels",
-                  "invoca-design-system/content/error-messages",
-                  "invoca-design-system/content/empty-state-copy",
-                  "invoca-design-system/content/capitalization-and-punctuation",
-                  "invoca-design-system/content/numbers",
-                  "invoca-design-system/content/dates-and-times"
+                  "invoca-design-system/ai-experience/wayfinders/initial-cta",
+                  "invoca-design-system/ai-experience/wayfinders/suggestions"
+                ]
+              },
+              {
+                "group": "Inputs",
+                "pages": ["invoca-design-system/ai-experience/inputs/open-input"]
+              },
+              {
+                "group": "Tuners",
+                "pages": ["invoca-design-system/ai-experience/tuners/controls"]
+              },
+              {
+                "group": "Governors",
+                "pages": [
+                  "invoca-design-system/ai-experience/governors/stream-of-thought",
+                  "invoca-design-system/ai-experience/governors/verification"
+                ]
+              },
+              {
+                "group": "Trust builders",
+                "pages": ["invoca-design-system/ai-experience/trust-builders/caveat"]
+              },
+              {
+                "group": "Identifiers",
+                "pages": [
+                  "invoca-design-system/ai-experience/identifiers/avatar",
+                  "invoca-design-system/ai-experience/identifiers/color",
+                  "invoca-design-system/ai-experience/identifiers/iconography",
+                  "invoca-design-system/ai-experience/identifiers/name",
+                  "invoca-design-system/ai-experience/identifiers/personality"
+                ]
+              },
+              {
+                "group": "Actions",
+                "pages": [
+                  "invoca-design-system/ai-experience/actions/search",
+                  "invoca-design-system/ai-experience/actions/summarize",
+                  "invoca-design-system/ai-experience/actions/draft",
+                  "invoca-design-system/ai-experience/actions/update",
+                  "invoca-design-system/ai-experience/actions/disambiguate",
+                  "invoca-design-system/ai-experience/actions/recommend",
+                  "invoca-design-system/ai-experience/actions/welcome-empty-state"
                 ]
               }
             ]

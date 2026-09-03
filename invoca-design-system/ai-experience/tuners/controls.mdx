@@ -1,0 +1,215 @@
+---
+title: "Controls"
+description: "Sliders, toggles, and scoped settings that adjust what an agentic feature does before or during a run — distinct from expressing a request and from proposing a next step."
+icon: "sliders-horizontal"
+keywords: ["controls", "tuners", "settings", "scope", "parameters", "detail level", "temperature", "adjust ai"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  today. Nothing below is code fact or measured behavior — it is a proposal offered for
+  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+A manager reviewing a [Signal AI](/invoca-design-system/ai-experience/actions/summarize)
+summary wants more than the two-sentence version — they want every objection the caller
+raised, not just the outcome. A Control lets them ask for that directly: a "Brief / Full"
+toggle next to the summary, scoped to this one run, that changes what gets generated the next
+time without the manager having to type a request describing the change they want.
+
+The same job applies to a marketer running a natural-language search who wants to restrict it
+to a specific date range or team before running it, rather than including that constraint in
+the words they type. A Control is a fixed, named parameter — detail level, date range, tone,
+team scope — that shapes an AI run without being the request itself.
+
+Controls are scoped to the feature they tune. They are not durable, product-wide preferences
+(those are ordinary [Switch](/invoca-design-system/components/forms/switch) or
+[Select](/invoca-design-system/components/forms/select) settings with no AI dimension) and
+they are not the request itself (that is [Open input](/invoca-design-system/ai-experience/inputs/open-input)).
+A Control changes *how* the next run behaves; it never is the run.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The user is expressing a new request in their own words, not adjusting a parameter of an existing one | [Open input](/invoca-design-system/ai-experience/inputs/open-input) | A typed request carries intent a fixed control can't capture; a Control only narrows or reshapes an intent already established |
+| The interface is proposing what to do next, rather than letting the user change how the current thing is done | [Suggestions](/invoca-design-system/ai-experience/wayfinders/suggestions) | A Suggestion offers a next action; a Control reshapes the current one |
+| The setting is a durable, product-wide preference with no AI dimension (e.g., default page size) | [Switch](/invoca-design-system/components/forms/switch) or [Select](/invoca-design-system/components/forms/select) as an ordinary settings control | Controls governs parameters scoped to one AI feature's run, not general application preferences |
+| The user is reviewing what the AI already did, rather than adjusting what it will do next | [Governors: Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) | Oversight of a completed or in-progress run is a different job than tuning the next one |
+
+## Agency tier
+
+**Suggests.** A Control changes what will be proposed or generated, but the user still
+triggers the run and reviews its output — changing "Brief" to "Full" does not itself act on
+anything; it changes the input to the next Suggests-tier result.
+
+**If a Control is ever wired to change an already-running, unsupervised action's scope in real
+time** — narrowing what an autonomous process is currently doing rather than configuring the
+next discrete run — that is Acts-tier behavior wearing a Tuner's interface, and the escalation
+must be recorded explicitly, not left implicit in the control's own simplicity. Per
+[TITAN-AI overview](/invoca-design-system/ai-experience/overview#agency-tier), escalating a
+feature's tier is a decision, never a default.
+
+## Anatomy
+
+```
+┌─────────────────────────────────────────────┐
+│  Summary detail:   ( Brief )  [ Full ]       │
+│  Date range:        [ Last 30 days ▾ ]       │
+│                                               │
+│                              [ Regenerate ]  │
+└─────────────────────────────────────────────┘
+```
+
+| # | Part | Component | Required |
+|---|---|---|---|
+| 1 | Control group container | [Card](/invoca-design-system/components/data-display/card) | Yes |
+| 2 | A discrete, mutually-exclusive control | [Button group](/invoca-design-system/components/actions/button-group) or [Switch](/invoca-design-system/components/forms/switch) | Yes — one or more |
+| 3 | An enumerable-list control | [Select](/invoca-design-system/components/forms/select) | No |
+| 4 | Apply / regenerate trigger | [Button](/invoca-design-system/components/actions/button) | Yes, unless a control applies immediately on change |
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Regenerate button enters `loading`; the previous output stays visible, dimmed, until the new one replaces it |
+| Streaming / partial | If the run itself streams, changing a control mid-stream cancels the in-flight stream rather than blending old and new output |
+| Confident and right | The output reflects the control values the user actually set |
+| Confident and wrong | **Most detail below.** |
+| Uncertain | **Not applicable to the control itself.** Uncertainty belongs to the generated output, not to the setting that shaped it — see the invoked Action's own page. |
+| Refused | A combination of control values is invalid or unsupported (e.g., a date range with no available data) — refused before running, with the specific incompatible values named |
+| Empty | The combination is valid but returns nothing (e.g., "Full" detail requested on a call with too short a transcript to elaborate) — distinguished from a refusal by stating that this combination legitimately has nothing to return |
+| Interrupted | User changes a control while a previous run is still in flight; the previous run is cancelled outright, not left to finish and silently discarded |
+| Degraded | A control's higher-cost option (e.g., "Full" detail) falls back to a cheaper generation path under load; the output states this rather than silently returning a shorter result under the "Full" label |
+| Rate-limited / over budget | Controls stay adjustable, but the regenerate action is blocked with the reason stated | 
+| Stale | The applied control state was captured before the underlying data changed; the output does not silently claim to reflect the current data if it doesn't |
+
+**Confident and wrong.** The distinctive failure here is a control silently not doing what its
+label says — a date-range control that defaults to "last 7 days" instead of the "last 30" the
+user actually selected, or a "Full" detail toggle that has no measurable effect on the output.
+The output that results reads exactly as confidently as one generated from the correct
+settings, because nothing about its tone changes based on which parameters actually produced
+it. **The user notices only by checking the applied control state against the result** — for
+example, counting whether the number of calls referenced is consistent with a 30-day window —
+which requires them to already suspect something is wrong before they'd think to check.
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI, at the moment it matters?** The controls themselves are
+   settings, not AI output — disclosure at this stage is about the *run they configure*, and
+   that run's own page carries the identifier requirement. This page requires only that the
+   controls are visibly attached to the AI feature they tune, not floating as generic settings.
+2. **What did it use?** Not applicable to the control itself — this question belongs to the
+   run's output, which states what data it drew on given the applied settings.
+3. **How sure is it, and does that change what the user should do?** **Not applicable.**
+   Controls carry no confidence of their own; only the output they shape does.
+4. **How does the user check it?** By the applied control state remaining visible alongside
+   the output it produced — a result with no visible record of which settings generated it
+   cannot be checked against them at all.
+5. **How does the user correct it?** Change the control and regenerate. Whether a correction
+   here also updates the AI's stated confidence or caveats in the output, or requires a
+   separate resubmission to reflect, is undecided — see [Gaps](#gaps).
+6. **How does the user get out?** A reset to default values is available, and running the
+   feature at all remains optional regardless of how the controls are set.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for how any control
+value maps to an actual change in model behavior.
+
+## Evaluation
+
+Not evaluated. No eval set exists confirming that a given control setting (e.g., "Full"
+detail) produces a measurably different output from its alternative.
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Control label | Summary detail | Options |
+| Control values | Brief, Full | Short, Long |
+| Apply trigger | Regenerate | Go |
+| Refused combination | No calls in the selected date range have transcripts to summarize. | Invalid selection. |
+
+Control labels name the dimension being adjusted, not the mechanism — "Summary detail," not
+"AI settings" — matching [Field label](/invoca-design-system/components/forms/field-label)'s
+own rule that a label states what the value means, not how it's implemented.
+
+## Accessibility
+
+- Changing a control that triggers regeneration announces the new loading state via
+  `aria-live="polite"`, distinct from the initial run's announcement, so a screen reader user
+  knows a change is in progress rather than assuming the original result still stands.
+- Regeneration's indeterminate wait needs a non-visual equivalent — an accessible status text,
+  not only a visual spinner change.
+- No control's effect is conveyed by color alone; a selected discrete control (e.g., "Full" in
+  the button group) is marked with `aria-pressed` or equivalent state, not color contrast
+  alone, per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- When regeneration completes, focus stays on the Regenerate control rather than jumping to
+  the new output automatically — the user changed a setting deliberately and is not
+  disoriented by staying where they are, unlike a fresh [Open input](/invoca-design-system/ai-experience/inputs/open-input#accessibility)
+  submission where focus does move to the new response.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-TUNE-01** | The control values that produced a given output remain visible alongside it, not only at the moment of setting them. | [Disclosure & recourse](#disclosure-recourse), question 4 — a result cannot be checked against settings the interface has already hidden. |
+| **TITAN-TUNE-02** | A control that applies immediately (no separate regenerate step) states so visually — the absence of an apply button is not sufficient signal on its own. | Otherwise identical-looking control groups behave differently with no way to tell which is which before touching one. |
+| **TITAN-TUNE-03** | Changing a control while a previous run is in flight cancels that run outright; it is never left to complete and silently discarded. | A discarded-but-completed run wastes the cost of generating it and risks a race where the stale result renders after the new one. |
+| **TITAN-TUNE-04** | An invalid or unsupported combination of control values is refused before running, naming the specific incompatible values. | "Invalid selection" tells the user something is wrong and nothing about what to fix — same reasoning as [TITAN-ERR-03](/invoca-design-system/content/error-messages#constraints). |
+| **TITAN-TUNE-05** | A degraded fallback for a higher-cost control option states that it fell back, rather than returning a lesser result silently labeled as the option requested. | An output that doesn't match the label the user selected, with no disclosure, is the control-level version of confident-and-wrong. |
+| **TITAN-TUNE-06** | Controls provide a reset to default values. | Recourse requires an easy way back to a known-good state, not just forward adjustment. |
+| **TITAN-TUNE-07** | A Control never itself performs an unsupervised action; changing one only ever configures a future Suggests-tier run unless that escalation is explicitly stated. | Per [TITAN-AI overview](/invoca-design-system/ai-experience/overview#agency-tier) — escalating tier is a decision, never a default, and a Control's simplicity makes it an easy place for that line to blur unnoticed. |
+
+## Divergences
+
+Not applicable — nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether a control change updates the AI's stated confidence or caveats in an already-visible
+  output, or requires a full regeneration to reflect, is undecided.
+- How many controls a single feature may expose before the group should be considered too
+  complex for this pattern (and better served by a dedicated settings surface) is undecided.
+- Whether control state persists across sessions per feature, per record, or not at all is
+  undecided.
+- What "measurably different" means for validating that a control actually changes model
+  behavior — see [Evaluation](#evaluation) — has no defined threshold.
+
+## Volatility
+
+This page assumes that a named control value (detail level, tone, scope) reliably produces a
+distinguishable change in model output — that "Full" is actually fuller than "Brief" in a way
+a user would notice. If a given control turns out to have no measurable effect, that control is
+decoration wearing the shape of a setting, and this page's guidance for it specifically needs
+reverification, not the whole pattern. Dated 2026-09-02; revisit on the first real
+implementation or the first eval run comparing control values against output.
+
+## Related
+
+- [AI Experience overview](/invoca-design-system/ai-experience/overview) — vocabulary, agency
+  tiers, and the six disclosure questions this page answers
+- [Open input](/invoca-design-system/ai-experience/inputs/open-input) — expressing a new
+  request, as distinct from adjusting a parameter of an existing one
+- [Suggestions](/invoca-design-system/ai-experience/wayfinders/suggestions) — proposing a next
+  action, as distinct from reshaping the current one
+- [Governors: Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) —
+  reviewing what the AI already did, the complementary oversight job to tuning what it does next
+- [Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize) — Signal AI's
+  shipped job, the concrete case this page's detail-level example is drawn from
+- [Button group](/invoca-design-system/components/actions/button-group), [Switch](/invoca-design-system/components/forms/switch),
+  [Select](/invoca-design-system/components/forms/select), [Card](/invoca-design-system/components/data-display/card) —
+  the components this pattern composes
+
+## Why it works this way
+
+**A Control's whole value is that it's cheaper than rephrasing a request in words.** Once a
+parameter is named and fixed — detail level, date range, tone — a toggle is faster than typing
+a sentence that means the same thing, and the interface can validate it before running rather
+than discovering an unsupported combination mid-generation. That speed only holds if the
+control actually does what its label claims; a control whose setting doesn't measurably change
+the output is worse than no control, because it teaches the user a lever exists where none
+does.

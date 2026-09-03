@@ -1,0 +1,215 @@
+---
+title: "Draft"
+description: "The system produces reviewable text or a proposed change on the user's behalf — a follow-up email, a call note, a routing-rule change — and never submits it."
+icon: "pencil-line"
+keywords: ["draft", "compose", "reviewable output", "follow-up email", "auto-draft", "proposed change"]
+---
+
+<Warning>
+  **Exemplar page — proposal only, nothing shipped.** No feature in Invoca's product drafts
+  content or changes on a user's behalf today. Everything below is design intent offered for
+  review, not established policy. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+After a call, a user often has a follow-up to write: an email answering what the caller
+asked about, a note on the call record for a colleague, a change to a routing rule that
+misrouted a call. Draft produces that follow-up for the user to review, edit, and decide
+whether to use — it never sends the email, never saves the note, and never applies the
+routing change on its own.
+
+The job is producing a reviewable artifact grounded in a specific call, not acting on the
+user's behalf. The distinction from Update matters here: Draft's output always waits for a
+separate, explicit action from the user before anything takes effect. Nothing a Draft
+produces is live until that action happens.
+
+This is proposal. No feature today generates a follow-up email, a call note, or a routing
+change from a call's content for a user to review.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The change is small, common, and cleanly reversible — a tag, a category, a status flag | [Update](/invoca-design-system/ai-experience/actions/update) | Requiring a review step on every routine, reversible change is friction with no benefit — the same failure [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints) names for confirmation dialogs. |
+| The user just wants to know what happened on the call, not produce something new | [Summarize](/invoca-design-system/ai-experience/actions/summarize) | A summary describes the past. A draft is a new artifact meant to go somewhere. |
+| The user is composing free text unaided, in a normal form | [Input](/invoca-design-system/components/forms/input) or [Form](/invoca-design-system/components/forms/form) | Draft only earns its place when starting from a blank field is slower than reviewing a generated starting point. |
+
+## Agency tier
+
+**Drafts**, by definition. The output is never auto-submitted — sending the email, saving
+the note, or applying the routing change all require a separate action the user takes after
+reading the draft. This is what distinguishes Draft from Suggests: a suggestion is a pointer
+the user acts on elsewhere; a draft is the completed artifact itself, just not yet live.
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────────┐
+│  [Card]                                            │
+│   [Tag: Draft — not sent]                          │
+│                                                     │
+│   [Input, multiline, editable]                     │
+│    "Hi [name], following up on your call about     │
+│     pricing... [VERIFY: plan name]"                │
+│                                                     │
+│         [ Discard ]     [ Send ]                    │
+│            text          contained                 │
+└───────────────────────────────────────────────────┘
+```
+
+- [Card](/invoca-design-system/components/data-display/card) — contains the draft, scoped to
+  the call it was generated from.
+- [Tag](/invoca-design-system/components/data-display/tag) — labels the content as an
+  unsent draft, never ambiguous with a sent message or saved note.
+- [Input](/invoca-design-system/components/forms/input), multiline — the draft text itself,
+  editable in place. Editing *is* the correction; see
+  [Disclosure & recourse](#disclosure-recourse).
+- [Button](/invoca-design-system/components/actions/button) — Send/Apply as the single
+  `contained` action per [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints);
+  Discard as `text`, first in the group, matching the ordering
+  [destructive confirmation](/invoca-design-system/patterns/destructive-confirmation#structure)
+  uses for its own Cancel/Confirm pair.
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Draft is generating. Progress visible; cancellable without any side effect, since nothing has been produced yet. |
+| Streaming / partial | Text appears incrementally. The Send/Apply action stays disabled until generation completes — editing mid-stream risks the user's edit being overwritten by more incoming text. |
+| Confident and right | A draft accurate enough to send with light edits or none. |
+| Confident and wrong | See below. |
+| Uncertain | A specific detail the source doesn't clearly support (a name, a plan, a date) is flagged inline — `[VERIFY: plan name]` — rather than guessed and stated as fact. |
+| Refused | The system declines to draft (not enough call content, or the request falls outside what it drafts). States why, and the field remains open for the user to write it themselves. |
+| Empty | No call or target selected to draft from. [EmptyState](/invoca-design-system/components/data-display/empty-state) prompting selection, not a blank editable field. |
+| Interrupted | User navigates away mid-generation or the stream drops. Proposal: the partial draft persists as a recoverable draft until explicitly discarded — losing it silently would cost the same review time twice. |
+| Degraded | Falls back to a generic template instead of a call-specific draft. Disclosed in the draft itself ("Couldn't generate a tailored draft — here's a starting template") rather than presented as equally specific. |
+| Rate-limited / over budget | Repeated draft requests are throttled with a stated, visible limit before it's hit. |
+| Stale | The call record was corrected or re-tagged after the draft was generated but before it was sent. Proposal: flag the draft as possibly out of date rather than silently letting it go out unchanged. |
+
+**Confident and wrong**, in detail: because a draft is, by design, never auto-submitted, the
+tier itself provides one layer of protection that Search and Summarize don't have — a human
+is supposed to read it first. The actual risk is that this protection is only as good as the
+reading it assumes. A draft that states something false about the call in a confident,
+well-written sentence is easy to skim-approve, especially once users learn that most drafts
+are fine. There is no visual difference between a correct claim and a wrong one in the
+generated text. The mitigations available are the ones in this page's anatomy and
+constraints: uncertain spans are flagged rather than smoothed over, and the draft always
+names the specific call it came from, so a skimming user at least has a fixed reference
+point to check a claim against instead of trusting the prose on its own.
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI?** Yes — the Tag labels it a draft, and the content is
+   visibly editable and incomplete-looking rather than presented as finished, sent-quality
+   text.
+2. **What did it use?** The specific call transcript or record the draft is generated from,
+   named explicitly. Not other customers' calls, and not other records, unless the draft
+   states that it drew on something else.
+3. **How sure is it?** No numeric confidence. Inline uncertain-span flags change what the
+   user must do — verify that specific detail before sending — rather than decorating the
+   draft with a score that wouldn't change anything.
+4. **How does the user check it?** Re-read the draft against the call it names before
+   sending. The draft's origin is always visible, so this check doesn't require hunting for
+   which call it came from.
+5. **How does the user correct it?** Edit the text directly. The edit is the correction, and
+   it persists automatically because whatever text is on screen when Send is pressed is
+   exactly what goes out — there's no separate feedback step to lose.
+6. **How does the user get out?** Discard the draft and write it manually, or simply not act
+   on it. Nothing is sent, saved, or applied unless the user explicitly does so.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+Nothing in Invoca's product performs this job today, so there is no source to generate this
+section from.
+
+## Evaluation
+
+Not evaluated. No eval set, score, or failure-class list exists for this pattern anywhere
+accessible.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| Draft label | "Draft — not sent" | "AI wrote this for you" |
+| Uncertain span | "[VERIFY: plan name]" | Guessing a plausible name with no flag |
+| Send action | "Send" (restates the action) | "Confirm" |
+| Degraded fallback | "Couldn't generate a tailored draft — here's a starting template." | Presenting a generic template as call-specific |
+
+## Accessibility
+
+- Draft completion is announced to a live region once, at the point generation finishes —
+  not as each token streams in.
+- An indeterminate generation wait needs a text equivalent ("Drafting…") alongside any
+  spinner.
+- Uncertain-span flags are text-based (`[VERIFY: ...]`), never a color highlight alone, per
+  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Focus moves into the editable draft field once generation completes, so the user can
+  immediately review and edit without hunting for where the content landed.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-DRAFT-01** | A draft never sends, saves, or applies without a separate, explicit user action. | This is what the Drafts tier means; without it, the pattern is actually Update wearing a draft's label. |
+| **TITAN-DRAFT-02** | The send/apply control is the only `contained` Button in the draft's region; discard is `text` and comes first. | Matches [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints) and the destructive-confirmation ordering — the safe path stays easiest to reach. |
+| **TITAN-DRAFT-03** | An uncertain detail is flagged inline, never silently guessed and stated as fact. | A flagged guess asks for verification; an unflagged one reads as a claim. |
+| **TITAN-DRAFT-04** | A draft always names the specific call or record it was generated from. | It is the one fixed reference point a skimming reviewer has to check a claim against. |
+| **TITAN-DRAFT-05** | Discarding a draft requires no confirmation dialog. | Nothing has been committed yet — matches [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints)'s rule that confirmation is for non-reversible actions only. |
+| **TITAN-DRAFT-06** | A degraded (template-fallback) draft discloses that fallback in the draft itself. | A generic template presented as call-specific is a confident-and-wrong failure at the level of the whole artifact. |
+
+## Divergences
+
+Not applicable. Nothing is shipped, so there is no code behavior to diverge from.
+
+## Gaps
+
+- Whether an interrupted or navigated-away-from draft is actually recoverable, or how long,
+  is undecided.
+- Whether regenerating a draft preserves the user's own edits or discards them is undecided.
+- Whether different draft targets (an email, a note, a routing-rule change) share one UI
+  shape or need distinct ones per target is undecided.
+- Who approves this pattern ever escalating past Drafts toward auto-submission is undecided
+  — see the overview's [escalation gap](/invoca-design-system/ai-experience/overview#gaps).
+
+## Volatility
+
+This page depends on a drafting feature that does not exist. It should be reverified the
+moment any draft-producing surface is scoped for Invoca's product, since the anatomy,
+outcome states, and constraints above are proposals, not observations of a built feature.
+Written 2026-09-02.
+
+## Related
+
+<Columns cols={2}>
+  <Card title="AI Experience overview" icon="sparkles" href="/invoca-design-system/ai-experience/overview">
+    The agency tiers and outcome states this page inherits.
+  </Card>
+  <Card title="Search" icon="search" href="/invoca-design-system/ai-experience/actions/search">
+    Finding the calls a draft might be generated from.
+  </Card>
+  <Card title="Summarize" icon="file-text" href="/invoca-design-system/ai-experience/actions/summarize">
+    Describing a call, rather than producing something new from it.
+  </Card>
+  <Card title="Update" icon="refresh-cw" href="/invoca-design-system/ai-experience/actions/update">
+    The higher-authority action for changes small enough not to need review.
+  </Card>
+  <Card title="Destructive confirmation" icon="trash-2" href="/invoca-design-system/patterns/destructive-confirmation">
+    The reversible-versus-confirm logic Draft's discard behavior follows.
+  </Card>
+  <Card title="Trust builders: Caveat" icon="handshake" href="/invoca-design-system/ai-experience/trust-builders/caveat">
+    Where an uncertain-span treatment belongs in the broader vocabulary.
+  </Card>
+</Columns>
+
+## Why it works this way
+
+The review step is the entire point of this tier, so the design has to protect the
+assumption that a review actually happens — not just provide the step and hope. Naming the
+source call, flagging uncertain spans, and keeping the draft visibly incomplete are all
+aimed at the same failure: a well-written wrong sentence that a tired reviewer approves
+without reading closely. A tier that "requires review" but gives the reviewer nothing to
+check against is a formality, not a safeguard.

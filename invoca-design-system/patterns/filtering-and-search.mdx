@@ -1,12 +1,169 @@
 ---
 title: "Filtering and search"
-description: "TODO — one sentence. What it is and what it is for."
-icon: "layout-template"
-tag: "Draft"
+description: "Narrowing a list down to what someone wants, with deterministic filters and a search box — not natural-language interpretation."
+icon: "filter"
+keywords: ["filter", "search", "search box", "narrow", "facet", "chips", "query", "active filters"]
 ---
 
 <Warning>
-  **Stub.** This page is scaffolded but not written. A stub that looks finished is worse than
-  a stub that admits it. A reader, and an agent, cannot tell a considered omission from an
-  unwritten page.
+  **Proposal — first pass, not an audited Invoca screen.** No Titan design library or shipped
+  product surface was available while writing this page. What follows is built from general
+  interaction-design practice and from the constraints Foundations and Components already
+  establish — see [Coverage, stated honestly](/invoca-design-system/patterns/overview#coverage-stated-honestly).
+  One real, already-documented limitation is directly relevant here:
+  [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) — pagination has
+  no home in Titan's page frame, and three unreconciled implementations exist. Since a filtered
+  or searched result set is exactly the kind of list that needs pagination, this page builds
+  against that gap's own "Direction" note rather than re-deciding the question: pagination lives
+  inside the table, at the bottom, above the page footer.
 </Warning>
+
+## The problem
+
+A list grows past what someone can scan in one view, and two tools narrow it: filters, which
+offer a discrete choice against a known field, and a search box, which matches typed text
+against one or more fields. Both are deterministic — the same input against the same data
+produces the same result set every time, with nothing in between doing any interpreting.
+
+Get this wrong in one direction and the list is unusable past a few dozen rows, because nothing
+narrows it. Get it wrong in the other and the narrowing itself becomes invisible — a filter
+applied three clicks ago with no visible trace of it, so the person looking at nine rows instead
+of nine hundred has no way to tell why, and no way to undo it without knowing what to undo.
+
+This is not the same job as natural-language search. A user who already knows the field and the
+value they want — status, date range, campaign name — is choosing from a known, bounded set of
+options. A user who wants to describe what they're after in their own words, without knowing
+which field holds it, needs something to interpret that request first. This page is the
+deterministic half of that fork; see [When it doesn't](#when-it-doesnt) for the other half.
+
+## When this applies
+
+- The list is longer than fits in one view, and the reader needs a subset matching criteria they
+  can name.
+- The fields to filter or search on are fixed and known in advance — a status, a date range, a
+  campaign, a tag, a name.
+- The same input should always produce the same result set, with no interpretation step.
+
+## When it doesn't
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The user doesn't know which filter to use, or wants to describe what they want in their own words | [AI Experience: Search](/invoca-design-system/ai-experience/actions/search) | That surface's job is translating a sentence into fields and values; this page assumes the user already knows both |
+| The list is short enough to scan without narrowing it | Nothing — don't add filter controls the list doesn't need | Controls the reader has to parse but never uses cost more than they save |
+| The narrowed result set is empty | [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) | That pattern owns the distinction between "nothing matched" and "nothing exists yet" — not redefined here |
+| Nothing has loaded yet | [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) | An empty-looking list mid-load is not the same case as a filter returning zero rows |
+
+## Structure
+
+| Order | Component | Role |
+|---|---|---|
+| 1 | [Input](/invoca-design-system/components/forms/input) | Search bar — the typed-text query, per Input's own confirmed `Search bar` configuration |
+| 2 | [Select](/invoca-design-system/components/forms/select) | One per filterable field — a discrete, enumerable choice |
+| 3 | [Tag](/invoca-design-system/components/data-display/tag) | Active-filter chips, one per applied filter, removable |
+| 4 | [Button](/invoca-design-system/components/actions/button) `tertiary` | "Clear all" — appears once more than one filter is active |
+| 5 | [Table](/invoca-design-system/components/data-display/table) or [List](/invoca-design-system/components/data-display/list) | The narrowed result set |
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ [ ⌕  Search campaigns              ]  [ Status ▾ ]  [ Date ▾ ]│
+│                                                                 │
+│ [Tag: Status: Active ×]  [Tag: Date: Last 30 days ×]  Clear all│
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────┐   │
+│ │ Table — the narrowed result set                          │   │
+│ │  ...                                                       │   │
+│ │  Pagination — inside the table, above the page footer    │   │
+│ │  (per TITAN-GAP-27's "Direction")                         │   │
+│ └─────────────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Per [Views overview](/invoca-design-system/views/overview#controls), the search bar and filter
+controls sit in the page frame's `Controls` region — they change what the body shows, never what
+the underlying data is. That is also why filtering carries no confirmation step of its own: it
+is never destructive, so [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s
+tiers do not apply here.
+
+## Behavior
+
+| State | Behavior |
+|---|---|
+| Typing in the search box | Debounced roughly 300ms before the query runs — not on every keystroke |
+| A filter is chosen | Result set updates immediately; a discrete choice needs no debounce |
+| A filter is applied | A chip appears in the active-filters row, distinct from the controls that set it |
+| A chip is removed | Only that filter clears. The others, and the search text, are untouched |
+| "Clear all" is pressed | Every filter and the search text reset to the unfiltered list, with no confirmation step |
+| The combination returns nothing | Hands off to [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) |
+| The page is reloaded, or reached via the back button | Active filters and the search text are restored from the URL, not reset |
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-FSEARCH-01** | Every applied filter renders as a removable chip in a dedicated active-filters row, separate from the controls that set it. | A narrowed list with no visible trace of what narrowed it gives the reader no way to explain the rows that are missing, let alone undo it. |
+| **TITAN-FSEARCH-02** | A "clear all" control appears whenever more than one filter is active. | Removing filters one chip at a time is fine for one filter; past that it is the slower path back to the full list every time. |
+| **TITAN-FSEARCH-03** | Search input is debounced before it runs. It never queries on every keystroke. | Querying per keystroke against a large table produces a result list that visibly reflows while the reader is still typing, and runs redundant queries that are discarded before they're seen. |
+| **TITAN-FSEARCH-04** | Filters and search sit in the page frame's `Controls` region, not inside an ad hoc toolbar the page invents. | [TITAN-VIEW-05](/invoca-design-system/views/overview#constraints) — `Controls` changes what the body shows; a filter row placed elsewhere is a control pretending to be part of the body. |
+| **TITAN-FSEARCH-05** | Active filter and search state is reflected in the URL, so a filtered view is linkable and survives a reload or the back button. | An interface state that exists only in memory cannot be shared, bookmarked, or returned to — the same reasoning behind tab addressability in [Views overview](/invoca-design-system/views/overview#constraints). |
+| **TITAN-FSEARCH-06** | Removing one filter chip removes only that filter. It never resets the others. | Filters typically combine as AND; a reader backing out one criterion at a time should not be forced to restart the whole search. |
+| **TITAN-FSEARCH-07** | A zero-result narrowed list hands off to [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) rather than defining its own empty treatment. | One definition of the empty case, not two that can drift out of sync. |
+| **TITAN-FSEARCH-08** | Pagination of the narrowed result set follows [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)'s "Direction" — inside the table, above the page footer — until the frame decides otherwise. | The page frame has no region between `Contents` and `Footer` for it; building a bespoke pagination bar is the exact duplication that gap entry already records as a real cost. |
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Filter chip | Status: Active | Active *(no field name — ambiguous once several chips stack)* |
+| Search placeholder | Search campaigns | Type here... |
+| Clear-all label | Clear all | Reset *(vaguer — could mean reset a form, not filters)* |
+| Chip remove control's accessible name | Remove filter: Status: Active | *(an unlabeled "×")* |
+
+## Accessibility
+
+- The result count is announced to a live region after a filter or search updates, once the
+  update completes — not on every keystroke of a debounced search.
+- Each filter chip's remove control needs its own accessible name stating which filter it
+  removes ("Remove filter: Status: Active"), not a bare "×" with no context.
+- An active filter chip's state is never carried by color alone — pair it with the field name and
+  value as text, per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Focus stays on the search box or filter control the reader just used; a result-set update never
+  steals focus to the results themselves. Moving focus away from an in-progress interaction (still
+  typing, still choosing a filter) is more disruptive here than in a one-shot action like a
+  completed search.
+
+## Variations
+
+| Variation | When | Change |
+|---|---|---|
+| Search only, no filter row | The list has one obvious field to narrow on (a name, an ID) | Skip the filter controls; the search bar alone occupies `Controls` |
+| Collapsed filter panel | Five or more filterable fields | Collapse the filters behind a single control that opens a panel, rather than a wide row of Selects — see [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) |
+| Faceted option counts | Filter options carry counts of matching rows | Not decided whether Select supports this today — treat as a proposal, not a confirmed capability |
+
+## Anti-patterns
+
+**Filters that change the result set with no visible trace.** A Select that narrows the table but
+leaves no chip and no indication anything is active is the single most common failure here — the
+reader eventually notices rows are missing and has no way to find out why.
+
+**Debouncing so long the search feels broken, or not at all.** No debounce means the table
+reflows on every keystroke; a debounce measured in seconds reads as the search not working.
+Neither extreme respects the reader's sense that typing should produce something.
+
+**Treating "nothing matched" the same as "nothing exists."** A search or filter that returns zero
+rows is not the same message as a list with no data in it at all — the distinction belongs to
+[Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states), and collapsing the
+two into one generic "no results" message loses information the reader needs to decide what to
+do next.
+
+**A "clear all" that only clears some of the state.** If search text survives a "clear all" that
+visibly cleared every filter chip, the reader has no reason to expect the list is still narrowed.
+
+## Related
+
+[Table](/invoca-design-system/components/data-display/table) and
+[List](/invoca-design-system/components/data-display/list), the two result-set components this
+pattern composes with. [Views overview](/invoca-design-system/views/overview), for the `Controls`
+region this pattern fills. [AI Experience: Search](/invoca-design-system/ai-experience/actions/search),
+the non-deterministic counterpart for requests that don't map onto known fields.
+[Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states), for the zero-result
+case this page hands off to.
