@@ -1,0 +1,64 @@
+---
+title: "Invoca Tag: Advanced Settings & Attribution Reference"
+---
+
+> Advanced attribution, custom data capture, and referral-domain mapping settings for the Invoca Tag. For basic setup — accessing, deploying, and going live — see [Invoca Tag: Access, Deploy, and Go Live](/s/article/tag-configuration-guide).
+
+**Before you begin:** You need access to the **Settings** area of your Invoca account and an existing Invoca Tag. Revisit this guide any time you install a new integration or create a custom Marketing Data field.
+
+<Note>
+**Note**
+
+The **Collect IP Address** and **Collect User Agent** settings below configure your account to capture real caller data. If your organization has specific data-handling or compliance requirements, confirm these settings with your privacy or legal team before enabling them.
+</Note>
+
+## Configure caller attribution settings
+
+1. In **Settings > Invoca Tags**, select the Tag you want to configure.
+2. On the **Revision History** tab, click **New Draft** (or select your existing draft).
+3. Scroll to the **Attribution** tile, where you can edit:
+   - **Attribution Window** — how long Invoca treats a visitor to your landing page as the same unique visitor. Defaults to 30 days.
+   - **Reset Attribution Cache** — the Marketing Data parameters Invoca uses to determine paid-search attribution. Defaults to `gclid`, `utm_source`, and `utm_medium` — the standard Google Ads click identifier and campaign-source/medium parameters used in URL tracking. If any of these change during a visitor's session, Invoca resets that visitor's attribution.
+
+## Capture custom Marketing Data
+
+In the **Marketing Data** table, for each parameter you want your Tag to capture:
+
+1. In **Data Source Type**, choose where Invoca should look: a **URL parameter** in the query string, a first-party **cookie**, or a **JavaScript Data Layer** variable.
+2. In **Data Source Name**, enter the field name:
+   - **URL Parameter** — leave blank unless it differs from the field's Partner (API) Name.
+   - **Cookie** — must be a first-party cookie on your domain.
+   - **JavaScript Data Layer** — a variable or function name defined on your site. For complex JavaScript, use the **Custom Code** block below instead of putting the logic in this field — see [Invoca Tag Wizard - Custom Code](https://community.invoca.com/t5/developer-features/invoca-tag-wizard-custom-code/m-p/604#U604).
+3. Toggle **Enabled** on for each field you want to collect. New fields are disabled by default.
+
+## Advanced settings
+
+- **Parameters required to run** — limit your Tag to trigger only when specific parameters are present (for example, to omit direct traffic). You can also require an exact `parameter=value` match; Invoca supports one value per parameter.
+- **Re-Run Attribution After** — re-attempt Marketing Data capture after a set number of seconds, so promo numbers swap immediately while slower-loading parameters still get captured.
+- **Capture Organic Sources** — fills in UTM parameters (the standard campaign-tracking fields — `utm_source` and `utm_medium` — used in a page's URL) with a default value when organic traffic arrives without them. For example, this credits a visit to Google if no `utm_medium` parameter is present.
+- **Collect IP Address** — captures a caller's IP address as part of their attribution data. *See the compliance note at the top of this page.*
+- **Collect User Agent** — captures a caller's User Agent (browser and device information) as part of their attribution data. *See the compliance note at the top of this page.*
+
+### Referral-domain defaults
+
+When **Capture Organic Sources** is on, this table shows the `utm_medium` and `utm_source` values Invoca assigns based on a visitor's referring domain:
+
+| Referral domain | utm_medium | utm_source |
+|---|---|---|
+| None | direct | direct |
+| Google, Yahoo, Bing, DuckDuckGo | organic | google.com, yahoo.com, bing.com, duckduckgo.com |
+| Google UK, Bing UK, Yahoo UK | organic | google.co.uk, bing.co.uk, yahoo.co.uk |
+| AI assistants and search tools (chatgpt.com, perplexity, edgepilot, edgeservices, copilot.microsoft.com, openai.com, gemini.google.com, nimble.ai, iask.ai, claude.ai, aitastic.app, bnngpt.com, writesonic.com, copy.ai, chat-gpt.org, x.ai) | organic | matches the referring domain |
+| `msclkid` parameter present in the visitor's URL | paid search | bing.com |
+| `gclid` parameter present in the visitor's URL | paid search | google.com |
+| Anything else | referral | `<referring domain>` |
+
+## Custom code
+
+For additional control over what your Tag collects or how it behaves, add code in the **Custom Code** section. See [Invoca Tag Wizard - Custom Code](https://community.invoca.com/t5/developer-features/invoca-tag-wizard-custom-code/m-p/604#U604) for details.
+
+## Where to go next
+
+- [Invoca Tag: Access, Deploy, and Go Live](/s/article/tag-configuration-guide)
+- [Basic Knowledge: Capturing Marketing Data with Invoca](https://community.invoca.com/t5/call-attribution/basic-knowledge-capturing-marketing-data-with-invoca/m-p/579#U579)
+- [Testing and troubleshooting your Invoca Tag](https://community.invoca.com/t5/call-tracking/testing-and-troubleshooting-your-invoca-tag/m-p/455#U455)
