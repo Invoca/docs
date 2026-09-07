@@ -1,0 +1,61 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+Titan's stated token model is three tiers: a component token aliases a semantic token,
+which aliases a primitive. This table audits Tier 3 against that model.
+
+|  | Count |
+|---|---|
+| Tier-3 tokens total | 95 |
+| Carrying a reference | 26 |
+| → referencing a **semantic** token | **0** |
+| → referencing a **primitive** directly | **26** |
+| Literal values — geometry, durations, no reference | 69 |
+
+Every Tier-3 token that carries a reference points at a primitive. None routes through the semantic tier.
+
+<Note>
+  **This does not break anything today.** Each of these tokens resolves correctly and every
+  one carries a recorded reason for existing. The cost is that its relationship to the
+  semantic token it was derived from exists only in prose — `chip-success-tint` is described
+  as "one ramp step deeper than `background-success-alt`", and nothing in the token graph
+  encodes that, so retuning `background-success-alt` will not move the chip.
+</Note>
+
+Each row carries the definition recorded in source. These were deliberate choices with
+stated reasoning, not oversights.
+
+| Token | Aliases | Recorded definition | From |
+|---|---|---|---|
+| `badge-neutral-background` | `color.ui-black.20` | Badge colorSecondary surface — ui-black.20 has no Tier-2 background semantic, so a Tier-3 token | code |
+| `badge-neutral-text` | `color.ui-black.80` | — | — |
+| `card-background-active` | `color.ui-black.10` | Pressed-state background of interactive Cards | code |
+| `chip-error-icon` | `color.red.20` | — | — |
+| `chip-error-icon-hover` | `color.red.30` | — | — |
+| `chip-error-tint` | `color.red.10` | — | — |
+| `chip-info-icon` | `color.blue.30` | — | — |
+| `chip-info-icon-hover` | `color.blue.40` | — | — |
+| `chip-info-tint` | `color.blue.20` | — | — |
+| `chip-neutral-icon` | `color.ui-black.30` | — | — |
+| `chip-neutral-icon-hover` | `color.ui-black.40` | — | — |
+| `chip-neutral-text` | `color.ui-black.70` | — | — |
+| `chip-neutral-tint` | `color.ui-black.10` | — | — |
+| `chip-success-icon` | `color.green.40` | — | — |
+| `chip-success-icon-hover` | `color.green.50` | — | — |
+| `chip-success-tint` | `color.green.20` | Chip success surface/border tint — one ramp step deeper than background-success-alt, so a Tier-3 token | code |
+| `chip-warning-icon` | `color.orange.30` | — | — |
+| `chip-warning-icon-hover` | `color.orange.40` | — | — |
+| `chip-warning-tint` | `color.orange.10` | — | — |
+| `circular-progress-track-ring` | `color.ui-black.10` | CircularProgress track — an inset ring, not an elevation shadow | code |
+| `data-grid-focus-ring` | `color.blue.80` | Keyboard-focus a11y affordance on DataGrid cells — an inset ring, deliberately NOT normalized onto the elevation shadow scale | code |
+| `form-field-focus-ring` | `color.blue.50` | Focus ring around focused Form & Input fields | code |
+| `form-field-focus-ring-error` | `color.red.40` | Focus ring around focused error-state Form & Input fields | code |
+| `progress-bar-secondary` | `color.blue.20` | Secondary LinearProgress bar fill | code |
+| `slider-thumb-shadow` | `color.ui-black.50` | Slider thumb hairline shadow | code |
+| `toggle-track-off-background` | `color.common.asphalt` | Toggle track fill in the unchecked state | code |
+
+<Warning>
+  **This is invisible in the resolved output.** `theme.tokens` and the token manifest
+  publish leaf values, so a token that skipped the semantic tier looks identical to one that
+  did not. It shows only in the DTCG source. See
+  [TITAN-DIV-01](/invoca-design-system/foundations/divergences#titan-div-01).
+</Warning>

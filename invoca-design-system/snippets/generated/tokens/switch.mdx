@@ -1,0 +1,57 @@
+{/* Sourced from the theme snapshot captured 2026-08-11 (`.titan-snapshot/`), not from a live
+     run of `tools/emit-tokens.mjs` — no Titan checkout is available this pass. Re-verify
+     against source once a checkout exists. See `.titan-snapshot/README.md`. */}
+
+Titan's own component tokens use the `toggle-*` prefix — see
+[Vocabulary](/invoca-design-system/components/forms/switch#vocabulary) for why this page is titled Switch anyway.
+
+| Token | Value | Renders as |
+|---|---|---|
+| `toggle-track-width` | `40px` | Density-constant |
+| `toggle-track-height` | `20px` | Density-constant |
+| `toggle-track-radius` | `10px` | Exactly half the track height — a fully rounded pill, not an independently authored radius |
+| `toggle-thumb-size` | `12px` | Density-constant |
+| `toggle-thumb-radius` | `6px` | Exactly half the thumb size — a circle |
+| `toggle-thumb-inset` | `4px` | Gap between the thumb and the track edge when off |
+| `toggle-track-off-background` | `#66708e` | The off-state track colour — its own value, not a reference to a disabled or neutral semantic token |
+
+<Info>
+  **The thumb's on-state and the on-state track colour were not found in this token set** —
+  only the off-track colour has its own named token here. The on-state presumably uses a
+  purpose/intent colour (see below), but this session could not confirm which token supplies
+  it.
+</Info>
+
+## Colour
+
+<Color variant="table">
+  <Color.Row title="Disabled thumb, default intent">
+    <Color.Item name="palette.Switch.defaultDisabledColor" value={{ light: "#f5f5f5" }} />
+  </Color.Row>
+  <Color.Row title="Disabled thumb, primary intent">
+    <Color.Item name="palette.Switch.primaryDisabledColor" value={{ light: "rgb(172, 196, 252)" }} />
+  </Color.Row>
+  <Color.Row title="Disabled thumb, error intent">
+    <Color.Item name="palette.Switch.errorDisabledColor" value={{ light: "rgb(244, 165, 168)" }} />
+  </Color.Row>
+</Color>
+
+<Note>
+  Seven intents ship disabled-thumb colours (`default`, `primary`, `secondary`, `error`,
+  `info`, `success`, `warning`), confirming Switch carries the same purpose/intent axis as
+  [Alert](/invoca-design-system/components/feedback/alert). Only a sample is shown here; the full set is in the
+  theme snapshot.
+</Note>
+
+| Token | Value |
+|---|---|
+| `opacity-switchTrack` | `0.38` |
+| `opacity-switchTrackDisabled` | `0.12` |
+
+<Warning>
+  **A third and fourth disabled-opacity value, on top of the two already found on
+  [Checkbox](/invoca-design-system/components/forms/checkbox#tokens).** `opacity-switchTrack` (`0.38`) matches
+  `action-disabledOpacity` exactly; `opacity-switchTrackDisabled` (`0.12`) matches neither
+  that nor `form-input-disabled-opacity` (`0.5`). See
+  [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32), now extended to cover this.
+</Warning>

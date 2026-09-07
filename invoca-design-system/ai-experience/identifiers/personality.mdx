@@ -1,0 +1,124 @@
+---
+title: "Identifiers: Personality"
+description: "Tone and voice register when the system talks, as distinct from when it just renders data."
+icon: "smile"
+keywords: ["ai personality", "ai tone", "ai voice", "signal ai", "identifiers"]
+---
+
+<Warning>
+  **No verbal register has been decided for any Invoca agentic feature yet.** This page
+  proposes a framework for making that decision — it is not the decision itself. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it governs
+
+The tone and register of sentences an AI feature *produces* — a generated summary, an
+explanation, a hedge, a refusal — as distinct from data it merely *renders*, like a chart or
+a table of call metrics. It governs how "talking" content should sound; it does not govern
+whether uncertainty is disclosed at all (that is
+[Trust builders](/invoca-design-system/ai-experience/trust-builders/caveat)) or what the
+feature is named (that is
+[Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name)).
+
+It does not govern [Content: Voice and tone](/invoca-design-system/content/voice-and-tone)
+itself — Invoca's general brand voice, which this page inherits and narrows for
+AI-generated language specifically.
+
+## Vocabulary
+
+| Term | Means |
+|---|---|
+| **Voice** | Invoca's three stated brand traits — Empowering, Eye-opening, Bold — from [Content: Voice and tone](/invoca-design-system/content/voice-and-tone) |
+| **Tone** | How those traits flex moment to moment — more measured when the system is uncertain, more direct when it is confident |
+| **Personality** | This page's umbrella term for deciding how "human" an AI feature's sentences should sound — a decision, unlike a static UI label, that has to hold across an unbounded range of generated text |
+
+**"Talking" is not "rendering."** A generated summary sentence is talking, and in scope here.
+A table of call metrics beside it is rendering, and out of scope — it is governed by
+[Foundations: Typography](/invoca-design-system/foundations/typography) and the relevant
+component, not by this page.
+
+## Choosing a value
+
+| If you need to… | Use | Not this, because |
+|---|---|---|
+| Make AI-generated sentences sound like Invoca | Invoca's existing three brand traits from [Content: Voice and tone](/invoca-design-system/content/voice-and-tone) | Inventing a separate, "chattier" personality for AI surfaces — that splits the brand exactly at the moment a user first notices something is different |
+| Have the AI hedge when it's not sure | Write the hedge in this page's register; decide *whether* to show one at all in [Trust builders](/invoca-design-system/ai-experience/trust-builders/caveat) | Deciding here whether uncertainty gets disclosed — that is a different page's job |
+| Have the AI apologize for an error or a refusal | A brief, single acknowledgment, per `TITAN-VOICE-03`'s concise-over-exhaustive rule | An effusive, repeated apology that reads as performance rather than information, and buries what the user actually needs — what to do next |
+| Make the AI sound casual or friendly, like a chat companion | Hold it to Bold — clear and direct — from Invoca's existing traits | Adding warmth as a new, undecided fourth trait the brand has not signed off on |
+
+## Reference
+
+Nothing is decided. No Invoca agentic feature has a stated tone or register today, including
+Signal AI's shipped transcript summaries. This section will be generated from a real decision
+once one exists.
+
+## Relationships
+
+Personality directly inherits [Content: Voice and tone](/invoca-design-system/content/voice-and-tone)'s
+three traits and its constraints — `TITAN-VOICE-01` (plain language over technical wording),
+`TITAN-VOICE-02` (no acronyms or insider phrasing), `TITAN-VOICE-03` (concise over exhaustive)
+— all apply to AI-generated sentences exactly as written for the rest of the product; this
+page does not restate them, it narrows their application.
+
+It pairs with [Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name) — a
+feature's name and its speaking register are usually decided together — and with the
+overview's disclosure requirement: tone must never obscure the six disclosure-and-recourse
+questions.
+
+## Accessibility
+
+- Plain language (`TITAN-VOICE-01`) doubles as an accessibility aid: it helps readers with
+  cognitive or language-processing differences as much as it helps a reader outside the
+  company understand copy without translation.
+- Tone must never substitute for or obscure the six disclosure-and-recourse answers from the
+  [overview](/invoca-design-system/ai-experience/overview#disclosure-recourse) — what the
+  system used, how sure it is, how to check it, how to correct it, and how to get out. A
+  warm register that omits or buries any of these is not a tone problem; it is a missing
+  answer wearing a friendly voice.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-PERSONA-01** | AI-generated sentences follow Invoca's three brand voice traits — Empowering, Eye-opening, Bold. No separate "AI voice" is introduced. | A second voice for AI content splits the brand exactly where consistency matters most: the moment a user notices the product is talking differently. |
+| **TITAN-PERSONA-02** | Tone never substitutes for the six disclosure-and-recourse answers from the overview. A friendly register is not a stand-in for saying what the system used or how sure it is. | Warmth and disclosure are different axes. Optimizing one at the other's expense is how "confident and wrong" becomes "confident, charming, and wrong." |
+| **TITAN-PERSONA-03** | Hedging and refusal language stays concise, per `TITAN-VOICE-03` — no more than one brief acknowledgment before the substantive content. | Exhaustive apology reads as performance and pushes the actually useful information — what to do next — further down the response. |
+| **TITAN-PERSONA-04** | Personality is decided for talking content only. Rendered data — tables, charts, transcript excerpts — carries no personality treatment. | Keeps this page's scope from creeping into typography or component pages already governed elsewhere. |
+| **TITAN-PERSONA-05** | No AI-specific personality trait is added beyond Invoca's existing three without a stated brand-level decision. | Mirrors `TITAN-COLOR-05`'s four-statuses logic: an ungoverned addition here is exactly how "helpful," "witty," and "empathetic" pile up with nothing distinguishing them. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether tone should shift by outcome state — more measured when uncertain, more direct
+  when confident — is undecided.
+- Whether personality is one voice for all of Invoca's agentic surfaces or decided per
+  feature is the same per-feature-or-once question flagged on the
+  [overview](/invoca-design-system/ai-experience/overview#gaps).
+- How Invoca's three brand traits actually read once generated by a model, rather than
+  written by a copywriter, has not been evaluated.
+
+## Related
+
+[Identifiers: Avatar](/invoca-design-system/ai-experience/identifiers/avatar) ·
+[Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color) ·
+[Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography) ·
+[Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name) ·
+[AI Experience overview](/invoca-design-system/ai-experience/overview) ·
+[Content: Voice and tone](/invoca-design-system/content/voice-and-tone)
+
+## Why it works this way
+
+Restricting personality to Invoca's existing three brand traits, rather than letting AI
+surfaces develop their own, keeps the brand from fracturing at its most visible new surface.
+A model's output is the first place many users will notice the product doing something new;
+if it also sounds like a different product at that moment, the inconsistency compounds
+instead of canceling out.
+
+Scoping this page to "talking," not "rendering," keeps it from re-deciding typography or
+component rules that already govern how data displays. A generated sentence needs a tone
+decision because its exact words are new every time; a rendered number does not, because its
+presentation was already decided elsewhere.

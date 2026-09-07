@@ -1,0 +1,188 @@
+---
+title: "View name"
+description: "The page archetype this describes, in one sentence."
+icon: "layers"
+---
+
+{/*
+  VIEW PAGE TEMPLATE
+
+  A View is a full-page archetype: it defines regions and what fills each one.
+
+  This is the tier most design systems omit, and the tier a builder needs FIRST.
+  Someone asked to "build the campaign settings page" is making a View-level
+  decision before they make any component decision. Documenting only components
+  means the most consequential layer gets improvised every time.
+
+  Section order is fixed. Do not reorder, do not omit. A fixed order makes an
+  omission visible, which is the point — a missing Accessibility section is
+  obvious; a page that quietly never had one is not.
+
+  Three registers, and they must stay distinguishable to a reader and to an agent:
+    [REF] code fact      — generated from source. Never hand-write a value.
+    [DEC] design intent  — normative. What to build.
+    [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
+
+  Delete these comment blocks when you author a real page.
+*/}
+
+<Note>
+  **Region names and slot rules on this page are design intent**, not generated. Constraints
+  are **Proposed** and need sign-off. Disagreements between the design language and the
+  shipped code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
+</Note>
+
+## What it is
+
+{/* [DEC] The job this page archetype does, and how a reader recognizes they are
+     building one. Two sentences. */}
+
+## Region vocabulary
+
+{/* [DEC] The system's names for its regions, and the terms it is NOT using.
+
+     This is the section that makes the archetype usable. "Header", "toolbar",
+     "app bar", "masthead", and "page head" are five words teams use for
+     overlapping things. Until the system picks, two builders produce two
+     layouts and both believe they followed the docs.
+
+     Name the chosen term, and list the rejected synonyms so a search lands. */}
+
+| Region | Also called | The system uses |
+|---|---|---|
+| Page header | Masthead, page head, title bar | **Page header** |
+
+## Choose this view when
+
+{/* [DEC] Positive criteria. Each testable against a real screen. */}
+
+- Condition under which this archetype is the right choice.
+
+## Choose something else when
+
+{/* [DEC] MANDATORY. Must name a specific alternative and link to it. This is the
+     entry that stops two archetypes drifting into one. */}
+
+| If the page also needs to… | Use | Why |
+|---|---|---|
+| The neighboring job | [Other view](/invoca-design-system/views/other) | The distinction |
+
+## Regions
+
+<Frame caption="Caption states the layout rule, not what the image shows.">
+  <img src="/images/views/view-name.png" alt="Region diagram" />
+</Frame>
+
+| Region | Required | Landmark | Contains |
+|---|---|---|---|
+| Page header | Yes | `banner` | Title, breadcrumb, primary action |
+
+{/* Required is load-bearing: it separates "this archetype always has one" from
+     "this archetype may have one." An optional region documented as required
+     produces empty containers; the reverse produces missing ones. */}
+
+## What fills each region
+
+{/* [DEC] Per region: which patterns and components are allowed, which are
+     forbidden, and the tokens governing the space between them. Be exhaustive —
+     an unspecified region is one that gets improvised. */}
+
+### Page header
+
+| Slot | Use | Constraint |
+|---|---|---|
+| Primary action | [Button](/invoca-design-system/components/actions/button) `contained` | At most one |
+
+## Responsive and density behavior
+
+{/* [DEC] What collapses, what stacks, what is dropped, and at which breakpoint.
+
+     State what gets DROPPED explicitly — a reader who is only told what stacks
+     will stack something that should have been removed. */}
+
+| Breakpoint | Collapses | Stacks | Dropped |
+|---|---|---|---|
+| | | | |
+
+## Accessibility
+
+{/* [DEC] The view tier owns the page-level accessibility decisions, and it is the
+     only tier that can. A component cannot know it is the only `main`; a pattern
+     cannot know the heading outline. If this section is thin, those decisions are
+     being improvised per page. */}
+
+**Landmarks.** Each region maps to a landmark role — see the Regions table. Exactly one
+`main` per page. Repeated landmarks of the same role carry distinguishing accessible names.
+
+**Heading outline.** One `h1`, and this page states which region owns it. Levels descend
+without skipping. Visual size and heading level are chosen independently — never reorder
+headings to get a size.
+
+**Focus order.** Region order in the DOM matches visual order. State where focus lands on
+load, and after any region-level navigation. Provide a skip link to `main` when the header
+and navigation together exceed a few tab stops.
+
+**Sticky regions must not obscure a focused element**
+([WCAG 2.2 Focus Not Obscured, AA](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html)).
+A sticky header that covers the element a keyboard user just tabbed to is a conformance
+failure, and this is the tier that can prevent it.
+
+**Reflow.** Content works at 320px equivalent without two-dimensional scrolling
+([WCAG 2.2 Reflow, AA](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)) — that is
+a desktop page at 400% zoom, not a phone.
+
+**A region dropped responsively must not be the only route to a function.** Dropping is a
+layout decision; removing the only path to an action is a functional one.
+
+## Constraints
+
+{/* [DEC] One rule per ID. Falsifiable — someone looks at a screen and says yes or
+     no. Rationale required.
+
+     ID FORMAT: TITAN-<AREA>-<NN>, where AREA is a short code for THIS view
+     (TITAN-LIST-01, TITAN-DASH-01) — not the literal word VIEW. Every view
+     sharing one area code guarantees number collisions across pages.
+
+     IDs are permanent. Deprecate, never renumber — they get cited in review. */}
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| TITAN-AREA-01 | Testable rule. | Why. |
+
+## Known issues
+
+{/* [DIV] One table for both registers, each row labelled by kind:
+
+     Divergence    — code and design intent disagree. /foundations/divergences
+     Open decision — nothing has been decided.        /foundations/open-decisions
+
+     Link them; do not restate them. If none apply, say so — an empty section is a
+     claim, a missing one is silence. */}
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-NN](/invoca-design-system/foundations/divergences) | Divergence | One line. |
+
+## Gaps in the current rules
+
+{/* Genuinely undecided. NOT a to-do list, and not an invitation to resolve them.
+     An agent asked about anything here answers "Titan does not specify this."
+
+     For a view, the usual honest gaps: what happens below a nesting depth, which
+     regions may be empty, whether a region can appear twice. */}
+
+## Composed example
+
+{/* A real screen built from this archetype, linked or embedded live. A static
+     image of a composed page goes stale in every release. */}
+
+## Related
+
+{/* Patterns this archetype composes, and neighbouring archetypes. Derive the
+     pattern list from what actually appears in the region tables above rather
+     than assuming. */}
+
+## Why it works this way
+
+{/* [DEC] Rationale. State the mechanism, not the sentiment. What was ruled out and
+     why. This is what keeps the constraints above from being quietly deleted. */}

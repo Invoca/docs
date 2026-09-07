@@ -1,0 +1,49 @@
+---
+title: "Iconography"
+description: "Divergences, open decisions, and undocumented gaps for Iconography."
+icon: "shapes"
+---
+
+See [Iconography](/invoca-design-system/foundations/iconography) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-03**](/invoca-design-system/foundations/divergences#titan-div-03) | Divergence | status colours fail contrast |
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+| [**TITAN-GAP-17**](/invoca-design-system/foundations/open-decisions#titan-gap-17) | Open decision | iconography has no meaning registry |
+
+## Gaps in the current rules
+
+- **The `Icon` suffix is unexplained.** 27 of 154 exports carry it, with no consistent
+  rule for which one does. `ErrorIcon` is the plain glyph, and its `ErrorOutline` and
+  `ErrorRounded` siblings carry no suffix; `CheckCircleOutlineIcon` is the *outlined*
+  variant, and its plain `CheckCircle` and rounded `CheckCircleRounded` siblings carry
+  none. The suffix does not mark a glyph style, avoid a name collision, or follow any other
+  visible pattern.
+- **Three variants of several glyphs ship with no selection rule** — `CheckCircle`,
+  `CheckCircleOutlineIcon`, and `CheckCircleRounded`; `Info`, `InfoOutlined`, and
+  `InfoRounded`. Nothing says when filled, outlined, or rounded is correct, so the set is
+  effectively three overlapping sets.
+- **No process is documented for proposing a new icon**, though
+  [TITAN-ICO-01](/invoca-design-system/foundations/iconography#constraints) requires one.
+- **`icon-with-tooltip-max-width` (300px) is a component token in the icon namespace.** It
+  belongs to `IconWithTooltip`, not to the foundation.
+- **No icon-to-meaning registry exists.** [TITAN-ICO-07](/invoca-design-system/foundations/iconography#constraints) requires one glyph
+  per meaning, but there is no published mapping to check against.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-ICO-01** | Icons come only from the Titan icon set. | A `no-restricted-imports`-style lint rule limiting icon imports to Titan's icon package index. |
+| **TITAN-ICO-03** | Icon color comes from an `icon-*` token, never `text-*`, a hex value, or opacity. | Typing the Icon component's `color` prop to accept only the `icon-*` token union. |
+| **TITAN-ICO-04** | Status icons use the `-alt` token variant. | The same lint pattern as TITAN-COLOR-07, applied to icon color props. |
+| **TITAN-ICO-05** | A sole-content icon control has an explicit accessible name. | An ESLint a11y rule flagging icon-only interactive elements missing `aria-label`/accessible name. |

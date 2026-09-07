@@ -1,0 +1,37 @@
+---
+title: "Select"
+description: "Divergences, open decisions, and undocumented gaps for Select."
+icon: "chevron-down"
+---
+
+See [Select](/invoca-design-system/components/forms/select) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-24**](/invoca-design-system/foundations/divergences#titan-div-24) | Divergence | The trigger's error focus ring is a third red, unaliased to the semantic error tokens — inherited from the field chrome it shares with Input |
+| — | Needs sign-off | This page previously pointed to a separate, undocumented "Combobox" for typing to filter options — that was wrong. Autocomplete is modeled as a mode of Select in the design library (an `Autocomplete` variant, `false`/`true`, on the same `Select Input` component as everything else on this page), not a separate component — see [Vocabulary](/invoca-design-system/components/forms/select#vocabulary). There is no `Combobox` page or component anywhere in the library's 49 pages. Titan's actual code structure for this is unconfirmed without a checkout. |
+
+## Gaps in the current rules
+
+- **No decided behavior for zero available options.**
+- **No truncation rule for a long option label**, in either the trigger or the list.
+- **No decided threshold for turning Autocomplete on** — the design library shows it as a
+  binary mode, not a rule tied to option count.
+- **Multi-select's trigger summary format is undecided** — a count, chips, and a truncated
+  label list all satisfy [TITAN-SELECT-05](/invoca-design-system/components/forms/select#constraints) without choosing between them.
+- **Whether the option-list overlay shares implementation with Menu** — the shared naming is suggestive, not confirmed against source.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-SELECT-03** | The placeholder is never itself a selectable option. | A lint/runtime check comparing the placeholder text to the option set. |
+| **TITAN-SELECT-04** | Option group headers are not selectable. | A test asserting group-header elements fire no selection handler. |
+| **TITAN-SELECT-05** | A multi-select trigger summarizes rather than growing unbounded. | A built-in default `renderValue` truncation/summary utility. |
+| **TITAN-SELECT-06** | A disabled Select is paired with a reachable explanation. | A required-when-disabled explanation prop. |
+| **TITAN-SELECT-08** | Sub-options nest exactly one level, never deeper (needs confirmation). | A recursive type disallowing a third nesting level. |

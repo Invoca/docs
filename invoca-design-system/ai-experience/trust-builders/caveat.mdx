@@ -1,0 +1,214 @@
+---
+title: "Caveat"
+description: "Hedging a claim in the words of the claim itself, so a judgment or a prediction never reads with the same confidence as a checkable fact."
+icon: "triangle-alert"
+keywords: ["caveat", "hedge", "uncertainty", "confidence", "disclaimer", "trust builder"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  yet. Nothing below is code fact or measured behavior — it is a proposal for review. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+Some claims an agentic feature makes about call data reduce to a checkable fact — a caller
+asked a specific question at a specific timestamp. Others don't. "This call was likely
+misrouted" or "consider lowering the bid on this campaign" are judgments: interpretations built
+on a partial view of what happened, not a fact with a passage to point to. A manager reading
+either kind of claim in the same confident prose has no way to tell them apart — and acting on a
+wrong judgment as if it were a checked fact is exactly the failure this section exists to guard
+against.
+
+Caveat hedges the claim in its own wording, at the moment it's stated, instead of attaching a
+numeric score or a disclaimer somewhere else on the page. "Likely misrouted — the caller asked
+for billing but was connected to sales. Based on transcript keywords only; call audio was not
+analyzed" tells the manager two things a bare confidence number cannot: what the judgment rests
+on, and what it doesn't — which is the actual information a hedge needs to carry to be useful
+rather than decorative.
+
+This is the counterpart to [Verification](/invoca-design-system/ai-experience/governors/verification):
+verification is for a claim that has a specific source to check against; caveat is for a claim
+that doesn't, because it's an interpretation rather than a fact. A single piece of output can
+need both — a factual claim with a citation, sitting next to a judgment with a hedge — and this
+page and Verification's are written as a pair for exactly that reason.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The claim has a specific, checkable source | [Verification](/invoca-design-system/ai-experience/governors/verification) | Cite a checkable claim rather than hedge it — a citation is stronger evidence than any wording |
+| The uncertainty is about a process still running, not the finished answer | [Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) | A caveat attaches to a stated claim; a run in progress has no claim yet to hedge |
+| The system genuinely cannot proceed (missing data, no permission) | [Error handling](/invoca-design-system/patterns/error-handling) | A refusal and a hedge read as different levels of trust — conflating them either overstates a refusal or understates a caveat |
+| The confidence level would not change what the user does next | Nothing — suppress the caveat entirely | Per [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints), a signal that doesn't change the action is decoration, whether it's a number or a sentence |
+
+## Agency tier
+
+**Suggests.** A caveat is definitionally attached to output the user still has to weigh before
+acting on it — pairing acknowledged uncertainty with unsupervised authority would be a
+contradiction, since the whole point of hedging is that a human needs to make the call the
+system won't.
+
+Caveat can still appear on Drafts-tier output for the user to review before submitting. It
+should never appear on the confirmation copy for an Acts-irreversible or Acts-unsupervised
+action without that action first being downgraded back to a human decision — see
+[TITAN-CAVEAT-07](#constraints).
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────┐
+│  ⚠ This may not be accurate                     │
+│  Likely misrouted — the caller asked for        │
+│  billing but was connected to sales.            │
+│  Based on transcript keywords only; call        │
+│  audio was not analyzed.                        │
+│                                    [ Why? ]      │
+└───────────────────────────────────────────────┘
+```
+
+| Part | Role |
+|---|---|
+| [Alert](/invoca-design-system/components/feedback/alert) | Container carrying the hedge icon, label, and body together |
+| Hedge icon + label | The visible signal that this claim is a judgment, not a checked fact |
+| Body text | States the claim and, in the same sentence or the next, what it's based on and what it isn't |
+| [Link](/invoca-design-system/components/actions/link) "Why?" | Optional expansion into a longer methodology note, via [progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) |
+| [Tooltip](/invoca-design-system/components/containment/tooltip) | Optional short-form alternative to the Link for a one-line elaboration |
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Not applicable. A caveat attaches to a finished claim; it does not render before the claim it hedges exists |
+| Streaming/partial | If the claim streams in, the caveat text never appears before the claim itself is fully stated — a hedge on nothing reads as noise |
+| Confident and right | Not applicable by construction. A claim carrying a caveat has, by definition, less than full confidence; if the system is fully confident in a claim, no caveat renders for it at all |
+| Confident and wrong | This pattern, working correctly, should never produce this state — a properly hedged low-confidence claim is not presented as fully confident. The real failure mode is a caveat that gets **dropped**: a claim that should have carried a hedge and didn't renders identical in style to any fully confident claim beside it, with no local signal that anything is different. The user notices only the way they would notice any confident-and-wrong output elsewhere — through the outcome not matching reality — which is exactly why [TITAN-CAVEAT-03](#constraints) requires deciding whether to hedge before deciding how |
+| Uncertain | This pattern's normal case — see What it is |
+| Refused | Distinct from a caveat, and worded differently. See the choose-something-else-when table above; a caveat implies partial trust is reasonable, a refusal implies none is available yet |
+| Empty | Not applicable. A caveat always attaches to a stated claim; there is no such thing as an empty caveat |
+| Interrupted | If a caveated claim is mid-generation and interrupted, neither the claim nor its caveat renders alone — both or neither |
+| Degraded | This is the primary legitimate use of a caveat: disclosing that the judgment came from a smaller sample or a cheaper analysis path ("transcript keywords only; audio tone not analyzed" is a degraded-mode disclosure, not just a hedge) |
+| Rate-limited/over budget | Overlaps with [Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought)'s TITAN-SOT-04. Stream of thought discloses a budget limit during the run; caveat is where the same limitation shows up on the finished claim if it survives into the output |
+| Stale | Applicable. A caveat generated at one point in time can become wrong later — "audio tone was not analyzed" stops being true the moment that capability ships. See [Volatility](#volatility) |
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI?** Yes — the caveat text is the disclosure, visible at the
+   point the claim is read, not deferred to a footer or a settings page.
+2. **What did it use?** This is exactly what a caveat should name — what was considered and,
+   just as importantly, what wasn't ("transcript keywords only; call audio was not analyzed").
+3. **How sure is it?** This pattern's entire purpose. Expressed in words tied to what the user
+   should do ("likely misrouted" implies check before acting), never a bare number — see
+   [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints). A caveat that
+   doesn't change the recommended next step should be cut, not softened.
+4. **How does the user check it?** Where possible, the caveat points to how — composing with
+   [Verification](/invoca-design-system/ai-experience/governors/verification) when a checkable
+   passage exists. For a genuinely unverifiable judgment (tone, intent), the honest answer is
+   that there is no check beyond human review, and the caveat says that rather than implying a
+   check exists.
+5. **How does the user correct it?** The user can disregard or override a caveated claim — it's
+   Suggests tier, so no formal correction step is required. Whether an override is logged for
+   future model evaluation is undecided; see [Gaps](#gaps).
+6. **How does the user get out?** Not accepting the suggestion is sufficient at this tier; no
+   further mechanism is needed.
+
+## Reference
+
+No model, threshold, or confidence-scoring method has been defined for this pattern yet, and no
+mapping from a numeric score to hedge wording exists. This is fact register — nothing below is
+invented to fill the gap.
+
+## Evaluation
+
+Not evaluated. No set of hedge/no-hedge decisions has been checked against ground truth, and no
+eval set exists for whether a given hedge's wording matches the actual reliability of the claim
+it attaches to.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| The hedge itself | "Likely misrouted — based on transcript keywords only" | "This might be wrong" |
+| Naming what wasn't used | "Based on the transcript only; call audio was not analyzed" | "AI can make mistakes" |
+| Genuine uncertainty | "Not enough call history to say confidently" | "82% confidence" |
+| Tone | States the gap plainly and stops | "Sorry, we're not totally sure about this" |
+
+## Accessibility
+
+- The hedge icon and label are always paired with text, never color alone — see
+  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- If a caveated claim streams in, the live region announces once the claim and its hedge are
+  both final — never per token, matching
+  [Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought#accessibility).
+- An indeterminate "based on partial analysis" state needs the same non-visual equivalent as any
+  other indeterminate wait — text, not a spinner alone.
+- The caveat itself does not move focus; it renders inline. If the user expands "Why?" into a
+  longer methodology note via progressive disclosure, focus moves into the revealed content and
+  that move is announced.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-CAVEAT-01** | A caveat names what was and wasn't used to reach the claim, not only that uncertainty exists. | "This may not be accurate" gives the user nothing to weigh; naming the specific gap is what lets them decide how much to trust it. |
+| **TITAN-CAVEAT-02** | A caveat never carries a bare numeric confidence score as its only content. | Matches [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints) — a score that doesn't change the recommended action is decoration wearing the shape of information. |
+| **TITAN-CAVEAT-03** | The decision to show a caveat at all is made before its wording is drafted. | A claim rendered confidently because nobody decided to hedge it is indistinguishable, on screen, from a claim correctly judged to need no hedge — deciding late means deciding by omission. |
+| **TITAN-CAVEAT-04** | Caveat wording never apologizes ("sorry," "unfortunately") or minimizes ("just a guess"). | Matches the [destructive confirmation](/invoca-design-system/patterns/destructive-confirmation#content) convention against softening language at the exact moment a reader should be evaluating a claim carefully. |
+| **TITAN-CAVEAT-05** | A caveated claim and a refusal use visibly different wording and structure. | A hedge implies partial trust is reasonable; a refusal implies none is available yet. Conflating them overstates one or understates the other. |
+| **TITAN-CAVEAT-06** | When a caveat exists because of a degraded analysis path (smaller model, missing data source, partial sample), the caveat states which path ran. | This is the only place that degradation reaches the user on the finished claim; silence here means the degraded state was never disclosed anywhere the user actually reads. |
+| **TITAN-CAVEAT-07** | A caveat is never applied to output at the Acts-irreversible or Acts-unsupervised tier without the action first being blocked pending human review. | Acknowledged uncertainty and unsupervised authority cannot coexist on the same action without contradicting each other. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- No decided threshold or mechanism for when a claim needs a caveat at all versus none.
+  TITAN-CAVEAT-03 requires deciding first, but not what the decision is based on.
+- No decided vocabulary for degrees of hedge ("likely," "possibly," "unclear") — whether Invoca
+  standardizes a small hedge-word ladder or leaves the wording to whoever writes each feature's
+  copy is undecided.
+- Whether a dismissed or ignored caveat is logged anywhere for future model evaluation is
+  undecided.
+- Whether Caveat and Verification can legitimately appear on the same claim at once (a hedge
+  with a partial citation) is undecided — the two pages describe themselves as alternatives, but
+  a real output could plausibly need both at the same time.
+
+## Volatility
+
+This guidance depends on the eventual model or pipeline being able to express calibrated,
+claim-specific uncertainty at all, rather than a single global confidence number — a capability
+that varies significantly across model families and that this page cannot verify against
+nothing shipped. It also depends on whatever specific limitation a given caveat names (for
+example, "audio tone was not analyzed") remaining true — that kind of claim is the first thing
+to go stale, since it expires the moment the underlying capability changes. Reverify when a
+model is selected for the first feature that would use Caveat, when the hedge-word vocabulary
+referenced above is decided, and whenever a named limitation in a shipped caveat is resolved.
+Dated 2026-09-02.
+
+## Related
+
+[Verification](/invoca-design-system/ai-experience/governors/verification) and
+[Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought), the other
+two pages in this batch. [AI Experience overview](/invoca-design-system/ai-experience/overview),
+for the vocabulary and the agency-tier and outcome-state definitions this page uses.
+[Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize), Signal AI's shipped
+transcript summary, the most likely first place a judgment like this would ship.
+[Alert](/invoca-design-system/components/feedback/alert),
+[Tooltip](/invoca-design-system/components/containment/tooltip), and
+[Link](/invoca-design-system/components/actions/link), the components this pattern composes.
+[Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure), for the "Why?"
+expansion. [Error handling](/invoca-design-system/patterns/error-handling), for the refusal case
+this pattern is not.
+
+## Why it works this way
+
+Hedging in prose rather than a score works because prose can carry what a number cannot: what
+the recommended action should be, not just how confident the system feels. A score is precise
+looking and mute about action — 82% confident of what, and what should the manager do
+differently than at 94%? A sentence that says "based on transcript keywords only; audio tone was
+not analyzed" tells the manager exactly what would make the judgment more trustworthy and lets
+them decide, which is the only thing a confidence signal is required to do under
+[TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints).

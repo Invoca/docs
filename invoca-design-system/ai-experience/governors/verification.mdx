@@ -1,0 +1,201 @@
+---
+title: "Verification"
+description: "Letting a user jump from a specific claim in AI-generated output straight to the call data that claim is based on, instead of asking them to trust it."
+icon: "badge-check"
+keywords: ["verification", "citation", "source link", "grounding", "trust", "call transcript", "governor"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  yet. Nothing below is code fact or measured behavior — it is a proposal for review. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+Signal AI's shipped transcript summary (`GET /call/transcript_analysis/<call_record_id>`,
+`transcript_summary`) already turns a call recording into prose a manager reads instead of
+listening to the call. Prose like "the caller asked about pricing three times and mentioned a
+competitor by name" is convenient exactly because it saves the manager from listening to the
+whole call — and exactly that convenience is what makes a wrong claim expensive: nothing about
+reading it invites the manager to go check.
+
+Verification attaches a citation to a specific, checkable claim in that output — a timestamp, a
+transcript line, a call ID — so the manager can jump straight to the passage the claim is based
+on with one click, instead of either blindly trusting the summary or re-listening to the entire
+call to spot-check it. The citation is not a decoration; it is the mechanism that makes "trust
+but verify" cheap enough that people actually do the second half.
+
+This is the natural partner to a summarization or search feature built on Signal AI: any time
+the output makes a specific claim about what happened on a call, the claim should carry a way
+to check it against the source. Not every claim can carry one — see the boundary with Caveat
+below — but every claim that *can* should.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The claim is a broad, qualitative read with no discrete source passage ("the caller seemed frustrated") | [Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) | Hedging the claim in words is honest; a citation link pointing at nothing specific is worse than no link |
+| The user lacks permission to view the underlying transcript or recording | Name the source in text with no link | A citation that resolves to a permissions error teaches users that citations are decorative |
+| The claim is trivial and its source is already visible on the same screen | [Tooltip](/invoca-design-system/components/containment/tooltip) | Full navigation is unnecessary friction when the source is already in view |
+| The system took an action rather than made a statement about existing data | [Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought), or an audit log | Verification checks a claim about data that already exists; an action needs a record of what happened, not a citation |
+
+## Agency tier
+
+**Suggests.** Verification composes with output the user still has to weigh and act on; it is a
+way to check a claim before trusting it, not an action of its own.
+
+The tier to watch here is not this pattern's own — it's whatever surface a verified citation
+feeds. If a citation's presence ever becomes the sole justification for an unsupervised action
+(for example, auto-flagging a call as fraudulent because a citation happened to exist), that
+action has escalated to Acts-unsupervised without anyone deciding it, and a citation a human
+never actually opened is not the review that tier requires. See
+[Agency tier](/invoca-design-system/ai-experience/overview#agency-tier).
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────┐
+│  Call summary                                   │
+│                                                  │
+│  Caller asked about pricing three times¹        │
+│  and mentioned a competitor by name².           │
+│                                                  │
+│  ¹ 0:42, 3:15, 6:02      [ View in transcript ]  │
+│  ² 4:58                  [ View in transcript ]  │
+└───────────────────────────────────────────────┘
+```
+
+| Part | Role |
+|---|---|
+| [Card](/invoca-design-system/components/data-display/card) | Container for the summary |
+| Inline citation marker | Superscript numeral attached to one discrete claim |
+| Citation list | Maps each marker to its timestamp(s) or transcript line(s) |
+| [Link](/invoca-design-system/components/actions/link) | Navigates to the exact cited position — never a Button, since it resolves to a URL |
+| [Tooltip](/invoca-design-system/components/containment/tooltip) | Optional hover preview of the cited excerpt before navigating |
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | No citations exist yet; the summary area shows [Skeleton](/invoca-design-system/components/feedback/skeleton), not a claim with a citation pending |
+| Streaming/partial | Citations attach per completed claim as the summary streams in; a claim rendered without its citation attached yet reads visually as unfinished, not as a bare, unverifiable assertion |
+| Confident and right | The easy case — the citation, once opened, supports the claim exactly as stated |
+| Confident and wrong | **The primary case, and the hardest one for this pattern specifically.** A claim can be stated confidently and carry a citation that looks legitimate while pointing at the wrong timestamp, the wrong call, or a passage that says something different. Nothing in the interface distinguishes a correct citation from an incorrect one without the user actually opening it — that is a named limitation of this pattern, not an oversight. The design response is to make opening a citation as close to zero-friction as possible (one click, deep-linked to the exact position, no separate page load), because the pattern's entire defense depends on people actually doing that |
+| Uncertain | If the system cannot attach a confident citation to a specific claim, the claim is dropped or rewritten as a hedge via [Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) — never given an approximate or invented citation |
+| Refused | The summary states which claims could not be verified and omits them, rather than presenting an uncited claim with the same visual weight as a cited one |
+| Empty | No claims worth citing — the summary says so ("nothing notable in this call") rather than showing a citation list with no citations beside a confident-sounding summary |
+| Interrupted | If generation is canceled mid-stream, already-attached citations stay valid and clickable; claims left without their citation are removed rather than shown dangling |
+| Degraded | If source linking falls back to a lower-fidelity source (transcript text only, no audio playback), that is stated next to the link ("View transcript text — recording unavailable"), not discovered only after clicking |
+| Rate-limited/over budget | Not applicable to this pattern directly. Verification is a display and navigation behavior on already-generated output, not a metered operation itself; a source-fetch throttle, if one exists, is a technical concern outside what this page documents |
+| Stale | Applicable. A cited source can change after the citation was generated — a transcript correction, a redaction. If the source has changed since the citation was made, that is flagged; the link is never shown as current when it might not be |
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI?** Yes — the citation markers are themselves part of the
+   disclosure, visible inline with the claim they support, not confined to a settings toggle.
+2. **What did it use?** Exactly what the citation shows — the specific timestamp or transcript
+   excerpt the claim is grounded in.
+3. **How sure is it?** This pattern substitutes a check for a score: instead of a confidence
+   number, the user can verify the claim directly. A claim that cannot carry a citation is the
+   signal to distrust it more — see the boundary with [Caveat](/invoca-design-system/ai-experience/trust-builders/caveat).
+4. **How does the user check it?** That is this pattern's entire mechanism — click the citation,
+   land on the exact cited passage.
+5. **How does the user correct it?** Undecided beyond disregarding or editing the summary text
+   itself on a Drafts-tier surface. Whether a user can flag "this citation doesn't support this
+   claim," and whether that flag reaches anyone, is an open gap below.
+6. **How does the user get out?** The raw transcript and recording remain reachable directly,
+   without going through the summary — the summary is additive to the source data, never a gate
+   in front of it — and AI-generated summaries can be turned off per view.
+
+## Reference
+
+No model, citation-extraction method, latency budget, or cost has been defined for this pattern
+yet. This is fact register — nothing below is invented to fill the gap.
+
+## Evaluation
+
+Not evaluated. No eval set exists for citation accuracy — whether a citation actually supports
+the claim it's attached to.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| Citation marker | "¹ 0:42 — \"Do you have anything cheaper?\"" | "[source]" |
+| Citation link | "View in transcript" | "Learn more" |
+| Degraded source | "Recording unavailable — showing transcript text only" | (no mention of the shortfall) |
+| Stale source | "This call's transcript has changed since this summary was generated" | (link shown as if nothing changed) |
+
+## Accessibility
+
+- A citation marker needs accessible text beyond a bare superscript numeral — for example
+  `aria-label="View source at 0 minutes 42 seconds"` — not a number alone.
+- Streaming citations follow the same live-region rule as
+  [Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought#accessibility):
+  announce on claim completion, never per token.
+- Verifiability is never color-only. A claim that could not be cited says so in text; it does
+  not simply omit a colored marker and rely on the absence being noticed.
+- Activating "View in transcript" moves focus to the destination heading or timestamp marker in
+  the transcript view, and that move is announced.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-VERIFY-01** | Every discrete, checkable claim about call data carries a citation to the specific source passage, not to the call as a whole. | "See the call" is a redirect, not a citation on a specific claim — passage-level discipline is what makes the citation useful. |
+| **TITAN-VERIFY-02** | A claim the system cannot cite to a specific passage is dropped or rewritten as a hedge, never given a fabricated or approximate citation. | A wrong-looking-right citation is worse than no citation — it is the exact failure this category of pattern exists to prevent. |
+| **TITAN-VERIFY-03** | Citation links are Link, never Button. | Navigation to a resolvable location follows [TITAN-BTN-08](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-VERIFY-04** | Citation navigation lands on the specific timestamp or transcript line, not the top of the call. | Forcing the user to re-search inside the source defeats the point of citing a passage. |
+| **TITAN-VERIFY-05** | When the underlying source is degraded (text-only, unavailable, redacted), that is stated next to the citation, not only discoverable by clicking through. | A disclosure that arrives after the fact is not disclosure. |
+| **TITAN-VERIFY-06** | A citation is never styled or worded to imply verification has already happened ("confirmed," a checkmark icon). | That language claims a review step nothing performed. See [TITAN-AI-05](/invoca-design-system/ai-experience/overview#constraints). |
+| **TITAN-VERIFY-07** | If a cited source changes after the citation was generated, the pattern flags the citation as stale rather than showing it as current. | A citation is a promise about the state of the source at generation time, and it can go stale exactly like the answer it supports. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether a user can flag a broken or incorrect citation, and whether that flag ever reaches a
+  model owner, is undecided.
+- Whether citation-to-passage mapping is produced by the model itself or a separate retrieval or
+  alignment step is undecided — this affects how reliably TITAN-VERIFY-02 can actually hold.
+- No decision on how long a generated citation stays valid once the underlying recording or
+  transcript is deleted under data retention policy.
+- Whether citations render for every role, including a user without permission to view the
+  underlying recording, or whether the claim shows with no citation at all in that case, is
+  undecided.
+
+## Volatility
+
+This guidance depends on the eventual model or pipeline being able to produce passage-level
+grounding at all — some retrieval architectures can cite a document but not a line or a
+timestamp within it, which would make TITAN-VERIFY-01 unbuildable as written. It also depends
+on Invoca's data-retention rules for recordings and transcripts, which determine how long a
+citation stays resolvable before TITAN-VERIFY-07 has to apply. Reverify when a model or pipeline
+is selected for the first feature that cites call data, and whenever retention policy changes.
+Dated 2026-09-02.
+
+## Related
+
+[Stream of thought](/invoca-design-system/ai-experience/governors/stream-of-thought) and
+[Caveat](/invoca-design-system/ai-experience/trust-builders/caveat), the other two pages in this
+batch. [AI Experience overview](/invoca-design-system/ai-experience/overview), for the
+vocabulary and the agency-tier and outcome-state definitions this page uses.
+[Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize), Signal AI's shipped
+transcript summary, which this pattern is written directly against.
+[Link](/invoca-design-system/components/actions/link),
+[Tooltip](/invoca-design-system/components/containment/tooltip),
+[Skeleton](/invoca-design-system/components/feedback/skeleton), and
+[Card](/invoca-design-system/components/data-display/card), the components this pattern
+composes.
+
+## Why it works this way
+
+A citation is cheap to build and expensive to trust blindly — the entire value of this pattern
+is in shrinking the distance between reading a claim and checking it to a single click, because
+anything longer than that gets skipped under real workload, and a citation nobody opens verifies
+nothing. Pointing at a specific passage rather than the whole call is what makes checking fast
+enough to actually happen, which is the only thing that makes "trust but verify" different from
+"trust."

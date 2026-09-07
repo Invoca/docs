@@ -1,0 +1,122 @@
+---
+title: "Identifiers: Avatar"
+description: "Whether an agentic feature gets a visual mark distinct from a user's own avatar, and what that mark must and must not do."
+icon: "circle-user"
+keywords: ["ai avatar", "ai identity", "agent avatar", "signal ai", "identifiers"]
+---
+
+<Warning>
+  **No visual identity has been decided for any Invoca agentic feature yet.** This page
+  proposes a framework for making that decision — it is not the decision itself. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it governs
+
+Whether an AI feature gets a visual mark — an icon, a monogram, an abstract shape — that
+stands in for it the way [Avatar](/invoca-design-system/components/data-display/avatar)
+stands in for a person, and what that mark may and may not imply. It governs the *decision to
+have a mark at all* and the *rules a mark must follow once one exists*.
+
+It does not govern the `Avatar` component itself, which already exists, ships unthemed, and
+is documented at
+[Components: Avatar](/invoca-design-system/components/data-display/avatar). If an AI mark is
+eventually built, it most likely reuses that component's rendering shape — a circular slot,
+a size token, a fallback order — but whether the content in that slot represents a person or
+a system is exactly the question this page answers.
+
+## Vocabulary
+
+| Term | Means | Not to confuse with |
+|---|---|---|
+| **AI mark** | A visual element that identifies output as coming from an agentic feature, not a person | A **user avatar**, which identifies a specific human |
+| **Identity mark** | A mark that answers "who or what is this" | A **state indicator**, which answers "what is it doing right now" — streaming, working, done. That belongs to [Governors](/invoca-design-system/ai-experience/governors/stream-of-thought), not to this page. |
+| **Fallback** | What renders when no mark has been decided | Not the same as the `Avatar` component's own image → children → default-icon fallback order, which is a rendering mechanism, not an identity decision |
+
+## Choosing a value
+
+| If you need to… | Use | Not this, because |
+|---|---|---|
+| Show that a message or card came from an AI feature, not a person | A mark visually distinct from `Avatar`'s photo/initials pattern — for example a fixed icon glyph, never a photo slot | Reusing `Avatar`'s circular photo-or-initials pattern implies a specific person exists behind the mark |
+| Show the AI is actively generating or "thinking" | An outcome-state treatment on the relevant pattern page — see [Governors](/invoca-design-system/ai-experience/governors/stream-of-thought) | Animating or restyling the identity mark itself to mean "working." That collapses two meanings — who, and what it's doing — into one glyph |
+| Make several agentic features (Signal AI, a future assistant) feel like one product | Decide first whether Identifiers apply per-feature or once for all of Invoca's agentic surfaces — this is an open gap, not a default | Assuming a shared mark without deciding this question — see [Gaps](#gaps) |
+| Render an AI mark before any has been decided | No mark at all — a plain text label naming the feature | The default Person icon `Avatar` falls back to, which reads as "an unspecified human," the opposite of what an AI mark needs to say |
+
+## Reference
+
+Nothing is decided or shipped. No Invoca agentic feature has a stated avatar, icon, or mark
+today — including Signal AI. This section will be generated from a real decision once one
+exists, the way [Color's token reference](/invoca-design-system/foundations/color#token-reference)
+is generated from source today.
+
+## Relationships
+
+- **[Components: Avatar](/invoca-design-system/components/data-display/avatar)** — if an AI
+  mark is built, it most likely sits in the same slot and inherits the same size and shape
+  conventions. It does not inherit the photo/initials content model, which assumes a person.
+- **[Foundations: Color](/invoca-design-system/foundations/color)** — any color used on an AI
+  mark is a semantic or component token, never a new hue. See
+  [Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color).
+- **[Foundations: Iconography](/invoca-design-system/foundations/iconography)** — if the mark
+  is a glyph rather than an image, it comes from the closed 154-icon set or a formal proposal
+  to it, per `TITAN-ICO-01`. See
+  [Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography).
+
+## Accessibility
+
+- An icon-only mark needs an accessible name stating what it is — "AI-generated summary,"
+  not a description of the glyph's shape.
+- A mark is never the only signal that content is AI-generated. Pair it with text — the
+  feature's stated name, see
+  [Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name) — so the
+  disclosure survives for anyone who cannot see or distinguish the mark.
+- The mark itself must not be mistaken for a live status. If it moves or changes to signal
+  "working," that is a [Governors](/invoca-design-system/ai-experience/governors/stream-of-thought)
+  concern with its own accessible-name and live-region requirements, not this page's.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AIAVT-01** | An AI mark, if built, renders through Titan's existing avatar and icon token surface — never a new hardcoded image asset or literal. | A one-off asset is invisible to the token audit and forks the moment a second AI mark is needed. |
+| **TITAN-AIAVT-02** | An icon-only AI mark carries an accessible name identifying the content as AI-generated, not the feature name alone. | A screen reader user needs to learn the content's origin, not just its label — the two are different facts. |
+| **TITAN-AIAVT-03** | An AI mark is never the sole signal that content is AI-generated. Pair it with text or the feature's stated name. | Matches the overview's disclosure requirement — a shape a user has to learn is not disclosure at the point it matters. |
+| **TITAN-AIAVT-04** | Where no mark has been decided for a feature, its output renders with no avatar at all, never a placeholder or a reused default. | A placeholder reads as a decision to the next person who sees it. An absence reads as undecided, which is accurate. |
+| **TITAN-AIAVT-05** | Once decided, a feature's mark is fixed across the surfaces that feature appears in — it is not restyled per screen. | Recognition is the entire value of a mark. A mark that changes shape per surface teaches the user nothing. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether Identifiers apply per-feature or once for all of Invoca's agentic surfaces is
+  undecided — flagged on the
+  [overview](/invoca-design-system/ai-experience/overview#gaps) and unresolved here too.
+- Whether Signal AI, which runs as a background analysis job rather than a chat surface,
+  needs a visual mark at all is undecided.
+- What shape a mark should take — icon, monogram, or an abstract form — is undecided.
+
+## Related
+
+[Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color) ·
+[Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography) ·
+[Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name) ·
+[Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality) ·
+[AI Experience overview](/invoca-design-system/ai-experience/overview) ·
+[Components: Avatar](/invoca-design-system/components/data-display/avatar) ·
+[Foundations: Color](/invoca-design-system/foundations/color) ·
+[Foundations: Iconography](/invoca-design-system/foundations/iconography)
+
+## Why it works this way
+
+An avatar answers "who is this" the instant it renders, before any label is read — which is
+exactly why it is dangerous applied carelessly to AI output. The `Avatar` component's own
+content model (a photo, or initials drawn from a name) is built entirely around representing
+a specific person, and reusing it unmodified for a model's output borrows that implication
+without earning it.
+
+Treating the mark as an identity question, separate from state and separate from color, is
+what keeps this page from re-deciding Governors' or Trust builders' job. A mark that also
+tries to say "working" or "uncertain" is carrying meaning it was never designed to hold, and
+the first time it needs to say two things at once, it will say neither clearly.

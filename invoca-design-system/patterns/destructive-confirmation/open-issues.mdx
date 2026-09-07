@@ -1,0 +1,20 @@
+---
+title: "Destructive confirmation"
+description: "Constraints Titan should enforce for Destructive confirmation."
+icon: "trash-2"
+---
+
+See [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) for the decided part of this page.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-DESTROY-02** | The confirmation dialog's title names the specific object. | A required `objectName` prop that must be interpolated into the title. |
+| **TITAN-DESTROY-04** | The confirm button restates the action; never "Yes", "OK", or "Confirm". | A lint rule/required prop banning those literal strings as the confirm button's label. |
+| **TITAN-DESTROY-05** | The destructive action is `outlined`; Cancel is `text` and comes first. | A shared `ConfirmDialog` component that hard-codes variant/order rather than leaving it to free composition. |
+| **TITAN-DESTROY-06** | Initial focus is on Cancel. | A default `initialFocusRef` in the shared dialog component, plus an accessibility/interaction test. |
+| **TITAN-DESTROY-08** | Never stack a second confirmation on top of a confirmation. | A runtime guard in the shared ConfirmDialog that warns/throws on a nested open, or a lint rule. |
+| **TITAN-DESTROY-09** | On failure, the dialog stays open and shows the error inline. | The ConfirmDialog's own state machine never auto-closing on a rejected promise, covered by a component test. |

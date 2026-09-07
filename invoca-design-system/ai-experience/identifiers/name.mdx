@@ -1,0 +1,128 @@
+---
+title: "Identifiers: Name"
+description: "Whether an agentic feature has a name at all, and whether it speaks in first person — two decisions people conflate as one."
+icon: "signature"
+keywords: ["ai name", "ai identity", "signal ai", "first person", "identifiers"]
+---
+
+<Warning>
+  **No verbal identity has been decided for any Invoca agentic feature except Signal AI.**
+  This page proposes a framework for making that decision for the rest — it is not the
+  decision itself. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it governs
+
+Whether an agentic feature has a name distinct from Invoca's own product name, and whether
+that feature speaks in first person — "I found three calls that match" versus "3 calls
+found." It governs the decision to name a feature and the decision to give it a voice; it
+does not govern what the feature actually does (that is
+[Actions](/invoca-design-system/ai-experience/actions/search)) or how it sounds once it
+speaks (that is [Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality)).
+
+## Vocabulary
+
+Three different names get conflated into one word, and the conflation is where naming
+decisions go wrong:
+
+| Term | Means | Example |
+|---|---|---|
+| **The feature's name** | The name a user sees attached to one specific capability | "Signal AI" |
+| **The model's name** | The underlying model or vendor powering the feature | Never named — see [Constraints](#constraints) |
+| **The product's brand name** | The company or product brand the user already trusts | "Invoca" |
+
+A separate, unrelated distinction: **speaking in first person** ("I found…") is a
+grammatical choice about voice, not a personality trait. Whether the feature *has* a persona
+and how that persona sounds is
+[Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality)'s
+question; this page only decides whether "I" is on the table at all.
+
+## Choosing a value
+
+| If you need to… | Use | Not this, because |
+|---|---|---|
+| Let users know which feature they're using | A stated name for that feature, decided deliberately | Leaving it unnamed and letting "Invoca" absorb both the credit and the blame for one feature's output |
+| Decide whether the AI speaks as "I" | A deliberate, stated decision recorded on that feature's page | Defaulting to first person because sample or prototype copy happened to use it — per the overview's `TITAN-AI-04`, disclosure must be explicit either way, and an undecided default is not a decision |
+| Reference what powers a feature | Nothing — the underlying model or vendor is never named to the user or in documentation | Naming the model or vendor, in the UI or in these docs — see [Constraints](#constraints) |
+| Name a brand-new agentic surface that has no name yet | No name, until one is deliberately decided | Inventing a placeholder name in documentation, which the next reader will mistake for a real decision |
+
+## Reference
+
+Nothing is decided for any feature except one: **Signal AI** is shipped and named, and its
+transcript-summary action is documented at
+[Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize). Whether Signal
+AI speaks in first person, and whether its name extends to any future assistant or panel, is
+not recorded anywhere. Every other feature in this section has no stated name at all. This
+section will be generated from real decisions as they are made.
+
+## Relationships
+
+A feature's name and its speaking register are usually decided together — see
+[Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality) for
+the tone question once a name exists. Named, first-person copy still follows
+[Content: Voice and tone](/invoca-design-system/content/voice-and-tone)'s three brand
+traits — Empowering, Eye-opening, Bold — and its plain-language constraints
+(`TITAN-VOICE-01`–`03`); naming a feature does not exempt its copy from the site's general
+voice rules. Deciding a name is also frequently the trigger for deciding
+[Identifiers: Avatar](/invoca-design-system/ai-experience/identifiers/avatar) and
+[Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color) for the same
+feature, since a name without a visual mark is only half an identity.
+
+## Accessibility
+
+- A first-person voice does not remove the disclosure-at-point-of-output requirement from the
+  [overview](/invoca-design-system/ai-experience/overview#the-four-sections-nothing-else-in-this-design-language-has) —
+  a name and "I" together must still make it unambiguous that a system, not a person, is
+  speaking.
+- A name alone is not sufficient disclosure if it is presented ambiguously — a name that
+  reads as a person's name (rather than a feature's) works against the very disclosure this
+  page exists to support.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AINAME-01** | A feature is named only by deliberate decision — never inferred from copy that happens to use a name informally. | An informal nickname repeated enough in prototypes or support docs becomes a de facto name nobody signed off on. |
+| **TITAN-AINAME-02** | The underlying model or vendor is never named to the user or in documentation. | Matches the sitewide rule against naming the underlying component library, applied to an actual AI vendor — where the stakes include vendor lock-in perception and competitive exposure, not only editorial cleanliness. |
+| **TITAN-AINAME-03** | Whether a feature speaks in first person is a stated decision on that feature's page, not a default. | First person reads as a claim of agency. Per the overview's `TITAN-AI-04`, the choice changes how easily a user can tell they are talking to a system rather than a person. |
+| **TITAN-AINAME-04** | A feature's name never implies a capability broader than the job it does. | Overpromising in the name undercuts the confident-and-wrong problem this whole section exists to design for — a name suggesting more scope invites more trust than the feature has earned. |
+| **TITAN-AINAME-05** | Where a feature has no stated name, its output is attributed to Invoca generally, never to an invented placeholder name. | An undecided name should read as undecided. A placeholder in documentation is indistinguishable from a real decision to the next reader. |
+
+## Divergences
+
+Not applicable. Nothing is shipped yet to diverge from, except Signal AI's existing name,
+which carries no recorded divergence.
+
+## Gaps
+
+- Whether Identifiers apply per-feature or once for all of Invoca's agentic surfaces is
+  undecided — this exact question is flagged on the
+  [overview](/invoca-design-system/ai-experience/overview#gaps), which points to this page for
+  it.
+- Whether Signal AI's name extends to a future assistant or copilot panel, or whether each
+  gets its own, is undecided.
+- Whether any Invoca agentic surface speaks in first person is undecided for every feature,
+  Signal AI included.
+
+## Related
+
+[Identifiers: Avatar](/invoca-design-system/ai-experience/identifiers/avatar) ·
+[Identifiers: Color](/invoca-design-system/ai-experience/identifiers/color) ·
+[Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography) ·
+[Identifiers: Personality](/invoca-design-system/ai-experience/identifiers/personality) ·
+[AI Experience overview](/invoca-design-system/ai-experience/overview) ·
+[Content: Voice and tone](/invoca-design-system/content/voice-and-tone)
+
+## Why it works this way
+
+A name is the cheapest identity decision available and the easiest to make by accident —
+copy in a spec document, a Slack thread, or a prototype settles into a nickname long before
+anyone decides it should be one. Treating naming as deliberate, with its own constraint
+against silent adoption, is what keeps a placeholder from calcifying into a brand.
+
+Separating "does it have a name" from "does it say I" matters because they fail in opposite
+directions. An unnamed feature under-discloses — a user cannot tell which capability they are
+using or hold accountable. A named feature that also speaks in first person without deciding
+to can over-disclose the wrong thing: it can read as a person, which is a bigger claim than
+Invoca has made about what the feature is.

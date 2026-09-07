@@ -1,0 +1,30 @@
+---
+title: "Breadcrumb"
+description: "Divergences, open decisions, and undocumented gaps for Breadcrumb."
+icon: "component"
+---
+
+See [Breadcrumb](/invoca-design-system/components/navigation/breadcrumb) for the decided part of this page.
+
+## Known issues
+
+No divergence or open decision is currently recorded specifically for `Breadcrumb` in the
+central registers.
+
+## Gaps in the current rules
+
+- **Whether the design library depicts a multi-level breadcrumb trail was not verified this
+  session.** Figma access requires authentication that was not available. Source only confirms
+  a single-link component with no trail-composition support (no separator, no list, no `nav`
+  landmark). If the design library does show a multi-level trail, that would be a real
+  divergence worth its own entry — this page does not assert one without seeing it.
+- **The default `includeBrowserRouter={true}` risks a nested-Router crash in any app that
+  already has its own Router.** This is inferred from React Router's own well-documented
+  behavior (a second `Router` inside an already-routed tree throws) plus the component's own
+  test file, which sidesteps the default in its second test rather than exercising it directly.
+  No test in the component's own suite renders the default behavior inside an existing Router to
+  confirm the crash happens exactly as expected.
+- **Styling bypasses the semantic token layer entirely.** `Breadcrumb` reads `theme.palette`
+  and a raw `typographySpecs` object directly rather than `theme.vars.tokens[...]`. Whether this
+  is a deliberate legacy exception or simply unmigrated code was not determined — nothing in the
+  file or its tests states an intent either way.

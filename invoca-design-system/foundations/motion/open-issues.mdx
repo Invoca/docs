@@ -1,0 +1,46 @@
+---
+title: "Motion"
+description: "Divergences, open decisions, and undocumented gaps for Motion."
+icon: "activity"
+---
+
+See [Motion](/invoca-design-system/foundations/motion) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-08**](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | reduced motion is unimplemented in the token layer |
+| [**TITAN-GAP-16**](/invoca-design-system/foundations/open-decisions#titan-gap-16) | Open decision | no design intent is recorded for any motion value |
+
+## Gaps in the current rules
+
+This foundation has more gaps than settled rules. Do not infer answers.
+
+- **No reduced-motion handling exists in the token layer.** No token, no media query, no
+  documented pattern. This is the most significant gap in Foundations — see
+  [TITAN-MOT-03](#constraints-titan-should-enforce) below.
+- **No Invoca intent is recorded for any value.** Whether 300ms is right for Titan's
+  surfaces has not been asked.
+- **The duration-to-use mapping on this page is proposed, not transcribed.** Nothing binds
+  a named duration to a component, so which duration a Drawer actually uses is a
+  component-level fact this page cannot assert.
+- **No curve is named for what it does.** The easings are named by shape, not by purpose,
+  so there is no shared vocabulary for "how Titan moves."
+- **No guidance exists on animating layout properties.** Nothing says whether to prefer
+  `transform`/`opacity` over `height`/`top`, which is a performance decision with a visible
+  cost on long tables.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-MOT-01** | Duration and easing always come from tokens, never a literal ms value or inline `cubic-bezier()`. | A stylelint rule disallowing raw duration/easing values on `transition`/`animation` properties. |
+| **TITAN-MOT-02** | Entering elements use `ease-out`; leaving elements use `ease-in`. | A lint rule tying a transition library's enter/exit lifecycle hook to the required easing token. |
+| **TITAN-MOT-03** | Every transition respects `prefers-reduced-motion`. | Shipping the reduced-motion reset globally in the token package (same fix as TITAN-A11Y-06). |

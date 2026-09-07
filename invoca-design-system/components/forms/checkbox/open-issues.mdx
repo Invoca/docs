@@ -1,0 +1,38 @@
+---
+title: "Checkbox"
+description: "Divergences, open decisions, and undocumented gaps for Checkbox."
+icon: "square-check"
+---
+
+See [Checkbox](/invoca-design-system/components/forms/checkbox) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-32**](/invoca-design-system/foundations/open-decisions#titan-gap-32) | Open decision | Two independent disabled-opacity values exist for form controls, with no rule for which applies |
+| [**TITAN-GAP-33**](/invoca-design-system/foundations/open-decisions#titan-gap-33) | Open decision | No mixed/indeterminate state exists for showing a partially-checked group |
+
+## Gaps in the current rules
+
+- **No stated rule for an empty group.** Whether a select-all checkbox hides, disables, or
+  renders unchecked with nothing to check is undecided.
+- **No indeterminate state exists.** Checked against the Figma library's own `Checkbox`
+  component (`Checked=false/true` × `State=Default/Hover/Disabled/Focused` — 8 combinations,
+  exhaustively named, none of them a third value) and its `Checkbox + Label` composite
+  (`Selected=false/true` × the same four states) — neither carries an indeterminate or mixed
+  axis. An earlier pass of this documentation treated indeterminate as an established
+  feature; that was written from general checkbox conventions, not from any Titan evidence,
+  and was wrong to state as settled. See
+  [TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33).
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-CHK-02** | No visible label → an explicit accessible name is required. | A required accessible-name prop when no visible label is present; a11y lint. |
+| **TITAN-CHK-04** | A disabled Checkbox is paired with a reachable explanation. | A required-when-disabled explanation prop, or a lint rule. |
+| **TITAN-CHK-05** | A Checkbox group is exposed as a named set. | A required `name`/`aria-label` on the group wrapper. |

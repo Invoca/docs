@@ -1,0 +1,77 @@
+---
+title: "Invoca Tag: Access, Deploy, and Go Live"
+---
+
+> The Invoca Tag is a snippet of code that connects Invoca to your landing pages. This guide covers accessing your Tag, deploying it, managing revisions, controlling which phone numbers get replaced, and testing before you go live.
+
+**Before you begin:** You need access to the **Settings** area of your Invoca account. To deploy the Tag itself, you'll need edit access to your landing page's HTML, or a web developer who does.
+
+## Overview
+
+You don't need to be a developer to use the Invoca Tag. The Tag Wizard lets you generate a code snippet once, then customize its settings — which phone numbers to replace, what marketing data to capture, and more — without ever re-deploying that snippet.
+
+This guide walks through:
+
+- Accessing your Tag (or creating a new one)
+- Deploying your Tag on your landing pages
+- Managing Tag revisions
+- Choosing which phone numbers get replaced
+- Testing your Tag and going live
+- Troubleshooting
+
+For attribution-window, custom-code, and advanced capture settings — including the referral-domain reference table — see [Invoca Tag: Advanced Settings & Attribution Reference](/s/article/tag-advanced-settings-reference).
+
+## Access your Invoca Tag — or create a new one
+
+1. Log in to your Invoca account. In the sidebar menu, click **Settings**, then in the Network section select **Invoca Tags**.
+2. Your most recent Tag appears here. Most accounts only need the one Tag created by default — if you're not sure whether you need another, see [How many Invoca Tags do I need?](https://community.invoca.com/t5/platform-management/how-many-invoca-tags-do-i-need/m-p/460#U460).
+3. If you do need a new one, click **New Tag** and name it.
+
+A newly created Tag starts in **draft mode** and won't run on your landing page until you go live (see Testing, Go Live, and Revisions below). Its code snippet won't change as you edit its settings, so you can deploy it now and finish configuring it afterward.
+
+## Deploy your Invoca Tag code on your landing pages
+
+If you're deploying to a Google AMP landing page, follow [How to add Invoca to Google AMP pages](https://community.invoca.com/t5/developer-features/how-to-add-invoca-to-google-amp-pages/m-p/488#U488) instead of the steps below.
+
+1. Log in to your Invoca account. In the sidebar menu, click **Settings**, then in the Network section select **Invoca Tags**. If you have more than one Tag, choose the one you want from the drop-down menu.
+2. Scroll to the **Code Snippets** tile and click **Copy to clipboard**.
+3. If you use a tag management solution like [Google Tag Manager](https://community.invoca.com/t5/google-setup-guides/invoca-for-google-tag-manager-tag-setup-guide/m-p/694#U694) or [Tealium](https://community.invoca.com/t5/other-integrations/invoca-for-tealium-integration-setup-guide/m-p/556#U556), follow those guides to deploy Invoca through that app instead. Otherwise, paste the snippet into a message to your web developer and ask them to add it to your landing page — we recommend placing it immediately before the closing `</body>` tag.
+
+## Manage revisions to your Invoca Tag
+
+Invoca automatically saves a new revision of your Tag whenever you make changes and set it to **Live**, so you can track how your Tag has changed over time and recover a previous version if something breaks.
+
+1. Click the **Revision History** tab to see the full history of edits.
+2. To create a new revision, select the latest version if it's a draft, or click **New Draft** if your Tag is currently live.
+3. To roll back, select the three-dot icon next to any past revision and choose **Revert to this Revision**.
+
+**Need to discard a draft revision?** Click the three-dot **Options** menu next to the draft and select **Discard Draft**. A discarded draft can't be recovered — if you added [Custom Code](https://community.invoca.com/t5/developer-features/invoca-tag-wizard-custom-code/m-p/604#U604) to that revision, save it outside of Invoca first.
+
+## Replace phone numbers on your website with Invoca Promo Numbers
+
+Invoca works by routing calls through Invoca Promo Numbers, which it associates with individual callers so it can capture Marketing Data. You may not want every phone number on your landing page replaced — for example, if a page shows both a customer service number and a sales number, you may only want the sales number tracked.
+
+1. In **Settings > Invoca Tags**, select the Tag you want to configure.
+2. On the **Revision History** tab, click **New Draft** (or select your existing draft).
+3. Scroll to the **Website Phone Numbers** tile. If you run more than one Invoca campaign (see [How many Invoca campaigns does my business need?](https://community.invoca.com/t5/call-management/how-many-invoca-campaigns-does-my-business-need/m-p/628#U628)), choose a default campaign whose call routing and IVR logic should apply, or leave it blank to assign campaigns per number in step 4.
+4. Choose one:
+   - **Replace any detected numbers** — replaces every phone number Invoca detects on the page. Combine with **I have phone numbers I do not want to replace** to exclude specific numbers.
+   - **Replace specific numbers** — enter each number you want swapped, and optionally assign each one to a different campaign.
+
+**Want to swap a vanity phone number?** Choose **Replace specific numbers** and enter the vanity number exactly as it's formatted on your landing page.
+
+## Testing, go live, and revisions
+
+Test your Tag before going live. Open it in the tag editor, click the ellipsis button, and select **Test this Revision** — see [Testing and troubleshooting your Invoca Tag](https://community.invoca.com/t5/call-tracking/testing-and-troubleshooting-your-invoca-tag/m-p/455#U455) for details. Add the resulting test code to a publicly accessible staging page (or your live site), then load that page in a browser. The destination phone numbers on the page should be swapped for Invoca promo numbers; if they aren't, try again in a private/incognito window.
+
+Once testing looks good, go live. You can pause a live Tag at any time, which temporarily stops number replacement and data collection, and you can create new revisions while keeping the ability to roll back — click **New Draft** from the Revision History tab.
+
+## Troubleshooting your Tag
+
+If you run into problems, see [Testing and troubleshooting your Invoca Tag](https://community.invoca.com/t5/call-tracking/testing-and-troubleshooting-your-invoca-tag/m-p/455#U455) for help diagnosing and fixing them.
+
+## Where to go next
+
+- [Invoca Tag: Advanced Settings & Attribution Reference](/s/article/tag-advanced-settings-reference)
+- [Basic Knowledge: Capturing Marketing Data with Invoca](https://community.invoca.com/t5/call-attribution/basic-knowledge-capturing-marketing-data-with-invoca/m-p/579#U579)
+- [Invoca Tag Wizard - Custom Code](https://community.invoca.com/t5/developer-features/invoca-tag-wizard-custom-code/m-p/604#U604)

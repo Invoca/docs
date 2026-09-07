@@ -1,0 +1,69 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+Ratios below are computed from the live token values using the
+[WCAG 2.x relative luminance formula](https://www.w3.org/WAI/GL/wiki/Relative_luminance).
+They are arithmetic on what ships, not estimates. AA requires **4.5:1** for body text,
+**3:1** for large text (≥18.66px bold or ≥24px regular) and for non-text.
+
+### Text on surfaces
+
+| Token | Hex | On `background-default` (#ffffff) | On `background-view-background` (#f5f6fa) |
+|---|---|---|---|
+| `text-primary` | `#15243e` | 15.51:1 ✅ | 14.36:1 ✅ |
+| `text-strong` | `#445065` | 8.14:1 ✅ | 7.53:1 ✅ |
+| `text-secondary` | `#5b6577` | 5.88:1 ✅ | 5.44:1 ✅ |
+| `text-selected` | `#1c53e9` | 6.06:1 ✅ | 5.61:1 ✅ |
+| `text-info-alt` | `#11228c` | 12.87:1 ✅ | 11.92:1 ✅ |
+| `text-error-alt` | `#87000b` | 10.32:1 ✅ | 9.56:1 ✅ |
+| `text-success-alt` | `#0d5400` | 9.19:1 ✅ | 8.51:1 ✅ |
+| `text-warning-alt` | `#b33b00` | 5.93:1 ✅ | 5.49:1 ✅ |
+| `text-info` | `#2666f9` | 4.83:1 ✅ | 4.47:1 ⚠️ large only |
+| `text-error` | `#e4131b` | 4.76:1 ✅ | 4.41:1 ⚠️ large only |
+| `text-warning` | `#ff7045` | 2.74:1 ❌ | 2.54:1 ❌ |
+| `text-success` | `#2cbf58` | 2.41:1 ❌ | 2.23:1 ❌ |
+| `text-disabled` | `#a1a7b2` | 2.42:1 — exempt | 2.24:1 — exempt |
+
+### Tinted surface + `-alt` text
+
+| Pairing | Ratio |
+|---|---|
+| `text-info-alt` on `background-info-alt` | 9.74:1 ✅ |
+| `text-success-alt` on `background-success-alt` | 7.69:1 ✅ |
+| `text-error-alt` on `background-error-alt` | 6.39:1 ✅ |
+| `text-warning-alt` on `background-warning-alt` | 4.84:1 ✅ |
+
+### Bold fill + `text-invert`
+
+| Pairing | Ratio |
+|---|---|
+| `text-invert` on `background-info` | 4.83:1 ✅ |
+| `text-invert` on `background-error` | 4.76:1 ✅ |
+| `text-invert` on `background-warning` | 2.74:1 ❌ |
+| `text-invert` on `background-success` | 2.41:1 ❌ |
+
+### Inverted surfaces
+
+| Pairing | Ratio |
+|---|---|
+| `text-primary-invert` on `background-strong` | 7.11:1 ✅ |
+| `text-error-invert` on `background-error` | 4.36:1 ⚠️ large only |
+
+### Non-text contrast — icons
+
+| Token | Hex | On `background-default` | On `background-view-background` |
+|---|---|---|---|
+| `icon-default` | `#66708e` | 4.91:1 ✅ | 4.55:1 ✅ |
+| `icon-info` | `#2666f9` | 4.83:1 ✅ | 4.47:1 ✅ |
+| `icon-success` | `#2cbf58` | 2.41:1 ❌ | 2.23:1 ❌ |
+| `icon-warning` | `#ff7045` | 2.74:1 ❌ | 2.54:1 ❌ |
+| `icon-error` | `#e4131b` | 4.76:1 ✅ | 4.41:1 ✅ |
+| `icon-selected` | `#2666f9` | 4.83:1 ✅ | 4.47:1 ✅ |
+
+### Target size
+
+| Token | Height | AA (24×24) | AAA (44×44) | Definition | From |
+|---|---|---|---|---|---|
+| `control-height-md` | `36px` | ✅ clears 24px | ❌ under 44px | *implementation note* | code |
+| `control-height-sm` | `32px` | ✅ clears 24px | ❌ under 44px | *implementation note* | code |
+
+Height is one dimension — an icon-only control must also meet 24px in width.

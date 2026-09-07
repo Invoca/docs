@@ -1,0 +1,72 @@
+---
+title: "Empty state copy"
+description: "How to write the title, body text, and action for a region that has nothing to show."
+icon: "inbox"
+tag: "Stable"
+keywords: ["empty state", "zero state", "no data", "no results", "blank slate"]
+---
+
+## What an empty state is
+
+A moment in the product where there is no data to display. Most common the first time a
+reader interacts with a product or page, but also used when data has been deleted or is
+unavailable.
+
+## The three cases
+
+The source names three distinct situations this content type covers, and the copy job differs
+across them:
+
+| Type | Use case | Goal | When to use |
+|---|---|---|---|
+| **No data** | First time use — no data yet | The reader understands what will populate the page and how to add data themselves. | Simpler situations, or secondary features where a bite-sized message is enough. |
+| **User action** | Feedback after something the reader did — no results from a filter, confirmation of a completed process | The reader understands how to adjust their search or filter, or that their action succeeded. | Whenever feedback is needed after an interaction. |
+| **Error management** | Permissions, system, or configuration issue | The reader understands the problem and, if a corrective action exists, what it is. | Something is wrong and troubleshooting is needed — this case wants more detail and specificity than the other two. |
+
+<Warning>
+  **These three cases need different copy, not just different illustrations.** "No campaigns
+  yet" (no data) and "No campaigns match these filters" (user action) describe genuinely
+  different situations, and using the first for the second tells the reader to go create
+  something that already exists. See [TITAN-EMPTYCOPY-03](#constraints).
+</Warning>
+
+## Anatomy of the copy
+
+| Part | What it does |
+|---|---|
+| **Graphic** | A non-interactive image relating to the situation. Neutral or humorous in tone; consistent with the brand. |
+| **Title header** | A short, concise statement — written positively where possible, rather than as a bare status word. |
+| **Body text** | Explains the next action clearly. May also explain why the space is empty and what the reader gains from acting. |
+
+The primary action, when there is one, is presented one of three ways: a button beneath the
+copy, a link inside the copy itself, or a pointer to the relevant control elsewhere on the
+screen — the source does not state when to choose among the three.
+
+## Do and don't
+
+| Do | Don't |
+|---|---|
+| If the empty state has an action, style it as a **link button**, not a solid one. | Use a solid button for an empty-state action. |
+| Respect a maximum width and height for the empty-state container. | Scale the graphic, or apply ad hoc bounds instead of the container's own constraint. |
+
+The container's max-width/max-height values need re-verification — see
+[Open issues](/invoca-design-system/content/empty-state-copy/open-issues) for their
+provenance.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-EMPTYCOPY-01** | The title states what is missing, phrased positively where possible — not a bare status word like "Empty." | "No campaigns yet" tells the reader what to expect; "Empty" only tells them something is absent. |
+| **TITAN-EMPTYCOPY-02** | Body text explains the concrete next action, in a sentence or two. | Matches [Error messages'](/invoca-design-system/content/error-messages#constraints) "helps solve the problem" reasoning — an empty state is not a failure, but the copy job is structurally the same: tell the reader what to do next. |
+| **TITAN-EMPTYCOPY-03** | A zero-state ("no data yet") and a no-results state ("nothing matches your filters") are worded differently, even when the visual layout is the same. | Confirmed by the source's own three-case model — see [Warning](#the-three-cases) above. |
+| **TITAN-EMPTYCOPY-04** | An empty-state action, when present, renders as a link button, never a solid one. | Directly stated in source. |
+| **TITAN-EMPTYCOPY-05** | Empty-state copy names the real thing that's missing — campaigns, calls, contacts — never a generic technical noun like "records." **Proposed**, carried over from this component's earlier page, not directly stated in the source fetched for this page. | A reader thinks in terms of what they see in the product, not the database table behind it. |
+| **TITAN-EMPTYCOPY-06** | Empty-state copy is sentence case, with no exclamation marks. **Proposed** — inherited from the general UI-copy default on [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation), not stated in this component's own source. | Matches [Error messages](/invoca-design-system/content/error-messages#constraints)' sentence-case default for non-button UI text. |
+
+## Known issues
+
+<Card title="Empty state copy: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/empty-state-copy/open-issues">
+  Divergences, open decisions, and undocumented gaps for Empty state copy.
+</Card>
+

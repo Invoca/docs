@@ -1,0 +1,69 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+### Hover
+
+| Token | Tier | Value | Aliases | Definition | From |
+|---|---|---|---|---|---|
+| `background-error-bold-hover` | semantic | `#c7000a` | `color.red.70` | Bold error surface — hover state of contained/filled error actions | code |
+| `background-error-hover` | semantic | `#fff2f2` | `color.red.0` | Subtle error tint — hover surface of outlined/text error actions | code |
+| `background-hover` | semantic | `#d4e0fe` | `color.blue.10` | Background for hover events | spec |
+| `background-primary-bold-hover` | semantic | `#1335bf` | `color.blue.80` | Bold primary surface — hover state of contained/filled primary actions | code |
+| `background-primary-hover` | semantic | `#e9f0fe` | `color.blue.0` | Subtle primary tint — hover surface of outlined/text primary actions | code |
+| `chip-error-icon-hover` | component | `#f5575a` | `color.red.30` | — | — |
+| `chip-info-icon-hover` | component | `#5185fa` | `color.blue.40` | — | — |
+| `chip-neutral-icon-hover` | component | `#a1a7b2` | `color.ui-black.40` | — | — |
+| `chip-success-icon-hover` | component | `#2cbf58` | `color.green.50` | — | — |
+| `chip-warning-icon-hover` | component | `#ff8d6a` | `color.orange.40` | — | — |
+| `link-hover` | semantic | `#122aa6` | `color.blue.90` | Text color for hovered links | spec |
+
+### Pressed
+
+| Token | Tier | Value | Aliases | Definition | From |
+|---|---|---|---|---|---|
+| `background-error-bold-pressed` | semantic | `#b3000b` | `color.red.80` | Bold error surface — pressed state of contained/filled error actions | code |
+| `background-error-pressed` | semantic | `#fdbbbc` | `color.red.10` | Subtle error tint — pressed surface of outlined/text error actions | code |
+| `background-neutral-pressed` | semantic | `#d0d3d8` | `color.ui-black.20` | Subdued neutral surface — pressed state | code |
+| `background-pressed` | semantic | `#b0cdff` | `color.blue.20` | Background for pressed events | spec |
+| `background-primary-bold-pressed` | semantic | `#122aa6` | `color.blue.90` | Bold primary surface — pressed state of contained/filled primary actions | code |
+| `background-primary-pressed` | semantic | `#d4e0fe` | `color.blue.10` | Subtle primary tint — pressed surface of outlined/text primary actions | code |
+| `border-strong-pressed` | semantic | `#2c3951` | `color.ui-black.90` | Strong neutral border — pressed state | code |
+
+### Selected
+
+| Token | Tier | Value | Aliases | Definition | From |
+|---|---|---|---|---|---|
+| `background-selected` | semantic | `#d4e0fe` | `color.blue.10` | Background for selected events | spec |
+| `background-selected-alt` | semantic | `#1c53e9` | `color.blue.60` | Strong selected surface | code |
+| `border-selected` | semantic | `#1c53e9` | `color.blue.60` | Accent border marking the selected item in a navigation list | code |
+| `icon-selected` | semantic | `#2666f9` | `color.blue.50` | Icon color for selected items | spec |
+| `text-selected` | semantic | `#1c53e9` | `color.blue.60` | Selected/accent action text | code |
+
+### Disabled
+
+| Token | Tier | Value | Aliases | Definition | From |
+|---|---|---|---|---|---|
+| `background-disabled` | semantic | `#e7e9eb` | `color.ui-black.10` | Default background for any disabled element | spec |
+| `background-disabled-alt` | semantic | `#d0d3d8` | `color.ui-black.20` | Stronger disabled fill — disabled control tracks that need contrast against background-disabled | code |
+| `border-disabled` | semantic | `#d0d3d8` | `color.ui-black.20` | — | — |
+| `border-disabled-alt` | semantic | `#b8bdc5` | `color.ui-black.30` | Stronger disabled field outline | code |
+| `icon-disabled` | semantic | `#a1a7b2` | `color.ui-black.40` | Icon color for disabled items | spec |
+| `icon-disabled-alt` | semantic | `#b8bdc5` | `color.ui-black.30` | Fainter disabled control glyph | code |
+| `text-disabled` | semantic | `#a1a7b2` | `color.ui-black.40` | — | — |
+
+### Focus
+
+<Warning>
+  **No semantic focus token exists.** Three component-scoped focus rings ship —
+  `form-field-focus-ring`, `form-field-focus-ring-error`, and `data-grid-focus-ring` —
+  each authored independently against a primitive. There is no token a new component can
+  reach for. See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
+</Warning>
+
+| Token | Tier | Value | Aliases | Definition | From |
+|---|---|---|---|---|---|
+| `form-field-focus-ring` | component | `0 0 0.25rem #2666f9` | `color.blue.50` | Focus ring around focused Form & Input fields | code |
+| `form-field-focus-ring-error` | component | `0 0 0.25rem #ed3036` | `color.red.40` | Focus ring around focused error-state Form & Input fields | code |
+| `data-grid-focus-ring` | component | `inset 0 0 0 2px #1335bf` | `color.blue.80` | Keyboard-focus a11y affordance on DataGrid cells — an inset ring, deliberately NOT normalized onto the elevation shadow scale | code |
+
+Two further focus-related values ship outside the token layer and carry no design decision.
+Do not reach for them.

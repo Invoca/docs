@@ -1,0 +1,45 @@
+---
+title: "Radius"
+description: "Divergences, open decisions, and undocumented gaps for Radius."
+icon: "square"
+---
+
+See [Radius](/invoca-design-system/foundations/radius) for the decided part of this page.
+
+## Known issues
+
+Divergences are where code and design intent disagree; open decisions are where nothing
+has been decided yet. Neither is resolvable by inference.
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-09**](/invoca-design-system/foundations/divergences#titan-div-09) | Divergence | the naming specification and shipped tokens have diverged |
+| [**TITAN-GAP-03**](/invoca-design-system/foundations/open-decisions#titan-gap-03) | Open decision | the vocabulary was specified but never surfaced |
+| [**TITAN-GAP-05**](/invoca-design-system/foundations/open-decisions#titan-gap-05) | Open decision | no selection rule where two tokens both apply |
+
+## Gaps in the current rules
+
+- **The specification's corner vocabulary doesn't map to the shipped tokens.** It names
+  corner *kinds* — `corner`, `hard-corner`, `soft-corner`, `round` — which do not correspond
+  to `radius-sm`, `radius-base`, `radius-md`, `radius-pill`, `radius-circle`. Two vocabularies
+  for one concept, and neither is mapped to the other. See
+  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+- **`radius-base` (3px) vs `radius-md` (4px) has no selection rule.** A 1px difference is
+  at the edge of perceptibility, and nothing documents which surfaces get which. The
+  mapping on the main page is a proposal.
+- **Why 3px is not recorded.** The choice is deliberate; the reasoning is not written down.
+- **No nesting guidance exists upstream.** [TITAN-RAD-02](/invoca-design-system/foundations/radius#constraints) is this page's
+  proposal.
+- **No `radius-lg`.** Whether large decorative surfaces are meant to use `radius-md` or
+  something larger is undecided.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-RAD-01** | Corner rounding comes from a `radius-*` token, never a literal value. | A stylelint literal-value ban on `border-radius`. |
+| **TITAN-RAD-03** | Fully rounded ends use `radius-pill`, never a computed half-height value. | A lint rule banning computed half-height expressions for `border-radius`. |
+| **TITAN-RAD-04** | Circles use `radius-circle`, and only on square elements. | A test asserting `width === height` for any element using `radius-circle`. |
+| **TITAN-RAD-05** | Radius never indicates state. | A lint rule scanning a component's own style variants for state-keyed radius changes. |

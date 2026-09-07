@@ -1,0 +1,99 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+Tier 2. Every semantic color token, the primitive it aliases, and the definition recorded
+for it in source.
+
+Two columns do the work. **Aliases** shows *why* a token holds the value it holds, which the
+resolved hex cannot tell you. **Definition** is the recorded intent — what the token is for.
+
+| Token | Value | Aliases | Definition | From |
+|---|---|---|---|---|
+| `background-default` | `#ffffff` | `color.common.white` | Background for containers and elements 1 level above the view | spec |
+| `background-disabled` | `#e7e9eb` | `color.ui-black.10` | Default background for any disabled element | spec |
+| `background-disabled-alt` | `#d0d3d8` | `color.ui-black.20` | Stronger disabled fill — disabled control tracks that need contrast against background-disabled | code |
+| `background-error` | `#e4131b` | `color.red.50` | Background for critical outcomes | spec |
+| `background-error-alt` | `#fdbbbc` | `color.red.10` | Alternative background for critical outcomes | spec |
+| `background-error-bold-hover` | `#c7000a` | `color.red.70` | Bold error surface — hover state of contained/filled error actions | code |
+| `background-error-bold-pressed` | `#b3000b` | `color.red.80` | Bold error surface — pressed state of contained/filled error actions | code |
+| `background-error-hover` | `#fff2f2` | `color.red.0` | Subtle error tint — hover surface of outlined/text error actions | code |
+| `background-error-pressed` | `#fdbbbc` | `color.red.10` | Subtle error tint — pressed surface of outlined/text error actions | code |
+| `background-hover` | `#d4e0fe` | `color.blue.10` | Background for hover events | spec |
+| `background-info` | `#2666f9` | `color.blue.50` | Background for informative outcomes | spec |
+| `background-info-alt` | `#d4e0fe` | `color.blue.10` | Alternative background for informative outcomes | spec |
+| `background-neutral` | `#e7e9eb` | `color.ui-black.10` | Subdued neutral surface — slider tracks/rails, neutral hover fills | code |
+| `background-neutral-pressed` | `#d0d3d8` | `color.ui-black.20` | Subdued neutral surface — pressed state | code |
+| `background-pressed` | `#b0cdff` | `color.blue.20` | Background for pressed events | spec |
+| `background-primary-bold-hover` | `#1335bf` | `color.blue.80` | Bold primary surface — hover state of contained/filled primary actions | code |
+| `background-primary-bold-pressed` | `#122aa6` | `color.blue.90` | Bold primary surface — pressed state of contained/filled primary actions | code |
+| `background-primary-hover` | `#e9f0fe` | `color.blue.0` | Subtle primary tint — hover surface of outlined/text primary actions | code |
+| `background-primary-pressed` | `#d4e0fe` | `color.blue.10` | Subtle primary tint — pressed surface of outlined/text primary actions | code |
+| `background-selected` | `#d4e0fe` | `color.blue.10` | Background for selected events | spec |
+| `background-selected-alt` | `#1c53e9` | `color.blue.60` | Strong selected surface | code |
+| `background-strong` | `#445065` | `color.ui-black.80` | Strong neutral surface — ripple ink and other high-emphasis neutral fills | code |
+| `background-success` | `#2cbf58` | `color.green.50` | Background for positive outcomes | spec |
+| `background-success-alt` | `#d5f2de` | `color.green.10` | Alternative background for positive outcomes | spec |
+| `background-view-background` | `#f5f6fa` | `color.common.light-grey` | — | — |
+| `background-warning` | `#ff7045` | `color.orange.50` | Background for warning or caution outcomes | spec |
+| `background-warning-alt` | `#ffe2da` | `color.orange.10` | Alternative background for warning or cautious outcomes | spec |
+| `border-default` | `#e7e9eb` | `color.ui-black.10` | Default border color | spec |
+| `border-disabled` | `#d0d3d8` | `color.ui-black.20` | — | — |
+| `border-disabled-alt` | `#b8bdc5` | `color.ui-black.30` | Stronger disabled field outline | code |
+| `border-error` | `#e4131b` | `color.red.50` | Border color for critical outcomes | spec |
+| `border-error-alt` | `#fdbbbc` | `color.red.10` | Pale intent-tint border | code |
+| `border-info` | `#2666f9` | `color.blue.50` | Border color for informative outcomes | spec |
+| `border-info-alt` | `#d4e0fe` | `color.blue.10` | Pale intent-tint border | code |
+| `border-selected` | `#1c53e9` | `color.blue.60` | Accent border marking the selected item in a navigation list | code |
+| `border-strong` | `#445065` | `color.ui-black.80` | Strong neutral border — emphasized outlines | code |
+| `border-strong-pressed` | `#2c3951` | `color.ui-black.90` | Strong neutral border — pressed state | code |
+| `border-success` | `#2cbf58` | `color.green.50` | Border color for positive outcomes | spec |
+| `border-success-alt` | `#d5f2de` | `color.green.10` | Pale intent-tint border | code |
+| `border-warning` | `#ff7045` | `color.orange.50` | Border color for warning or caution outcomes | spec |
+| `border-warning-alt` | `#ffe2da` | `color.orange.10` | Pale intent-tint border | code |
+| `color-transparent` | `transparent` | `—` | Intentional fully-transparent paint — border/track resets that must stay invisible in every scheme | code |
+| `icon-default` | `#66708e` | `color.common.asphalt` | Default icon color | spec |
+| `icon-disabled` | `#a1a7b2` | `color.ui-black.40` | Icon color for disabled items | spec |
+| `icon-disabled-alt` | `#b8bdc5` | `color.ui-black.30` | Fainter disabled control glyph | code |
+| `icon-error` | `#e4131b` | `color.red.50` | Use for negative outcomes where an icon supplements the text | spec |
+| `icon-error-alt` | `#87000b` | `color.red.100` | Alternative icon color for critical outcomes | spec |
+| `icon-info` | `#2666f9` | `color.blue.50` | Use for informative outcomes where an icon supplements the text | spec |
+| `icon-info-alt` | `#11228c` | `color.blue.100` | Alternative icon color for informative outcomes | spec |
+| `icon-invert` | `#ffffff` | `color.common.white` | Inverted default icon color | spec |
+| `icon-selected` | `#2666f9` | `color.blue.50` | Icon color for selected items | spec |
+| `icon-success` | `#2cbf58` | `color.green.50` | Use for positive outcomes where an icon supplements the text | spec |
+| `icon-success-alt` | `#0d5400` | `color.green.100` | Alternative icon color for positive outcomes | spec |
+| `icon-warning` | `#ff7045` | `color.orange.50` | Use for warnings where an icon supplements the text | spec |
+| `icon-warning-alt` | `#b33b00` | `color.orange.100` | Alternative icon color for warning or cautious outcomes | spec |
+| `link-default` | `#1c53e9` | `color.blue.60` | Text color for any text navigating the user to another web page | spec |
+| `link-hover` | `#122aa6` | `color.blue.90` | Text color for hovered links | spec |
+| `link-visited` | `#1c53e9` | `color.blue.60` | Text color for visited links | spec |
+| `overlay-default` | `rgba(21, / 36, / 62, / 0.3000)` | `—` | Faithful port of the legacy runtime value: lib/tokens.ts mangled rgba by replacing spaces with ' / ' | code |
+| `overlay-loading` | `rgba(255, 255, 255, 0.75)` | `—` | Translucent scrim behind in-flight loading states | code |
+| `text-disabled` | `#a1a7b2` | `color.ui-black.40` | — | — |
+| `text-error` | `#e4131b` | `color.red.50` | Use for critical text, such as an error | spec |
+| `text-error-alt` | `#87000b` | `color.red.100` | Alternative text color for critical outcomes | spec |
+| `text-error-invert` | `#fff2f2` | `color.red.0` | Error-tinted foreground on bold error surfaces — icon-button glyphs, pressed contained-error labels | code |
+| `text-info` | `#2666f9` | `color.blue.50` | Use for informative text, such as in progress | spec |
+| `text-info-alt` | `#11228c` | `color.blue.100` | Alternative text color for informative outcomes | spec |
+| `text-invert` | `#ffffff` | `color.common.white` | Inverted default text color | spec |
+| `text-primary` | `#15243e` | `color.ui-black.100` | Default text color | spec |
+| `text-primary-invert` | `#e9f0fe` | `color.blue.0` | Primary-tinted foreground on bold primary surfaces — icon-button glyphs | code |
+| `text-secondary` | `#5b6577` | `color.ui-black.70` | Text color to provide supplementary information | spec |
+| `text-selected` | `#1c53e9` | `color.blue.60` | Selected/accent action text | code |
+| `text-strong` | `#445065` | `color.ui-black.80` | High-emphasis neutral foreground below text-primary — active filter labels | code |
+| `text-success` | `#2cbf58` | `color.green.50` | Use for positive outcome, such as success messaging | spec |
+| `text-success-alt` | `#0d5400` | `color.green.100` | Alternative text color for positive outcomes | spec |
+| `text-warning` | `#ff7045` | `color.orange.50` | Use for warning or caution text | spec |
+| `text-warning-alt` | `#b33b00` | `color.orange.100` | Alternative text color for warning or cautious outcomes | spec |
+
+<Warning>
+  **Definition coverage: 73 of 76 semantic color tokens.**
+  An em-dash means nothing was recorded; *implementation note* means something was recorded but
+  it describes build mechanism rather than purpose. In both cases the only real guide is the name. See [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
+</Warning>
+
+<Note>
+  **Default mode only.** Values above are the light color scheme at comfortable density.
+  Of these tokens, **75** hold a different value in the dark color scheme. Those modes ship in code but carry no
+  design decision, so this documentation does not define them — see
+  [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
+</Note>

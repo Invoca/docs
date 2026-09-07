@@ -1,0 +1,211 @@
+---
+title: "Open input"
+description: "A free-text field where the user expresses what they want in their own words, for a model to interpret — the input pattern for a request with no fixed set of valid answers."
+icon: "text-cursor-input"
+keywords: ["open input", "prompt box", "natural language input", "chat input", "free text", "ask ai", "query box"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  today. Nothing below is code fact or measured behavior — it is a proposal offered for
+  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+A marketer wants to know how paid search calls converted last week, broken down by whether
+the caller had called before. Building that as a filter means finding the right fields,
+learning what "converted" means in this product's data model, and combining several controls
+correctly. An Open input lets them type the question instead: *"How did paid search calls
+convert last week, split by repeat versus first-time callers?"* — and a model interprets it
+against the underlying call data.
+
+The same field, attached to a single call record, lets a manager ask a question about that
+specific transcript rather than reading the whole thing — *"What made this caller hesitate?"* —
+building on the same transcript data [Signal AI](/invoca-design-system/ai-experience/actions/summarize)
+already has access to for its summary.
+
+An Open input's defining property is that **the set of valid things to type is not
+enumerable.** That is what separates it from every other Inputs-category pattern and from
+[Select](/invoca-design-system/components/forms/select): the field does not know in advance
+what a good question looks like, and the model's job is to make sense of whatever arrives.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The set of things a user might ask is small and already known | [Suggestions](/invoca-design-system/ai-experience/wayfinders/suggestions) | Offering the finite set as tappable chips is faster than typing something the system already anticipated |
+| The user is adjusting scope, tone, or depth rather than expressing a new request | [Controls](/invoca-design-system/ai-experience/tuners/controls) | A slider or toggle is a settings decision; Open input is for expressing intent that a fixed control can't capture |
+| The value has a fixed, enumerable set of valid answers | [Select](/invoca-design-system/components/forms/select) | Same boundary [Input](/invoca-design-system/components/forms/input#constraints) draws for non-AI fields — a constrained answer set removes the need for a model to interpret free text at all |
+| No model is involved — the field is ordinary text entry with deterministic handling | [Input](/invoca-design-system/components/forms/input) | Open input is a shape of Input aimed at a model. Without a model behind it, it is exactly the plain component, with none of this page's disclosure obligations |
+
+## Agency tier
+
+**Suggests.** Submitting text starts a request; the response is reviewable output, not an
+action taken on the user's behalf. The tier describes the input mechanism itself — what
+happens after submission depends on which [Action](/invoca-design-system/ai-experience/overview#vocabulary)
+the request resolves to, and that Action states its own tier if it differs (for example, if a
+typed request like "cancel this call's follow-up task" resolves to something that acts).
+
+## Anatomy
+
+```
+┌─────────────────────────────────────────────┐
+│  Ask about this call                         │
+│  ┌───────────────────────────────────────┐   │
+│  │ What made this caller hesitate?        │   │
+│  └───────────────────────────────────────┘   │
+│                                      [ Ask ] │
+└─────────────────────────────────────────────┘
+```
+
+| # | Part | Component | Required |
+|---|---|---|---|
+| 1 | Label stating what the field is for | [Field label](/invoca-design-system/components/forms/field-label) | Yes |
+| 2 | The text field itself, single- or multi-line | [Input](/invoca-design-system/components/forms/input) | Yes |
+| 3 | Submit control | [Button](/invoca-design-system/components/actions/button) | Yes |
+| 4 | Suggested prompts, shown below the field before the user types | [Suggestions](/invoca-design-system/ai-experience/wayfinders/suggestions) | No |
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Submit button enters `loading`; the field itself becomes read-only until a response starts arriving or fails |
+| Streaming / partial | The response renders as it arrives. Partial output is legible on its own — a sentence in progress, not a fragment mid-word — and the field stays disabled until the stream ends or is interrupted |
+| Confident and right | The response answers the actual question asked, against the actual data |
+| Confident and wrong | **Most detail below.** |
+| Uncertain | The response states its own uncertainty in text (a caveat), and that caveat is what should change what the user does next — see [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints) |
+| Refused | The request is out of scope (asks for something not derivable from the data available, or for something the system won't do). The refusal states why and, where possible, what would work instead |
+| Empty | The request is answerable in principle but nothing matches (e.g., no paid search calls in the stated window) — distinguished from a refusal by stating that zero is the real answer, not that the request failed |
+| Interrupted | User cancels mid-stream, or navigates away. Whatever text has streamed in stays visible and marked incomplete; it is not discarded silently |
+| Degraded | Falls back to a keyword match over the same data instead of full interpretation of the free-text request. Disclosed in the response itself, not silently returned as if it were the same quality of answer |
+| Rate-limited / over budget | The field stays enabled to type in, but submission is blocked with the reason and, where known, when it will be available again |
+| Stale | The response is generated against data that has since changed (the transcript was reprocessed, the record was edited) — the response states the data's age when that age is material |
+
+**Confident and wrong.** This is the primary risk of a pattern whose entire premise is
+interpreting an unconstrained request: the model can misread which call the user means, answer
+a question adjacent to the one asked, or state something about the transcript that isn't
+there — all in the same fluent, confident register as a correct answer. **The user notices
+only by checking the response against the source** — re-reading the transcript, or noticing
+the response references a detail (a number, a name, a timestamp) that doesn't match what they
+already know. Nothing in the interface today marks a wrong response differently from a right
+one; the only mitigation is grounding every claim in something checkable (a quoted transcript
+line, a linked record) so the *checking* is fast even though the *detection* is not automatic.
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI?** Yes — the field itself is labeled as asking an AI
+   feature (not a search bar over literal text matches), and the response carries the same
+   identifier the rest of this section requires.
+2. **What did it use?** State it plainly with the response: this call's transcript, or the
+   call data matching the stated filters — named specifically, not "your data."
+3. **How sure is it, and does that change behavior?** Only a stated uncertainty caveat, not a
+   number — see the Uncertain row above and [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints).
+4. **How does the user check it?** By grounding: a quoted transcript excerpt, a linked record,
+   or the underlying filter the response resolved the question to. An ungrounded response —
+   prose with nothing to check it against — is the failure this question exists to prevent.
+5. **How does the user correct it?** Rephrase and resubmit. Whether a correction ("no, I meant
+   last week not this week") is retained as context for the next submission, or treated as an
+   unrelated new request, is undecided — see [Gaps](#gaps).
+6. **How does the user get out?** Fall back to the manual path this field was meant to replace
+   — the filter panel, the transcript itself — which must keep working and stay reachable, not
+   be hidden once Open input exists.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+
+## Evaluation
+
+Not evaluated. No eval set exists for response accuracy, groundedness, or refusal correctness.
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Field label | Ask about this call | AI Assistant |
+| Placeholder | What made this caller hesitate? | Type your question here... |
+| Submit button | Ask | Submit |
+| Empty result | No paid search calls matched that window. | No results found. |
+| Refusal | This can't be answered from call data alone — try asking about call volume or duration instead. | I'm not able to help with that. |
+
+Placeholder text follows [Input](/invoca-design-system/components/forms/input#content)'s own
+rule: an example of the kind of thing to type, not an instruction repeating the label.
+
+## Accessibility
+
+- The streaming response uses `aria-live="polite"` on the response container, announcing on
+  meaningful completion (a full sentence or the end of the stream), never token-by-token —
+  per-token announcement is unusable with a screen reader.
+- The wait before streaming starts needs a non-visual equivalent to any spinner shown — an
+  accessible status text, not a purely visual animation.
+- Any confidence or uncertainty signal pairs with text; it is never conveyed by color alone,
+  per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- When a new response replaces a previous one in place, focus moves to the top of the new
+  response and that move is what gets announced — not a re-announcement of the whole
+  conversation history.
+- The field itself inherits [Input](/invoca-design-system/components/forms/input#accessibility)'s
+  accessibility requirements in full; this page adds only what is specific to the response.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-OPENIN-01** | Every claim in a response is grounded in something the user can check — a quoted excerpt, a linked record, or the resolved filter — never prose with nothing behind it. | Detection of a wrong answer is not automatic here; fast checking is the only mitigation available, per the confident-and-wrong case above. |
+| **TITAN-OPENIN-02** | The field is disabled while a response is streaming, and re-enabled only once the stream ends, is interrupted, or fails. | Submitting a second request into an in-flight one creates two overlapping streams with no defined resolution. |
+| **TITAN-OPENIN-03** | An empty result and a refusal are never the same message. | Zero matching results is a real, correct answer; a refusal means the request itself can't be resolved. Collapsing them into one message hides which one happened. |
+| **TITAN-OPENIN-04** | A degraded fallback (keyword match instead of full interpretation) states that it is a fallback in the response itself. | A response produced by a simpler method that looks identical to a fully-interpreted one misrepresents its own reliability. |
+| **TITAN-OPENIN-05** | The manual path this field is meant to replace stays fully functional and reachable. | Per [Disclosure & recourse](#disclosure-recourse), question 6 — recourse requires the alternative to still exist, not just be theoretically possible. |
+| **TITAN-OPENIN-06** | An interrupted stream keeps whatever text already arrived, visibly marked incomplete, rather than discarding it. | Discarding partial output on interruption destroys work the user may already be reading and reacting to. |
+| **TITAN-OPENIN-07** | The response states the data's age when staleness is material to trusting the answer. | An answer that was correct when generated and silently wrong now is indistinguishable from one that's still correct, unless the age is stated. |
+
+## Divergences
+
+Not applicable — nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether a correction to a previous request ("no, I meant last week") is retained as context
+  for the next submission, or treated as an unrelated new request, is undecided.
+- What counts as "grounded enough" to satisfy [TITAN-OPENIN-01](#constraints) — a single
+  citation per claim, or a looser standard — is undecided; no eval exists to calibrate it
+  against.
+- Whether Open input keeps any conversation history across a session, or treats each
+  submission independently, is undecided, and this materially changes what "context" means for
+  question 2 above.
+- How the field distinguishes a request that's out of scope for this specific record from one
+  that's out of scope for the product entirely is undecided.
+
+## Volatility
+
+This page assumes a model can reliably ground its claims in the source it was given — quote
+the transcript, cite the record — well enough that [TITAN-OPENIN-01](#constraints) is
+achievable rather than aspirational. If grounded citation proves unreliable in practice, this
+pattern's core mitigation for confident-and-wrong output does not hold, and the page needs
+reverification against real output, not just a design review. Dated 2026-09-02; revisit on the
+first real implementation or the first eval run against grounding accuracy.
+
+## Related
+
+- [AI Experience overview](/invoca-design-system/ai-experience/overview) — vocabulary, agency
+  tiers, and the six disclosure questions this page answers
+- [Suggestions](/invoca-design-system/ai-experience/wayfinders/suggestions) — the finite-set
+  shortcut this field exists alongside, not instead of
+- [Controls](/invoca-design-system/ai-experience/tuners/controls) — for adjusting parameters
+  rather than expressing a new request in words
+- [Trust builders: Caveat](/invoca-design-system/ai-experience/trust-builders/caveat) — how
+  uncertainty is stated in the response itself
+- [Actions: Summarize](/invoca-design-system/ai-experience/actions/summarize) — Signal AI's
+  shipped job, the concrete grounding case this page's transcript example is drawn from
+- [Input](/invoca-design-system/components/forms/input), [Field label](/invoca-design-system/components/forms/field-label),
+  [Button](/invoca-design-system/components/actions/button) — the components this pattern
+  composes
+
+## Why it works this way
+
+**Grounding exists because detection doesn't.** Every other pattern in this section can lean on
+some visible seam between right and wrong — a refusal states itself, an empty state states
+itself. An Open input's failure mode is a fluent, plausible paragraph that is simply not true,
+and nothing about its surface tells the user which case they're looking at. Requiring every
+claim to point at something checkable does not prevent a wrong answer; it makes checking one
+fast enough that the user actually does it.

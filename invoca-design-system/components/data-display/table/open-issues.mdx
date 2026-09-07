@@ -1,0 +1,56 @@
+---
+title: "Table"
+description: "Divergences, open decisions, and undocumented gaps for Table."
+icon: "table"
+---
+
+See [Table](/invoca-design-system/components/data-display/table) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | This documentation's "table" is code's `DataGridPro` and the design library's "Data Grid" |
+| [**TITAN-DIV-19**](/invoca-design-system/foundations/divergences#titan-div-19) | Divergence | The selection bar and its select-all menu are designed and absent from code |
+| [**TITAN-DIV-20**](/invoca-design-system/foundations/divergences#titan-div-20) | Divergence | A hovered row and a selected row are given the same fill |
+| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Three pagination approaches, none confirmed — the templates draw it inside the table |
+| [**TITAN-GAP-12**](/invoca-design-system/foundations/open-decisions#titan-gap-12) | Open decision | No layout tokens, so nothing bounds the table's width on a wide monitor |
+| [**TITAN-GAP-01**](/invoca-design-system/foundations/open-decisions#titan-gap-01) | Open decision | Density is undesigned, so no compact row height is specified |
+
+**Also true and not yet recorded as either**: the published [Live
+example](/invoca-design-system/components/data-display/table#live-example) uses four props the
+shipped version does not accept — `pageSize`, `onPageSizeChange`, and `rowsPerPageOptions` were
+replaced by `paginationModel` and `pageSizeOptions`, and `unstable_cellSelection` is now
+`cellSelection` — and declares `DataGridPro` as its subject while rendering `DataGridPremium`.
+Verified against the installed package, not inferred; until the story is corrected, treat the
+props table it publishes as unreliable. No product adoption is recorded for the grid export in
+the utilization data, so the adoption figures below cannot yet corroborate any usage guidance on
+this page.
+
+## Gaps in the current rules
+
+- **No column-count limit.** Nothing states when a table has too many columns to be scannable, or
+  what to do about it — pin, hide, or move to a detail view.
+- **No sanctioned editable table.** The demo enables cell selection, and nothing states whether
+  editing in place is supported, what saves it, or how it fails. Treat editable grids as
+  unspecified and ask.
+- **No default page size.** The grid offers a set of options; nothing says which a list page starts
+  on, and the design's templates show one number without stating it as the rule.
+- **No rule for row height or wrapping.** The design library publishes single-line and multi-line
+  cells. Nothing says when a table may use the taller row.
+- **Which grid export is the system's is undecided.** Two ship. The guidance story says "use the
+  grid" without saying which, and the published demo names one and renders the other.
+- **No rule for default sort.** Every table arrives sorted somehow, and nothing states whether that
+  is the newest record, a name, or the server's order.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-TBL-01** | Built with the grid export, never assembled from raw table primitives. | A `no-restricted-imports`-style lint rule banning direct `Table`/`TableRow`/`TableCell` imports from the underlying package. |
+| **TITAN-TBL-05** | A horizontally scrolling table pins its identifying column. | A lint/runtime check requiring a non-empty `pinnedColumns.left` once column count forces horizontal scroll. |
+| **TITAN-TBL-07** | At most two inline row actions, else collapse to a menu. | A lint/runtime check counting action items per row. |
+| **TITAN-TBL-09** | Sort state is announced programmatically, not only shown visually. | An automated accessibility test (axe) asserting `aria-sort` on sortable column headers. |

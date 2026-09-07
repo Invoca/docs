@@ -1,0 +1,28 @@
+---
+title: "Tag"
+description: "Divergences, open decisions, and undocumented gaps for Tag."
+icon: "tag"
+---
+
+See [Tag](/invoca-design-system/components/data-display/tag) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | This documentation's "tag" is code's `Chip` — one of the 19 component pages whose Titan folder doesn't match the docs name |
+
+## Gaps in the current rules
+
+- **`color="secondary"` has no themed treatment**, unlike every other themed `Chip` color option.
+  Nothing in source explains why it alone was skipped — `Chip.overrides.ts` styles `default`,
+  `primary`, `info`, `success`, `warning`, and `error`, but never `secondary`.
+- **No test file exists for Chip at all.** There is no `Chip.test.tsx` in the Titan checkout —
+  every behavior on the main page beyond what its stories visibly demonstrate is unverified by
+  automation.
+- **No disabled-state treatment exists.** `disabled` is a valid prop with no themed styling behind
+  it in `Chip.overrides.ts`.
+- **Delete-control keyboard behavior** — see [Accessibility](/invoca-design-system/components/data-display/tag#accessibility)
+  on the main page for what's unconfirmed.
+- **`icon` vs. `avatar` precedence when both are passed is untested.** No story or test in the
+  checkout exercises this combination.

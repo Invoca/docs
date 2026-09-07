@@ -1,0 +1,31 @@
+---
+title: "Banner"
+description: "Divergences, open decisions, and undocumented gaps for Banner."
+icon: "bullhorn"
+---
+
+See [Banner](/invoca-design-system/components/feedback/banner) for the decided part of this
+page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-33**](/invoca-design-system/foundations/divergences#titan-div-33) | Divergence | This documentation's own Alert page names "Banner" as the answer for a product-wide message, but no Banner component ships anywhere in Titan's `core`, `legacy-web`, or `shared` packages |
+
+## Gaps in the current rules
+
+- **Whether a Banner-equivalent exists in the Figma design library is unconfirmed.** This
+  research covered code, tests, stories, and the live Storybook index only — Figma verification
+  was out of scope for this pass (no authenticated Figma access was available). An absence in
+  code is not proof of an absence in design intent; someone with Figma access should check
+  before concluding this is only a code gap.
+- **Whether any application has already built its own ad hoc product-wide banner is
+  unconfirmed.** No such pattern was found via the code and utilization data available in this
+  checkout, but that data does not cover every consuming application's full source.
+- **What such a component's severity model, dismissal behavior, and placement in page chrome
+  should be is entirely undecided.** Nothing on the main page proposes an answer, because
+  nothing exists to base one on — inventing these rules here would be exactly the "confident
+  invented answer" this documentation's own standards warn against.
+- **Whether the right fix is building a new component or extending Alert with a
+  product-scope option is undecided**, and is a real design decision, not a documentation one.

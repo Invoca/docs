@@ -1,0 +1,27 @@
+---
+title: "List"
+description: "Divergences, open decisions, and undocumented gaps for List."
+icon: "list"
+---
+
+See [List](/invoca-design-system/components/data-display/list) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-30**](/invoca-design-system/foundations/divergences#titan-div-30) | Divergence | `disableBorder`, `disableHover`, and `bulleted` set CSS classes and data attributes that no stylesheet in the checkout targets — all three render with zero visual effect |
+
+## Gaps in the current rules
+
+- **`bulleted` has no test at all.** `List.test.tsx` covers `disableBorder` and `disableHover` (by
+  asserting the class name appears — see [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30)
+  for why that assertion doesn't confirm a visual effect either), but nothing exercises `bulleted`
+  in any form, test or story.
+- **AddList has no documentation page in this site.** It's named for the same "list" concept but
+  is a completely different, form-oriented, dynamic add/remove-rows component. There is currently
+  nowhere in this documentation to send a reader who confuses the two by name.
+- **No keyboard-interaction test exists for `ListItemButton` rows.** List's own test suite only
+  asserts CSS class presence; nothing confirms tab order or activation behavior for a row.
+- **Whether a `ListSubheader` is exposed as a group name to assistive technology is unconfirmed.**
+  No test in the checkout addresses it.

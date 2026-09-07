@@ -1,0 +1,47 @@
+---
+title: "EmptyState"
+description: "Divergences, open decisions, and undocumented gaps for EmptyState."
+icon: "component"
+---
+
+See [EmptyState](/invoca-design-system/components/data-display/empty-state) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-22**](/invoca-design-system/foundations/divergences#titan-div-22) | Divergence | The supporting line renders as an `h6` beneath an `h3` |
+
+**Also true and not yet recorded as either:**
+
+- The default message, **"No Records found!"**, violates the system's own capitalization,
+  punctuation, and word-choice rules.
+- **Five of the fifteen illustrations have no design representation** — `activeComments`,
+  `activeTable`, `error`, `inactiveComments`, and `inactiveTable` exist in code and not in the
+  design library, including the one an error state needs.
+- `IllustrationWrapper` spreads any additional props into its `style` object, so a prop that is not
+  a style property becomes a style key.
+
+## Gaps in the current rules
+
+- **No rule for which illustration belongs to which region.** Fifteen exist, several overlap, and
+  nothing states whether a table's empty state should use `activeTable`, `search`, or `default`.
+- **No small variant.** The illustration is one size, so an empty state inside a card or a panel is
+  either oversized or hand-built.
+- **Nothing states whether the illustration may be omitted.** Passing an empty custom illustration
+  is possible; whether a text-only empty state is sanctioned is undecided.
+- **No rule for the action's prominence.** [TITAN-EMP-05](/invoca-design-system/components/data-display/empty-state#constraints) requires one action and
+  does not say whether it is primary or secondary.
+- **Whether an empty state may carry a link to documentation is unstated**, which is the most
+  common request for an onboarding zero state.
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today —
+each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-EMP-01** | An explicit `title` is always passed. | Making `title` a required (non-optional) prop. |
+| **TITAN-EMP-04** | The supporting line is one sentence. | A lint/content-check flagging multi-sentence `subTitle` strings. |
+| **TITAN-EMP-07** | The message never lives only in the illustration. | Same required-`title` type change also guarantees this. |

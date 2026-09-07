@@ -1,0 +1,35 @@
+---
+title: "Numbers"
+description: "Divergences, open decisions, and undocumented gaps for Numbers."
+icon: "hash"
+---
+
+See [Numbers](/invoca-design-system/content/numbers) for the decided part of this page.
+
+## Gaps in the current rules
+
+| Gap | Why it matters | Status |
+|---|---|---|
+| **When to abbreviate.** "Use a comma to separate thousands" gives `23,400`; "Above 1,000, use K" gives `23.4K`. Both rules apply to the same number, and the source states no condition that selects between them. [TITAN-NUM-06](/invoca-design-system/content/numbers#constraints) proposes resolving it by context — abbreviate where space is constrained and the exact value isn't actionable, show the full number wherever the reader may need it — but that's an inference, not a sourced rule. The single largest gap on this page. | Without it, `23,400` and `23.4K` are both defensible for the same value in the same product; until settled, two engineers will format the same number two different ways. | Open — proposal needs sign-off |
+| **Billions.** `K` and `M` are defined; `B` is not. | Reachable in aggregate revenue and total call minutes at Invoca's scale. | Open |
+| **Negative numbers.** No format given. | `-$1,200` vs `($1,200)` — the parenthetical form is a finance convention that may be expected in billing views. | Open |
+| **Zero and null.** No guidance on `0`, `—`, `N/A`, or blank. | This is the most common formatting inconsistency in data-heavy products, and the one users notice first in a table. | Open |
+| **Rounding direction.** "Round to the nearest whole dollar" does not say how `.5` resolves, or whether display rounding can disagree with an exported total. | A column of rounded values that does not sum to the displayed total is a support ticket. | Open |
+| **Non-USD currency.** "Or the appropriate currency symbol" — but not symbol placement, spacing, or which decimal separator. | Several currencies place the symbol after the amount and use `.` as the thousands separator. | Open |
+| **Duration.** No rule for call duration. | A core Invoca concept, formatted nowhere on this page. Likely belongs on [Dates and times](/invoca-design-system/content/dates-and-times). | Open |
+| **Alignment.** No rule on right-aligning numerals or using tabular figures in tables. | Proportional figures make a column of numbers impossible to compare down its length. Belongs in [Typography](/invoca-design-system/foundations/typography). | Open |
+
+## Constraints Titan should enforce
+
+These are real, currently-true rules. Nothing in code stops a builder from violating them today — each is a placeholder for a guardrail Titan hasn't built, not a decision still being made.
+
+| ID | Constraint | Would be enforced by |
+|---|---|---|
+| **TITAN-NUM-01** | Counts of indivisible objects render as whole numbers. | A `Count`/integer-typed formatter (a branded type or schema requiring `Number.isInteger()`). |
+| **TITAN-NUM-02** | Numbers 1,000 and above are comma-separated in full. | A lint rule banning manual string concatenation of large numbers, requiring a shared `Intl.NumberFormat`-based formatter. |
+| **TITAN-NUM-03** | Abbreviation suffixes are uppercase (`K`, `M`). | The formatter enforces case; a lint rule flags lowercase `k`/`m`. |
+| **TITAN-NUM-04** | Abbreviated numbers show at most one decimal place. | A shared abbreviation formatter with a unit test. |
+| **TITAN-NUM-05** | No trailing `.0` on abbreviated numbers or percentages. | The formatter strips a trailing `.0`; a unit test asserts `12M`, not `12.0M`. |
+| **TITAN-PCT-01** | Percentages show at most one decimal place, with no trailing `.0`. | A shared percentage formatter with a unit test. |
+| **TITAN-CUR-01** | Currency always shows its symbol. | `Intl.NumberFormat`'s currency style, enforced via a shared formatter, plus a lint rule against bare numeric rendering of currency fields. |
+| **TITAN-CUR-02** | Currency shows two decimals when cents are present, none when they aren't. | A shared currency formatter with a unit test covering both cases. |

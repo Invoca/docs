@@ -1,0 +1,255 @@
+---
+title: "Welcome / empty state"
+description: "The first-run moment before an agentic feature has been asked anything, and the no-results moment after a run returns genuinely nothing — both distinct from loading, error, and each other."
+icon: "inbox"
+keywords: ["welcome state", "empty state", "zero state", "no results", "first run", "onboarding", "scope setting", "capability disclosure"]
+---
+
+<Warning>
+  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+  today. Nothing below is code fact or measured behavior — it is a proposal offered for
+  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+This page covers two moments, both specific to an agentic feature and both distinct from a
+plain [empty state](/invoca-design-system/components/data-display/empty-state):
+
+**Welcome** is what a marketer sees the first time they open an AI panel that hasn't been asked
+anything yet — a natural-language search over call data, or a summarization panel on a call
+that hasn't been analyzed. There is no prior run to show, so the panel's only job is to set
+expectations: what this feature can do, what it can't, and how to start. A user who doesn't yet
+know that Signal AI summarizes transcripts but can't change routing or settings needs to learn
+that here, before they ask for the wrong thing and get refused.
+
+**No-results** is what the same marketer sees after they've asked something — "show me calls
+about a refund dispute from last week" — and the search, summarize, or
+[recommend](/invoca-design-system/ai-experience/actions/recommend) run completed correctly and
+found genuinely nothing. The run worked. There's simply nothing to show. That distinction —
+worked-but-empty versus broken, loading, or refused — is the entire content of this half of the
+page, and it's the one a plain empty state doesn't have to carry, because a deterministic
+region either has data or it doesn't, with no "the search itself might have been wrong" question
+attached.
+
+Both moments are visually related — both replace the same panel's content with a message plus
+optional next step — and both are covered on this page because both carry the same AI-specific
+obligation a static empty region never has: **telling the user something about the feature's
+scope**, not just about the current state of the data.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The region has nothing to show and no AI feature is involved | [Empty and zero states](/invoca-design-system/patterns/empty-and-zero-states) and [EmptyState](/invoca-design-system/components/data-display/empty-state) | Those pages cover the deterministic case: a table with no rows, a list with nothing created yet. Neither needs to set capability expectations, and neither risks being confused with "still thinking" — a deterministic empty region was never going to produce a result on its own. This page exists because an AI panel's emptiness carries an extra question a plain one doesn't: did the run actually finish, and does the user understand what it can do at all? |
+| A run is still in progress | The [Working](#outcome-states) treatment — a [Skeleton](/invoca-design-system/components/feedback/skeleton) or [Spinner](/invoca-design-system/components/feedback/spinner) | This pattern renders only once a run has definitively finished with nothing, or before one has started. Showing it while a run is still going is the single most damaging mistake this page exists to prevent — see [TITAN-AIWELCOME-01](#constraints). |
+| The request had more than one plausible reading, not zero results | [Disambiguate](/invoca-design-system/ai-experience/actions/disambiguate) | Ambiguity and emptiness are different problems — one has too many candidate answers, the other has none. |
+| There's nothing notable to recommend this period | [Recommend](/invoca-design-system/ai-experience/actions/recommend)'s own [Empty](/invoca-design-system/ai-experience/actions/recommend#outcome-states) outcome state | Recommend's empty case composes this pattern's no-results treatment; document the copy specifics there, not by duplicating this page. |
+
+## Agency tier
+
+**Not applicable — this isn't an acting surface at all.** Welcome and no-results are the moment
+before a run starts or the moment after one finishes with nothing; nothing is proposed, drafted,
+or acted on in either state, so there's no authority to name. The agency tier belongs to
+whatever the user does next — the [Search](/invoca-design-system/ai-experience/actions/search),
+[Summarize](/invoca-design-system/ai-experience/actions/summarize), or
+[Recommend](/invoca-design-system/ai-experience/actions/recommend) run this panel leads into.
+
+## Anatomy
+
+Welcome:
+
+```
+┌─────────────────────────────────────────────┐
+│                    ◆                          │
+│           Ask about your calls                │
+│   Signal AI can summarize transcripts and      │
+│   surface Signals. It can't change routing     │
+│   or settings.                                 │
+│                                                 │
+│   [ "Show me calls about billing" ]            │
+│   [ "Summarize today's calls" ]                │
+│                                                 │
+│   [______ Ask a question ______________] [→]  │
+└─────────────────────────────────────────────┘
+```
+
+No-results:
+
+```
+┌─────────────────────────────────────────────┐
+│              (illustration)                    │
+│   No calls matched "refund dispute"            │
+│   Try a broader date range, or rephrase        │
+│   your question.                               │
+│                                                 │
+│      [ Rephrase ]        [ Clear filters ]     │
+└─────────────────────────────────────────────┘
+```
+
+| # | Part | Component | Required |
+|---|---|---|---|
+| 1 | AI identifier mark (welcome only) | See [Identifiers](/invoca-design-system/ai-experience/identifiers/avatar) | Yes, for welcome |
+| 2 | Illustration (no-results only) | [EmptyState](/invoca-design-system/components/data-display/empty-state)'s `search` illustration | Yes, for no-results — never the loading or error illustration |
+| 3 | Heading | Text content, no component | Yes |
+| 4 | Scope-setting line — what it can and can't do (welcome only) | Text content, no component | Yes — see [TITAN-AIWELCOME-02](#constraints) |
+| 5 | Example prompts (welcome only) | [Tag](/invoca-design-system/components/data-display/tag) or [Button](/invoca-design-system/components/actions/button) `outlined`, clickable | Recommended |
+| 6 | Input | [Input](/invoca-design-system/components/forms/input) | Yes, for welcome |
+| 7 | Next-step actions (no-results only) | [Button](/invoca-design-system/components/actions/button) | Recommended — see [TITAN-EMP-05](/invoca-design-system/components/data-display/empty-state#constraints) |
+
+The no-results variant composes [EmptyState](/invoca-design-system/components/data-display/empty-state)
+directly — same illustration-plus-title-plus-supporting-line shape that component already
+defines. What's added is the AI-specific obligation: the heading names what was searched for, in
+the user's own words, not a generic "no results."
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | **Not applicable to this pattern — by construction.** This pattern renders only before a run starts or once one has definitively finished. A run in progress is a [Skeleton](/invoca-design-system/components/feedback/skeleton) or [Spinner](/invoca-design-system/components/feedback/spinner), never this pattern's copy or illustration. |
+| Streaming / partial | **Not applicable**, for the same reason — nothing here is a partial result. |
+| Confident and right | **Not applicable.** No output was produced in either the welcome or no-results case; there's nothing to be right about. |
+| Confident and wrong | **The no-results claim is itself a claim, and it can be wrong.** A search that says "no calls matched" when a manual filter over the same data turns up results is a confidently wrong empty state — the failure looks identical to a correctly empty one. The user notices only by trying the equivalent manual path (a plain filter, a direct table view) and finding what the AI search missed, or by already knowing the data should be there. Nothing about the no-results screen itself signals that the search might have missed something — see [TITAN-AIWELCOME-04](#constraints). |
+| Uncertain | If the search was cut short (timeout, partial index) rather than exhaustive, the copy says "the search may be incomplete" rather than a flat "no calls matched" — see [TITAN-AIWELCOME-05](#constraints). |
+| Refused | **Not applicable to this page.** A declined request (disallowed query, out-of-scope ask) is the invoking action's own [Refused](/invoca-design-system/ai-experience/actions/disambiguate#outcome-states) state, documented there — this pattern only covers a request that ran and legitimately found nothing. |
+| Empty | This **is** the no-results half of this pattern — a run that completed and genuinely found nothing to show. |
+| Interrupted | A cancelled or dropped run must not render as no-results. Show that the run was stopped, not that it finished empty — conflating the two tells the user a search happened when it didn't. |
+| Degraded | If the empty result came from a fallback path (keyword-only matching instead of full semantic search), the no-results copy discloses that the full search wasn't run, since the full version might have found something. |
+| Rate-limited / over budget | If the search stopped early because it hit a budget, the copy says "search stopped early" — never "no calls matched," which claims a completeness the run didn't have. |
+| Stale | **Minor relevance.** A cached no-results answer can be stale if new calls have since arrived; where results are cached, show when the search last ran. |
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI, at the moment it matters?** Yes for welcome — the
+   scope-setting copy names the feature and is the disclosure itself. For no-results, the
+   framing ("your question didn't match anything") makes clear a query was interpreted, not
+   just filtered.
+2. **What did it use?** For no-results, state what was searched — which calls, which date
+   range — so "nothing matched" is checkable against a concrete scope, not a vague "your data."
+3. **How sure is it, and does that change behavior?** For no-results, an exhaustive search says
+   so plainly ("no calls matched"); an incomplete one says so differently (see
+   [Uncertain](#outcome-states)) and that difference changes what recourse is offered.
+4. **How does the user check it?** The user can always fall back to a manual filter or the
+   underlying [Table](/invoca-design-system/components/data-display/table) view to verify a
+   no-results claim themselves — see [Filtering and search](/invoca-design-system/patterns/filtering-and-search).
+5. **How does the user correct it?** Rephrasing or broadening (no-results) and trying an example
+   prompt (welcome) are the two correction paths. Neither persists as a standing preference.
+6. **How does the user get out?** The manual, non-AI path — the plain table or filter view —
+   is always available and unaffected by anything this panel did or didn't find.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+
+## Evaluation
+
+Not evaluated. No eval set exists for whether "no results" is ever produced incorrectly (a
+false empty) versus correctly.
+
+## Content
+
+| Element | ✅ | ❌ |
+|---|---|---|
+| Welcome heading | Ask about your calls | AI Assistant |
+| Welcome scope line | Signal AI can summarize transcripts and surface Signals. It can't change routing or settings. | I can help with almost anything! |
+| Example prompt | "Summarize today's calls" | Try me! |
+| No-results heading | No calls matched "refund dispute" | No results |
+| No-results supporting line | Try a broader date range, or rephrase your question. | Something went wrong. |
+
+Never reuse [EmptyState](/invoca-design-system/components/data-display/empty-state)'s generic
+fallback copy ("No Records found!") for a no-results moment — it doesn't name what was searched
+for and reads as broken rather than as a completed, empty search. Per
+[TITAN-EMPTYCOPY-03](/invoca-design-system/content/empty-state-copy#constraints), the no-results
+wording names the query; per this page's own
+[TITAN-AIWELCOME-02](#constraints), the welcome wording names what the feature can't do, not
+only what it can.
+
+## Accessibility
+
+- The transition from a loading region to the no-results message is announced via a polite live
+  region on completion — not token-by-token, and not silently, so a screen reader user can tell
+  the difference between "still running" and "finished, found nothing."
+- An indeterminate wait before either state renders needs a non-visual equivalent to a spinner —
+  accessible status text, not a purely visual animation.
+- The scope-setting line and the no-results heading are both real text, never baked into an
+  illustration — matches [TITAN-EMP-07](/invoca-design-system/components/data-display/empty-state#constraints).
+- When a no-results screen replaces a loading region, focus moves to the heading so a screen
+  reader user lands on the result, not left on a control that no longer has anything to act on.
+- Example prompts (welcome) and next-step actions (no-results) are both reachable by keyboard in
+  visual order.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AIWELCOME-01** | This pattern never renders while a run is in progress. | Showing "no results" or a welcome message over a search that's still running tells the user something false about whether their request was heard. |
+| **TITAN-AIWELCOME-02** | The welcome moment states what the feature can't do, not only what it can. | A user who only learns the feature's strengths will ask for something out of scope and get an unexplained refusal instead of a set expectation. |
+| **TITAN-AIWELCOME-03** | The no-results heading names the specific request that returned nothing, in the user's words. | "No calls matched 'refund dispute'" is checkable; "No results" gives the user nothing to verify a mis-scoped search against. |
+| **TITAN-AIWELCOME-04** | A no-results screen and a run cancelled before completion use visibly and verbally different treatments. | Conflating "found nothing" with "never finished" hides a run that may need to be retried behind a claim that it was exhaustive. |
+| **TITAN-AIWELCOME-05** | A no-results claim states whether the underlying search was exhaustive or cut short (timeout, fallback, budget). | "No calls matched" implies completeness the run may not have had; overstating it costs the user a result that existed but wasn't found. |
+| **TITAN-AIWELCOME-06** | Example prompts on the welcome screen reflect jobs the feature actually does today, never an aspirational capability. | An example prompt the feature can't yet fulfill teaches the wrong lesson at the first interaction. |
+| **TITAN-AIWELCOME-07** | The no-results state never reuses a generic fallback empty-state message with no reference to what was searched. | See [Content](#content) — a message that doesn't name the query reads as a broken load, not a completed search. |
+
+## Divergences
+
+Not applicable — nothing is shipped yet to diverge from.
+
+## Gaps
+
+- Whether the welcome screen's example prompts should be static or drawn dynamically from what
+  the specific account or user has actually asked successfully before is undecided.
+- Whether a no-results moment should offer to fall back to a broader, AI-assisted retry (e.g.,
+  automatically widening the date range) or only manual recourse is undecided.
+- Whether "the search may be incomplete" (see [Uncertain](#outcome-states)) needs its own
+  distinct visual treatment from a fully exhaustive no-results screen, or whether the copy
+  difference alone is sufficient, is undecided.
+- How this pattern's welcome moment differs, if at all, from an
+  [Initial CTA](/invoca-design-system/ai-experience/wayfinders/initial-cta) for the same
+  feature is not fully resolved — the working distinction on this page is that Initial CTA is a
+  one-time invitation attached to a specific piece of content, while welcome is the standing
+  state of a panel with nothing asked yet, but the boundary hasn't been tested against a real
+  product surface.
+
+## Volatility
+
+This page assumes an agentic feature can distinguish, internally, between "ran and found
+nothing" and "didn't finish" — that distinction is what
+[TITAN-AIWELCOME-04](#constraints) depends on, and it doesn't hold for every possible
+implementation (a system that times out silently may not know which case it's in). Dated
+2026-09-02; revisit on the first real implementation of any search, summarize, or recommend
+panel, and whenever [EmptyState](/invoca-design-system/components/data-display/empty-state)'s
+own known issues (its fallback copy, its heading-level defects) are resolved, since this page's
+no-results variant composes that component directly.
+
+## Related
+
+- [AI Experience overview](/invoca-design-system/ai-experience/overview) — vocabulary, agency
+  tiers, and the six disclosure questions this page answers
+- [Disambiguate](/invoca-design-system/ai-experience/actions/disambiguate) — too many candidate
+  answers, rather than none
+- [Recommend](/invoca-design-system/ai-experience/actions/recommend) — whose own empty case
+  hands off to this pattern's no-results treatment
+- [Wayfinders: Initial CTA](/invoca-design-system/ai-experience/wayfinders/initial-cta) — a
+  related but distinct first-encounter moment; see [Gaps](#gaps) for the open boundary between
+  them
+- [Empty and zero states](/invoca-design-system/patterns/empty-and-zero-states) and
+  [EmptyState](/invoca-design-system/components/data-display/empty-state) — the deterministic
+  version of this pattern, composed directly by the no-results variant
+- [Filtering and search](/invoca-design-system/patterns/filtering-and-search) — the manual
+  fallback a user reaches for to check a no-results claim
+- [Input](/invoca-design-system/components/forms/input), [Tag](/invoca-design-system/components/data-display/tag),
+  [Button](/invoca-design-system/components/actions/button) — the components this pattern
+  composes
+
+## Why it works this way
+
+**Setting scope at the first interaction is cheaper than absorbing a refusal later.** A user who
+learns upfront that the feature summarizes and surfaces Signals but doesn't touch routing will
+never ask it to change routing and get an unexplained no; the cost of stating a limitation once,
+plainly, is far lower than the cost of a confused first request.
+
+**Naming the specific, completed search is what keeps "nothing found" from reading as
+"something broke."** The two states look almost identical — an empty region with a short
+message — and the only thing separating a trustworthy empty result from a suspicious one is
+whether the message proves a real search happened. A heading that repeats the user's own query
+back to them is that proof; a generic "no results" is not.

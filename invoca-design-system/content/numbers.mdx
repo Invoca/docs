@@ -1,0 +1,99 @@
+---
+title: "Numbers"
+description: "How whole numbers, abbreviated numbers, percentages, and currency are formatted across Invoca products."
+icon: "hash"
+tag: "Stable"
+keywords: ["number format", "abbreviation", "thousands", "K", "M", "percentage", "currency", "decimal", "rounding"]
+---
+
+## Whole numbers
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Counts of indivisible things are whole numbers | `23 calls` | `23.1 calls` |
+| Comma-separate thousands, millions, and up | `23,400` | `23400` |
+
+The first rule is about meaning, not precision. A call either happened or it didn't, so
+`23.1 calls` describes nothing that exists. Apply it to any object that cannot be
+partial — calls, contacts, users, campaigns. It does not apply to averages and rates,
+where a fraction is the point.
+
+## Abbreviations
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Above 1,000, abbreviate with an uppercase `K` | `3K` | `3k` |
+| Above 1,000,000, abbreviate with an uppercase `M` | `52M` | `52m` |
+| Show one decimal place | `2.7M` | `2.77M` |
+| Drop a trailing zero decimal | `12M` | `12.0M` |
+
+**When to abbreviate versus show the full comma-separated number conflicts with the rule
+above, and the source does not resolve it** — see
+[Open issues](/invoca-design-system/content/numbers/open-issues) for the proposed reading and
+why it's still an open question.
+
+<Note>
+  The source states the fourth rule as *"If amount is a whole thousand, such as $1,000, do
+  not show a 0 decimal"* while illustrating it with `12M` / `12.0M`. The description and
+  the example disagree. The rule that is actually being expressed — and the one both
+  examples support — is: **never render a trailing `.0`**. That is what is documented here.
+</Note>
+
+## Percentages
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| One decimal place maximum | `2.7%` | `2.77%` |
+| No trailing zero decimal on whole numbers | `6%` | `6.0%` |
+
+Same precision rule as abbreviated numbers: one decimal, and never a trailing `.0`.
+
+## Currency
+
+| Rule | ✅ Do | ❌ Don't |
+|---|---|---|
+| Always show the currency symbol | `$4.25` | `4.25` |
+| Show 2 decimal places when cents are displayed | `$4.25` | `$4.2` |
+| Round to the whole dollar when there are no cents to display | `$4` | `$4.00` |
+| Comma-separate thousands and up | `$23,400` | `$23400` |
+
+<Note>
+  Currency is the one case that takes **two** decimal places rather than one. Cents are a
+  real denomination; a third digit is not. This is why the one-decimal rule elsewhere on
+  this page does not apply here.
+</Note>
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-NUM-01** | Counts of indivisible objects render as whole numbers. | `23.1 calls` describes a quantity that cannot exist. |
+| **TITAN-NUM-02** | Numbers ≥ 1,000 are comma-separated when shown in full. | Unseparated digits are read incorrectly at a glance. |
+| **TITAN-NUM-03** | Abbreviation suffixes are uppercase: `K`, `M`. | `3k` and `52m` are inconsistent with the documented form. |
+| **TITAN-NUM-04** | Abbreviated numbers show at most one decimal place. | A second decimal on an abbreviated number implies a precision the abbreviation already discarded. |
+| **TITAN-NUM-05** | A trailing `.0` is never rendered — on abbreviations or percentages. | `12.0M` implies measured precision that isn't there. |
+| **TITAN-NUM-06** | Abbreviate only where space is constrained and the exact value is not actionable. Show the full number wherever the reader may need to read or copy the exact value. | **Proposed, not from source.** Resolves the abbreviation/comma conflict. Needs sign-off. |
+| **TITAN-PCT-01** | Percentages show at most one decimal place, with no trailing `.0`. | Matches TITAN-NUM-04/05. |
+| **TITAN-CUR-01** | Currency always displays its symbol. | A bare `4.25` is not identifiable as money, and Invoca reports mix currency with counts and rates in the same table. |
+| **TITAN-CUR-02** | Currency shows 2 decimal places when cents are present, and none when they are not. | Cents are a real denomination; `$4.00` adds width without information. |
+
+## Gaps in the current rules
+
+<Card title="Numbers: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/numbers/open-issues">
+  Divergences, open decisions, and undocumented gaps for Numbers.
+</Card>
+
+## Why it works this way
+
+**One decimal place everywhere except currency.** An abbreviated number is already an
+approximation — `2.77M` presents two digits of precision on a value that just discarded
+five. One decimal signals "roughly this much" while still distinguishing `2.7M` from
+`2.9M`. Currency is exempt because cents are an actual denomination someone can be billed.
+
+**Trailing `.0` is never rendered** because it is a claim about measurement. `12.0M`
+reads as "measured to the nearest hundred thousand." `12M` reads as "about twelve
+million," which is what the abbreviation means.
+
+**Uppercase `K` and `M`** — lowercase `m` is the SI symbol for *milli*, three orders of
+magnitude in the wrong direction. The uppercase form is unambiguous in a product where
+numbers appear next to units.

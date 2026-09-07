@@ -1,0 +1,47 @@
+---
+title: "Error messages"
+description: "How to write a message when something goes wrong: immediate, close to the source, and solution-oriented."
+icon: "circle-alert"
+tag: "Stable"
+keywords: ["error copy", "validation message", "error text", "help text", "error handling"]
+---
+
+## The core rule
+
+**"Help me help you."** An error message's entire job is stated in that line — it exists to
+get the reader unstuck, not to report a failure for its own sake.
+
+- Help the reader become aware of the error as soon as possible.
+- Display the error message as close to its source as possible.
+- Provide a message that helps the reader solve the problem.
+- Use sentence case for all messaging.
+
+## Sentence case, confirmed
+
+The source states this plainly: **"Use sentence-case for all messaging."** This is the first
+directly confirmed casing rule this documentation has for any content type, and it anchors the
+per-context model on [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation)
+— error messages are sentence case, in contrast to
+[Button labels'](/invoca-design-system/components/actions/button#constraints) title case.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-ERR-01** | An error is surfaced to the reader as soon as it is known, not deferred to a later step. | A reader who has already moved on has to backtrack to fix something that could have been caught immediately. |
+| **TITAN-ERR-02** | An error message renders as close to its source as the composition allows. | A reader should not have to search the screen to connect a message to the thing it's about. |
+| **TITAN-ERR-03** | Error message content states how to resolve the problem, not only that a problem exists. | "Invalid" tells the reader something is wrong and nothing about what to do next — the same reasoning as [TITAN-FLD-04](/invoca-design-system/components/forms/field-label#constraints). |
+| **TITAN-ERR-04** | Error messaging is sentence case. | Directly stated in source. |
+
+## Gaps in the current rules
+
+<Card title="Error messages: open issues" icon="triangle-exclamation" href="/invoca-design-system/content/error-messages/open-issues">
+  Divergences, open decisions, and undocumented gaps for Error messages.
+</Card>
+
+## Why it works this way
+
+**Proximity and solution-orientation both serve the same goal: minimizing the distance between
+noticing a problem and fixing it.** A message far from its source, or one that states a
+failure without a next step, both leave the reader to do work the message could have done for
+them — which is the literal meaning of "help me help you."

@@ -1,0 +1,45 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+### Sizes
+
+| Token | Value | Definition | From |
+|---|---|---|---|
+| `icon-lg` | `24px` | — | — |
+| `icon-md` | `20px` | — | — |
+| `icon-sm` | `16px` | — | — |
+| `icon-with-tooltip-max-width` | `300px` | — | — |
+| `icon-xs` | `14px` | — | — |
+
+### Colors
+
+| Token | Value | Aliases | Definition | From |
+|---|---|---|---|---|
+| `icon-default` | `#66708e` | `color.common.asphalt` | Default icon color | spec |
+| `icon-disabled` | `#a1a7b2` | `color.ui-black.40` | Icon color for disabled items | spec |
+| `icon-disabled-alt` | `#b8bdc5` | `color.ui-black.30` | Fainter disabled control glyph | code |
+| `icon-error` | `#e4131b` | `color.red.50` | Use for negative outcomes where an icon supplements the text | spec |
+| `icon-error-alt` | `#87000b` | `color.red.100` | Alternative icon color for critical outcomes | spec |
+| `icon-info` | `#2666f9` | `color.blue.50` | Use for informative outcomes where an icon supplements the text | spec |
+| `icon-info-alt` | `#11228c` | `color.blue.100` | Alternative icon color for informative outcomes | spec |
+| `icon-invert` | `#ffffff` | `color.common.white` | Inverted default icon color | spec |
+| `icon-selected` | `#2666f9` | `color.blue.50` | Icon color for selected items | spec |
+| `icon-success` | `#2cbf58` | `color.green.50` | Use for positive outcomes where an icon supplements the text | spec |
+| `icon-success-alt` | `#0d5400` | `color.green.100` | Alternative icon color for positive outcomes | spec |
+| `icon-warning` | `#ff7045` | `color.orange.50` | Use for warnings where an icon supplements the text | spec |
+| `icon-warning-alt` | `#b33b00` | `color.orange.100` | Alternative icon color for warning or cautious outcomes | spec |
+
+**The library ships 2 icons**, exported from `components/core/src/icons/index.js`.
+Only icons in that index may be used.
+
+<Warning>
+  Icon colors carry the same values as their `text-*` counterparts, so they inherit the
+  same contrast results. `icon-success` and `icon-warning` fall below the 3:1 non-text
+  minimum — see [contrast](/invoca-design-system/foundations/accessibility#contrast).
+</Warning>
+
+<Note>
+  **Default mode only.** Values above are the light color scheme at comfortable density.
+  Of these tokens, **13** hold a different value in the dark color scheme. Those modes ship in code but carry no
+  design decision, so this documentation does not define them — see
+  [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
+</Note>

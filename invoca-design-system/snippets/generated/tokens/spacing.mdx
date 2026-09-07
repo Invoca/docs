@@ -1,0 +1,39 @@
+{/* GENERATED — do not hand-edit. Produced by tools/emit-tokens.mjs from Titan DTCG source. */}
+
+| Token | Value | px | Definition | From |
+|---|---|---|---|---|
+| `spacing-0` | `0rem` | 0px | Zero spacing — tokenized intentional reset of a default margin/padding so reset declarations still resolve through theme.vars | code |
+| `spacing-1` | `0.125rem` | 2px | — | — |
+| `spacing-2` | `0.25rem` | 4px | — | — |
+| `spacing-3` | `0.5rem` | 8px | *implementation note* | code |
+| `spacing-4` | `0.75rem` | 12px | — | — |
+| `spacing-5` | `1rem` | 16px | — | — |
+| `spacing-6` | `1.5rem` | 24px | — | — |
+| `spacing-7` | `2rem` | 32px | — | — |
+| `spacing-8` | `2.5rem` | 40px | — | — |
+| `spacing-9` | `3rem` | 48px | — | — |
+| `spacing-10` | `3.5rem` | 56px | — | — |
+| `spacing-none` | `0px` | 0px | *implementation note* | code |
+
+<Warning>
+  **The number is a position on the scale, not a multiplier.** `spacing-5` is 16px, not 20px.
+  Pick by role using the table on this page, never by arithmetic.
+</Warning>
+
+<Warning>
+  **Definition coverage: 1 of 12 spacing tokens.** Nothing records which gap each
+  step is for. See [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
+</Warning>
+
+<Warning>
+  **A second, older spacing helper also exists**, based on an 8px multiplier. It is not the
+  scale above and does not resolve to these steps. Anything spacing-related should use a
+  `spacing-*` token.
+</Warning>
+
+<Note>
+  **Default mode only.** Values above are the light color scheme at comfortable density.
+  Of these tokens, **8** hold a different value at compact density. Those modes ship in code but carry no
+  design decision, so this documentation does not define them — see
+  [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
+</Note>

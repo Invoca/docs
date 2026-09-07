@@ -1,0 +1,42 @@
+---
+title: "Spinner"
+description: "Divergences, open decisions, and undocumented gaps for Spinner."
+icon: "spinner"
+---
+
+See [Spinner](/invoca-design-system/components/feedback/spinner) for the decided part of this
+page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-10**](/invoca-design-system/foundations/divergences#titan-div-10) | Divergence | The package's export for Spinner is `CircularProgress` — already listed among that entry's examples. |
+
+**The larger open question this page surfaces isn't a naming mismatch — it's a mismatch of
+scope.** `CircularProgress` (this page's subject) has exactly one recorded usage anywhere in the
+product and no Storybook story at all. A separate, unrelated component in the same package,
+`Loader` (a five-bar bounce animation, paired with `LoaderOverlay`), is used dozens of times
+across dozens of applications and has its own Storybook entry, but has no page anywhere in this
+documentation site. Someone arriving at "Spinner" in the navigation looking for the thing their
+product actually uses for full-page loading will not find it here.
+
+## Gaps in the current rules
+
+- **No Storybook story exists for `CircularProgress`** — confirmed against both the source tree
+  and the live Storybook index. This page's "Live example" section has nothing to embed.
+- **Whether `CircularProgress` is intentionally the low-adoption, narrowly-scoped choice — or
+  whether `Loader` should actually be "Spinner" in this documentation's vocabulary — is
+  undecided.** This page documents `CircularProgress` because that is the mapping
+  TITAN-DIV-10 already records, but the adoption data raises a real question about whether that
+  mapping serves readers well.
+- **Whether `Loader`/`LoaderOverlay` should get their own page, or whether "Spinner" should be
+  redirected to cover them instead, is unresolved** and out of scope for this pass to decide.
+- **Which of `error`/`info`/`success`/`warning` as `color` values route through a Titan-named
+  token, versus the framework's own default palette, is unconfirmed.** Only `colorPrimary` is
+  themed in `CircularProgress.overrides.ts`.
+- **`variant="determinate"` is undemonstrated for this component anywhere in this codebase.**
+  Whether it is ever used, and what it looks like themed, is unconfirmed.
+- **No design-side confirmation of this component was possible in this pass.** Figma
+  verification was out of scope for this research; everything on the main page is sourced from
+  code alone — there is no test file, no story, and no override beyond the one file cited.

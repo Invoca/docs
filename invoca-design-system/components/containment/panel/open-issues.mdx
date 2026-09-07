@@ -1,0 +1,33 @@
+---
+title: "Panel"
+description: "Divergences, open decisions, and undocumented gaps for Panel."
+icon: "table-cells-large"
+---
+
+See [Panel](/invoca-design-system/components/containment/panel) for the decided part of this
+page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-28**](/invoca-design-system/foundations/divergences#titan-div-28) | Divergence | The package exports this as `Tile`, not `Panel` |
+
+## Gaps in the current rules
+
+- **A `Tile` used with only some of its sub-components (a bare body, no header or footer) is not
+  demonstrated anywhere.** The one published story always uses the full header/body/footer
+  composition, so the container's appearance in a simpler configuration is unconfirmed
+  visually.
+- **No theme override exists for this component at all.** Every visual property is applied
+  inline from generic, cross-component tokens rather than registered against a named component
+  key — unlike every overlay component in this category. Whether that is an intentional
+  difference (this is a structural region, not a themed control) or simply not yet built is
+  unrecorded.
+- **`TileTitle`'s text-extraction logic for the tooltip is not exercised by any test against
+  complex nested children.** Whether a title built from more than a single text node or simple
+  wrapped element truncates and tooltips correctly is unconfirmed.
+- **The relationship between this component and `Card` is not stated anywhere in source or in
+  any design specification found.** This page's own "Choose something else" comparison is
+  derived from reading both components' code, not from a documented decision that the two are
+  meant to serve different jobs.

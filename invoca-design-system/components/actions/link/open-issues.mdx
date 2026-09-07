@@ -1,0 +1,22 @@
+---
+title: "Link"
+description: "Divergences, open decisions, and undocumented gaps for Link."
+icon: "link"
+---
+
+See [Link](/invoca-design-system/components/actions/link) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-DIV-25**](/invoca-design-system/foundations/divergences#titan-div-25) | Divergence | The package's `Link` export is a routing wrapper, not this styled component — that's `TextLink` |
+
+## Gaps in the current rules
+
+- **No focus-state token is recorded for TextLink.** `TextLink.overrides.ts` sets colors for
+  `:hover` and `:visited`; nothing is set for `:focus`. Whether a keyboard user sees a visible
+  focus indicator on a Link, and where it comes from if so, is unconfirmed.
+- **The trailing icon's accessibility treatment is unconfirmed.** Nothing in source marks it
+  `aria-hidden`, and no test exercises a screen reader's behavior around it. Whether the icon
+  is announced redundantly alongside the link text has not been checked.

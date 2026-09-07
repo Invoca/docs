@@ -1,0 +1,218 @@
+---
+title: "Update"
+description: "The system directly changes a record on the user's behalf — tagging a call's disposition, updating a Signal, correcting a misrouted call's category — backed by real undo."
+icon: "refresh-cw"
+keywords: ["auto-tag", "update record", "auto-update", "disposition", "undo", "acts reversible"]
+---
+
+<Warning>
+  **Exemplar page — proposal only, nothing shipped.** No feature in Invoca's product updates
+  a record directly on a user's behalf today. Everything below is design intent offered for
+  review, not established policy. See
+  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
+</Warning>
+
+## What it is
+
+Some changes to a call record are small, common, and clearly reversible: tagging a call's
+disposition based on what the transcript shows, updating a Signal's status, correcting a
+call that landed in the wrong category. Update is the system making that change directly —
+not proposing it, not drafting it for review — with the change taking effect immediately
+and a real, discoverable way to undo it.
+
+The distinguishing fact against Draft is timing: nothing about Update waits for a send or
+apply action. The record already reflects the new value by the time the user notices
+anything happened. That immediacy is the entire reason this tier needs to be earned, not
+assumed — it only belongs on changes cheap enough to get wrong and easy enough to reverse.
+
+This is proposal. No feature today changes a call record's fields directly based on model
+output.
+
+## Choose this when / choose something else when
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The change is substantial free text or a new artifact — an email, a note | [Draft](/invoca-design-system/ai-experience/actions/draft) | Update is for direct field changes, not compositions that need a review pass before they mean anything. |
+| The change is high-stakes, hard to reverse, or affects other people, billing, or live traffic | [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) | Update's whole design depends on the change being genuinely undoable. Once it isn't, this pattern doesn't apply — that's Acts, irreversible, and it needs a confirmation naming the consequence, not a toast. |
+| The user wants to make the same kind of edit themselves, by hand | [Inline editing](/invoca-design-system/patterns/inline-editing) | Update only earns its place when letting the system act first and correcting after is faster than composing the edit manually every time. |
+
+## Agency tier
+
+**Acts, reversible.** The system changes the record directly rather than proposing a change
+or drafting something for review — that's what makes it Acts rather than Suggests or Drafts.
+It qualifies for the reversible tier and not the irreversible one only because undo is real,
+discoverable, and bounded in time, per the
+[agency tier definitions](/invoca-design-system/ai-experience/overview#agency-tier). This is
+the same logic [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints)
+uses for destructive actions: perform it and offer undo beats gating it behind a dialog,
+whenever undo is actually achievable.
+
+## Anatomy
+
+```
+┌───────────────────────────────────────────────────┐
+│  Table / Card row for the call record              │
+│   Disposition: [Tag: Sale — AI-updated]             │
+│                                                     │
+│  [Toast, bottom]                                    │
+│   "Disposition updated to Sale.        [ Undo ]"    │
+│   (visible for a bounded window)                    │
+└───────────────────────────────────────────────────┘
+```
+
+- [Table](/invoca-design-system/components/data-display/table) or
+  [Card](/invoca-design-system/components/data-display/card) — the record itself, showing
+  the new value immediately.
+- [Tag](/invoca-design-system/components/data-display/tag) — a persistent marker on the
+  changed field distinguishing an AI-made change from a human edit, visible after the toast
+  is gone.
+- [Toast](/invoca-design-system/components/feedback/toast) — confirms the change and carries
+  the one-click Undo, for a bounded window.
+- [Button](/invoca-design-system/components/actions/button) — the Undo action inside the
+  toast.
+
+## Outcome states
+
+| State | Treatment |
+|---|---|
+| Working | Brief — the change is computed and applied in one step. No intermediate state to render beyond the moment before the toast appears. |
+| Streaming / partial | N/A. An update is a discrete field change, not generated text; there's no partial value to show mid-run. |
+| Confident and right | The field now holds the correct value, and the toast confirms it. |
+| Confident and wrong | See below. |
+| Uncertain | If the system isn't confident enough to commit outright, it doesn't act at this tier — it downgrades to a Draft-style suggestion instead, per [TITAN-AIUPDATE-04](#constraints). |
+| Refused | The system declines to update (conflicting signals, insufficient basis). The record stays unchanged; the reason is stated, and manual [inline editing](/invoca-design-system/patterns/inline-editing) remains available. |
+| Empty | N/A. There is no empty-result concept for a single-record update — nothing to distinguish from a normal completed change. |
+| Interrupted | The user navigates away right after the change triggers. Proposal: the update still commits — it isn't gated on the user watching it happen — but the undo affordance must survive navigation (an activity log, not only the toast) or the recourse is lost along with the toast. |
+| Degraded | Falls back to a simpler rule-based tag instead of a modeled judgment. Disclosed as part of the "AI-updated" marker, not folded silently into an identical-looking change. |
+| Rate-limited / over budget | A bulk run of auto-updates is throttled with a limit stated before the batch runs, not discovered partway through it. |
+| Stale | The value was right when set, but the call was re-transcribed or re-analyzed afterward and the earlier auto-update was never revisited. Undecided whether anything re-checks it; see Gaps. |
+
+**Confident and wrong**, in detail: because this tier acts immediately, a wrong value is
+live the moment it's set — in the record, and in anything downstream that reads it, like a
+report or a dashboard — for as long as it takes someone to notice. The record itself gives
+no indication that this particular value might be wrong; it looks exactly like a value a
+person set correctly. This is the largest cost of misjudging this tier: unlike Draft, there
+is no review step standing between a wrong output and its consequences. The mitigations
+here are the ones that make the wrongness checkable *after* the toast is gone, not only
+during it — the persistent "AI-updated" marker on the field, and an audit trail that shows
+the prior value — because the person who notices the mistake is often not the person who
+was present when it happened.
+
+## Disclosure & recourse {#disclosure-recourse}
+
+1. **Does the user know this is AI?** Yes, and durably — the changed field carries a visible
+   marker distinguishing an AI-made change from a human edit, not only a toast that
+   disappears after the undo window closes.
+2. **What did it use?** The specific call's transcript or record data being changed. Not
+   other calls' data, unless a specific update explicitly states that it drew on a pattern
+   across calls.
+3. **How sure is it?** If the system isn't sure enough to commit, it doesn't act at this
+   tier — see the Uncertain outcome state above. Confidence here changes tier, not just
+   copy.
+4. **How does the user check it?** The changed field shows its previous value, on hover or in
+   an activity log, so the change stays auditable after the toast window closes — not only
+   during it.
+5. **How does the user correct it?** Undo, within the bounded window, reverts to the exact
+   prior value in one action. After the window closes, the field remains manually editable
+   exactly like any human-set value — recourse doesn't expire, only its one-click form does.
+6. **How does the user get out?** The auto-update behavior itself can be turned off, reverting
+   to manual tagging going forward. A single instance can always be corrected manually via
+   [inline editing](/invoca-design-system/patterns/inline-editing) even outside the undo
+   window.
+
+## Reference
+
+No model, prompt, tool schema, latency budget, or cost has been defined for this pattern.
+Nothing in Invoca's product performs this job today, so there is no source to generate this
+section from.
+
+## Evaluation
+
+Not evaluated. No eval set, score, or failure-class list exists for this pattern anywhere
+accessible.
+
+## Content
+
+| Moment | ✅ | ❌ |
+|---|---|---|
+| Toast confirmation | "Disposition updated to Sale.  [Undo]" | "Updated.  [Undo]" (doesn't name the value) |
+| Persistent marker | "AI-updated" | No marker once the toast is gone |
+| Refusal | "Couldn't update — the call doesn't have enough transcript to determine a disposition." | Leaving the field unchanged with no message |
+| Degraded fallback | "Set by keyword match, not a full review of the call." | An identical marker for a modeled and a keyword-matched change |
+
+## Accessibility
+
+- The update and its Undo availability are announced to a live region once, when the change
+  completes — matching [Toast](/invoca-design-system/components/feedback/toast)'s existing
+  announcement behavior.
+- Undo remains reachable by keyboard for the full bounded window, not only by pointer.
+- The "AI-updated" marker pairs an icon or text with any color treatment — never color alone,
+  per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- Focus stays on the updated record row after the change, rather than jumping to the toast —
+  the toast is a secondary confirmation, not the primary content.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-AIUPDATE-01** | A reversible field-level update commits immediately and offers Undo; it never blocks on a confirmation dialog. | Matches [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints) — confirming a genuinely reversible action trains users to dismiss confirmations generally. |
+| **TITAN-AIUPDATE-02** | The Undo window is real and bounded, never shorter than the equivalent Toast affordance elsewhere in the system. | A window too short to notice is undo in name only. |
+| **TITAN-AIUPDATE-03** | The changed field carries a persistent marker distinguishing an AI-made change from a human edit, visible after the toast is gone. | The toast disappears; the record doesn't. Recourse that only exists during the toast window fails anyone who notices later. |
+| **TITAN-AIUPDATE-04** | A candidate change the system isn't confident in downgrades to a Draft-tier suggestion rather than committing. | Acts, reversible earns its immediacy by only acting when the system is actually sure; uncertainty belongs to a lower tier. |
+| **TITAN-AIUPDATE-05** | A refused update leaves the record unchanged and states why. | An unexplained non-change is indistinguishable from a silent failure. |
+| **TITAN-AIUPDATE-06** | Undo reverts to the exact prior value, never a recomputed default. | A recomputed "undo" isn't undo — it's a second guess replacing the first one. |
+| **TITAN-AIUPDATE-07** | Bulk or repeated auto-updates are throttled with a limit stated before it is reached. | An unstated limit discovered mid-batch is a worse failure than a stated one hit on schedule. |
+
+## Divergences
+
+Not applicable. Nothing is shipped, so there is no code behavior to diverge from.
+
+## Gaps
+
+- The length of the Undo window is undecided.
+- Whether the "AI-updated" marker persists indefinitely or clears after some period is
+  undecided.
+- Whether a value is ever re-checked after the call it's attached to is reprocessed or
+  re-transcribed is undecided.
+- Who defines the confidence threshold below which a change downgrades to Draft rather than
+  committing is undecided — related to the overview's
+  [escalation gap](/invoca-design-system/ai-experience/overview#gaps).
+
+## Volatility
+
+This page depends on an auto-update feature that does not exist. It should be reverified the
+moment any such feature is scoped for Invoca's product, since the undo window, the marker
+behavior, and the confidence-downgrade threshold above are proposals, not observations of a
+built feature. Written 2026-09-02.
+
+## Related
+
+<Columns cols={2}>
+  <Card title="AI Experience overview" icon="sparkles" href="/invoca-design-system/ai-experience/overview">
+    The agency tiers this page's classification depends on.
+  </Card>
+  <Card title="Draft" icon="pencil-line" href="/invoca-design-system/ai-experience/actions/draft">
+    The lower-authority tier for changes substantial enough to need review first.
+  </Card>
+  <Card title="Search" icon="search" href="/invoca-design-system/ai-experience/actions/search">
+    Finding the record before deciding whether it needs updating.
+  </Card>
+  <Card title="Destructive confirmation" icon="trash-2" href="/invoca-design-system/patterns/destructive-confirmation">
+    What to use instead once a change stops being genuinely reversible.
+  </Card>
+  <Card title="Inline editing" icon="layout-template" href="/invoca-design-system/patterns/inline-editing">
+    The manual, deterministic version of the same field-level change.
+  </Card>
+  <Card title="Governors: Stream of thought" icon="shield-check" href="/invoca-design-system/ai-experience/governors/stream-of-thought">
+    Where an audit trail of what the system changed and why would belong.
+  </Card>
+</Columns>
+
+## Why it works this way
+
+Undo is doing real work here, not standing in as a lighter version of a confirmation dialog.
+Because the change is already live by the time anyone sees it, the design has to assume the
+person who notices a mistake is often not the person who was there when it happened — which
+is why the marker on the record has to outlast the toast, and why undo has to restore the
+exact prior value rather than a fresh guess. A tier that acts immediately only stays safe if
+its evidence of what happened outlives the moment it happened in.

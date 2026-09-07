@@ -1,0 +1,29 @@
+---
+title: "Pagination"
+description: "Divergences, open decisions, and undocumented gaps for Pagination."
+icon: "component"
+---
+
+See [Pagination](/invoca-design-system/components/navigation/pagination) for the decided part of this page.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [**TITAN-GAP-27**](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Pagination has no home in the page frame, and three unreconciled implementations ship |
+
+## Gaps in the current rules
+
+- **No confirmed home in the page frame.** The frame has no region between `Contents` and
+  `Footer`; see [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) for
+  the full account, including the two independently-built application-level `PaginationBar`s.
+- **No content rule for any of the wording hooks.** `labelDisplayedRows`, `labelRowsPerPage`, and
+  `getItemAriaLabel` all exist; nothing states what any of them should say in this product's
+  voice.
+- **Whether `color="primary"` on `Pagination` actually resolves to the system's brand color was
+  not independently re-rendered and checked this session.** It should, since the underlying
+  `color` prop resolves through the theme's palette like any other component, but no story or
+  application usage was found to confirm it in practice.
+- **No usage data exists for any of the three raw exports.** They have no component directory of
+  their own, so there is no `utilization.md` to check adoption against — only the two
+  independently-built `PaginationBar`s that GAP-27 already documents are visible at all.
