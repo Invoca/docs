@@ -216,6 +216,38 @@ Each status has two complete treatments. **Pick one and use it consistently.**
 Tier 1 exists and is published — 106 raw ramp values as `--titan-color-*` custom properties.
 Semantic tokens alias into it; component code never touches it.
 
+Nine ramps run from `0` (lightest) to `100` (darkest) in steps of 10. Each cell is the
+value of `color.{ramp}.{step}`, so `color.green.50` is `#2cbf58`. Values are identical
+in light and dark mode.
+
+| Ramp | 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **blue** | `#e9f0fe` | `#d4e0fe` | `#b0cdff` | `#7da3fb` | `#5185fa` | `#2666f9` | `#1c53e9` | `#1643d5` | `#1335bf` | `#122aa6` | `#11228c` |
+| **green** | `#e9f8ee` | `#d5f2de` | `#abe5bc` | `#80d99b` | `#56cc79` | `#2cbf58` | `#1cad3a` | `#129922` | `#0a830e` | `#0a6b04` | `#0d5400` |
+| **orange** | `#fff0ec` | `#ffe2da` | `#ffc6b5` | `#ffa98f` | `#ff8d6a` | `#ff7045` | `#f35e2c` | `#e6511a` | `#d6480d` | `#c44105` | `#b33b00` |
+| **red** | `#fff2f2` | `#fdbbbc` | `#fa8688` | `#f5575a` | `#ed3036` | `#e4131b` | `#d70009` | `#c7000a` | `#b3000b` | `#9e000c` | `#87000b` |
+| **purple** | `#f3effb` | `#e7e0f9` | `#d0c1f2` | `#b8a1ec` | `#a182e5` | `#855ede` | `#763ed2` | `#6a23c0` | `#5f11a7` | `#530587` | `#440066` |
+| **pink** | `#fee9f0` | `#fed3e3` | `#fda7c6` | `#fc7caa` | `#fb508d` | `#e4126f` | `#c9076e` | `#aa0269` | `#8f005a` | `#89005f` | `#660050` |
+| **teal** | `#e5fbf8` | `#ccf8f2` | `#99f2e4` | `#66ebd7` | `#33e5c9` | `#00debc` | `#00d1b4` | `#00c1a9` | `#00ad9a` | `#009788` | `#007e73` |
+| **yellow** | `#fffbe5` | `#fff7cc` | `#ffef99` | `#ffe866` | `#ffe033` | `#ffd800` | `#f3cb00` | `#e6bd00` | `#d6ad00` | `#c49c00` | `#b38c00` |
+| **ui-black** | `#f3f4f5` | `#e7e9eb` | `#d0d3d8` | `#b8bdc5` | `#a1a7b2` | `#8a919e` | `#737c8b` | `#5b6577` | `#445065` | `#2c3951` | `#15243e` |
+
+Seven named values sit outside the ramps:
+
+| Token | Value |
+|---|---|
+| `color.common.asphalt` | `#66708e` |
+| `color.common.invoca-green` | `#00B388` |
+| `color.common.light-grey` | `#f5f6fa` |
+| `color.common.night-shade` | `#081340` |
+| `color.common.white` | `#ffffff` |
+| `color.shadow.deep` | `rgba(0, 0, 0, 0.55)` |
+| `color.shadow.default` | `rgba(12, 0, 51, 0.2)` |
+
+Remember [TITAN-COLOR-01](#constraints): these hex values are for reference and design
+handoff, never for component code. If you need one of these colors, use the semantic
+token that aliases it.
+
 <Snippet file="generated/tokens/color-primitive.mdx" />
 
 ### Every semantic color, with its alias chain
