@@ -32,6 +32,8 @@ corroborate any usage guidance.
   designated column, is undecided — and the two produce different keyboard behaviour.
 - **Nothing bounds column count.** No rule states when a table has too many columns to be a list
   and should become a detail view or a configurable set.
-- **Two grid exports ship, and nothing picks one.** `DataGridPro` and `DataGridPremium` are both
-  in the package. The guidance story says "use the grid" without saying which, so a list page
-  chooses by whichever it saw first.
+- **Two grid exports ship; the system picks `DataGridPremium`.** Both `DataGridPro` and
+  `DataGridPremium` are in the package. `DataGridPremium` is the one to reach for on a list
+  page — see [Table](/invoca-design-system/components/data-display/table#vocabulary). The
+  guidance story itself still says "use the grid" without naming which; that story needs the
+  same update.
