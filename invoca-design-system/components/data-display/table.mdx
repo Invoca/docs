@@ -33,13 +33,16 @@ are stale, and reach for the ones this page documents instead.
 
 ## Vocabulary
 
-**The system says *table*. Code says `DataGridPro`; the design library says *Data Grid*.**
+**The system says *table*. Code says `DataGridPremium`; the design library says *Data Grid*.**
 *Table* is what people say in conversation, so it is the word this documentation leads with.
 Say **table** in a review and **grid** only when you mean the export.
 
+**Use `DataGridPremium`, not `DataGridPro`.** Both ship in the package; `DataGridPremium` is
+the one the system standardizes on and the one every list page should reach for.
+
 | Term | Also called | The system uses | In code |
 |---|---|---|---|
-| **Table** | Data grid, grid, datagrid | **`table`** | `DataGridPro` |
+| **Table** | Data grid, grid, datagrid | **`table`** | `DataGridPremium` |
 | **Column header** | Header cell, header row | **`column header`** | `columns[].headerName` |
 | **Row** | Record, entry, line, result | **`row`** | `rows[]` |
 | **Cell** | Field, value | **`cell`** | rendered from a column definition |
@@ -207,7 +210,7 @@ position carries meaning. If it does not, the structure is a lie.
 
 | ID | Was | Why retired |
 |---|---|---|
-| **TITAN-TBL-06** | Cells truncate; column headers do not. | This is DataGridPro's shipped themed default, not an independent per-table choice. Retired, not reversed. |
+| **TITAN-TBL-06** | Cells truncate; column headers do not. | This is `DataGridPremium`'s shipped themed default, not an independent per-table choice. Retired, not reversed. |
 
 ## Known issues
 
