@@ -1,6 +1,6 @@
 ---
 title: "FieldLabel"
-description: "The labeling concept every form field renders — label text, required marker, helper text, and error text. Rendered by FormInput, not composed by hand."
+description: "Names a form field and carries its required marker, helper text, and error text — the whole text stack around a field, not a bare label word."
 icon: "type"
 tag: "Stable"
 keywords: ["label", "helper text", "hint text", "error text", "required", "optional", "asterisk", "form label"]
@@ -14,16 +14,8 @@ The text stack that identifies a field and reports its state: the label, an opti
 required-or-optional marker, and — beneath the field — helper text that becomes error text
 the moment the field is invalid.
 
-**This is a concept page, not a component you reach for.** Every field label, helper text,
-and error text on a form is rendered by [FormInput](/invoca-design-system/components/forms/form-input) — see
-[TITAN-FORM-01](/invoca-design-system/components/forms/form#constraints). This page exists to define the vocabulary,
-tokens, and accessibility contract those labels follow.
-
-<Warning>
-  **Do not import or render `FieldLabel` directly to attach a label to a field.** The label
-  belongs to [FormInput](/invoca-design-system/components/forms/form-input), which composes it with the control and the
-  helper-or-error slot as one field. A hand-attached `FieldLabel` skips that composition.
-</Warning>
+**This page covers the whole labeling concept**, not just the visible label word. FieldLabel
+is never used alone; every Forms component composes with it.
 
 ## Live example
 
@@ -61,19 +53,18 @@ tokens, and accessibility contract those labels follow.
 
 ## Choose FieldLabel when
 
-Never, directly. If you are attaching a label, helper text, or error text to a field, use
-[FormInput](/invoca-design-system/components/forms/form-input) and let it render the FieldLabel for you. This page is here
-to define what that label is and how it behaves — the vocabulary, the tokens, the
-accessibility contract — not as something to reach for on its own.
+- A reader fills in or chooses a value for a field. There is no field exempted as "obvious
+  enough" to skip a visible label — see [TITAN-FLD-01](#constraints).
+- The field needs to report something beyond present-or-absent: that it is required, that it
+  failed validation, or a hint that a placeholder cannot hold once the reader starts typing.
 
 ## Choose something else when
 
 | If you need to… | Use | Why |
 |---|---|---|
-| Add a labeled field | [FormInput](/invoca-design-system/components/forms/form-input) | FormInput composes the control with its label, helper, and error text as one field — see [TITAN-FORM-01](/invoca-design-system/components/forms/form#constraints). |
-| Label a control that already renders its own visible text | Nothing — the control's content is its accessible name | A second label duplicates the control's own text rather than adding information. |
-| Give a whole section of a form a heading, not one field a name | A heading inside [Form](/invoca-design-system/components/forms/form) | FieldLabel is scoped to a single field; a section needs a landmark, not a label. |
-| Show a short, optional clarification of the label itself | The label's own tooltip icon | Confirmed as a real part of this component — see [Anatomy](#anatomy) — rather than a separate always-visible line. |
+| Label a control that already renders its own visible text | Nothing — the control's content is its accessible name | A second label duplicates the control's own text rather than adding information |
+| Give a whole section of a form a heading, not one field a name | A heading inside [Form](/invoca-design-system/components/forms/form) | FieldLabel is scoped to a single field; a section needs a landmark, not a label |
+| Show a short, optional clarification of the label itself | The label's own tooltip icon | Confirmed as a real part of this component — see [Anatomy](#anatomy) — rather than a separate always-visible line |
 
 ## Anatomy
 
@@ -178,7 +169,6 @@ the majority case saves less reading than marking the minority case does.
 
 <Snippet file="generated/utilization/field-label.mdx" />
 
-- [FormInput](/invoca-design-system/components/forms/form-input) — the component that renders this label; do not attach a FieldLabel to a field by hand
-- [Input](/invoca-design-system/components/forms/input) · [Select](/invoca-design-system/components/forms/select) · [Checkbox](/invoca-design-system/components/forms/checkbox) — every field-style and control-style component receives its label this way
+- [Input](/invoca-design-system/components/forms/input) · [Select](/invoca-design-system/components/forms/select) · [Checkbox](/invoca-design-system/components/forms/checkbox) — every field-style and control-style component composes with this one
 - [Form validation](/invoca-design-system/patterns/form-validation) — decides *when* a field is invalid
 - [UI labels](/invoca-design-system/content/ui-labels) — casing and phrasing rules this page's Content section follows

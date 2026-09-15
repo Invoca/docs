@@ -301,7 +301,6 @@
               {
                 "group": "Forms",
                 "pages": [
-                  "invoca-design-system/components/forms/form-input",
                   "invoca-design-system/components/forms/input",
                   "invoca-design-system/components/forms/select",
                   "invoca-design-system/components/forms/checkbox",
