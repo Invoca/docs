@@ -5,19 +5,6 @@ icon: "layout-template"
 keywords: ["patterns", "composition", "recurring", "ui patterns", "decision", "when to use"]
 ---
 
-<Warning>
-  **Exemplar section — first pass.** [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)
-  was already reviewed to this standard. The nine pages added alongside it are new and carry
-  the same standing its own banner already states: **proposals for review, not established
-  policy.** None were produced by auditing a shipped Invoca screen — Titan's design library and
-  the product surfaces that would confirm or correct them were not available while writing
-  this pass. Each is built from general interaction-design practice and from the constraints
-  Foundations and Components already establish. Treat every constraint below as a starting
-  point to check against real product screens, not as a rule already enforced. The
-  [CRUD](/invoca-design-system/patterns/crud/overview) group nested below was added the same
-  way, under the same standing. See [Coverage, stated honestly](#coverage-stated-honestly).
-</Warning>
-
 ## What Patterns governs
 
 A **pattern** is a named composition of two or more components, with rules, but no export. It
@@ -44,6 +31,7 @@ card grid below — it is written in the words of the problem, not the solution.
 | Tell someone a view has nothing in it yet | [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) | A blank region with no explanation — indistinguishable from a bug |
 | Tell someone an action or a load failed | [Error handling](/invoca-design-system/patterns/error-handling) | A generic toast with no path to retry or recover |
 | Let someone narrow a large list down to what they want | [Filtering & search](/invoca-design-system/patterns/filtering-and-search) | Asking the user to scroll and scan a list that's grown past a page |
+| Decide which surface owns a Save and Cancel — the view, a container, a dialog, or a drawer | [Footers](/invoca-design-system/patterns/footers) | A Save and Cancel on every group of fields — as many commits as the page has groups, and no answer to "am I done?" |
 | Catch a mistake in a field before it's submitted | [Form validation](/invoca-design-system/patterns/form-validation) | Waiting for a full-page error banner to explain what a red asterisk didn't |
 | Let someone change one small value without leaving the page | [Inline editing](/invoca-design-system/patterns/inline-editing) | A full edit page for a change that's one field |
 | Show that content is on its way, matching its eventual shape | [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) | A centered spinner over a page whose layout is about to jump once content lands |
@@ -51,26 +39,6 @@ card grid below — it is written in the words of the problem, not the solution.
 | Keep an advanced or rarely-needed option out of the way without deleting it | [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) | Hiding a setting most people need behind an extra click, to keep a screen looking simple |
 | Decide where creating, viewing, editing, or deleting an object should happen — full page, drawer, modal, or inline | [CRUD](/invoca-design-system/patterns/crud/overview) | Defaulting every object to the same surface regardless of how permanent or complex it is |
 
-## Coverage, stated honestly
-
-Every pattern on this site carries the same standing right now: a first-pass proposal, not a
-decision confirmed against a shipped screen. Nothing here is generated, and nothing here has
-been signed off — the column below exists so that changes later, not so it reads as settled
-today.
-
-| Pattern | Decided for Invoca? |
-|---|---|
-| Destructive confirmation | **Proposal** — reviewed once already; the standard the rest of this section is held to |
-| Bulk selection | **Proposal** — first pass |
-| Empty & zero states | **Proposal** — first pass |
-| Error handling | **Proposal** — first pass |
-| Filtering & search | **Proposal** — first pass |
-| Form validation | **Proposal** — first pass |
-| Inline editing | **Proposal** — first pass |
-| Loading & skeletons | **Proposal** — first pass |
-| Notifications | **Proposal** — first pass |
-| Progressive disclosure | **Proposal** — first pass |
-| CRUD (Create, Read, Update, Delete) | **Proposal** — first pass; see its own [coverage note](/invoca-design-system/patterns/crud/overview#coverage-stated-honestly) for how it varies by operation |
 
 ## Choosing where to look
 
@@ -89,6 +57,9 @@ today.
   </Card>
   <Card title="Filtering & search" icon="filter" href="/invoca-design-system/patterns/filtering-and-search">
     Narrowing a list, and keeping the narrowing visible and reversible.
+  </Card>
+  <Card title="Footers" icon="panel-bottom" href="/invoca-design-system/patterns/footers">
+    One fixed footer per view, holding the whole view's commit — not one per section.
   </Card>
   <Card title="Form validation" icon="clipboard-check" href="/invoca-design-system/patterns/form-validation">
     When an error appears, where it appears, and how many places say it at once.
@@ -141,3 +112,23 @@ pattern to be confirmed against a shipped screen before writing it down means th
 for "how does Invoca do bulk selection" doesn't exist until someone happens to build bulk
 selection first and document it after. Writing the proposal first gives the next person
 building one a starting point to correct, instead of a blank page.
+
+## Status
+
+Sign-off state per pattern. A pattern marked **Proposal** is still what to build to; it means
+the rule has not yet been checked against a shipped screen, not that it is optional.
+
+| Pattern | Decided for Invoca? |
+|---|---|
+| Destructive confirmation | **Proposal** — reviewed once |
+| Bulk selection | **Proposal** |
+| Empty & zero states | **Proposal** |
+| Error handling | **Proposal** |
+| Filtering & search | **Proposal** |
+| Form validation | **Proposal** |
+| Footers | **Decided** for the configuration-view case; **Proposal** for the container-scoped case |
+| Inline editing | **Proposal** |
+| Loading & skeletons | **Proposal** |
+| Notifications | **Proposal** |
+| Progressive disclosure | **Proposal** |
+| CRUD (Create, Read, Update, Delete) | **Proposal** — varies by operation; see its own status block |

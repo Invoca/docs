@@ -6,10 +6,10 @@ which aliases a primitive. This table audits Tier 3 against that model.
 |  | Count |
 |---|---|
 | Tier-3 tokens total | 95 |
-| Carrying a reference | 26 |
+| Carrying a reference | 27 |
 | → referencing a **semantic** token | **0** |
-| → referencing a **primitive** directly | **26** |
-| Literal values — geometry, durations, no reference | 69 |
+| → referencing a **primitive** directly | **27** |
+| Literal values — geometry, durations, no reference | 68 |
 
 Every Tier-3 token that carries a reference points at a primitive. None routes through the semantic tier.
 
@@ -47,6 +47,7 @@ stated reasoning, not oversights.
 | `chip-warning-tint` | `color.orange.10` | — | — |
 | `circular-progress-track-ring` | `color.ui-black.10` | CircularProgress track — an inset ring, not an elevation shadow | code |
 | `data-grid-focus-ring` | `color.blue.80` | Keyboard-focus a11y affordance on DataGrid cells — an inset ring, deliberately NOT normalized onto the elevation shadow scale | code |
+| `form-field-border-width` | `border-width.sm` | Shared Form & Input field outline width — aliases the Tier-1 sm width so a primitive border-width override reaches every field | code |
 | `form-field-focus-ring` | `color.blue.50` | Focus ring around focused Form & Input fields | code |
 | `form-field-focus-ring-error` | `color.red.40` | Focus ring around focused error-state Form & Input fields | code |
 | `progress-bar-secondary` | `color.blue.20` | Secondary LinearProgress bar fill | code |
@@ -57,5 +58,5 @@ stated reasoning, not oversights.
   **This is invisible in the resolved output.** `theme.tokens` and the token manifest
   publish leaf values, so a token that skipped the semantic tier looks identical to one that
   did not. It shows only in the DTCG source. See
-  [TITAN-DIV-01](/invoca-design-system/foundations/divergences#titan-div-01).
+  [TITAN-DIV-01](/foundations/divergences#titan-div-01).
 </Warning>

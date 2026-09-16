@@ -5,19 +5,6 @@ icon: "filter"
 keywords: ["filter", "search", "search box", "narrow", "facet", "chips", "query", "active filters"]
 ---
 
-<Warning>
-  **Proposal — first pass, not an audited Invoca screen.** No Titan design library or shipped
-  product surface was available while writing this page. What follows is built from general
-  interaction-design practice and from the constraints Foundations and Components already
-  establish — see [Coverage, stated honestly](/invoca-design-system/patterns/overview#coverage-stated-honestly).
-  One real, already-documented limitation is directly relevant here:
-  [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) — pagination has
-  no home in Titan's page frame, and three unreconciled implementations exist. Since a filtered
-  or searched result set is exactly the kind of list that needs pagination, this page builds
-  against that gap's own "Direction" note rather than re-deciding the question: pagination lives
-  inside the table, at the bottom, above the page footer.
-</Warning>
-
 ## The problem
 
 A list grows past what someone can scan in one view, and two tools narrow it: filters, which
@@ -167,3 +154,16 @@ region this pattern fills. [AI Experience: Search](/invoca-design-system/ai-expe
 the non-deterministic counterpart for requests that don't map onto known fields.
 [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states), for the zero-result
 case this page hands off to.
+
+## Status
+
+**Proposal — first pass, not an audited Invoca screen.** No Titan design library or shipped
+product surface was available while writing this page. What follows is built from general
+interaction-design practice and from the constraints Foundations and Components already
+establish — see [Coverage, stated honestly](/invoca-design-system/patterns/overview#coverage-stated-honestly).
+One real, already-documented limitation is directly relevant here:
+[TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) — pagination has
+no home in Titan's page frame, and three unreconciled implementations exist. Since a filtered
+or searched result set is exactly the kind of list that needs pagination, this page builds
+against that gap's own "Direction" note rather than re-deciding the question: pagination lives
+inside the table, at the bottom, above the page footer.

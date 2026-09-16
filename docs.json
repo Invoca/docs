@@ -377,6 +377,7 @@
                   "invoca-design-system/patterns/inline-editing",
                   "invoca-design-system/patterns/progressive-disclosure",
                   "invoca-design-system/patterns/notifications",
+                  "invoca-design-system/patterns/footers",
                   {
                     "group": "CRUD",
                     "root": "invoca-design-system/patterns/crud/overview",

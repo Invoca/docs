@@ -5,24 +5,6 @@ icon: "list-checks"
 keywords: ["bulk actions", "multi-select", "select all", "checkbox", "batch", "mass action"]
 ---
 
-<Warning>
-  **Exemplar page — first pass.** This is a *proposal* for review, not established policy. No
-  Titan design-library review or shipped Invoca screen backs this page — it is built from
-  general interaction-design practice and from constraints [Table](/invoca-design-system/components/data-display/table),
-  [List](/invoca-design-system/components/data-display/list), and
-  [Checkbox](/invoca-design-system/components/forms/checkbox) already establish. Two of those
-  constraints are real, current limits on what this pattern can promise, not workarounds this
-  page invents around them:
-
-  - **[TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04)** —
-    `background-hover` and `background-selected` resolve to the identical color today. A
-    hovered row and a selected row look the same, so this pattern cannot rely on fill color to
-    show selection (see [TITAN-DIV-20](/invoca-design-system/foundations/divergences#titan-div-20)).
-  - **[TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33)** — no
-    indeterminate/mixed checkbox state exists in the design library. A select-all checkbox has
-    no way to show "some, but not all." This page does not invent one.
-</Warning>
-
 ## The problem
 
 A reader looking at a table of a hundred campaigns doesn't want to delete, export, or tag them
@@ -182,3 +164,21 @@ didn't choose in this view.
 selection because most of it worked hides the two rows that didn't; failing the whole batch
 because two rows errored discards eighteen that succeeded. Either one makes the reader redo
 work that already happened correctly.
+
+## Status
+
+**Exemplar page — first pass.** This is a *proposal* for review, not established policy. No
+Titan design-library review or shipped Invoca screen backs this page — it is built from
+general interaction-design practice and from constraints [Table](/invoca-design-system/components/data-display/table),
+[List](/invoca-design-system/components/data-display/list), and
+[Checkbox](/invoca-design-system/components/forms/checkbox) already establish. Two of those
+constraints are real, current limits on what this pattern can promise, not workarounds this
+page invents around them:
+
+- **[TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04)** —
+  `background-hover` and `background-selected` resolve to the identical color today. A
+  hovered row and a selected row look the same, so this pattern cannot rely on fill color to
+  show selection (see [TITAN-DIV-20](/invoca-design-system/foundations/divergences#titan-div-20)).
+- **[TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33)** — no
+  indeterminate/mixed checkbox state exists in the design library. A select-all checkbox has
+  no way to show "some, but not all." This page does not invent one.

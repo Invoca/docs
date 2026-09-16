@@ -40,6 +40,7 @@ prop interface of its own); the sub-components add the following:
 | | `draggable` | `boolean` | Switches the cursor to a move icon; does not implement drag-and-drop itself. |
 | `TileBody` | — | `BoxProps` | A scrollable, padded content region. No props beyond the underlying box primitive's own. |
 | `TileFooter` | — | `BoxProps` | A bordered, padded footer region. No props beyond the underlying box primitive's own. |
+
 | `TileTitle` | `maxWidth` | `string \| number` | Default `"93%"`. Truncates long titles with an ellipsis and shows the full text in a tooltip on hover. |
 
 ## Choose Panel when
@@ -144,6 +145,13 @@ recorded for this component.
 
 ## Why it works this way
 
+**`TileFooter` holds a commit only when this container is the unit of commit.** On a view whose
+whole purpose is configuration, the commit belongs to the view and this region holds a summary,
+a timestamp, or nothing at all; when the container is the only configurable thing on a view
+doing other work, the commit belongs here. See
+[Footers](/invoca-design-system/patterns/footers) and
+[TITAN-FOOTER-04](/invoca-design-system/patterns/footers#constraints).
+
 **The header/body/footer split exists to make one thing predictable: only the body scrolls.**
 `TileBody` is the one sub-component with `overflow: auto`; header and footer are fixed. That
 split is what lets a Panel hold a long list or block of text without its own header actions or
@@ -154,7 +162,7 @@ footer buttons scrolling out of view.
 | | |
 |---|---|
 | **Package** | `@invoca/titan-core` |
-| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Version** | 3.7.1 (hand-confirmed from `package.json` — check current for drift) |
 | **Exports covered on this page** | `Tile`, `TileHeader`, `TileBody`, `TileFooter`, `TileTitle` |
 
 <Note>
@@ -170,5 +178,6 @@ Only 4 usages across 3 applications: **real-time-interactions-reporting** (2),
 **dashboards** (1), **interaction-details** (1) — the lightest adoption of any component in this
 category.
 
+- [Footers](/invoca-design-system/patterns/footers) — when `TileFooter` holds a commit, when it is only a summary region, and which surface owns the commit either way
 - [Card](/invoca-design-system/components/data-display/card) — the alternative for a clickable, selectable item rather than a structural region
 - [Accordion](/invoca-design-system/components/containment/accordion) — the alternative when the region should be collapsible

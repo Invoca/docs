@@ -114,7 +114,7 @@ emitter exists yet for this concept, so this table is hand-confirmed rather than
 | `modal-min-height-fullscreen` | 80vh | `fullscreen` preset (width and max-width are a literal `100%`, not a token) |
 | `modal-content-padding-x` | 0.85rem | Content area horizontal padding — off the standard spacing scale, adopted unchanged |
 | `modal-action-font-weight` | 700 | Font weight on every footer button |
-| `spacing-4` | — | Title and footer vertical padding |
+| `spacing-4` | — | Title and footer padding, all sides — a different, unrelated value from the content area's own horizontal inset directly below |
 | `spacing-5` | — | Content area's top/bottom inset when a divider on that side is enabled |
 | `border-width-sm`, `border-default` | — | Content area's top and bottom dividers |
 
@@ -169,7 +169,7 @@ sizing presets, the divider tokens, and the footer layout this page documents.
 | | |
 |---|---|
 | **Package** | `@invoca/titan-core` |
-| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Version** | 3.7.1 (hand-confirmed from `package.json` — check current for drift) |
 | **Exports covered on this page** | `Modal` |
 
 <Note>
@@ -186,5 +186,6 @@ Roughly 99 usages across 24 applications, the heaviest being **ai-model-manageme
 **manage-integrations** (10) — overwhelmingly confirmation and edit flows (archive, delete,
 rename, share, schedule).
 
+- [Footers](/invoca-design-system/patterns/footers) — which surface owns a commit, and why a dialog's footer covers the dialog's fields and nothing outside it
 - [Drawer](/invoca-design-system/components/containment/drawer) — for a task that should leave the page behind it visible
 - [Menu](/invoca-design-system/components/actions/menu) — for choosing among several actions rather than confirming one

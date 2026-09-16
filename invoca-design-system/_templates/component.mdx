@@ -18,6 +18,10 @@ keywords: ["synonyms", "what people call it when they don't know the name"]
     [DEC] design intent  — normative. What to build.
     [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
 
+  The body is direction only — no note about this page's own status, research pass,
+  or sign-off state, and no ALLCAPS-ID citations peppered through the prose. All of
+  that lives in ONE place: the Status section that closes the page.
+
   Delete these comment blocks when you author a real page.
 */}
 
@@ -208,7 +212,11 @@ composition or the page — focus return after close, live-region announcement, 
 
      ID FORMAT: TITAN-<AREA>-<NN>, where AREA is a short code for this component
      (TITAN-BTN-01, TITAN-SELECT-01). IDs are permanent — deprecate, never
-     renumber. They get cited in review and by agents. */}
+     renumber. They get cited in review and by agents.
+
+     A rule that REVERSES an earlier one gets a new ID — never rewrite what an
+     existing ID says. Leave the old entry in place, marked superseded, pointing
+     at its replacement. */}
 
 | ID | Constraint | Rationale |
 |---|---|---|
@@ -264,18 +272,6 @@ composition or the page — focus return after close, live-region announcement, 
      This is the section that keeps the constraints above from being quietly
      deleted in eighteen months. */}
 
-## Status and changelog
-
-{/* [REF] Generated from the package manifest and git history, not hand-maintained.
-     A hand-written changelog is a second record of a fact the repository already
-     holds, and it is the first thing to go stale.
-
-     Carries version, stability, deprecation, and replacement. A system without
-     this cannot be adopted incrementally — every consumer discovers a removal
-     by breaking. */}
-
-<Snippet file="generated/status/componentname.mdx" />
-
 ## Related
 
 <Snippet file="generated/utilization/componentname.mdx" />
@@ -289,3 +285,20 @@ composition or the page — focus return after close, live-region announcement, 
   If the library disagrees with this page, this page is right and the mirror has drifted —
   [report it](/invoca-design-system/contribute/reporting-drift). The resolution is a re-emission, never an edit
   to the Figma file.
+
+## Status
+
+{/* Closes the page. The only place provenance, coverage, and sign-off state
+     appear — nowhere else on this page notes any of it.
+
+     Version, stability, deprecation, and replacement are [REF] — generated from
+     the package manifest and git history, not hand-maintained. A hand-written
+     changelog is a second record of a fact the repository already holds, and
+     it is the first thing to go stale. */}
+
+<Snippet file="generated/status/componentname.mdx" />
+
+{/* Below the generated snippet, one short authored line of coverage: which
+     sections above are confirmed against shipped source versus still proposal,
+     and which Constraints are signed off. Not a restatement of Gaps or Known
+     issues — a pointer to them. */}

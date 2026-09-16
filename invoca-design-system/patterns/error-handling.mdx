@@ -5,18 +5,6 @@ icon: "octagon-alert"
 keywords: ["error", "failure", "retry", "alert", "toast", "banner", "network error", "failed request"]
 ---
 
-<Warning>
-  **Exemplar page — first pass.** This is a *proposal* for review, not established policy. It
-  is also a proposal for how to improvise a failed state at all — not a claim that Titan
-  already has one. Checked directly against source:
-  **[TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22)** — no
-  component in Titan expresses a failed action today. There is a `loading` state and a
-  `disabled` state, and nothing between them for failure, and no token names a control-level
-  error state. Every product surface currently improvises this — inline text, a toast, a
-  banner, or nothing — and what follows is a proposal for improvising it consistently, not a
-  description of an existing primitive.
-</Warning>
-
 <Note>
   **This page covers deterministic failures only** — a failed API call, a failed save, a page
   that couldn't load. Where the "failure" is a wrong-but-confident model output rather than an
@@ -169,3 +157,15 @@ to stop waiting.
 **A disabled control as the only sign that something failed.** Indistinguishable from "you
 don't have permission," "select a row first," or a bug — three different messages that all
 render identically with nothing said.
+
+## Status
+
+**Exemplar page — first pass.** This is a *proposal* for review, not established policy. It
+is also a proposal for how to improvise a failed state at all — not a claim that Titan
+already has one. Checked directly against source:
+**[TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22)** — no
+component in Titan expresses a failed action today. There is a `loading` state and a
+`disabled` state, and nothing between them for failure, and no token names a control-level
+error state. Every product surface currently improvises this — inline text, a toast, a
+banner, or nothing — and what follows is a proposal for improvising it consistently, not a
+description of an existing primitive.

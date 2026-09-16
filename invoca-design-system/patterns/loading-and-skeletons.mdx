@@ -5,22 +5,6 @@ icon: "loader"
 keywords: ["loading", "skeleton", "spinner", "progress bar", "placeholder", "shimmer", "wave", "pulse"]
 ---
 
-<Warning>
-  **First-pass proposal, not established policy.** No audited Invoca screen backs this page —
-  Titan's design library was not available while writing it. It is built from general
-  interaction-design practice and from what [Skeleton](/invoca-design-system/components/feedback/skeleton),
-  [Spinner](/invoca-design-system/components/feedback/spinner), and
-  [ProgressBar](/invoca-design-system/components/feedback/progress-bar) already establish.
-
-  It also sits on top of a real, verified finding, not a hypothetical one:
-  [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31). Skeleton — the
-  component this page leans on most — carries **no theme overrides, no tokens, and no
-  representation in the design library at all**, despite being the most-used component in this
-  area: **132 usages across 13 applications**. This page proposes how to *use* Skeleton
-  consistently. It does not, and cannot, resolve what Skeleton *is* — that gap stays open, and
-  everything below is a usage layer built on top of an undecided foundation.
-</Warning>
-
 ## The problem
 
 A page that has nothing to show yet has three honest ways to say so: promise a shape ("here's
@@ -171,3 +155,19 @@ pick one and stay consistent within a screen.
 **Rebuilding the skeleton screen per application.** The pattern this page exists to prevent has
 already happened three times over — see [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31).
 A composed skeleton screen worth naming is worth sharing.
+
+## Status
+
+**First-pass proposal, not established policy.** No audited Invoca screen backs this page —
+Titan's design library was not available while writing it. It is built from general
+interaction-design practice and from what [Skeleton](/invoca-design-system/components/feedback/skeleton),
+[Spinner](/invoca-design-system/components/feedback/spinner), and
+[ProgressBar](/invoca-design-system/components/feedback/progress-bar) already establish.
+
+It also sits on top of a real, verified finding, not a hypothetical one:
+[TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31). Skeleton — the
+component this page leans on most — carries **no theme overrides, no tokens, and no
+representation in the design library at all**, despite being the most-used component in this
+area: **132 usages across 13 applications**. This page proposes how to *use* Skeleton
+consistently. It does not, and cannot, resolve what Skeleton *is* — that gap stays open, and
+everything below is a usage layer built on top of an undecided foundation.

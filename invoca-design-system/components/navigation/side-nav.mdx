@@ -6,15 +6,6 @@ tag: "Draft"
 keywords: ["side nav", "left nav", "nav rail", "primary navigation", "vertical navigation", "sidebar"]
 ---
 
-<Warning>
-  **No standalone `SideNav` component ships in Titan core.** This is not an unwritten stub in the
-  usual sense — the research is done, and the finding is the absence itself. Checked against the
-  `core` package's component directory, its export barrels, its templates directory, and the
-  Storybook index: nothing there implements a vertical list of page-level navigation destinations.
-  This page's `tag` is `Draft` rather than `Stable` for that reason — there is no shipped,
-  decided component to certify.
-</Warning>
-
 ## What it is
 
 A side nav (also called a left nav, nav rail, or primary navigation) is a vertical list of
@@ -150,10 +141,17 @@ outcome than a page that plainly states the gap.
 
 ## Status
 
+**No standalone `SideNav` component ships in Titan core.** This is not an unwritten stub in the
+usual sense — the research is done, and the finding is the absence itself. Checked against the
+`core` package's component directory, its export barrels, its templates directory, and the
+Storybook index: nothing there implements a vertical list of page-level navigation destinations.
+This page's `tag` is `Draft` rather than `Stable` for that reason — there is no shipped,
+decided component to certify.
+
 | | |
 |---|---|
 | **Package** | No package exports this concept under this name |
-| **Nearest tokened building block** | `Tabs orientation="vertical"`, in `@invoca/titan-core` version `3.6.3` |
+| **Nearest tokened building block** | `Tabs orientation="vertical"`, in `@invoca/titan-core` version `3.7.1` |
 | **Deprecated alternative** | `SideNav` in `@invoca/titan-legacy-web`, version `368.0.27` |
 | **Production alternative (not a distributable component)** | `primary-navigation` application, most recently deployed August 2026 per its own changelog |
 

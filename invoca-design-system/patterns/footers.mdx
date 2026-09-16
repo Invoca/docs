@@ -1,0 +1,347 @@
+---
+title: "Footers"
+description: "Which surface owns the commit: how to decide where a footer belongs, on views, containers, dialogs, and drawers."
+icon: "panel-bottom"
+keywords: ["footer", "fixed footer", "sticky footer", "action bar", "button bar", "save bar", "form actions", "commit", "cancel", "save changes", "configuration", "settings", "modal footer", "drawer footer", "card footer"]
+---
+
+## The problem
+
+**A footer is a claim about what commits together.** Put one at the bottom of a surface and it
+says: this is the boundary of the thing, and this is what you do with it. The claim is made by
+placement, before any label is read.
+
+The mistake is not having footers inside containers. It is a footer whose boundary does not
+match the changes it saves. When a view's whole purpose is configuration, every group of fields
+on it looks like a form — so every group grows a footer, and the page makes the same claim three
+times over a single set of changes. The labels then have to carry the scope that position no
+longer distinguishes: "Save account profile", "Save notifications". A reader who edited both has
+two commits to remember, in an order nobody specified, and no answer to "am I done?"
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Account profile                                        │
+│  ─────────────────────────────────────────────────────  │
+│  Account name      [ Acme Home Services            ]    │
+│  Industry          [ Home services              ▾  ]    │
+│  Time zone         [ America/Los_Angeles        ▾  ]    │
+│  ─────────────────────────────────────────────────────  │
+│                      Cancel   [ Save account profile ]  │ ← a claim
+└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│  Notifications                                          │
+│  ─────────────────────────────────────────────────────  │
+│  (•) Daily summary email                                │
+│  Escalation address [ ops@acme.example              ]   │
+│  ─────────────────────────────────────────────────────  │
+│                       Cancel   [ Save notifications ]   │ ← the same claim
+└─────────────────────────────────────────────────────────┘
+```
+
+The same page, with the footer on the surface that actually bounds the changes:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Account profile                                        │
+│  Account name      [ Acme Home Services            ]    │
+│  …                                                      │
+└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│  Notifications                                          │
+│  (•) Daily summary email                                │
+│  …                                                      │
+└─────────────────────────────────────────────────────────┘
+      ⋮  the page scrolls behind the footer
+╞═════════════════════════════════════════════════════════╡
+│                            Cancel   [ Save changes ]    │ ← one claim, fixed
+└─────────────────────────────────────────────────────────┘
+```
+
+## The solution
+
+**One question decides every footer: what commits together, and which surface bounds it?**
+
+The set of changes that succeed or fail as one is the **unit of commit**. The footer belongs to
+the surface that bounds that unit, and that surface is the only one on screen that gets one.
+
+| If the changes that save together are… | The footer belongs to | Fixed or static |
+|---|---|---|
+| **Everything on the view** — the view's whole purpose is configuring one subject | The view, in the page frame's `Footer` | **Fixed** to the viewport |
+| **The fields of one container**, on a view whose other content is doing a different job | **That container** — a footer at the foot of the container | **Static**, inside the container |
+| **A dialog's fields** | The dialog, through its own footer contract | Neither — a dialog never scrolls away from its footer |
+| **A drawer's fields** | The drawer, through `footerContent` | Pinned by the component |
+| **One field** | Nothing — no footer | — |
+| **Nothing** — the surface reads, browses, or navigates | Nothing | — |
+
+**Between the first two rows, the test is what the view is for, not how it is built.** Both are
+cards full of fields; they differ in whether the configuration *is* the view.
+
+| Ask | Answer | The footer |
+|---|---|---|
+| Did the reader arrive to configure, and is the whole page the configuration? | Yes | The view owns it. Sections carry none. |
+| Is the configuration one container among content doing other jobs — reading, summarizing, listing? | Yes | The container owns it. The view carries none. |
+
+**Whichever surface owns the footer, the others have none.** A container footer on a view that
+also commits those same fields is two claims over one set of changes, which is the shape at the
+top of this page.
+
+Nesting is not a second claim. A dialog or drawer opened over a view owns its footer for as long
+as it is open; the view's footer beneath it is inert and covers different changes.
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| **Unit of commit** | Save scope, form scope, transaction | **Unit of commit** — the set of changes that succeed or fail together |
+| **Footer** | Action bar, button bar, save bar | **Footer** — the region at the bottom of a surface holding that surface's commit and cancel |
+| **Fixed footer** | Sticky footer, pinned footer, floating save bar | **Fixed** — pinned to the viewport, visible regardless of scroll |
+| **Static footer** | Inline footer, end-of-content footer | **Static** — sits at the end of the content and scrolls with it |
+| **Owning surface** | Parent, container, host | **Owning surface** — the one whose boundary matches the unit of commit |
+
+**A region at the bottom of a container is not automatically a footer.** A panel footer holding
+a row count, a last-updated timestamp, or a link into the object it describes is a **summary
+region**. It becomes a footer in this page's sense only when it holds a commit.
+
+## When this applies
+
+- A set of changes on one surface commits or discards together.
+- The surface is a view, a container within a view, a dialog, or a drawer.
+- The reader needs one place to say "apply what I changed" and one to say "never mind".
+
+## When it doesn't
+
+| Situation | Do this instead | Why |
+|---|---|---|
+| The unit of change is a single field | [Inline editing](/invoca-design-system/patterns/inline-editing) | The commit belongs next to the field. A footer implies the rest of the surface is also uncommitted. |
+| Nothing on the surface commits | No footer at all | A footer with no commit in it is a divider with buttons. |
+| The action destroys rather than commits — delete, revoke, disconnect | [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) | A destructive action is not the surface's commit, and putting it in the footer leaves it one press from Save. |
+| The surface is a step in a sequence | Still this page — see [Variations](#variations) | The footer gains a leading backward action. Same ownership rule, different arrangement. |
+
+## Structure
+
+The footer's composition, in order, whichever surface owns it:
+
+| Order | Slot | Weight | Notes |
+|---|---|---|---|
+| 1 | Leading — backward action | **Tertiary** | Only on a step in a sequence, and only ever a way back. Absent otherwise. |
+| 2 | Trailing — Cancel | **Tertiary** | Discards. Lightest weight, first in the pair. |
+| 3 | Trailing — the commit | **Primary** | At most one primary on the surface. |
+
+The trailing pair is tertiary then primary: a text-styled Cancel beside a filled commit.
+
+**A footer's contents align to the gutter of the surface that owns it** — the same inset that
+surface's own content already uses. A footer inset differently reads as a separate surface
+floating over the content rather than that content's last row.
+
+| Owning surface | Its content's gutter | Its footer's inset today |
+|---|---|---|
+| Panel container | `spacing-7` | `spacing-7` — aligned |
+| View (page frame) | `spacing-6` | `spacing-6` plus a further `spacing-5` |
+| Dialog | `modal-content-padding-x` | `spacing-4` |
+| Drawer | `spacing-6` | none |
+
+Only the container case aligns on its own. On the other three, set the inset to match the
+surface's own gutter rather than accepting what ships.
+
+## Behavior
+
+### The happy path
+
+1. The reader opens the surface. Its footer is present from the first paint, with nothing
+   changed yet.
+2. The reader edits. Each field validates on its own terms — the footer does not change what a
+   field does.
+3. The reader presses the commit. **The unit commits as one gesture.** One gesture is not one
+   request: a view whose sections map to separate resources may still issue a request per
+   changed section, and a section with nothing changed is not re-sent.
+4. On success, a view or container stays where it is — neither is a flow and neither has a next
+   page. A dialog or drawer closes. The result is announced either way, and the footer returns
+   to its nothing-changed state.
+
+### Edge and failure states
+
+| Situation | What the user sees | Recovery |
+|---|---|---|
+| Nothing changed yet | The footer is present and the commit is unavailable. |  — |
+| Commit in flight | The commit reports progress in place and stops accepting a second press. | — |
+| A field is invalid | The commit does not proceed. Focus moves to the first invalid field, in its section or container. | Fix the field; the error clears with the field. |
+| One section invalid, another valid, under a view-level footer | Undecided — see [Gaps](#gaps-in-the-current-rules). | — |
+| Partial success — some sections saved, some failed | The surface names which saved and which did not. A single "something went wrong" is not enough when the reader changed four sections. | Retry applies only to what failed. |
+| The commit fails outright | An error naming what failed. Edits are never discarded. | Retry from the same footer. |
+| Permission denied on part of the surface | Those fields are read-only before the reader edits them, not after they press the commit. | — |
+| The reader leaves with uncommitted changes | They are warned before the navigation completes, and the warning names what is unsaved. | — |
+| Cancel with several sections changed | Undecided — see [Gaps](#gaps-in-the-current-rules). | — |
+
+## Content
+
+**The commit label states the action. The surface states the scope.**
+
+A scope inside a commit label exists only to distinguish it from a competing commit on the same
+screen. Once one footer owns the unit there is nothing to distinguish, and a section-named
+commit is actively wrong — it implies the other sections were left out.
+
+| Slot | Copy | Not |
+|---|---|---|
+| Commit, view-level | **Save changes** | "Save account profile", "Save notifications", "Submit", "Apply" |
+| Commit, container-level | **Save changes** — the container's heading already names the scope | "Save this section", "Update panel" |
+| Commit, dialog or drawer | The action it performs — **Save**, **Apply filters**, **Send** | "OK", "Confirm" with no object |
+| Cancel | **Cancel** | "Discard", "Reset", "Undo" |
+| Nothing-changed state | No copy — the button does not explain itself | "No changes to save" as a label |
+
+Section headings and their descriptions carry the scope the buttons used to — "Account profile",
+"Who this account is and how it is labeled across reports." That is where scope belongs, because
+it is read on the way in rather than at every commit.
+
+## Accessibility
+
+**Focus.** The footer is last in the DOM within its owning surface, matching its visual
+position. On a failed commit, focus moves to the first invalid field — not back to the footer
+and not nowhere. Focus never lands on a control the fixed footer is covering, which is a risk a
+fixed footer introduces and a static one does not.
+
+**Announcement.** The result of a commit is announced, not only drawn. A reader who cannot see
+the confirmation has no other signal that a save succeeded, because nothing about the surface
+moved. The commit's nothing-changed and in-flight states are carried by the button's own state,
+never by color alone.
+
+**Landmark.** A view-level footer carries the `contentinfo` landmark, one per page — set it on
+the region yourself, because the shipped region declares the wrong one. A container-level footer
+is not a landmark; it is part of the container's own content.
+
+## Constraints
+
+| ID | Constraint | Rationale |
+|---|---|---|
+| **TITAN-FOOTER-01** | A footer belongs to the surface whose boundary matches the unit of commit. | Position is what tells a reader which changes a footer saves. When the boundary and the unit disagree, nothing on screen carries the scope and the labels have to — the weakest place to put structure. |
+| **TITAN-FOOTER-02** | At most one commit footer per active surface, and two footers never cover the same changes. | Two commits over one set of changes force the reader to work out which is which at each one. A dialog or drawer over a view is not a second claim — it is a different surface with a different unit. |
+| **TITAN-FOOTER-03** | On a view whose whole purpose is configuration, the view owns the footer and its sections carry no commit of their own. | Every section on such a view is part of one subject's configuration. A commit per section splits one unit into several and makes "am I done?" unanswerable from the screen. |
+| **TITAN-FOOTER-04** | When configuration is scoped to one container on a view doing other work, the footer sits at the foot of that container and the view carries none. | The container is the boundary of the change. A view-level footer there would claim the read-only content around it as well. |
+| **TITAN-FOOTER-05** | A view-level footer is fixed to the viewport. A container-level footer is static within its container. | A container footer is already adjacent to the fields it commits. A view footer is a scroll away from wherever the reader is editing, and that distance is what makes a per-section button look like the fix. |
+| **TITAN-FOOTER-06** | The commit label states the action, never the scope it covers. | With one footer per unit there is nothing to disambiguate, and a scope-named commit implies the rest of the surface was excluded from it. |
+| **TITAN-FOOTER-07** | A container's footer region that holds no commit is a summary region, and never carries another surface's commit. | A view-wide commit placed in a container is indistinguishable from a container-scoped one, which is the ambiguity the first rule removes. |
+| **TITAN-FOOTER-08** | A footer's contents align to the gutter of the surface that owns it. | A footer inset differently from the content above it reads as a separate surface floating over the page rather than that page's last row. |
+| **TITAN-FOOTER-09** | A fixed footer carries `shadow-up-1` and a top border, never a shadow alone. | The shadow says content continues behind it; the border is the edge that survives forced-colors mode, where box-shadow is stripped. |
+| **TITAN-FOOTER-10** | The commit is unavailable until something has changed. | A commit that is always pressable on a footer that is always present teaches the reader that pressing it is free, and a no-op save is indistinguishable from a real one. |
+| **TITAN-FOOTER-11** | A failed commit moves focus to the first invalid field, in its section or container. | The field that blocked the commit is frequently off-screen from the button that was pressed, and an error rendered only beside the field is invisible to the person who pressed it. |
+
+## Variations
+
+| Variation | What selects it |
+|---|---|
+| **Trailing only** — cancel and commit, right-aligned | The default, on every surface. |
+| **Leading and trailing** — a backward action left, the pair right | The surface is a step in a sequence. |
+| **Three-button** — an auxiliary left action, then cancel and commit | Dialogs only, where it is a contract the component supplies rather than an arrangement a caller composes. |
+| **With a status line** — text left, the pair right | The surface has a save state worth showing continuously, such as "Last saved 2 minutes ago". |
+| **Static rather than fixed, on a view** | The view fits one viewport at `lg` with room to spare, so nothing can scroll out of reach. |
+
+A center-aligned and a left-aligned arrangement also render. Neither has a use case on any
+surface this page governs; reach for one of the five above.
+
+## Anti-patterns
+
+| Instead of this pattern, people build… | Why it looks reasonable | How it fails |
+|---|---|---|
+| **A footer per section, on a view that is all configuration** | Each section looks like a form, and a form has a footer. It also makes each save feel local and cheap. | The reader gets no answer to "am I done?", the labels have to name their own scope to stay distinguishable, and someone who edits three sections and saves two leaves the page in a state nobody designed. |
+| **A container footer whose commit also saves fields outside the container** | The button is already there, and the extra fields are related. | The footer's position claims the container. Saving beyond it makes the one visible fact about the commit's scope wrong. |
+| **A view footer kept "for consistency" above containers that commit themselves** | Every configuration page looks the same. | Two controls save overlapping changes, and which wins depends on press order — a state no design covers. |
+| **A commit in the page header's action slot** | It is always visible, which is what a fixed footer is for. | It is reachable before the surface is valid, and that slot is where views with no commit at all put page-level actions — so one position means two things. |
+| **A footer that appears only once something changes** | It keeps the screen quiet until it is needed. | The layout shifts under the reader's cursor while they are typing, and the control they most need is the one that was not there a second ago. Keep the footer, change the commit's state. |
+| **Autosave with no footer at all** | It removes the question entirely. | It is a different pattern with different requirements — per-field save state, undo, conflict handling — and none of them are decided. It is not a way around this page. |
+| **A floating save bar built from a container and a shadow** | It looks like a fixed footer and needs no new export. | It sits outside the frame's region vocabulary, so nothing about it is reviewable, it carries no landmark, and its stacking order is whatever it happens to be. |
+
+## Known issues
+
+Where the shipped components and this direction disagree. Build to the direction above.
+
+| ID | Kind | What, and what to do |
+|---|---|---|
+| [TITAN-DIV-12](/invoca-design-system/foundations/divergences#titan-div-12) | Divergence | The frame's footer region declares `role="navigation"` rather than `contentinfo`. Set the landmark yourself. |
+| [TITAN-DIV-13](/invoca-design-system/foundations/divergences#titan-div-13) | Divergence | A fixed header and a fixed footer sit 1090 stacking steps apart. Set the footer's stacking order explicitly when a page has both. |
+| [TITAN-GAP-09](/invoca-design-system/foundations/open-decisions#titan-gap-09) | Open decision | Nothing states how a fixed region avoids obscuring a focused control. Fixing the view-level footer by default makes this load-bearing. |
+| [TITAN-GAP-25](/invoca-design-system/foundations/open-decisions#titan-gap-25) | Open decision | The leading slot is a convention rather than a named slot, so nothing enforces one backward action in it. |
+| [TITAN-DIV-34](/invoca-design-system/foundations/divergences#titan-div-34) | Divergence | The frame's footer insets its contents a further `spacing-5` inside the page gutter, so its buttons do not align with the title or the body. Override the inner inset. |
+| [TITAN-DIV-35](/invoca-design-system/foundations/divergences#titan-div-35) | Divergence | The frame's footer sets no shadow in either mode, so a fixed footer has no path to `shadow-up-1` except an inline style escape hatch. |
+| [TITAN-DIV-36](/invoca-design-system/foundations/divergences#titan-div-36) | Divergence | The drawer's footer supplies no inset, against a body inset `spacing-6`. Pad the footer's own contents. |
+| [TITAN-DIV-37](/invoca-design-system/foundations/divergences#titan-div-37) | Divergence | The dialog's footer and its content area use two unrelated horizontal insets. |
+| [TITAN-DIV-38](/invoca-design-system/foundations/divergences#titan-div-38) | Divergence | The design library's footer component pairs a **secondary** cancel with the primary commit; the shipped examples pair a **tertiary** one. Use tertiary. |
+
+## Gaps in the current rules
+
+Titan does not specify these. Asked about one, the answer is "the system does not specify this."
+
+- **What happens when one section is invalid and another is valid, under a view-level footer.**
+  Two answers are available and neither is chosen: commit the valid sections and report the
+  invalid one, or block the whole commit until the view is valid. The first keeps an edit the
+  reader had already finished and makes "Save changes" partly true; the second is simpler to
+  build and loses that edit.
+- **What Cancel discards when several sections changed.** Whether it reverts the whole unit
+  silently, reverts it behind a confirmation, or is withdrawn once the surface is dirty enough
+  that discarding is the bigger mistake.
+- **Whether the unavailable commit is disabled, and whether the footer says why.**
+- **A view with two genuinely independent units of commit** — not sections of one subject, but
+  two subjects on one page. One footer per unit is the rule; nothing says what to do when the
+  changes really are disjoint.
+- **When a footer should carry a save-state line**, and what it says.
+- **Where a fixed footer sits on a narrow or short viewport**, and whether it stays fixed when it
+  would cover a meaningful share of the content.
+
+## Why it works this way
+
+**Position is the only thing a footer says about its own scope.** A control at the bottom of a
+surface reads as "this is the end of the thing, and this is what you do with it." That claim is
+free and unavoidable — it is made by placement, before any label is read. So the surface holding
+the footer must be the surface whose changes it saves, and no screen can make the claim twice
+without the reader having to re-derive which one means what.
+
+**The container case is not an exception to the view case.** They are one rule reaching two
+answers, because the unit of commit sits in a different place. A view that is entirely
+configuration has one unit spanning every section; a view that reads, summarizes, and happens to
+contain one configurable container has its unit inside that container. Asking what commits
+together answers both without a second rule.
+
+**Fixed at the view level, because configuration is edited in the middle.** A form is filled top
+to bottom and ends where its footer is, so a static footer is in the right place by
+construction. A configuration view is entered to change one section, which may be anywhere in
+it, and a footer at the end of the scroll is a journey away from the edit. A container footer
+needs none of this: it is already beside the fields it commits.
+
+**The sections keep their dividers.** The rule removes the commits, not the boundaries. A
+section still has to look like a bounded group of related fields, because that grouping is how a
+reader finds the one they came for.
+
+## Related
+
+- [Views overview](/invoca-design-system/views/overview) — the frame's footer region, its slots,
+  and the arrangements it ships
+- [Settings view](/invoca-design-system/views/settings-view) — the archetype whose whole purpose
+  is configuration
+- [Full-page form](/invoca-design-system/views/full-page-form) ·
+  [Wizard](/invoca-design-system/views/wizard) ·
+  [Detail view](/invoca-design-system/views/detail-view) — the other archetypes that carry, or
+  deliberately omit, a footer
+- [Panel](/invoca-design-system/components/containment/panel) ·
+  [Dialog](/invoca-design-system/components/containment/dialog) ·
+  [Drawer](/invoca-design-system/components/containment/drawer) — the containers that own
+  footers of their own
+- [Form validation](/invoca-design-system/patterns/form-validation) — what a field does when the
+  commit is pressed
+- [Inline editing](/invoca-design-system/patterns/inline-editing) — the alternative when the unit
+  of change is one field
+- [Error handling](/invoca-design-system/patterns/error-handling) ·
+  [Notifications](/invoca-design-system/patterns/notifications) — reporting a failed or
+  successful commit
+- [Button](/invoca-design-system/components/actions/button) — prominence and trailing-primary
+  order
+- [Elevation](/invoca-design-system/foundations/elevation) — the shadow and stacking a fixed
+  region needs
+- [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure) — when a
+  section starts collapsed
+
+## Status
+
+| | |
+|---|---|
+| **Constraints** | Proposed. `TITAN-FOOTER-01` through `-11`. |
+| **Decided** | The configuration-view case and the container-scoped case are design decisions. |
+| **Provenance** | Values and shipped behaviour read from Titan source; no emitter covers footer arrangement, so the tables in [Structure](#structure) are hand-confirmed. |
+| **Open** | Six items in [Gaps](#gaps-in-the-current-rules); nine disagreements in [Known issues](#known-issues). |
