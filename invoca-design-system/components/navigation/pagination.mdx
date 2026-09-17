@@ -13,8 +13,8 @@ with no wrapper and no theme override: `Pagination` (a row of page-number button
 (a table-footer row combining a rows-per-page selector, a range, and prev/next), and `usePagination`
 (the headless hook behind both, for building a custom pager). This is confirmed by reading the
 full set of `*.overrides.ts` files in the package — none of the twenty-six files defines a
-theme override for either pagination component — and it is exactly the situation
-[TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) describes.
+theme override for either pagination component — and it is exactly the situation described in
+[Pagination's open decision](/invoca-design-system/foundations/open-decisions#titan-gap-27).
 
 <Warning>
   **None of these three is how tables in this system actually paginate today.** `DataGridPremium`
@@ -53,8 +53,8 @@ which one a reader should mean by default:
 ## Choose Pagination when
 
 The system has not confirmed when to reach for any of these three over `DataGridPremium`'s own
-footer — that is the open question [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)
-describes, not settled guidance this page can give. What source does confirm:
+footer — that is the open question described in
+[Pagination's open decision](/invoca-design-system/foundations/open-decisions#titan-gap-27), not settled guidance this page can give. What source does confirm:
 
 - `Pagination` is the one to reach for when you are paging over something that is **not** a
   `DataGridPremium` table — a card grid, a custom list, anything with no table underneath it.
@@ -136,7 +136,7 @@ system.
 **Where any of these three belongs in the page frame is undecided.** The frame has no region
 between `Contents` and `Footer` — the place pagination conventionally sits — so a list page
 either puts it inside the body, invents a place, or (most often) relies on the grid's own footer
-instead. See [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) for
+instead. See [Pagination's open decision](/invoca-design-system/foundations/open-decisions#titan-gap-27) for
 the full account, including that two applications (`ai-model-management` and `signal-validation`)
 have each built their own `PaginationBar` independently rather than using any of these three
 exports or waiting on a system answer.
@@ -179,8 +179,8 @@ Confirmed directly from the underlying package's own runtime source:
 **It doesn't, yet.** This page describes an unresolved area more than it describes a component.
 Three approaches ship — the raw exports, the grid's own footer, and two independently-built
 application-level bars — and nothing has confirmed which is the system's answer, beyond the
-design library's own page templates already showing pagination inside the grid (see
-[TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)'s "Direction" row).
+design library's own page templates already showing pagination inside the grid (see the
+[open decision](/invoca-design-system/foundations/open-decisions#titan-gap-27)'s "Direction" row).
 Two teams reaching the same conclusion separately, without a system answer to point to, is the
 measurable cost of leaving this open.
 

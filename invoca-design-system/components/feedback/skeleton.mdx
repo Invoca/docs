@@ -80,7 +80,7 @@ for — same widths, same line count, same spacing as the real content.
 **Three animations:** `pulse` (the default), `wave`, and `false` for none.
 
 **Nothing chooses between them.** `pulse` and `wave` are both available, the product uses both, and
-no decision is recorded — [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31). Until one is
+no decision is recorded — see the [open decision on skeleton tokens and animation](/invoca-design-system/foundations/open-decisions#titan-gap-31). Until one is
 chosen, use the default and stay consistent within a screen: two animations in one region read as
 two different systems loading.
 
@@ -105,8 +105,8 @@ has to be maintained alongside the layout it mirrors.
 
 **No tokens exist for this component.** Its colour and animation come from the framework with no
 decision behind them, and a `rounded` skeleton's corner radius does not come from the
-[radius](/invoca-design-system/foundations/radius) scale. That is the substance of
-[TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31), and it means a skeleton is currently the
+[radius](/invoca-design-system/foundations/radius) scale. That is the substance of the
+[same open decision](/invoca-design-system/foundations/open-decisions#titan-gap-31), and it means a skeleton is currently the
 one grey in the product that no palette governs.
 
 ## Composition
@@ -147,7 +147,7 @@ content is ready, which is the announcement most loading states omit.
 **Reduced motion is unhandled.** The animation does not respond to
 `prefers-reduced-motion`, and the reader who has asked for less movement gets a pulsing region
 anyway. Where a screen shows many skeletons at once, pass `animation={false}` under that preference
-until the component handles it — [TITAN-SKL-05](#constraints).
+until the component handles it.
 
 **A skeleton must not be the only indication a load failed.** Something that never resolves reads as
 a slow network, and a reader will wait far longer than they should before concluding otherwise.

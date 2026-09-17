@@ -24,8 +24,8 @@ file only adds it to local state and reports the full list back through a callba
 
 <Warning>
   **The package exports this as `Dropzone`, not `FileUpload`.** This page's name is the design
-  vocabulary's term for the concept; `Dropzone` is the import. See
-  [TITAN-DIV-26](/invoca-design-system/foundations/divergences#titan-div-26).
+  vocabulary's term for the concept; `Dropzone` is the import. See the
+  [naming divergence](/invoca-design-system/foundations/divergences#titan-div-26).
 </Warning>
 
 ## Choose FileUpload when
@@ -136,7 +136,7 @@ in this component or in `FormInput` does that composition today — see
 requires failing quietly — the component simply doesn't wire up `useDropzone`'s own
 `fileRejections` callback, which would carry exactly this information. Restating the
 restriction in `secondaryText` is the only mitigation available until that's addressed, which
-is why TITAN-UPLOAD-01 exists as a constraint rather than a suggestion.
+is why this page's own constraint exists as a rule rather than a suggestion.
 
 ## Status
 

@@ -30,15 +30,14 @@ repository, none of it a distributable design-system export:
 
 | Where | What | Status |
 |---|---|---|
-| `Tabs orientation="vertical"` | `core`'s own `Tabs`, documented as "the rail" | Tokened and themed, but whether it *is* page-level navigation or an in-page tab presentation is unconfirmed — [TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29) |
+| `Tabs orientation="vertical"` | `core`'s own `Tabs`, documented as "the rail" | Tokened and themed, but whether it *is* page-level navigation or an in-page tab presentation is unconfirmed (see [Known issues](#known-issues)) |
 | `SideNav` in `@invoca/titan-legacy-web` | A `reactstrap` (Bootstrap) `Nav`, `vertical` | No Titan tokens, and no theming from the underlying framework either. The package itself is described in its own `package.json` as "Legacy Invoca Web components (deprecated)". |
 | `primary-navigation` application | `PrimaryNavigation`, `PrimaryNavItem`, `PrimaryNavSubMenu` in `applications/react/legacy/primary-navigation` | A real, actively deployed left nav (its changelog shows a production deploy as recently as August 2026) — but it is a bespoke, GraphQL-driven per-app micro-frontend, not an importable component. It is shipped as its own deployed unit, not a package another app installs. |
 
 <Warning>
   **Three implementations of the same concept exist, and none is confirmed as the system's
-  answer.** This is the same pattern documented for pagination — see
-  [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) — playing out
-  again for side navigation. See [Known issues](/invoca-design-system/components/navigation/side-nav/open-issues).
+  answer.** This is the same pattern already documented for pagination, playing out again for
+  side navigation. See [Known issues](/invoca-design-system/components/navigation/side-nav/open-issues).
 </Warning>
 
 ## Vocabulary
@@ -51,9 +50,8 @@ repository, none of it a distributable design-system export:
 **"SideNav" and "the rail" are not confirmed to be the same thing.** The rail is a real, themed
 export; "SideNav" names a region the design library's page template draws and nothing in `core`
 fills. Use "the rail" only when you mean `Tabs orientation="vertical"` specifically, and "SideNav"
-only when you mean the unfilled region — conflating them states an answer to
-[TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29) that hasn't been
-decided.
+only when you mean the unfilled region — conflating them states an answer that hasn't been
+decided (see [Known issues](#known-issues)).
 
 ## Choose SideNav when
 
@@ -67,7 +65,7 @@ to satisfy it yet. See Composition below for what is actually available.
 | If you need to… | Use | Why |
 |---|---|---|
 | Show sections of the same page's subject | [Tabs](/invoca-design-system/components/navigation/tabs), horizontal orientation | Peers of one subject, not separate subjects — see Tabs' own constraint on this. |
-| Build global, app-wide navigation for an entire Invoca product | The existing `primary-navigation` application | It is already built and deployed. A second, independent implementation compounds the exact cost [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) and [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) describe for pagination and skeletons — duplicated, undecided infrastructure. |
+| Build global, app-wide navigation for an entire Invoca product | The existing `primary-navigation` application | It is already built and deployed. A second, independent implementation compounds the exact duplicated, undecided infrastructure already recorded for pagination and skeletons elsewhere in this system. |
 | Render a tokened, themed vertical list of rows inside a single Titan app | `Tabs orientation="vertical"` (the rail) | It is the only vertical-list building block in `core` with real dimensions, states, and tokens — with the explicit caveat that what it is *for* is unconfirmed. See [Tabs](/invoca-design-system/components/navigation/tabs#variants-sizes-and-states). |
 
 ## Anatomy
@@ -102,9 +100,8 @@ documentation. That scoped-out left nav rail is exactly what a reader searching 
 is looking for, and nothing in `core` fills it with a real, distributable component today.
 
 The rail (`Tabs orientation="vertical"`) is themed and real, but nothing states whether it *is*
-that region's implementation or a different thing that merely looks similar —
-[TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29) is the open
-question this page defers to.
+that region's implementation or a different thing that merely looks similar — see
+[Known issues](#known-issues) for the open question this page defers to.
 
 ## Content
 
@@ -122,7 +119,7 @@ component is built, not as a Titan rule.
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-SNAV-01** | Before building a new page-level side navigation for a single application, check [TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29) and this page. Do not build a fourth independent implementation. | Three already exist independently — the rail, the deprecated `legacy-web` `SideNav`, and the bespoke `primary-navigation` application. A fourth compounds the exact duplicated-infrastructure cost already recorded for pagination ([TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)) and skeletons ([TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31)). |
+| **TITAN-SNAV-01** | Before building a new page-level side navigation for a single application, check [Known issues](#known-issues) and this page. Do not build a fourth independent implementation. | Three already exist independently — the rail, the deprecated `legacy-web` `SideNav`, and the bespoke `primary-navigation` application. A fourth compounds the exact duplicated-infrastructure cost already recorded for pagination and skeletons elsewhere in this system. |
 
 ## Known issues
 
@@ -133,11 +130,10 @@ component is built, not as a Titan rule.
 ## Why it works this way
 
 **It doesn't yet, and this page says so rather than inventing an answer.** The nearest thing to a
-decision is [TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29), which
-already asks whether the tab bar's vertical orientation is the system's side navigation or a
-different thing entirely. Until that question is answered, documenting a `SideNav` component as
-if it existed would tell a reader something false with total confidence — which is a worse
-outcome than a page that plainly states the gap.
+decision already asks whether the tab bar's vertical orientation is the system's side navigation
+or a different thing entirely. Until that question is answered, documenting a `SideNav`
+component as if it existed would tell a reader something false with total confidence — which is
+a worse outcome than a page that plainly states the gap.
 
 ## Status
 

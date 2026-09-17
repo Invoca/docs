@@ -31,8 +31,8 @@ holding an icon and a line of text or a clickable action. It wraps the underlyin
   `data-*` attribute, but a repo-wide search of the Titan checkout finds no CSS rule anywhere that
   targets any of the three classes. The component's own `BasicListNoBorder` story — the one whose
   name implies it demonstrates `disableBorder` — doesn't use the Titan `List` component or the prop
-  at all; it renders a plain native `<ul>`/`<li>` instead. See
-  [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30).
+  at all; it renders a plain native `<ul>`/`<li>` instead. See the
+  [open divergence on List's unwired props](/invoca-design-system/foundations/divergences#titan-div-30).
 </Warning>
 
 | Prop | Type | Default | Description |
@@ -146,7 +146,7 @@ general copy guidance as what applies otherwise.
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-LST-01** | Do not set `disableBorder`, `disableHover`, or `bulleted` expecting a visual change. | No CSS rule anywhere in the checked-out Titan source targets `titan-list-no-border`, `titan-list-no-hover`, or `titan-list-bulleted` — confirmed by a repo-wide search. See [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30). |
+| **TITAN-LST-01** | Do not set `disableBorder`, `disableHover`, or `bulleted` expecting a visual change. | No CSS rule anywhere in the checked-out Titan source targets `titan-list-no-border`, `titan-list-no-hover`, or `titan-list-bulleted` — confirmed by a repo-wide search. See the [divergence entry](/invoca-design-system/foundations/divergences#titan-div-30). |
 | **TITAN-LST-02** | Pair `ListItemButton` with `disablePadding` on its parent `ListItem`. | Every real example in source (`BasicList`, `BasicListNoIcons`) does this; without it, the button's own padding stacks with the item's. |
 
 ## Known issues
@@ -161,7 +161,7 @@ List's real, working decision is small: a bottom border under every row and a wi
 both pulled from tokens. The three props that read as bigger decisions — no border, no hover,
 bulleted — were written into the component and its own JSDoc comment ("Optional border removal,"
 "Hover effect toggle," "Bulleted list style option") but never wired to any style rule. This page
-records that as [TITAN-DIV-30](/invoca-design-system/foundations/divergences#titan-div-30) rather
+records that as a [divergence](/invoca-design-system/foundations/divergences#titan-div-30) rather
 than papering over it.
 
 ## Status

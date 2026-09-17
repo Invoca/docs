@@ -24,8 +24,8 @@ part of the page layout and has no open, close, or expand/collapse state of its 
 <Warning>
   **The package exports this as `Tile`, not `Panel`.** This page's name is the design
   vocabulary's term for the concept; `Tile` — along with `TileHeader`, `TileBody`, `TileFooter`,
-  and `TileTitle` — is the real import. See
-  [TITAN-DIV-28](/invoca-design-system/foundations/divergences#titan-div-28).
+  and `TileTitle` — is the real import. See the
+  [naming divergence](/invoca-design-system/foundations/divergences#titan-div-28).
 </Warning>
 
 Hand-confirmed from source — no prop emitter has run for this component yet. `Tile` itself
@@ -149,8 +149,7 @@ recorded for this component.
 whole purpose is configuration, the commit belongs to the view and this region holds a summary,
 a timestamp, or nothing at all; when the container is the only configurable thing on a view
 doing other work, the commit belongs here. See
-[Footers](/invoca-design-system/patterns/footers) and
-[TITAN-FOOTER-04](/invoca-design-system/patterns/footers#constraints).
+[Footers](/invoca-design-system/patterns/footers#constraints), which covers this rule.
 
 **The header/body/footer split exists to make one thing predictable: only the body scrolls.**
 `TileBody` is the one sub-component with `overflow: auto`; header and footer are fixed. That

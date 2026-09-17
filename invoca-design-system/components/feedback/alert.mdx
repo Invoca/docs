@@ -44,7 +44,7 @@ form, and each dismissible.
   **`severity` and `color` are separate props, and separating them is a mistake.** A published
   example sets `severity="success"` with `color="info"`, producing an alert that *is* a success and
   *looks* like information. The colour is how a reader identifies the severity before reading, so
-  the two must always agree — [TITAN-ALR-03](#constraints).
+  the two must always agree.
 </Warning>
 
 ## Choose Alert when
@@ -109,14 +109,13 @@ about the box changes.
   | `outlined` text | 5.93 : 1 – 12.87 : 1 | Passes |
   | `outlined` border | 1.19 : 1 – 1.61 : 1 | **Fails** 3:1 — the boundary is invisible |
 
-  Use `standard`, which is also the default. See
-  [TITAN-DIV-21](/invoca-design-system/foundations/divergences#titan-div-21) for the cause and the arithmetic.
+  Use `standard`, which is also the default.
 </Warning>
 
 <Warning>
   **`severity` defaults to `success`.** An alert rendered without an explicit severity is a green
   success alert — including on an error path, where the message says one thing and the colour says
-  the opposite. Always set it: [TITAN-ALR-02](#constraints).
+  the opposite. Always set it explicitly.
 </Warning>
 
 **The severity icon is chosen for you**, and every published example overrides it anyway. Take the
@@ -128,7 +127,7 @@ four icons come to mean "error".
 | Condition | What happens | What to do |
 |---|---|---|
 | No `severity` set | Renders as **success** | Set it explicitly, always. |
-| `variant="filled"` | Renders below AA contrast | Use `standard` — [TITAN-DIV-21](/invoca-design-system/foundations/divergences#titan-div-21). |
+| `variant="filled"` | Renders below AA contrast | Use `standard`. |
 | Both `action` and `onClose` set | The dismiss control disappears | Put the dismiss control inside `action`. |
 | A long message | Wraps; the box grows. The icon stays top-aligned to the first line | Fine — the design publishes a wrapped form. Keep it to two sentences. |
 | Several alerts at once | They stack in source order with no spacing of their own | Space them with a `Stack` and a `spacing-*` token, and ask whether they should be one message. |

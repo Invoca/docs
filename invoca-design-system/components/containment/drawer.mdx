@@ -70,11 +70,10 @@ source. Height is always full-viewport; there is no size preset for height.
 
 - **Only one anchor exists.** The component hardcodes `anchor="right"` and omits `anchor` from
   its own prop type entirely — a left, top, or bottom Drawer is not possible through this
-  component. See [TITAN-DRAWER-01](#constraints).
+  component.
 - **`footerContent` is the drawer's own footer, and it commits the drawer's fields only** — not
   the view behind it, which keeps its own footer and is inert while the drawer is open. See
-  [Footers](/invoca-design-system/patterns/footers) and
-  [TITAN-FOOTER-02](/invoca-design-system/patterns/footers#constraints).
+  [Footers](/invoca-design-system/patterns/footers#constraints), which covers this rule.
 - **The footer is unpadded and unbordered, but not unstyled.** `footerContent` renders inside a
   wrapper that is sticky to the drawer's bottom edge, opaque (`background-default`), and stacked
   above the body — confirmed from source. It carries no padding and no border of its own, so
