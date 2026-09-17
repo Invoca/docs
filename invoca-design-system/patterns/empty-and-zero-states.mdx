@@ -5,15 +5,6 @@ icon: "inbox"
 keywords: ["empty state", "zero state", "no results", "no data", "blank slate", "first run"]
 ---
 
-<Warning>
-  **Exemplar page — first pass.** This is a *proposal* for review, not established policy. No
-  Titan design-library review or shipped Invoca screen backs this page — it composes the real
-  [EmptyState](/invoca-design-system/components/data-display/empty-state) component and the
-  real [Empty state copy](/invoca-design-system/content/empty-state-copy) content rules, and
-  cites their constraints rather than restating them. Where this pattern's guidance is new, it
-  is a proposal to check against a real screen, not a decision already confirmed.
-</Warning>
-
 ## The problem
 
 A region with nothing in it is one of three genuinely different situations, and a reader
@@ -46,6 +37,14 @@ flowchart TD
     D -->|No| F[Zero state — nothing created yet]
 ```
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Zero state | First-run, blank slate | **Zero state** — nothing has been created yet; reserved for the "hasn't been created" case specifically |
+| No-results state | Empty search, no matches | **No-results state** — data exists; a filter, search, or query excluded all of it |
+| EmptyState | *(the component both states below are built from)* | **EmptyState** — the illustration, title, and supporting-line component composed for either state |
+
 ## When this applies
 
 - A region that normally holds content currently has none, and the load that would have
@@ -60,7 +59,7 @@ flowchart TD
 | Situation | Do this instead | Why |
 |---|---|---|
 | The load or action that would fill the region failed | [Error handling](/invoca-design-system/patterns/error-handling) | An empty region is indistinguishable from a successful query with no matches — see [Table's own edge-state row](/invoca-design-system/components/data-display/table#edge-and-failure-states) making exactly this point. Showing "nothing here" for a failure hides that something needs fixing. |
-| The region is still loading | [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) | Announcing "nothing here" and then filling the region contradicts itself — see [TITAN-EMP-06](/invoca-design-system/components/data-display/empty-state#constraints). |
+| The region is still loading | [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons) | Announcing "nothing here" and then filling the region contradicts itself. |
 | The emptiness is the result of an AI-driven feature — a first-run panel, or a search/summarize run that returned nothing | [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state) | An agentic panel's emptiness carries an extra obligation this pattern doesn't cover: setting scope for what the feature can do, and distinguishing "ran and found nothing" from "hasn't been asked anything." That page's own "Choose this when / choose something else when" table points back here for the deterministic case. |
 | There's still content, alongside a separate problem | [Alert](/invoca-design-system/components/feedback/alert) | An alert accompanies content; an empty state replaces it. Using an empty state where content still exists throws away what the reader had. |
 
@@ -81,7 +80,7 @@ flowchart TD
 │           No campaigns yet                    │
 │    Create a campaign to start routing calls.  │
 │                                               │
-│              [ Create Campaign ]              │  ← link-styled, per TITAN-EMPTYCOPY-04
+│              [ Create Campaign ]              │  ← link-styled, per Content
 │                                               │
 └─────────────────────────────────────────────┘
 ```
@@ -94,21 +93,21 @@ flowchart TD
 | No-results state | Region has no rows because a filter, search, or query excluded them all. Illustration and copy name the narrowing; action clears or widens it. |
 | Filter cleared from a no-results state | Region returns to its prior content, or to a zero state if the underlying data genuinely doesn't exist either. |
 | Load fails | Never rendered by this pattern — see [Error handling](/invoca-design-system/patterns/error-handling). |
-| Load still in progress | Never rendered by this pattern — see [TITAN-EMP-06](/invoca-design-system/components/data-display/empty-state#constraints). |
+| Load still in progress | Never rendered by this pattern — see [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons). |
 | Resolving action taken | Region either fills with new content or, if the action itself can fail (e.g. a widen-filter call), follows [Error handling](/invoca-design-system/patterns/error-handling) rather than staying on the empty state silently. |
 
 ## Constraints
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-ZERO-01** | A region with nothing to show states which of the three causes applies. Never one generic message for all of them. | See [TITAN-EMP-02](/invoca-design-system/components/data-display/empty-state#constraints) and [TITAN-EMPTYCOPY-03](/invoca-design-system/content/empty-state-copy#constraints) — do not restate their reasoning, follow it. |
-| **TITAN-ZERO-02** | A failed load never renders through this pattern. Route it to [Error handling](/invoca-design-system/patterns/error-handling). | An empty table and a failed one look identical without a stated cause — see [Table's own edge-state row](/invoca-design-system/components/data-display/table#edge-and-failure-states). |
-| **TITAN-ZERO-03** | This pattern never replaces a region that is still loading. | See [TITAN-EMP-06](/invoca-design-system/components/data-display/empty-state#constraints). |
-| **TITAN-ZERO-04** | The resolving action, when one exists, is exactly one action, styled as a link button, placed after the component. | See [TITAN-EMP-05](/invoca-design-system/components/data-display/empty-state#constraints) and [TITAN-EMPTYCOPY-04](/invoca-design-system/content/empty-state-copy#constraints). |
-| **TITAN-ZERO-05** | A table or list's empty state replaces the rows, not the container. Column headers and filter controls stay. | See [TITAN-TBL-04](/invoca-design-system/components/data-display/table#constraints) — the reader whose filter matched nothing still needs the filter, in order to change it. |
+| **TITAN-ZERO-01** | A region with nothing to show states which of the three causes applies. Never one generic message for all of them. | Follows the same rule EmptyState and its copy guidance already state, rather than restating it. |
+| **TITAN-ZERO-02** | A failed load never renders through this pattern. Route it to [Error handling](/invoca-design-system/patterns/error-handling). | An empty table and a failed one look identical without a stated cause. |
+| **TITAN-ZERO-03** | This pattern never replaces a region that is still loading. | Announcing "nothing here" and then filling the region a moment later contradicts itself. |
+| **TITAN-ZERO-04** | The resolving action, when one exists, is exactly one action, styled as a link button, placed after the component. | Follows the same rule EmptyState and its copy guidance already state. |
+| **TITAN-ZERO-05** | A table or list's empty state replaces the rows, not the container. Column headers and filter controls stay. | The reader whose filter matched nothing still needs the filter, in order to change it. |
 | **TITAN-ZERO-06** | An AI-driven feature's first-run or no-results moment uses [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state), not this pattern. | An agentic panel's emptiness carries a scope-setting obligation — what the feature can and can't do — that a deterministic region never has to carry. |
-| **TITAN-ZERO-07** | The illustration matches the case: a zero-state illustration is never reused for no-results, and neither is reused for a failure. | See [TITAN-EMP-03](/invoca-design-system/components/data-display/empty-state#constraints) — the illustration is read before the text, and one that contradicts the message costs the reader the time it takes to notice. |
-| **TITAN-ZERO-08** | Copy names the real thing missing — campaigns, calls, contacts — never a generic word like "records" or "data." | See [TITAN-EMPTYCOPY-05](/invoca-design-system/content/empty-state-copy#constraints) (proposed). |
+| **TITAN-ZERO-07** | The illustration matches the case: a zero-state illustration is never reused for no-results, and neither is reused for a failure. | The illustration is read before the text, and one that contradicts the message costs the reader the time it takes to notice. |
+| **TITAN-ZERO-08** | Copy names the real thing missing — campaigns, calls, contacts — never a generic word like "records" or "data." | Matches the same specificity rule Empty state copy already proposes. |
 
 ## Content
 
@@ -139,14 +138,14 @@ flowchart TD
 |---|---|---|
 | No-results with an active filter | A filter or search excluded existing rows | `search` illustration; resolving action clears or widens the filter |
 | Zero state, first run | Nothing created yet on this account or page | `default`, `discover`, or subject-specific illustration; resolving action creates the first record |
-| Zero state with no permission to act | The reader could not create one even if they tried | Omit the action; state the reason instead — same reasoning as a disabled control needing a reachable explanation, see [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) |
+| Zero state with no permission to act | The reader could not create one even if they tried | Omit the action; state the reason instead — the same reasoning a disabled control follows when it needs a reachable explanation |
 | Small region — a card, a sidebar panel | Too small for the 320px illustration | A line of text instead of EmptyState — see [EmptyState's own "choose something else when"](/invoca-design-system/components/data-display/empty-state#choose-something-else-when) |
 
 ## Anti-patterns
 
 **The same message for a zero state and a no-results state.** "No campaigns yet" shown to a
 reader who just typed a search that matched nothing tells them to go create something that
-already exists. See [TITAN-EMP-02](/invoca-design-system/components/data-display/empty-state#constraints).
+already exists.
 
 **An empty state shown during a load.** The region says "nothing here," then fills a moment
 later — the reader who read the first message already believes it and may navigate away before
@@ -159,3 +158,51 @@ cases, and indistinguishable from a bug no matter which of the three actually ha
 actual cause is a failed request hides that something needs fixing, and sends the reader down
 the wrong path — creating a record that already exists, or waiting for data that will never
 arrive because the load never ran.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-22](/invoca-design-system/foundations/divergences#titan-div-22) | Divergence | `EmptyState` renders its supporting line as a heading element, checked against source — a reader relying on the document outline encounters a second heading where design intent expects body text. |
+
+## Gaps in the current rules
+
+- Whether a zero state's resolving action should differ when the reader lacks permission to
+  create the first record, beyond simply omitting the button — [Variations](#variations) names
+  the omission but not what replaces it.
+- What a no-results state should say when the search or filter is itself malformed (an invalid
+  date range, a query with no valid tokens), as opposed to well-formed but unmatched.
+- Whether a table's sortable, filterable controls should stay interactive during a zero state,
+  or disable until content exists.
+
+## Why it works this way
+
+**Naming which of the three cases applies is the whole job, because the cost of getting it
+wrong is asymmetric and silent.** A reader told "no results" when they've created nothing yet,
+or told "get started" when their search just missed, doesn't see an error — they see an
+interface that's confidently wrong, and correcting that requires them to already suspect it,
+which most readers won't.
+
+**The failed-load case is routed elsewhere rather than folded in as a fourth option, because
+"empty" and "broken" are not degrees of the same thing.** This pattern never has to guess
+whether an empty region is empty on purpose — that distinction belongs to
+[Error handling](/invoca-design-system/patterns/error-handling), which
+knows whether the load actually succeeded.
+
+## Related
+
+[EmptyState](/invoca-design-system/components/data-display/empty-state), the component this
+pattern composes for both cases. [Empty state copy](/invoca-design-system/content/empty-state-copy),
+the copy rules [Content](#content) follows rather than restates.
+[Error handling](/invoca-design-system/patterns/error-handling), for the failed-load case this
+pattern explicitly excludes. [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state),
+the AI-driven counterpart for an agentic panel's first run or empty result.
+
+## Status
+
+**Exemplar page — first pass.** This is a *proposal* for review, not established policy. No
+Titan design-library review or shipped Invoca screen backs this page — it composes the real
+[EmptyState](/invoca-design-system/components/data-display/empty-state) component and the
+real [Empty state copy](/invoca-design-system/content/empty-state-copy) content rules, and
+cites their constraints rather than restating them. Where this pattern's guidance is new, it
+is a proposal to check against a real screen, not a decision already confirmed.

@@ -5,14 +5,6 @@ icon: "chevrons-down-up"
 keywords: ["progressive disclosure", "accordion", "show more", "advanced options", "settings", "disclosure"]
 ---
 
-<Warning>
-  **First-pass proposal, not established policy.** No audited Invoca screen backs this page —
-  Titan's design library was not available while writing it. It is built from general
-  interaction-design practice and from what [Accordion](/invoca-design-system/components/containment/accordion)
-  already establishes. Treat every threshold below as a starting point to check against real
-  product screens, not as a rule already enforced.
-</Warning>
-
 ## The problem
 
 Every screen accumulates options over time: a filter someone asked for once, an advanced field
@@ -45,6 +37,14 @@ flowchart TD
   often: "used by fewer than X% of accounts, in fewer than Y% of their sessions" is a claim
   someone can check against real usage. "This feels advanced" is not.
 </Tip>
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Disclosure | Show more, expand/collapse | **Disclosure** — deferring genuinely secondary content behind an action, scoped to how much of the page it affects |
+| Trigger | Toggle, expander | **Trigger** — the control that opens or closes the disclosed region; always labeled with what it reveals |
+| Secondary | Advanced, optional | **Secondary** — used by a minority of users in a minority of sessions, per the heuristic above, not "feels advanced" |
 
 ## When this applies
 
@@ -101,7 +101,7 @@ flowchart TD
 | **TITAN-DISCLOSE-02** | Match the scope of disclosure to the scope of the content: a few more rows or fields → "Show more" link; a self-contained section → Accordion; a whole secondary area → a separate settings tab. | The three controls cost the reader differently. Using Accordion for what should be a settings tab hides an entire area one click inside a page that isn't advertised as containing it. |
 | **TITAN-DISCLOSE-03** | A disclosed section starts collapsed unless it is the reason the reader is on the page, or it contains a validation error that must be visible. | Collapsed-by-default is the whole point for genuinely secondary content; the two exceptions are cases where the default would actively hide what the reader needs right now. |
 | **TITAN-DISCLOSE-04** | The trigger's label names what's inside — never a bare icon or the word "More" alone. | A reader deciding whether to open something needs to know what's behind it before committing the click. |
-| **TITAN-DISCLOSE-05** | Each Accordion trigger carries its own `id` and `aria-controls` pointing at its content, wired by hand. | Accordion does not pair these automatically — the only published example does it manually. Omitting it ships a disclosure control with no programmatic link to what it discloses — [TITAN-ACCORDION-01](/invoca-design-system/components/containment/accordion#constraints). |
+| **TITAN-DISCLOSE-05** | Each Accordion trigger carries its own `id` and `aria-controls` pointing at its content, wired by hand. | Accordion does not pair these automatically — the only published example does it manually. Omitting it ships a disclosure control with no programmatic link to what it discloses. |
 | **TITAN-DISCLOSE-06** | Collapsing a section never discards content or input already entered inside it. | A reader who fills in an advanced field, collapses the section to check something else, and returns to find it empty has lost work to a UI action that should have been inert. |
 | **TITAN-DISCLOSE-07** | A destructive or safety-relevant control is never the thing being hidden by this pattern. | Friction on a dangerous action follows [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s tiers, which are calibrated to consequence — not to how rarely the control is used. |
 | **TITAN-DISCLOSE-08** | Where several Accordions stack, nothing assumes shared "only one open" behavior unless the composition explicitly builds it. | Accordion carries no group state itself — each instance is independent. A caller expecting mutual exclusivity for free will not get it. |
@@ -124,8 +124,8 @@ content.
 **Accordion's own documentation does not confirm that `aria-expanded` is set automatically on
 the trigger.** Its accessibility section states only what the underlying elements provide
 natively, with no test asserting specific ARIA attributes. Verify this at the call site rather
-than assuming the component supplies it — the same caution that produced
-[TITAN-DISCLOSE-05](#constraints) for `aria-controls` and `id`.
+than assuming the component supplies it — the same caution that already applies to wiring
+`aria-controls` and `id` by hand.
 
 **A validation error inside a collapsed section must force it open, and must be announced.**
 A screen-reader user who submits a form and hears nothing, because the only invalid field is
@@ -157,6 +157,49 @@ through every collapsed area to find it.
 
 **Reinventing "only one open at a time" per screen.** Accordion ships with no group behavior,
 so every list of mutually exclusive sections either gets this built fresh or gets left without
-it — a smaller version of the same duplication
-[TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) records for
-skeleton screens.
+it — a smaller version of the same duplication already recorded for skeleton screens (see
+[Known issues](#known-issues)).
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) | Open decision | Accordion carrying no group state of its own is a smaller version of the same per-application-rebuilding cost this gap already measures for skeleton screens — see [Anti-patterns](#anti-patterns). |
+
+## Gaps in the current rules
+
+- Whether disclosure state should persist across a page reload or a later session —
+  [Behavior](#behavior) already flags this as undecided rather than guessing.
+- What the actual usage threshold is behind "a minority of users in a minority of sessions" —
+  the heuristic is stated as testable, but no specific percentage is set anywhere in Titan.
+- Whether a "Show more" link's revealed rows should animate into place or simply appear, and
+  whether that differs from an Accordion's own expand transition.
+
+## Why it works this way
+
+**The three disclosure mechanisms are matched to scope, not to preference, because the cost of
+getting the scope wrong is different in each direction.** Using an Accordion for what should be
+its own settings tab hides an entire area behind a control a reader might never notice was
+there. Using a settings tab for two fields sends the reader on a navigation for something that
+fit in the space of a single click.
+
+**The heuristic is written to be checkable, because "this feels advanced" is exactly the kind of
+claim that never gets revisited.** A stated threshold — a percentage of accounts, a percentage
+of sessions — is either true or it isn't, and can be re-measured as usage changes; a feeling has
+no such correction.
+
+## Related
+
+[Accordion](/invoca-design-system/components/containment/accordion), the component this
+pattern's collapsible-section variant composes. [Tabs](/invoca-design-system/components/navigation/tabs),
+for the settings-tab variant when the secondary area is large enough to be its own screen.
+[Form validation](/invoca-design-system/patterns/form-validation), for the validation-error
+exception to the collapsed-by-default rule.
+
+## Status
+
+**First-pass proposal, not established policy.** No audited Invoca screen backs this page —
+Titan's design library was not available while writing it. It is built from general
+interaction-design practice and from what [Accordion](/invoca-design-system/components/containment/accordion)
+already establishes. Treat every threshold below as a starting point to check against real
+product screens, not as a rule already enforced.

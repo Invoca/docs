@@ -5,14 +5,6 @@ icon: "eye"
 keywords: ["read", "view", "detail", "drawer preview", "inline expansion", "progressive disclosure", "detail view"]
 ---
 
-<Warning>
-  **Exemplar page — first pass.** This is a proposal for review, not established policy — see
-  [CRUD overview](/invoca-design-system/patterns/crud/overview#coverage-stated-honestly). This
-  page decides **when** each viewing surface is the right choice; what each one contains once
-  the reader is there is that page's own decision — see
-  [Detail view](/invoca-design-system/views/detail-view) directly.
-</Warning>
-
 ## The problem
 
 "Viewing an object" covers two different jobs that get conflated because they both start with
@@ -79,7 +71,7 @@ flowchart TD
 | Situation | Do this instead | Why |
 |---|---|---|
 | The reader is finding or comparing members of a collection, not looking at one known object | [List view](/invoca-design-system/views/list-view) | "Which of these" is a different job than "what about this one" — List view already answers it. |
-| The reader is about to change the object's data, not just look at it | [Update](/invoca-design-system/patterns/crud/update) | A reading surface never writes — see [TITAN-READ-05](#constraints). |
+| The reader is about to change the object's data, not just look at it | [Update](/invoca-design-system/patterns/crud/update) | A reading surface never writes — it opens Update's own surface instead. |
 | The object doesn't exist yet | [Create](/invoca-design-system/patterns/crud/create) | Nothing to read until it does. |
 
 ## Structure
@@ -120,8 +112,8 @@ Full Detail view (own page, full context)        └─────────�
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-READ-01** | The choice between inline expansion, Drawer preview, and full Detail view follows how much the reader needs right now, not whichever surface happens to already be built into the page. | A surface reused because it's convenient, rather than because it fits the reader's need, produces the same object read three different ways in three parts of the product — the same failure [TITAN-CRUD-01](/invoca-design-system/patterns/crud/overview#constraints) names for the write side. |
-| **TITAN-READ-02** | Inline expansion adds exactly one more layer of detail to a row already on screen. A second inline layer, or one with its own actions, moves to a Drawer instead. | Matches [TITAN-DISCLOSE-02](/invoca-design-system/patterns/progressive-disclosure#constraints)'s scope-matching — a control that keeps growing past "a few more fields" has outgrown the surface it started on. |
+| **TITAN-READ-01** | The choice between inline expansion, Drawer preview, and full Detail view follows how much the reader needs right now, not whichever surface happens to already be built into the page. | A surface reused because it's convenient, rather than because it fits the reader's need, produces the same object read three different ways in three parts of the product — the same failure the write side already names for choosing a create or edit surface by convenience. |
+| **TITAN-READ-02** | Inline expansion adds exactly one more layer of detail to a row already on screen. A second inline layer, or one with its own actions, moves to a Drawer instead. | The same scope-matching that governs disclosure generally — a control that keeps growing past "a few more fields" has outgrown the surface it started on. |
 | **TITAN-READ-03** | A Drawer preview never blocks the list it opened from. Closing it, by any means, returns the reader to the same list state they left. | Matches [Drawer](/invoca-design-system/components/containment/drawer#choose-drawer-when)'s own reasoning for why it exists instead of a Dialog. |
 | **TITAN-READ-04** | Reading a collection of objects is [List view](/invoca-design-system/views/list-view)'s job. This page governs viewing one object once it's already identified. | A second decision tree for "which of these" would duplicate an answer List view already gives. |
 | **TITAN-READ-05** | A control inside a reading surface that changes the object's data opens [Update](/invoca-design-system/patterns/crud/update)'s surface — never a write performed by the reading surface itself. | Keeps read and write on separately governed surfaces. A reading surface that saves quietly skips Update's prefill, dirty-state, and concurrent-edit rules entirely. |
@@ -162,12 +154,12 @@ page navigation, and finds one fact they could have seen inline. The wrong end o
 the actual need.
 
 **An inline expansion that grows to hold an entire object's worth of fields.** At that point
-it has outgrown the row it's attached to — see [TITAN-READ-02](#constraints) — and belongs in a
-Drawer, where it has room and its own scroll.
+it has outgrown the row it's attached to, and belongs in a Drawer, where it has room and its
+own scroll.
 
 **A Drawer preview that silently writes a change.** A reading surface that saves on the side,
 with no visible edit affordance, skips every rule [Update](/invoca-design-system/patterns/crud/update)
-has for prefill, dirty state, and failure handling — see [TITAN-READ-05](#constraints).
+has for prefill, dirty state, and failure handling.
 
 ## Related
 
@@ -181,3 +173,11 @@ object. [Detail view](/invoca-design-system/views/detail-view), the full-context
 [Drawer](/invoca-design-system/components/containment/drawer) and
 [Progressive disclosure](/invoca-design-system/patterns/progressive-disclosure), whose own
 pages already state the reasoning this page cites rather than re-derives.
+
+## Status
+
+**Exemplar page — first pass.** This is a proposal for review, not established policy — see
+[CRUD overview](/invoca-design-system/patterns/crud/overview#coverage-stated-honestly). This
+page decides **when** each viewing surface is the right choice; what each one contains once
+the reader is there is that page's own decision — see
+[Detail view](/invoca-design-system/views/detail-view) directly.

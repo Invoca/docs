@@ -5,12 +5,6 @@ icon: "megaphone"
 keywords: ["cta", "call to action", "entry point", "onboarding", "invite", "discoverability", "wayfinder", "first run"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
-  today. Nothing below is code fact or measured behavior — it is a proposal offered for
-  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
-</Warning>
-
 ## What it is
 
 A call center manager opens a call record that has never been summarized. The transcript is
@@ -37,7 +31,7 @@ another Initial CTA.
 |---|---|---|
 | The user already has AI output on screen and needs a nudge toward what's next | [Suggestions](/invoca-design-system/ai-experience/wayfinders/suggestions) | Initial CTA is for someone who hasn't started; Suggestions assumes an existing context to build on |
 | The invite is really about changing scope, tone, or depth before a run, not whether to start one | [Controls](/invoca-design-system/ai-experience/tuners/controls) | Tuning behavior is a different job than the first invitation to use the feature at all |
-| The control's job is to navigate to a separate page or URL rather than trigger the feature in place | [Link](/invoca-design-system/components/actions/link) | Per [TITAN-BTN-08](/invoca-design-system/components/actions/button#constraints), a control that navigates to a URL is a Link, not a Button, whether or not AI is involved |
+| The control's job is to navigate to a separate page or URL rather than trigger the feature in place | [Link](/invoca-design-system/components/actions/link) | Per [Button's own navigation rule](/invoca-design-system/components/actions/button#constraints), a control that navigates to a URL is a Link, not a Button, whether or not AI is involved |
 | The action being invited is not AI-backed at all | [Button](/invoca-design-system/components/actions/button) | This page only governs the entry point to a model-generated result; a deterministic action is an ordinary Button with no disclosure obligation |
 
 ## Agency tier
@@ -72,7 +66,7 @@ that escalation needs to be recorded, not discovered.
 | 5 | Dismiss control | [Button](/invoca-design-system/components/actions/button), `tertiary` prominence | No |
 
 At most one Initial CTA is `primary` in a given region, per
-[TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints) — the invitation is
+[Button's one-primary-per-region rule](/invoca-design-system/components/actions/button#constraints) — the invitation is
 one specific offer, not a menu of equally weighted options.
 
 ## Outcome states
@@ -140,7 +134,7 @@ takes; do not sell it.
   a spinner — an accessible status text ("Working…"), not only a visual animation.
 - If the CTA is disabled for a rate limit or an unmet precondition, the reason is in the
   accessible description (`aria-describedby`), not conveyed by disabled styling alone — see
-  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - Focus stays on the trigger button through the `loading` state and moves to the result (or to
   an inline refusal message) only once one exists — never left stranded on a button that has
   already been pressed and dismissed from view.
@@ -149,13 +143,13 @@ takes; do not sell it.
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-CTA-01** | An Initial CTA states, in its own copy, that the result is AI-generated. Disclosure does not wait for the result to appear. | [TITAN-AI-04](/invoca-design-system/ai-experience/overview#constraints): the user learns this is AI at the point of the output, not only afterward — the CTA is the earliest point available. |
+| **TITAN-CTA-01** | An Initial CTA states, in its own copy, that the result is AI-generated. Disclosure does not wait for the result to appear. | Per [the overview's own disclosure-timing rule](/invoca-design-system/ai-experience/overview#constraints): the user learns this is AI at the point of the output, not only afterward — the CTA is the earliest point available. |
 | **TITAN-CTA-02** | An Initial CTA states what will happen and, where known, roughly how long it takes, before the user presses it. | An invitation with no stated outcome asks for trust with nothing to evaluate it against. |
-| **TITAN-CTA-03** | At most one Initial CTA renders as `primary` prominence within a given region. | [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints) — an invitation competing with another equally weighted control is not an invitation, it's a choice the interface refused to make. |
+| **TITAN-CTA-03** | At most one Initial CTA renders as `primary` prominence within a given region. | [Button's one-primary-per-region rule](/invoca-design-system/components/actions/button#constraints) — an invitation competing with another equally weighted control is not an invitation, it's a choice the interface refused to make. |
 | **TITAN-CTA-04** | Dismissing an Initial CTA never permanently removes it without the user taking a separate, explicit action to turn the feature off. | A one-time dismissal that silently becomes a permanent opt-out removes recourse the user did not know they were giving up — see [TITAN-AI overview, question 6](/invoca-design-system/ai-experience/overview#disclosure-recourse). |
 | **TITAN-CTA-05** | A degraded fallback (cached or rule-based result instead of a live model call) is disclosed in the invitation copy before the user presses, not only in the result afterward. | A result that looks the same regardless of how it was produced hides a real difference in what the user should trust. |
 | **TITAN-CTA-06** | An Initial CTA that cannot run right now (rate-limited, precondition unmet) renders disabled with the reason stated, never simply absent with no explanation. | An absent control teaches the user nothing; a disabled one with a reason teaches them when to come back. |
-| **TITAN-CTA-07** | The CTA never uses a Button for what is actually navigation to a separate page. | [TITAN-BTN-08](/invoca-design-system/components/actions/button#constraints) applies regardless of whether the destination is AI-backed. |
+| **TITAN-CTA-07** | The CTA never uses a Button for what is actually navigation to a separate page. | [Button's own navigation rule](/invoca-design-system/components/actions/button#constraints) applies regardless of whether the destination is AI-backed. |
 
 ## Divergences
 
@@ -169,7 +163,7 @@ Not applicable — nothing is shipped yet to diverge from.
 - How "roughly how long it takes" is computed, and whether it is shown at all when latency is
   unpredictable, is undecided.
 - Whether dismissal frequency should decay (show every time, then less often) is undecided —
-  see [TITAN-CTA-04](#constraints), which sets the floor (never a silent permanent opt-out) but
+  this page's own rule sets the floor (never a silent permanent opt-out) but
   not the specific curve.
 - Whether an Initial CTA can appear more than once per page for different, unrelated AI
   features, and how those are visually distinguished from each other, is undecided.
@@ -179,8 +173,9 @@ Not applicable — nothing is shipped yet to diverge from.
 This page's guidance depends on no model capability directly — it governs the invitation, not
 the output — but it assumes an agentic feature can state, before running, roughly what it will
 do and how long it will take. If a future feature cannot estimate its own latency or cannot
-describe its output in advance, [TITAN-CTA-02](#constraints) needs reverification against that
-case. Dated 2026-09-02; revisit on the first real product implementation of any Wayfinder.
+describe its output in advance, this page's stated-outcome requirement needs reverification
+against that case. Dated 2026-09-02; revisit on the first real product implementation of any
+Wayfinder.
 
 ## Related
 
@@ -205,3 +200,9 @@ the CTA's only leverage is stating clearly enough what it offers that trying it 
 it might save. That is why disclosure and a stated outcome sit before the button rather than
 after: an invitation asking for trust with no way to evaluate it is a worse deal than the manual
 path it is trying to replace.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+today. Nothing below is code fact or measured behavior — it is a proposal offered for
+review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).

@@ -33,8 +33,9 @@ know which to import.
   [Button group](/invoca-design-system/components/actions/button-group). It governs the relationship *between*
   buttons rather than a button itself, which is a different decision.
 
-  This grouping is a documentation choice, not a code change. Why the two structures differ
-  is recorded in [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10).
+  This grouping is a documentation choice, not a code change — this page groups three exports
+  under one concept the same way; a package that exports by unit doesn't itself draw the line
+  between "a button" and "the relationship between buttons."
 </Note>
 
 ## Vocabulary
@@ -78,7 +79,7 @@ weight is what you meant.
 <Note>
   **`tertiary` is specified and never implemented.** The naming specification lists it on the
   prominence axis, and **no shipped token carries the word** — the treatment exists in code only
-  as `variant="text"`. See [TITAN-DIV-11](/invoca-design-system/foundations/divergences#titan-div-11).
+  as `variant="text"`.
 </Note>
 
 ## Choose Button when
@@ -95,7 +96,7 @@ weight is what you meant.
 | Offer three or more related actions from one control | [Menu](/invoca-design-system/components/actions/menu) | Three or more sibling buttons stop reading as a hierarchy and start reading as a list. |
 | Bind several buttons into one segmented control | [Button group](/invoca-design-system/components/actions/button-group) | The relationship between the buttons is the component. |
 | Present two mutually exclusive states | [Switch](/invoca-design-system/components/forms/switch) or [Radio](/invoca-design-system/components/forms/radio) | Buttons do not communicate persistent state. A "Muted"/"Unmuted" toggle button is ambiguous about whether it shows current state or pending action. |
-| Show an action that is currently unavailable | `disabled`, **plus** an adjacent explanation | A disabled control with no reason attached is the single most common accessibility complaint in the product. See [TITAN-BTN-06](#constraints). |
+| Show an action that is currently unavailable | `disabled`, **plus** an adjacent explanation | A disabled control with no reason attached is the single most common accessibility complaint in the product. |
 
 <Note>
   **Button vs. Link is the fork people get wrong most often.** The test is not appearance — a
@@ -108,7 +109,7 @@ weight is what you meant.
 
 | # | Part | Prop | Required |
 |---|---|---|---|
-| 1 | Label | `children` | Yes — see [TITAN-BTN-04](#constraints) |
+| 1 | Label | `children` | Yes — 1–3 words, verb-first |
 | 2 | Leading icon | `startIcon` | No |
 | 3 | Trailing icon | `endIcon` | No |
 | 4 | Loading indicator | `loading` | No — replaces the leading icon slot |
@@ -152,10 +153,10 @@ These are the design library's own variant properties, and each maps to somethin
 - **An icon-only button below primary prominence.** Icon-only exists at primary, default purpose,
   and nowhere else.
 
-[TITAN-BTN-11](#constraints) and [TITAN-BTN-12](#constraints) state both as rules, and both need
-confirming. The reasoning holds on its own, but the *evidence* is an absence in a published variant
-set — and a set of five axes has 180 combinations, so a missing one can mean ruled out or can mean
-never built. Ask before citing either as settled.
+This page's own Constraints table states both as rules, and both need confirming. The reasoning
+holds on its own, but the *evidence* is an absence in a published variant set — and a set of
+five axes has 180 combinations, so a missing one can mean ruled out or can mean never built. Ask
+before citing either as settled.
 
 ## What Storybook publishes
 
@@ -167,10 +168,10 @@ The state everyone designs is a short label on a wide button. These are the othe
 
 | Situation | What renders | Recovery |
 |---|---|---|
-| Label longer than the button | The label does **not** wrap — the button grows in width and pushes on whatever sits beside it. One line is the decision, not a limitation: [TITAN-BTN-14](#constraints) | Shorten the label — see [TITAN-BTN-04](#constraints). Buttons do not truncate; a clipped action label is unreadable and unannounced. |
-| Loading | Indicator replaces the leading icon; the button is disabled and holds its width | Resolves on completion. Width is held so adjacent controls do not move — [TITAN-BTN-07](#constraints). |
+| Label longer than the button | The label does **not** wrap — the button grows in width and pushes on whatever sits beside it. One line is the decision, not a limitation. | Shorten the label to 1–3 words. Buttons do not truncate; a clipped action label is unreadable and unannounced. |
+| Loading | Indicator replaces the leading icon; the button is disabled and holds its width | Resolves on completion. Width is held so adjacent controls do not move. |
 | The action fails | **Undefined.** The Button returns to its resting state and says nothing. | Surface the failure adjacent to the control. The Button does not own error display. |
-| Disabled | Not focusable, announces nothing | Pair with a reachable explanation — [TITAN-BTN-06](#constraints). |
+| Disabled | Not focusable, announces nothing | Pair with a reachable explanation. |
 | Permission denied | Same as disabled — indistinguishable from a bug | State the reason. "You do not have permission" is a different message from "Select a row first". |
 
 ## Tokens
@@ -212,7 +213,7 @@ with dismissive actions to its left.
 |---|---|---|
 | Verb-first | Save Changes | Changes |
 | Specific over generic | Delete Campaign | OK |
-| Title case — see [TITAN-BTN-13](#constraints) | Save Changes | Save changes |
+| Title case | Save Changes | Save changes |
 | No terminal punctuation | Save Changes | Save Changes. |
 | Match the user's word, not the system's | Publish | Commit |
 
@@ -266,7 +267,7 @@ announcing the result of the action, and its own error state. Those belong to th
 | **TITAN-BTN-10** | Size is `small` or `medium`. Never `large`. | Only two sizes are themed. `large` renders at dimensions no token defines and no decision covers. |
 | **TITAN-BTN-11** | An icon sits before the label, never after it. **Needs confirmation.** | One icon position means a row of buttons has one rhythm. A trailing icon also reads as "this opens something", which is a menu's or a link's signal, not a button's. |
 | **TITAN-BTN-12** | An icon-only button is primary prominence and default purpose. **Needs confirmation.** | Stripping the label already removes most of the control's information; taking the weight as well leaves a glyph the eye does not register as pressable. An icon-only destructive control is worse still — the one action needing an unambiguous label has none. |
-| **TITAN-BTN-13** | Button labels are title case: capitalize principal words, lowercase short articles/conjunctions/prepositions unless first or last. | Directly stated in zeroheight's Button page. Corrected this pass — see [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#the-base-style). The shipped theme's naive every-word capitalization is a close but imperfect implementation — [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23). |
+| **TITAN-BTN-13** | Button labels are title case: capitalize principal words, lowercase short articles/conjunctions/prepositions unless first or last. | Directly stated in zeroheight's Button page. Corrected this pass — see [Capitalization and punctuation](/invoca-design-system/content/capitalization-and-punctuation#the-base-style). The shipped theme's naive every-word capitalization is a close but imperfect implementation. |
 
 ### Retired
 
@@ -296,8 +297,8 @@ copy, and the confirmation step, never by prominence.
 
 **The vocabulary is prominence, not treatment.** "Primary" names the decision — this is the
 action the view exists to enable. "Contained" names one way of drawing it. Naming the decision
-means the rule survives a visual change: if primary buttons stopped being filled tomorrow,
-[TITAN-BTN-01](#constraints) would still say the right thing.
+means the rule survives a visual change: if primary buttons stopped being filled tomorrow, "at
+most one primary per view" would still say the right thing.
 
 **Trailing-primary ordering** matches the platform conventions users bring from elsewhere, and
 puts the primary action nearest the pointer's resting position for the action taken most often.

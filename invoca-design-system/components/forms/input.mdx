@@ -35,8 +35,8 @@ them is one decision about the same field, not two components.
 
 <Warning>
   **Placeholder is not a label.** It disappears the moment the field has a value or focus in
-  some implementations, and is not reliably announced as a label by assistive technology. See
-  [TITAN-FLD-01](/invoca-design-system/components/forms/field-label#constraints).
+  some implementations, and is not reliably announced as a label by assistive technology. Every
+  field needs a real, persistent label — FieldLabel's own page states this rule directly.
 </Warning>
 
 ## Choose Input when
@@ -58,9 +58,9 @@ them is one decision about the same field, not two components.
 
 | # | Part | Required |
 |---|---|---|
-| 1 | Field label | Yes — see [TITAN-FLD-01](/invoca-design-system/components/forms/field-label#constraints) |
+| 1 | Field label | Yes — a real, persistent label, per FieldLabel's own page |
 | 2 | Left icon | No — confirmed in the design library as a named `Left Icon` variant, not just decoration |
-| 3 | Trailing adornment (icon, clear action, unit) | No — see [TITAN-INPUT-04](#constraints) |
+| 3 | Trailing adornment (icon, clear action, unit) | No — at most one element in this slot |
 | 4 | Placeholder | No |
 | 5 | Helper or error text | No — owned by [FieldLabel](/invoca-design-system/components/forms/field-label) |
 
@@ -84,8 +84,8 @@ them is one decision about the same field, not two components.
 | Empty | Placeholder shows if one is set; otherwise blank. The library names this the `Default` state, distinct from `Filled`. | Placeholder is not a substitute for the label |
 | Value longer than the field (single-line) | Scrolls horizontally within the field; text does not wrap | Use multiline if values routinely exceed the field's width |
 | Value being validated asynchronously | **Undefined.** No loading affordance was found for this component. | See [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules) |
-| Disabled | Renders at the disabled tokens, not focusable | Pair with a reachable explanation, same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) |
-| Read-only | **Undefined whether visually distinguished from disabled.** See [TITAN-INPUT-02](#constraints) for what it should do; unconfirmed whether Titan does. | See [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules) |
+| Disabled | Renders at the disabled tokens, not focusable | Pair with a reachable explanation, the same reasoning a disabled Button already follows |
+| Read-only | **Undefined whether visually distinguished from disabled.** This page's own Constraints state what it should do; unconfirmed whether Titan does. | See [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules) |
 | Invalid | Border and focus ring switch to error tokens; error text replaces helper text | See [FieldLabel](/invoca-design-system/components/forms/field-label#edge-and-failure-states) |
 
 ## Tokens
@@ -99,7 +99,7 @@ stack vertically inside [Form](/invoca-design-system/components/forms/form) — 
 stacked fields was found in the snapshot; see [Gaps](/invoca-design-system/components/forms/input/open-issues#gaps-in-the-current-rules).
 
 For a complete field rather than the bare control, compose through `FormInput` with
-`type="text"` — see [TITAN-INPUT-08](#constraints).
+`type="text"`, never by hand-assembling this component with FieldLabel.
 
 ## Content
 
@@ -115,8 +115,8 @@ For a complete field rather than the bare control, compose through `FormInput` w
 |---|
 | Renders a native `<input>` or `<textarea>`. |
 | The accessible name comes from the associated [FieldLabel](/invoca-design-system/components/forms/field-label), not from `placeholder`. |
-| `aria-invalid="true"` and `aria-describedby` accompany an error, in addition to the visible colour and text change — see [TITAN-INPUT-05](#constraints). |
-| A read-only field stays focusable and keyboard-selectable; a disabled one does not. This is a platform default, not a Titan decision — see [TITAN-INPUT-02](#constraints). |
+| `aria-invalid="true"` and `aria-describedby` accompany an error, in addition to the visible colour and text change — never colour alone. |
+| A read-only field stays focusable and keyboard-selectable; a disabled one does not. This is a platform default, not a Titan decision. |
 
 **What this component does not handle:** validating its own value or deciding when an error
 should show — both belong to [Form validation](/invoca-design-system/patterns/form-validation).
@@ -127,9 +127,9 @@ should show — both belong to [Form validation](/invoca-design-system/patterns/
 |---|---|---|
 | **TITAN-INPUT-01** | Input is for free text or numeric values with no fixed set of valid answers. A fixed set uses [Select](/invoca-design-system/components/forms/select), Radio, or Checkbox instead. | Freeform entry against a constrained answer set forces validation that a constrained control makes unnecessary. |
 | **TITAN-INPUT-02** | A read-only Input remains focusable, and its value stays selectable and copyable. It is never styled identically to a disabled Input. | Read-only means "here is the value, not editable right now" — a different message from disabled's "this control isn't available." Collapsing them into one visual treatment loses that distinction for the reader. |
-| **TITAN-INPUT-03** | A disabled Input is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) — a disabled control announces nothing on its own. |
+| **TITAN-INPUT-03** | A disabled Input is always accompanied by a reachable explanation of what would enable it. | The same reasoning a disabled Button already follows — a disabled control announces nothing on its own. |
 | **TITAN-INPUT-04** | The trailing adornment slot carries at most one element: decoration, or a single action (clear, reveal password, unit). Never both without a stated exception. | Two competing affordances in one slot leaves the reader guessing which is interactive. |
-| **TITAN-INPUT-05** | An invalid Input signals it through the border and focus-ring colour **and** through error text — never colour alone. | [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints): colour never carries meaning alone. |
+| **TITAN-INPUT-05** | An invalid Input signals it through the border and focus-ring colour **and** through error text — never colour alone. | Colour never carries meaning alone. |
 | **TITAN-INPUT-06** | A multiline Input specifies a fixed or minimum row count. It never renders at the platform's native default. | Native textarea defaults vary across browsers; an undeclared row count makes the same field a different height depending on where it renders. |
 | **TITAN-INPUT-07** | Numeric entry is validated typed text, not the browser's native increment/decrement spinner. | The native spinner's scroll-to-change behavior is a well-documented source of accidental edits on a field that merely has focus, and its target size is inconsistent across browsers. |
 | **TITAN-INPUT-08** | A complete field — label, helper text, and error state together — is composed via [Form](/invoca-design-system/components/forms/form)'s `FormInput` with `type="text"`, never by hand-assembling this component with FieldLabel. | Source publishes `DoNotUse_RawTextField` as a named anti-pattern story: raw `TextField` usage outside `FormInput` is called out directly, not inferred. |

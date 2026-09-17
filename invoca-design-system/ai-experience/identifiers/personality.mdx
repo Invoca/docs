@@ -5,12 +5,6 @@ icon: "smile"
 keywords: ["ai personality", "ai tone", "ai voice", "signal ai", "identifiers"]
 ---
 
-<Warning>
-  **No verbal register has been decided for any Invoca agentic feature yet.** This page
-  proposes a framework for making that decision — it is not the decision itself. See
-  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
-</Warning>
-
 ## What it governs
 
 The tone and register of sentences an AI feature *produces* — a generated summary, an
@@ -44,7 +38,7 @@ component, not by this page.
 |---|---|---|
 | Make AI-generated sentences sound like Invoca | Invoca's existing three brand traits from [Content: Voice and tone](/invoca-design-system/content/voice-and-tone) | Inventing a separate, "chattier" personality for AI surfaces — that splits the brand exactly at the moment a user first notices something is different |
 | Have the AI hedge when it's not sure | Write the hedge in this page's register; decide *whether* to show one at all in [Trust builders](/invoca-design-system/ai-experience/trust-builders/caveat) | Deciding here whether uncertainty gets disclosed — that is a different page's job |
-| Have the AI apologize for an error or a refusal | A brief, single acknowledgment, per `TITAN-VOICE-03`'s concise-over-exhaustive rule | An effusive, repeated apology that reads as performance rather than information, and buries what the user actually needs — what to do next |
+| Have the AI apologize for an error or a refusal | A brief, single acknowledgment, per [Voice and tone's own concise-over-exhaustive rule](/invoca-design-system/content/voice-and-tone#constraints) | An effusive, repeated apology that reads as performance rather than information, and buries what the user actually needs — what to do next |
 | Make the AI sound casual or friendly, like a chat companion | Hold it to Bold — clear and direct — from Invoca's existing traits | Adding warmth as a new, undecided fourth trait the brand has not signed off on |
 
 ## Reference
@@ -56,8 +50,8 @@ once one exists.
 ## Relationships
 
 Personality directly inherits [Content: Voice and tone](/invoca-design-system/content/voice-and-tone)'s
-three traits and its constraints — `TITAN-VOICE-01` (plain language over technical wording),
-`TITAN-VOICE-02` (no acronyms or insider phrasing), `TITAN-VOICE-03` (concise over exhaustive)
+three traits and its constraints — plain language over technical wording, no acronyms or
+insider phrasing, and concise over exhaustive
 — all apply to AI-generated sentences exactly as written for the rest of the product; this
 page does not restate them, it narrows their application.
 
@@ -68,7 +62,7 @@ questions.
 
 ## Accessibility
 
-- Plain language (`TITAN-VOICE-01`) doubles as an accessibility aid: it helps readers with
+- Plain language doubles as an accessibility aid: it helps readers with
   cognitive or language-processing differences as much as it helps a reader outside the
   company understand copy without translation.
 - Tone must never substitute for or obscure the six disclosure-and-recourse answers from the
@@ -83,9 +77,9 @@ questions.
 |---|---|---|
 | **TITAN-PERSONA-01** | AI-generated sentences follow Invoca's three brand voice traits — Empowering, Eye-opening, Bold. No separate "AI voice" is introduced. | A second voice for AI content splits the brand exactly where consistency matters most: the moment a user notices the product is talking differently. |
 | **TITAN-PERSONA-02** | Tone never substitutes for the six disclosure-and-recourse answers from the overview. A friendly register is not a stand-in for saying what the system used or how sure it is. | Warmth and disclosure are different axes. Optimizing one at the other's expense is how "confident and wrong" becomes "confident, charming, and wrong." |
-| **TITAN-PERSONA-03** | Hedging and refusal language stays concise, per `TITAN-VOICE-03` — no more than one brief acknowledgment before the substantive content. | Exhaustive apology reads as performance and pushes the actually useful information — what to do next — further down the response. |
+| **TITAN-PERSONA-03** | Hedging and refusal language stays concise, per [Voice and tone's own concise-over-exhaustive rule](/invoca-design-system/content/voice-and-tone#constraints) — no more than one brief acknowledgment before the substantive content. | Exhaustive apology reads as performance and pushes the actually useful information — what to do next — further down the response. |
 | **TITAN-PERSONA-04** | Personality is decided for talking content only. Rendered data — tables, charts, transcript excerpts — carries no personality treatment. | Keeps this page's scope from creeping into typography or component pages already governed elsewhere. |
-| **TITAN-PERSONA-05** | No AI-specific personality trait is added beyond Invoca's existing three without a stated brand-level decision. | Mirrors `TITAN-COLOR-05`'s four-statuses logic: an ungoverned addition here is exactly how "helpful," "witty," and "empathetic" pile up with nothing distinguishing them. |
+| **TITAN-PERSONA-05** | No AI-specific personality trait is added beyond Invoca's existing three without a stated brand-level decision. | Mirrors [Color's own four-statuses rule](/invoca-design-system/foundations/color#constraints): an ungoverned addition here is exactly how "helpful," "witty," and "empathetic" pile up with nothing distinguishing them. |
 
 ## Divergences
 
@@ -122,3 +116,9 @@ Scoping this page to "talking," not "rendering," keeps it from re-deciding typog
 component rules that already govern how data displays. A generated sentence needs a tone
 decision because its exact words are new every time; a rendered number does not, because its
 presentation was already decided elsewhere.
+
+## Status
+
+**No verbal register has been decided for any Invoca agentic feature yet.** This page
+proposes a framework for making that decision — it is not the decision itself. See
+[Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).

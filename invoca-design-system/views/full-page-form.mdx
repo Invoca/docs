@@ -6,15 +6,6 @@ tag: "Draft"
 keywords: ["full page form", "form page", "create page", "edit page", "table of contents", "anchor nav", "single form"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
-  page — Titan's design library was not available while writing it. It is built from general
-  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview)
-  and [CRUD: Create](/invoca-design-system/patterns/crud/create) already establish. Treat every
-  constraint below as a starting point to check against real product screens, not as a rule
-  already enforced.
-</Warning>
-
 ## What it is
 
 A page whose entire body is **one form, committed once** — new campaign, integration settings,
@@ -32,8 +23,8 @@ not this.
 
 This archetype adds no regions. It uses the [page frame](/invoca-design-system/views/overview#the-page-frame)
 as published. One addition is worth naming even though it isn't a frame region: when the form has
-several independent sections, this archetype resolves [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints)'s
-"a Table of Contents" into a concrete in-page anchor nav — see [Contents — the form](#contents-the-form)
+several independent sections, this archetype resolves [CRUD: Create](/invoca-design-system/patterns/crud/create#constraints)'s
+own "a Table of Contents" into a concrete in-page anchor nav — see [Contents — the form](#contents-the-form)
 below.
 
 | Region | Also called | The system uses |
@@ -54,7 +45,7 @@ below.
 
 | If the object also needs… | Use | Why |
 |---|---|---|
-| Sections that must be completed in a fixed, dependent order | [Wizard](/invoca-design-system/views/wizard) | [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints): sections that depend on each other in order need a visible sequence, not a scrollable page. |
+| Sections that must be completed in a fixed, dependent order | [Wizard](/invoca-design-system/views/wizard) | Sections that depend on each other in order need a visible sequence, not a scrollable page — CRUD's own Create page states this rule directly. |
 | A lighter surface — few fields, no lasting page of its own | A [Dialog](/invoca-design-system/components/containment/dialog) or [Drawer](/invoca-design-system/components/containment/drawer) | [CRUD: Create](/invoca-design-system/patterns/crud/create#structure)'s Permanence and Density axes resolve to a lighter surface before this archetype is ever reached. |
 | To stay visible alongside a parent list while editing | A [Drawer](/invoca-design-system/components/containment/drawer) | Continuity with the parent costs more than the interruption a full page saves — same tree, Continuity axis. |
 
@@ -83,9 +74,8 @@ like "Preview," never Save.
 
 **The page-level Save and Cancel belong in `Footer`, not here.** This is worth stating directly
 because it's the most common instinct to violate: a form's primary commit reads, at a glance,
-like a page-level action, and `Right` is where page-level actions live per
-[TITAN-VIEW-03](/invoca-design-system/views/overview#constraints). But `Right` sits above a form
-the reader hasn't finished filling in — a Save button there implies the commit is available
+like a page-level action, and `Right` is where page-level actions live. But `Right` sits above a
+form the reader hasn't finished filling in — a Save button there implies the commit is available
 before the page's own footer says it is, and it's out of reach once the reader has scrolled past
 the header on a long form. The footer is anchored (or reachable) at the point where the reader
 has actually finished, which is the only point committing should be possible.
@@ -93,8 +83,7 @@ has actually finished, which is the only point committing should be possible.
 ### Contents — the form
 
 The form is the whole body. When it has several independent sections, `Contents` carries both
-the sections and a way to move between them — resolving what
-[CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) already
+the sections and a way to move between them — resolving what CRUD's own Create page already
 states ("a form with several independent sections is one page with a Table of Contents, not a
 Wizard") into a concrete answer.
 
@@ -115,15 +104,13 @@ hidden in the first place.
 ### Footer
 
 The default **trailing-only** arrangement per [Views overview: Footer](/invoca-design-system/views/overview#footer) —
-Cancel and the commit action, commit last, per [TITAN-VIEW-09](/invoca-design-system/views/overview#constraints)
-and [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints). This archetype is a single
-unit of work, not a step in a sequence, so the leading-and-trailing arrangement with a `Back`
-action doesn't apply here — that's [Wizard](/invoca-design-system/views/wizard)'s footer, not
-this one.
+Cancel and the commit action, commit last. This archetype is a single unit of work, not a step
+in a sequence, so the leading-and-trailing arrangement with a `Back` action doesn't apply here —
+that's [Wizard](/invoca-design-system/views/wizard)'s footer, not this one.
 
 | Slot | Use | Constraint |
 |---|---|---|
-| Trailing — commit and cancel | `Button` | Cancel first, commit last. At most one primary — [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). Commit label states what's being created, per [TITAN-CREATE-05](/invoca-design-system/patterns/crud/create#constraints) — "Create Campaign," not "Save" or "Submit." |
+| Trailing — commit and cancel | `Button` | Cancel first, commit last. At most one primary. Commit label states what's being created — "Create Campaign," not "Save" or "Submit," the same rule CRUD's own Create page states. |
 
 ## Responsive and density behavior
 
@@ -137,10 +124,9 @@ is proposed with that in mind.
 | Compact density | Field and section spacing only | — | — |
 
 <Note>
-  **The anchor nav is a convenience, not a route.** Per
-  [TITAN-VIEW-07](/invoca-design-system/views/overview#constraints), a region dropped or
-  collapsed at a narrow viewport is never the only path to a function — scrolling reaches every
-  section with or without the nav, so collapsing it costs navigation speed, not access.
+  **The anchor nav is a convenience, not a route.** A region dropped or collapsed at a narrow
+  viewport is never the only path to a function — scrolling reaches every section with or
+  without the nav, so collapsing it costs navigation speed, not access.
 </Note>
 
 ## Accessibility
@@ -170,12 +156,12 @@ What is **specific to this archetype**:
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-FPFORM-01** | The page-level commit and cancel live in `Footer`, never in `Header` — `Right`. | `Right` holds page-level actions per [TITAN-VIEW-03](/invoca-design-system/views/overview#constraints), but a form's commit isn't available until the reader has finished, and `Footer` is where the frame already places commit and cancel — see [What fills each region — Header — Right](#header-right). |
-| **TITAN-FPFORM-02** | Several independent sections render on one scrollable page with an anchor nav, never behind tabs or a step sequence. | Per [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) — independent sections don't need linear traversal, and hiding them behind tabs reintroduces the sectioned-page signal this archetype isn't. |
-| **TITAN-FPFORM-03** | The footer uses the trailing-only arrangement. The leading-and-trailing arrangement with a `Back` action is reserved for a step in a sequence. | Per [TITAN-VIEW-09](/invoca-design-system/views/overview#constraints) and [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints) — this archetype is one unit of work, not a step, so there's no previous step to return to. |
-| **TITAN-FPFORM-04** | The commit button's label states what's being created or saved, never a generic verb. | Per [TITAN-CREATE-05](/invoca-design-system/patterns/crud/create#constraints) — "Create Campaign," not "Submit." |
+| **TITAN-FPFORM-01** | The page-level commit and cancel live in `Footer`, never in `Header` — `Right`. | `Right` holds page-level actions, but a form's commit isn't available until the reader has finished, and `Footer` is where the frame already places commit and cancel — see [What fills each region — Header — Right](#header-right). |
+| **TITAN-FPFORM-02** | Several independent sections render on one scrollable page with an anchor nav, never behind tabs or a step sequence. | Independent sections don't need linear traversal, and hiding them behind tabs reintroduces the sectioned-page signal this archetype isn't — the same rule CRUD's own Create page states. |
+| **TITAN-FPFORM-03** | The footer uses the trailing-only arrangement. The leading-and-trailing arrangement with a `Back` action is reserved for a step in a sequence. | This archetype is one unit of work, not a step, so there's no previous step to return to. |
+| **TITAN-FPFORM-04** | The commit button's label states what's being created or saved, never a generic verb. | "Create Campaign," not "Submit" — the same rule CRUD's own Create page states. |
 | **TITAN-FPFORM-05** | An anchor in the section nav scrolls to its section; it never hides the other sections. | The nav is a shortcut inside one page, not a tab bar. Hiding sections would make this a tabbed page, which is a different, unaddressed case for a form this shape. |
-| **TITAN-FPFORM-06** | Closing or navigating away from a non-empty, unsubmitted form warns before discarding it, per [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s existing unsaved-edits guidance. | Per [CRUD: Create: TITAN-CREATE-06](/invoca-design-system/patterns/crud/create#constraints) — this archetype doesn't re-decide that behavior, it inherits it. |
+| **TITAN-FPFORM-06** | Closing or navigating away from a non-empty, unsubmitted form warns before discarding it, per [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s existing unsaved-edits guidance. | This archetype doesn't re-decide that behavior, it inherits it — the same way CRUD's own Create page does for its own surface. |
 
 ## Composed example
 
@@ -229,3 +215,12 @@ form is finished and the footer is not.** A Save button in `Right` is reachable 
 the page loads, on a form that isn't valid yet. The footer's presence at the end of the scroll —
 or its stickiness, where the page uses one — matches the commit's own precondition: there's
 something to commit only once the reader has gotten there.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+page — Titan's design library was not available while writing it. It is built from general
+interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview)
+and [CRUD: Create](/invoca-design-system/patterns/crud/create) already establish. Treat every
+constraint below as a starting point to check against real product screens, not as a rule
+already enforced.

@@ -23,14 +23,14 @@ icon: "layers"
     [DEC] design intent  — normative. What to build.
     [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
 
+  The body is direction only — no note about this page's own status, research pass,
+  or sign-off state, and no ALLCAPS-ID citations peppered through the prose. All of
+  that lives in ONE place: the Status section that closes the page. Region names and
+  slot rules are design intent by default on a view page; say so once, in Status —
+  never as an opening banner.
+
   Delete these comment blocks when you author a real page.
 */}
-
-<Note>
-  **Region names and slot rules on this page are design intent**, not generated. Constraints
-  are **Proposed** and need sign-off. Disagreements between the design language and the
-  shipped code are recorded in [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
 
 ## What it is
 
@@ -143,7 +143,10 @@ layout decision; removing the only path to an action is a functional one.
      (TITAN-LIST-01, TITAN-DASH-01) — not the literal word VIEW. Every view
      sharing one area code guarantees number collisions across pages.
 
-     IDs are permanent. Deprecate, never renumber — they get cited in review. */}
+     IDs are permanent. Deprecate, never renumber — they get cited in review.
+     A rule that REVERSES an earlier one gets a new ID — never rewrite what an
+     existing ID says; leave the old entry in place, marked superseded, pointing
+     at its replacement. */}
 
 | ID | Constraint | Rationale |
 |---|---|---|
@@ -186,3 +189,17 @@ layout decision; removing the only path to an action is a functional one.
 
 {/* [DEC] Rationale. State the mechanism, not the sentiment. What was ruled out and
      why. This is what keeps the constraints above from being quietly deleted. */}
+
+## Status
+
+{/* Closes the page. The only place provenance, coverage, and sign-off state
+     appear — nowhere else on this page notes any of it.
+
+     | | |
+     |---|---|
+     | **Constraints** | Proposed / signed off, and which IDs. |
+     | **Decided** | Which regions and arrangements are a made design decision
+     versus still proposal. |
+     | **Provenance** | What this page was built from — an audited product screen,
+     or general practice plus the constraints sibling pages already establish. |
+     | **Open** | Pointer to Gaps and Known issues, not a restatement of them. */}

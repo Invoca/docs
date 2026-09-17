@@ -5,12 +5,6 @@ icon: "thumbs-up"
 keywords: ["recommendation", "suggested action", "next best action", "insight", "proactive suggestion", "trend"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
-  today. Nothing below is code fact or measured behavior — it is a proposal offered for
-  review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
-</Warning>
-
 ## What it is
 
 Call volume carrying a "confused about pricing"
@@ -85,9 +79,10 @@ output overstates what the system has actually produced.
 | 7 | Dismiss | [Button](/invoca-design-system/components/actions/button) `text`, or [Link](/invoca-design-system/components/actions/link) | Yes |
 
 The action button is never `contained` — per
-[TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints)'s reasoning at a
-different axis: weight here should not overstate a proposal the system cannot commit to on its
-own. It navigates to the real settings surface; it does not apply the change itself.
+[Button's weight-follows-intent rule](/invoca-design-system/components/actions/button#constraints),
+applied here at a different axis: weight should not overstate a proposal the system cannot
+commit to on its own. It navigates to the real settings surface; it does not apply the change
+itself.
 
 ## Outcome states
 
@@ -97,13 +92,13 @@ own. It navigates to the real settings surface; it does not apply the change its
 | Streaming / partial | **Not applicable.** A recommendation is short enough that it renders complete or not at all; a partial recommendation card is not something a user can act on. |
 | Confident and right | The evidence is real, the direction is genuinely useful for this business — the easy case, and the one it's tempting to design exclusively for. |
 | Confident and wrong | **The case that matters most.** The recommendation reads exactly as confidently as a correct one — same layout, same tone, same evidence framing — while being wrong for this specific business: the 40% increase was a one-week seasonal spike, not a durable trend; the IVR prompt was already updated last week and the system doesn't know; or the Signal itself is mislabeled and the "confused about pricing" tag is catching a different intent. Nothing in the card distinguishes this from a right recommendation. The user only notices by checking the underlying evidence themselves (the Signal detail, the transcripts it's drawn from) or by acting on it and observing, over time, that nothing improved. |
-| Uncertain | A recommendation built on a small sample or a short observation window is framed with weaker language ("early signal" rather than a flat claim) or suppressed below a stated evidence threshold — see [TITAN-RECOMMEND-04](#constraints). |
-| Refused | A change was detected but no specific, actionable direction could be identified. The system says so rather than manufacturing a recommendation to fill the space — see [TITAN-RECOMMEND-05](#constraints). |
+| Uncertain | A recommendation built on a small sample or a short observation window is framed with weaker language ("early signal" rather than a flat claim) or suppressed below a stated evidence threshold. |
+| Refused | A change was detected but no specific, actionable direction could be identified. The system says so rather than manufacturing a recommendation to fill the space. |
 | Empty | No notable pattern this period. Hands off to [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state)'s no-results treatment rather than rendering a blank card. |
 | Interrupted | **Mostly not applicable.** A recommendation isn't a running task the user watches; dismissing it mid-read is equivalent to "Not now," not a cancellation of anything in flight. |
 | Degraded | The system falls back to a simple threshold rule (e.g., "this metric crossed a fixed line") instead of full trend analysis. Disclosed in the card's own copy — "based on a simple threshold" — rather than presented with the same evidence framing as a modeled recommendation. |
 | Rate-limited / over budget | Recommendation generation runs on a batch cadence (e.g., daily) rather than continuously. The card states the cadence and when it last refreshed, rather than implying real-time analysis. |
-| Stale | The evidence window has closed or the business has already acted since the recommendation was generated. Every card carries a generated timestamp so the user can judge whether it's still current — see [TITAN-RECOMMEND-06](#constraints). |
+| Stale | The evidence window has closed or the business has already acted since the recommendation was generated. Every card carries a generated timestamp so the user can judge whether it's still current. |
 
 ## Disclosure & recourse {#disclosure-recourse}
 
@@ -113,7 +108,7 @@ own. It navigates to the real settings surface; it does not apply the change its
    named in the card — "calls with a 'Confused about pricing' Signal," not "your data."
 3. **How sure is it, and does that change behavior?** Weak evidence changes the framing
    (see [Uncertain](#outcome-states)) or suppresses the recommendation entirely below a stated
-   threshold — see [TITAN-RECOMMEND-04](#constraints). A confidence number with no behavior
+   threshold. A confidence number with no behavior
    attached to it is not shown.
 4. **How does the user check it?** The Signal tag and the evidence line route to the underlying
    data — the calls or transcripts the pattern was drawn from — so the claim is checkable, not
@@ -167,7 +162,7 @@ manufactured beyond what the evidence supports.
 |---|---|---|
 | **TITAN-RECOMMEND-01** | A recommendation states the evidence — a specific number and time period — in its own text, not just the proposed action. | An action with no stated basis asks for trust the reader can't evaluate against anything. |
 | **TITAN-RECOMMEND-02** | The action control routes to the real editing surface for that setting; it never applies the change directly. | Applying the change directly would move this pattern to Acts tier, which needs to be a recorded decision, not a default. See [Agency tier](#agency-tier). |
-| **TITAN-RECOMMEND-03** | The action button is never `contained`. | Matches [TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints)'s reasoning: visual weight should not overstate a proposal the system cannot commit to. |
+| **TITAN-RECOMMEND-03** | The action button is never `contained`. | Matches [Button's weight-follows-intent rule](/invoca-design-system/components/actions/button#constraints): visual weight should not overstate a proposal the system cannot commit to. |
 | **TITAN-RECOMMEND-04** | A recommendation built on evidence below a stated sufficiency threshold is either framed as tentative or not shown at all. | An unqualified claim built on a small sample reads as equally confident to one built on a real trend, and the reader has no way to tell them apart without the qualifier. |
 | **TITAN-RECOMMEND-05** | If a change is detected but no specific action can be identified, the system says so rather than manufacturing a recommendation to fill the space. | A recommendation invented to have something to show trains the reader to distrust every recommendation, including the useful ones. |
 | **TITAN-RECOMMEND-06** | Every recommendation card carries a generated timestamp. | A recommendation that was right when generated can be wrong by the time it's read; the timestamp is what lets the reader judge that for themselves. |
@@ -181,7 +176,7 @@ Not applicable — nothing is shipped yet to diverge from.
 
 - Whether dismissing a recommendation should reduce the likelihood of similar future ones, or
   whether every dismissal is independent, is undecided.
-- What evidence-sufficiency threshold (see [TITAN-RECOMMEND-04](#constraints)) gates whether a
+- What evidence-sufficiency threshold gates whether a
   recommendation shows at all has no stated number.
 - Whether recommendations should ever escalate to Drafts tier — producing the actual edited
   artifact (a rewritten IVR script, a computed budget split) rather than only naming the
@@ -194,8 +189,9 @@ Not applicable — nothing is shipped yet to diverge from.
 
 This page assumes trend detection can identify not just that a metric moved but that a specific,
 concrete action is plausibly connected to it — a much harder capability than surfacing the
-number alone. If that connection can't be made reliably, [TITAN-RECOMMEND-05](#constraints)
-governs more of this pattern's real-world behavior than the happy path does. Dated 2026-09-02;
+number alone. If that connection can't be made reliably, falling back to naming no action
+rather than inventing one governs more of this pattern's real-world behavior than the happy
+path does. Dated 2026-09-02;
 revisit on the first real implementation of any trend-to-action mapping, or if an evaluation
 framework for recommendation quality is established.
 
@@ -230,3 +226,9 @@ actually equipped for.
 and a period are falsifiable in a way "call volume is up" is not — the reader can go look at the
 calls behind the Signal and decide for themselves whether the system's read on the data matches
 their own.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+today. Nothing below is code fact or measured behavior — it is a proposal offered for
+review. See [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).

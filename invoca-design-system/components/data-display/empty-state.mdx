@@ -69,7 +69,7 @@ same application.
 | # | Part | In code | Required |
 |---|---|---|---|
 | 1 | Illustration | `illustrationType` or `customIllustration` | No — one is drawn by default |
-| 2 | Title | `title` | **Yes in practice** — see [TITAN-EMP-01](#constraints) |
+| 2 | Title | `title` | **Yes in practice** — omitting it leaves the component with no message, or the disallowed fallback copy |
 | 3 | Supporting line | `subTitle` | No |
 | 4 | The action that resolves it | *nothing* — composed beside the component | No slot exists |
 
@@ -79,9 +79,9 @@ same application.
   out — "Create your first campaign" — is built by placing a [Button](/invoca-design-system/components/actions/button)
   after the component, inside the same region.
 
-  This matters because rules elsewhere require that action: [TITAN-TBL-04](/invoca-design-system/components/data-display/table#constraints)
-  says an empty table offers the action that resolves it. That rule is satisfied by composition, not
-  by the component.
+  This matters because a rule on [Table](/invoca-design-system/components/data-display/table#constraints)
+  requires that an empty table offer the action that resolves it. That rule is satisfied by
+  composition, not by this component.
 </Warning>
 
 ## Variants, sizes, and states
@@ -119,7 +119,7 @@ icon size. If you pass your own, size it yourself to match.
 | No `title` and no illustration set | Falls back to **"No Records found!"** | Always pass a title. The fallback is not compliant copy — see [Content](#content). |
 | An `illustrationType` but no `title` | The illustration renders with **no message at all** | A picture with no words does not say why the region is empty. A published example does this; do not copy it. |
 | `title=""` with only a `subTitle` | An empty heading renders, and the message lands in the supporting line | Put the message in `title`. |
-| A very long `subTitle` | It wraps and pushes the region taller; there is no limit | Keep it to one sentence — [TITAN-EMP-04](#constraints). |
+| A very long `subTitle` | It wraps and pushes the region taller; there is no limit | Keep it to one sentence. |
 | The region is narrower than the illustration | The illustration does not shrink | Use a line of text instead, or give the region more room. |
 
 ## Tokens
@@ -154,7 +154,7 @@ table.
 - **Distinguish the two cases in the words**, not only the illustration: "No campaigns yet" for a
   zero state, "No campaigns match these filters" for no results.
 - **The action, if there is one, is a link button — never a solid one.** Confirmed from
-  source; see [TITAN-EMPTYCOPY-04](/invoca-design-system/content/empty-state-copy#constraints). Added this pass —
+  source; see [Empty state copy](/invoca-design-system/content/empty-state-copy#constraints). Added this pass —
   this page didn't previously state it.
 
 **The default message ("No Records found!") breaks these rules** — see

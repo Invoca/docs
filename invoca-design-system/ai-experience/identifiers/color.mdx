@@ -5,12 +5,6 @@ icon: "swatch-book"
 keywords: ["ai color", "ai identity", "agent color treatment", "signal ai", "identifiers"]
 ---
 
-<Warning>
-  **No visual identity has been decided for any Invoca agentic feature yet.** This page
-  proposes a framework for making that decision — it is not the decision itself. See
-  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
-</Warning>
-
 ## What it governs
 
 Whether content that is AI-generated, or a surface that contains AI-generated content mixed
@@ -58,18 +52,19 @@ a border token, an `-alt` variant where text is involved), documented the same w
 every other pairing.
 
 It also sits beside [Identifiers: Iconography](/invoca-design-system/ai-experience/identifiers/iconography):
-per `TITAN-COLOR-03`, color never carries meaning alone, so any color treatment this page
+color never carries meaning alone, so any color treatment this page
 eventually adopts needs an icon or text partner from that page or from
 [Identifiers: Name](/invoca-design-system/ai-experience/identifiers/name).
 
 ## Accessibility
 
 - Color is never the only signal that content is AI-generated — this is
-  [Foundations: Color](/invoca-design-system/foundations/color)'s `TITAN-COLOR-03` applied
+  [Foundations: Color](/invoca-design-system/foundations/color)'s own constraint applied
   to a new case, not a new rule. Pair any treatment with text or an icon.
 - If the treatment carries text (a tinted card with a summary inside it), that text meets
-  WCAG 2.2 AA against the surface it sits on, exactly as `TITAN-COLOR-02` already requires
-  for every other surface.
+  WCAG 2.2 AA against the surface it sits on, exactly as
+  [Color's own contrast requirement](/invoca-design-system/foundations/color#constraints)
+  already requires for every other surface.
 - A treatment that reads correctly in light mode but has no stated dark-mode value is not a
   complete decision — see [Gaps](#gaps).
 
@@ -77,8 +72,8 @@ eventually adopts needs an icon or text partner from that page or from
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-AICOLOR-01** | An AI color treatment reuses an existing semantic or component token. It never introduces a new hue or literal for "AI." | Mirrors `TITAN-COLOR-04` and `TITAN-COLOR-05` — a new meaning met by a new hex is exactly what Titan's status model forbids, and an "AI purple" carries the same distinguishability problem at higher stakes. |
-| **TITAN-AICOLOR-02** | Color is never the only signal that content is AI-generated. Pair with text or an icon. | Restates `TITAN-COLOR-03` for this case: color vision deficiency and forced-colors contexts remove color as a channel entirely. |
+| **TITAN-AICOLOR-01** | An AI color treatment reuses an existing semantic or component token. It never introduces a new hue or literal for "AI." | Mirrors [Color's own no-local-override rule](/invoca-design-system/foundations/color#constraints) and its four-statuses rule — a new meaning met by a new hex is exactly what Titan's status model forbids, and an "AI purple" carries the same distinguishability problem at higher stakes. |
+| **TITAN-AICOLOR-02** | Color is never the only signal that content is AI-generated. Pair with text or an icon. | Restates [Color's own constraint](/invoca-design-system/foundations/color#constraints) for this case: color vision deficiency and forced-colors contexts remove color as a channel entirely. |
 | **TITAN-AICOLOR-03** | An AI color treatment never reuses a status color (`info`, `success`, `warning`, `error`) to mean "this is AI." | The four statuses are load-bearing everywhere else in the product. If an informational tint also means "AI wrote this," the two meanings collide the first time an AI answer needs to show a real status too. |
 | **TITAN-AICOLOR-04** | Where no AI color treatment has been decided for a feature, its output renders with Titan's ordinary component tokens and no special tint. | An undecided treatment should render as undecided, not as a silent default that reads as a choice. |
 
@@ -115,5 +110,12 @@ scratch, with the added risk that "AI" and "error" are exactly the two meanings 
 to need to render on the same card at once.
 
 Keeping the treatment inside the existing token set — rather than granting Identifiers its
-own palette — is the same discipline `TITAN-FND-04` applies everywhere else: a new need is
-met by a proposal, never by a local override.
+own palette — is the same discipline
+[Foundations' own no-local-override rule](/invoca-design-system/foundations/overview#constraints)
+applies everywhere else: a new need is met by a proposal, never by a local override.
+
+## Status
+
+**No visual identity has been decided for any Invoca agentic feature yet.** This page
+proposes a framework for making that decision — it is not the decision itself. See
+[Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).

@@ -5,12 +5,6 @@ icon: "trash-2"
 keywords: ["delete", "confirm", "are you sure", "undo", "irreversible", "danger"]
 ---
 
-<Warning>
-  **Exemplar page — first pass.** This is a *proposal* for review, not established policy.
-  The thresholds in [TITAN-DESTROY-01](#constraints) especially are judgment calls that
-  should be checked against real Invoca product flows before adoption.
-</Warning>
-
 ## The problem
 
 A user is about to do something that destroys work: delete a campaign, discard unsaved
@@ -41,6 +35,15 @@ flowchart TD
   user who made a mistake. Building soft-delete so undo is possible is nearly always the
   better investment over adding a dialog.
 </Tip>
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Destructive | Dangerous, unsafe, irreversible | **Destructive** — an action that removes or hides data, whether or not it can eventually be recovered |
+| Confirm | Verify, double-check, "are you sure" | **Confirm** — a deliberate second step the reader takes before a destructive action runs |
+| Cascade | Dependent deletion, cleanup | **Cascade** — a destructive action's effect on objects the reader did not directly select |
+| Undo | Revert, rollback, unwind | **Undo** — reversing an action within the same session, with no confirmation step at all |
 
 ## When this applies
 
@@ -82,8 +85,7 @@ flowchart TD
 ```
 
 <Warning>
-  **The destructive action is never the `contained` Button.** See
-  [TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints). Weight is an invitation. The
+  **The destructive action is never the `contained` Button.** Weight is an invitation. The
   interface should be easy to escape and deliberate to commit. Severity is carried by the
   copy and the friction, not by making the dangerous control the most attractive one.
 </Warning>
@@ -110,7 +112,6 @@ flowchart TD
   └─────────────────────────────────────────────┘
   ```
 
-  See [TITAN-DESTROY-10](#constraints).
 </Note>
 
 ## Three tiers of friction
@@ -155,7 +156,7 @@ everywhere — it just takes longer to show up.
 | Success | Dialog closes, [Toast](/invoca-design-system/components/feedback/toast) confirms with the object's name |
 | Failure | Dialog stays open, [Alert](/invoca-design-system/components/feedback/alert) appears inside it. **Never close a dialog on failure** — closing discards the user's context and they cannot tell whether it worked. |
 | Object changed while dialog was open | Re-fetch on confirm. If it changed, show the change and require re-confirmation. |
-| Object has dependents | The body states what else is affected — deleted with it, or orphaned instead — alongside the object's own consequence. See [TITAN-DESTROY-10](#constraints). |
+| Object has dependents | The body states what else is affected — deleted with it, or orphaned instead — alongside the object's own consequence. |
 
 ## Constraints
 
@@ -165,12 +166,12 @@ everywhere — it just takes longer to show up.
 | **TITAN-DESTROY-02** | The dialog title names the specific object. | "Delete this item?" gives the user nothing to check against. Naming the object is what allows them to catch that they selected the wrong row. |
 | **TITAN-DESTROY-03** | The body states the consequence in outcomes, not mechanics. | "Reporting for 1,284 calls will no longer be available" is checkable. "This will delete the record" is not. |
 | **TITAN-DESTROY-04** | Confirm button restates the action. Never "Yes", "OK", or "Confirm". | At the moment of commitment the user should not have to re-read the question to know what the button does. |
-| **TITAN-DESTROY-05** | The destructive action is `outlined`; Cancel is `text` and comes first. | See [TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-DESTROY-05** | The destructive action is `outlined`; Cancel is `text` and comes first. | Weight is an invitation — the most visually prominent control on screen is where a reflex click lands, and that should never be the destructive one. |
 | **TITAN-DESTROY-06** | Initial focus is on Cancel. | <kbd>Enter</kbd> on an unfamiliar dialog is common. The default outcome of a reflex should be the safe one. |
 | **TITAN-DESTROY-07** | Typed confirmation is reserved for unrecoverable or externally-visible actions. | Its effectiveness is a function of its rarity. |
 | **TITAN-DESTROY-08** | Never stack a second confirmation on a confirmation. | Two dialogs do not double the protection. They teach the user that dismissing dialogs is the normal path. |
 | **TITAN-DESTROY-09** | On failure, the dialog stays open and shows the error inline. | Closing on failure discards context and leaves the user unable to determine what happened. |
-| **TITAN-DESTROY-10** | A cascading delete's confirmation names what else is affected alongside the primary object — deleted with it, or orphaned instead — not just the object the reader selected. | The consequence must be stated in outcomes per [TITAN-DESTROY-03](#constraints), and a cascade's consequence includes objects the reader didn't select. |
+| **TITAN-DESTROY-10** | A cascading delete's confirmation names what else is affected alongside the primary object — deleted with it, or orphaned instead — not just the object the reader selected. | The consequence must be stated in outcomes, not mechanics, and a cascade's consequence includes objects the reader didn't select. |
 | **TITAN-DESTROY-11** | Where a cascade orphans a dependent rather than deleting it, the dialog states which of the two happens, for which dependent. | "Deleted" and "orphaned" leave the product in different states — an orphaned object still exists and may need separate cleanup; a deleted one does not. |
 
 ## Constraints Titan should enforce
@@ -201,9 +202,11 @@ is about the outcome. Someone who is sure they selected the right row, but didn'
 
 - Dialog uses `role="dialog"` with `aria-modal="true"`; title is referenced by `aria-labelledby`.
 - Focus is trapped for the dialog's lifetime and returns to the triggering control on close.
-- Initial focus lands on **Cancel** — see [TITAN-DESTROY-06](#constraints).
+- Initial focus lands on **Cancel**, so a reflex <kbd>Enter</kbd> on an unfamiliar dialog lands
+  on the safe outcome.
 - <kbd>Escape</kbd> always closes without acting.
-- The consequence text must be in the accessible description, not conveyed by an icon or by red text alone — see [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+- The consequence text must be in the accessible description, not conveyed by an icon or by red
+  text alone — color is never the only carrier of meaning.
 - Typed confirmation inputs need a visible label stating exactly what to type; do not rely on placeholder text, which disappears on focus.
 
 ## Variations
@@ -211,8 +214,8 @@ is about the outcome. Someone who is sure they selected the right row, but didn'
 | Variation | When | Change |
 |---|---|---|
 | Bulk destructive | Multiple objects selected | Title states the count; body names the highest-consequence item; a single confirmation covers the batch. See [Bulk selection](/invoca-design-system/patterns/bulk-selection#variations), which routes into this variation rather than confirming per row. |
-| Cascade deletes dependents | Dependents have no independent purpose — a routing rule built only for this campaign | Body states they're deleted too. See [TITAN-DESTROY-10](#constraints). |
-| Cascade orphans dependents | Dependents can exist without the parent — a tag also applied elsewhere | Body states they're kept but disconnected, not deleted. See [TITAN-DESTROY-11](#constraints). |
+| Cascade deletes dependents | Dependents have no independent purpose — a routing rule built only for this campaign | Body states they're deleted too. |
+| Cascade orphans dependents | Dependents can exist without the parent — a tag also applied elsewhere | Body states they're kept but disconnected, not deleted. |
 | Destructive with a safer alternative | Archive exists alongside delete | Offer Archive as the `outlined` action and demote Delete to `text` |
 | Scheduled destructive | Deletion happens after a grace period | No confirmation dialog. State the deletion date and offer cancellation until then. |
 
@@ -227,7 +230,7 @@ severe and behaves as an invitation — the most prominent, most attractive cont
 screen is the destructive one. Users click the biggest button.
 
 **"Are you sure?" with Yes/No.** Ambiguous at the moment of commitment, and it tests the
-wrong thing. See [TITAN-DESTROY-04](#constraints).
+wrong thing — the user's confidence, not the outcome they're about to cause.
 
 **Delete with no undo and no confirmation.** Occasionally shipped on the reasoning that
 the action is "obviously intentional." Mis-clicks are not intentional, and neither is
@@ -239,14 +242,48 @@ mistakes — the user who confidently deletes the wrong campaign passes the dial
 hesitating. Where the data matters, build the recovery.
 
 **A cascade delete whose dialog only names the primary object.** The reader discovers what
-else disappeared only after confirming — see [TITAN-DESTROY-10](#constraints).
+else disappeared only after confirming.
 
 **Treating "orphaned" and "deleted" as the same outcome in the dialog copy.** They leave the
-product in different states, and the reader needs to know which one they're choosing — see
-[TITAN-DESTROY-11](#constraints).
+product in different states, and the reader needs to know which one they're choosing.
+
+## Known issues
+
+No divergence or open decision is currently recorded specifically for Destructive
+confirmation. The nearest related entry is
+[TITAN-DIALOG-01](/invoca-design-system/components/containment/dialog#constraints)'s
+raw-`Dialog`-vs-`Modal` naming, inherited by composition rather than specific to this pattern.
+
+## Gaps in the current rules
+
+- Whether a grace-period "scheduled destructive" action (see [Variations](#variations)) needs
+  its own cancellation UI beyond stating the deletion date.
+- What happens when the object being deleted was already removed by someone else between the
+  dialog opening and the confirm press — a stricter case than a simple re-fetch resolves.
+- Whether typed confirmation's match is case-sensitive, and whether it tolerates trailing
+  whitespace. Neither is stated anywhere.
+
+## Why it works this way
+
+**Friction is the scarce resource this pattern spends.** A dialog only protects the reader if
+seeing one still means something, and every dialog shown for a low-consequence action spends
+down the attention the next, real one needs. That's why confirmation is reserved for what undo
+cannot cover, rather than the default for anything labeled "delete" — a product that confirms
+everything has, in practice, stopped confirming anything.
+
+**Three tiers exist because friction that doesn't match consequence fails in both directions.**
+Tier 3's typed confirmation only works because it is rare; using it at tier 2's frequency would
+train the same click-through reflex a dialog is meant to prevent. Matching the tier to what's
+actually at stake is what keeps the heaviest tier effective.
 
 ## Related
 
 [CRUD overview](/invoca-design-system/patterns/crud/overview), for how this pattern is the
 whole answer to CRUD's Delete operation — there is no separate Delete page. [Bulk selection](/invoca-design-system/patterns/bulk-selection),
 which routes into this page's bulk-destructive variation rather than confirming per row.
+
+## Status
+
+**Exemplar page — first pass.** This is a *proposal* for review, not established policy.
+The tier thresholds especially are judgment calls that should be checked against real Invoca
+product flows before adoption.

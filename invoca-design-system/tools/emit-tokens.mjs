@@ -400,7 +400,7 @@ const modeNote = (recs) => {
   **Default mode only.** Values above are the light color scheme at comfortable density.
   Of these tokens, ${parts.join(" and ")}. Those modes ship in code but carry no
   design decision, so this documentation does not define them — see
-  [TITAN-GAP-01](/foundations/open-decisions#titan-gap-01).
+  [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
 </Note>
 `;
 };
@@ -478,7 +478,7 @@ Tier 1. The raw ramps, ${primitives.filter((p) => p.segments[0] === "color").len
   **Primitives never appear in component code.** They exist to be aliased by semantic
   tokens, which is where meaning is attached. A primitive carries a value and no intent —
   reaching for one directly means the reason you chose it is recorded nowhere. See
-  [TITAN-FND-01](/foundations/overview#constraints).
+  [TITAN-FND-01](/invoca-design-system/foundations/overview#constraints).
 </Warning>
 
 <Color variant="table">
@@ -514,7 +514,7 @@ ${table(["Token", "Value", "Aliases", "Definition", "From"], rows)}
 <Warning>
   **Definition coverage: ${definedC} of ${semanticColors.length} semantic color tokens.**
   An em-dash means nothing was recorded; *implementation note* means something was recorded but
-  it describes build mechanism rather than purpose. In both cases the only real guide is the name. See [TITAN-GAP-02](/foundations/open-decisions#titan-gap-02).
+  it describes build mechanism rather than purpose. In both cases the only real guide is the name. See [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
 </Warning>
 ${modeNote(semanticColors)}`
   );
@@ -558,7 +558,7 @@ ${sections.join("\n\n")}
   **No semantic focus token exists.** Three component-scoped focus rings ship —
   \`form-field-focus-ring\`, \`form-field-focus-ring-error\`, and \`data-grid-focus-ring\` —
   each authored independently against a primitive. There is no token a new component can
-  reach for. See [TITAN-DIV-02](/foundations/divergences#titan-div-02).
+  reach for. See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02).
 </Warning>
 
 ${table(
@@ -614,7 +614,7 @@ ${table(["Token", "Value", "px", "Definition", "From"], rows)}
 
 <Warning>
   **Definition coverage: ${definedS} of ${recs.length} spacing tokens.** Nothing records which gap each
-  step is for. See [TITAN-GAP-02](/foundations/open-decisions#titan-gap-02).
+  step is for. See [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
 </Warning>
 
 <Warning>
@@ -655,7 +655,7 @@ ${table(["Variant", "Size", "Line height", "Weight", "Letter spacing", "Other"],
   **${variants.length} variants are defined, but only eleven are the design vocabulary.**
   \`<Typography>\` exposes eleven names; the rest exist in the scale without being reachable
   through it. Choose from the eleven. See
-  [TITAN-DIV-04](/foundations/divergences#titan-div-04).
+  [TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04).
 </Note>
 
 Type is mode-independent — it does not vary with color scheme or density.
@@ -694,7 +694,7 @@ Each \`-main\` token aliases its \`-1\` sibling.
 <Warning>
   **Definition coverage: ${definedSh} of ${shadows.length} shadow tokens.** Nothing
   records which surface each level is for, so the mapping on the elevation page is a proposal. See
-  [TITAN-GAP-02](/foundations/open-decisions#titan-gap-02).
+  [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
 </Warning>
 
 ### Z-index
@@ -705,7 +705,7 @@ ${table(["Token", "Value", "Definition", "From"], zRows)}
   **This ladder does not cover every layer that stacks.** Drawers and toasts take their
   stacking from the underlying component library, not from a token, so a Titan surface at
   \`z-overlay\` can sit *below* them. See
-  [Elevation](/foundations/elevation#the-ladder-has-holes).
+  [Elevation](/invoca-design-system/foundations/elevation#the-ladder-has-holes).
 </Warning>
 ${modeNote(shadows.concat(z))}`
   );
@@ -735,7 +735,7 @@ ${
     ? `<Warning>
   **None of the ${radii.length} radius tokens carries a definition that states intent.** Nothing records
   which surface gets which value, so the mapping on this page is a proposal. See
-  [TITAN-GAP-02](/foundations/open-decisions#titan-gap-02).
+  [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02).
 </Warning>`
     : ""
 }
@@ -828,7 +828,7 @@ Only icons in that index may be used.
 <Warning>
   Icon colors carry the same values as their \`text-*\` counterparts, so they inherit the
   same contrast results. \`icon-success\` and \`icon-warning\` fall below the 3:1 non-text
-  minimum — see [contrast](/foundations/accessibility#contrast).
+  minimum — see [contrast](/invoca-design-system/foundations/accessibility#contrast).
 </Warning>
 ${modeNote(sizes.concat(colors))}`
   );
@@ -907,7 +907,7 @@ The grid is 12 columns.
   **Titan defines no grid specification.** There is no columns-per-breakpoint table, no
   gutter scale, and no page margin scale. This is a gap rather than an omission from this
   page: the values do not exist to emit. See
-  [TITAN-DIV-08](/foundations/divergences#titan-div-08).
+  [TITAN-DIV-08](/invoca-design-system/foundations/divergences#titan-div-08).
 </Warning>
 `
   );
@@ -969,7 +969,7 @@ ${table(["Token", "Aliases", "Recorded definition", "From"], rows)}
   **This is invisible in the resolved output.** \`theme.tokens\` and the token manifest
   publish leaf values, so a token that skipped the semantic tier looks identical to one that
   did not. It shows only in the DTCG source. See
-  [TITAN-DIV-01](/foundations/divergences#titan-div-01).
+  [TITAN-DIV-01](/invoca-design-system/foundations/divergences#titan-div-01).
 </Warning>
 `
   );

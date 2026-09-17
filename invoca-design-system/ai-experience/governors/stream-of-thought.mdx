@@ -5,12 +5,6 @@ icon: "scroll-text"
 keywords: ["stream of thought", "chain of thought", "reasoning trace", "progress narration", "agentic", "transparency", "governor"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
-  yet. Nothing below is code fact or measured behavior — it is a proposal for review. See
-  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
-</Warning>
-
 ## What it is
 
 A call center manager asks an agentic feature a question that requires touching a batch of
@@ -135,7 +129,7 @@ Not evaluated. No eval set exists for step accuracy, step relevance, or narratio
 - An indeterminate wait inside a single step (no known duration) needs a non-visual equivalent
   to a spinner — a periodic textual update ("still checking transcripts"), not silence.
 - If any step marks itself uncertain, that is text, never color alone — see
-  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - Focus stays on the control that triggered the run; it does not jump on every step change.
   When the step list is replaced by the final answer, the live region announces completion and
   focus moves to the answer's heading.
@@ -159,9 +153,9 @@ Not applicable. Nothing is shipped yet to diverge from.
 ## Gaps
 
 - Whether steps come from the model's own internal reasoning trace or from a separately
-  instrumented pipeline log is undecided — this determines whether TITAN-SOT-07 is even
-  enforceable, since a model that produces no inspectable intermediate state has no real steps
-  to narrate.
+  instrumented pipeline log is undecided — this determines whether this page's no-fabricated-steps
+  rule is even enforceable, since a model that produces no inspectable intermediate state has no
+  real steps to narrate.
 - Whether this pattern applies to Signal AI's existing single-call transcript summary at all is
   undecided — a single call likely resolves fast enough that narrating steps may not be
   warranted; see [Skeleton](/invoca-design-system/components/feedback/skeleton) as the
@@ -204,4 +198,10 @@ box — the same run either produces steps a knowledgeable user can catch a mism
 doesn't, and that is a fact about the run, not a matter of framing. It also forces a discipline
 a decorative spinner never demands: because a step's text is a claim someone can check, the
 engineering behind it has to produce something real to narrate, which is exactly the property
-TITAN-SOT-07 is written to protect.
+this page's no-fabricated-steps rule is written to protect.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No Invoca product ships this pattern
+yet. Nothing below is code fact or measured behavior — it is a proposal for review. See
+[Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).

@@ -6,16 +6,6 @@ tag: "Draft"
 keywords: ["list view", "table", "data grid", "collection", "index page", "rows"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
-  page — Titan's design library was not available while writing it. It is built from general
-  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
-  [Filtering & search](/invoca-design-system/patterns/filtering-and-search), and
-  [Bulk selection](/invoca-design-system/patterns/bulk-selection) already establish. Treat
-  every constraint below as a starting point to check against real product screens, not as a
-  rule already enforced.
-</Warning>
-
 ## What it is
 
 A page whose body is **one table of objects of the same kind** — campaigns, numbers, calls,
@@ -59,7 +49,7 @@ published, and the frame's vocabulary is the vocabulary here.
 | `Tabs` | No | `tablist` | Inside the header. Sections of the same collection, when it has them. |
 | `Controls` | Yes | `search` when primarily search | Search, filters, view switches. |
 | `Contents` | Yes | `main` | The table, and nothing else. |
-| `Footer` | No | `contentinfo` | Absent by default. A list page browses and acts per-row or per-batch; it has no single, whole-page commit for a footer to hold. If pagination ever needs a page-level home rather than living inside the table (see [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)), the footer is the candidate region — undecided until that gap closes. |
+| `Footer` | No | `contentinfo` | Absent by default. A list page browses and acts per-row or per-batch; it has no single, whole-page commit for a footer to hold. If pagination ever needs a page-level home rather than living inside the table, the footer is the candidate region — undecided until that gap closes (see [Known issues](#known-issues)). |
 
 ## What fills each region
 
@@ -99,16 +89,15 @@ decide separately:
 
 ### Header — Right
 
-**One primary action, and it creates a member of the collection** — see
-[TITAN-VIEW-04](/invoca-design-system/views/overview#constraints). Which surface that action
+**One primary action, and it creates a member of the collection.** Which surface that action
 opens is not this archetype's decision: it's whatever
 [CRUD: Create](/invoca-design-system/patterns/crud/create#choosing-a-surface)'s tree selects
 for this collection's object type. A list page composes Create; it does not re-decide it.
 
 **Bulk actions are not header actions.** The design library puts them in a selection bar that
 appears in the table's own toolbar when rows are selected — see
-[TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19) and
-[Bulk selection](/invoca-design-system/patterns/bulk-selection).
+[Bulk selection](/invoca-design-system/patterns/bulk-selection) and
+[Known issues](#known-issues) for the gap between that design and what code ships today.
 
 ## Responsive and density behavior
 
@@ -125,10 +114,9 @@ phone-first behavior.
 
 <Note>
   **Which columns collapse first is a per-page decision, not this archetype's.** The archetype
-  requires that *something* collapses before the table forces horizontal scrolling — per
-  [TITAN-VIEW-07](/invoca-design-system/views/overview#constraints), a dropped region is never
-  the only route to a function, so a collapsed column's data must stay reachable from the row
-  even once it's off the grid.
+  requires that *something* collapses before the table forces horizontal scrolling — a dropped
+  region is never the only route to a function, so a collapsed column's data must stay reachable
+  from the row even once it's off the grid.
 </Note>
 
 ## Accessibility
@@ -143,9 +131,8 @@ What is **specific to this archetype**:
   the table region itself, so a screen-reader user landing on it via the `main` landmark knows
   what they've reached without reading the `Title` again.
 - **Sort state is announced on change**, stated as a plain sentence — "Sorted by calls,
-  descending" — not inferred from an arrow glyph on the column header alone, per
-  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints)'s general rule that a
-  visual-only signal isn't sufficient.
+  descending" — not inferred from an arrow glyph on the column header alone, since a
+  visual-only signal is never sufficient.
 - **Row selection is announced the way [Bulk selection](/invoca-design-system/patterns/bulk-selection#accessibility)
   already specifies** — a live region stating the count on change. This archetype doesn't
   re-decide it.
@@ -154,18 +141,18 @@ What is **specific to this archetype**:
   [Controls — narrowing the list](#controls-narrowing-the-list) above.
 - **A row action's accessible name includes the row's identifying value** — "Delete Q3 Paid
   Search," not "Delete" — so a screen-reader user tabbing through a column of identical row
-  actions can tell them apart without cross-referencing the visual row. Matches the reasoning
-  behind [TITAN-CHK-02](/invoca-design-system/components/forms/checkbox#constraints) for the
-  same column-of-identical-controls problem.
+  actions can tell them apart without cross-referencing the visual row. The same
+  column-of-identical-controls problem Checkbox's own page already states for a row of
+  selection controls.
 
 ## Constraints
 
 | ID | Constraint | Rationale |
 |---|---|---|
 | **TITAN-LSTVIEW-01** | The table is the whole body. Nothing else shares `Contents` on a list view. | A list page that also carries a summary strip or a chart has no single job — see [Why it works this way](#why-it-works-this-way). A page that needs both is a [Dashboard](/invoca-design-system/views/dashboard) with a table on it. |
-| **TITAN-LSTVIEW-02** | The header's primary action creates a member of the collection, and opens whatever surface [CRUD: Create](/invoca-design-system/patterns/crud/create#choosing-a-surface) selects for that object type. | Per [TITAN-VIEW-04](/invoca-design-system/views/overview#constraints) — one primary action — and per [TITAN-CRUD-01](/invoca-design-system/patterns/crud/overview#constraints), the surface is Create's decision, not this archetype's. |
+| **TITAN-LSTVIEW-02** | The header's primary action creates a member of the collection, and opens whatever surface [CRUD: Create](/invoca-design-system/patterns/crud/create#choosing-a-surface) selects for that object type. | At most one primary action per page, and the surface is Create's decision, not this archetype's. |
 | **TITAN-LSTVIEW-03** | A row-level action never duplicates the header's primary action. | The header action creates; a row action acts on something that already exists. The same label on both reads as the row action creating a second object. |
-| **TITAN-LSTVIEW-04** | Bulk actions render in the table's own selection bar, never in the header. | See [TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19) — the header has no selection-count context; the table does. |
+| **TITAN-LSTVIEW-04** | Bulk actions render in the table's own selection bar, never in the header. | The header has no selection-count context; the table does — see [Known issues](#known-issues) for the gap between that design and what code ships today. |
 | **TITAN-LSTVIEW-05** | The result count is always visible in `Controls`, whether or not a filter is active. | An unfiltered collection still answers "how many," and a filtered one needs the count to confirm the filter did something — see [Controls — narrowing the list](#controls-narrowing-the-list). |
 
 ## Known issues
@@ -211,3 +198,13 @@ additions — a summary strip above the rows, a chart beside them, a panel of re
 and each one is defensible on its own. The composite is a page with no single job, and the
 reader who came to find one row now scans three regions to do it. A page that needs those
 things is a [dashboard](/invoca-design-system/views/dashboard) with a table on it, and that is a different archetype.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+page — Titan's design library was not available while writing it. It is built from general
+interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+[Filtering & search](/invoca-design-system/patterns/filtering-and-search), and
+[Bulk selection](/invoca-design-system/patterns/bulk-selection) already establish. Treat
+every constraint below as a starting point to check against real product screens, not as a
+rule already enforced.

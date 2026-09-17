@@ -27,16 +27,14 @@ keywords: ["synonyms", "what people call this situation before they know the pat
     [DEC] design intent  — normative. What to build.
     [DIV] divergence     — where the two disagree. Links to /foundations/divergences.
 
+  The body is direction only — no note about this page's own status, research pass,
+  or sign-off state, and no ALLCAPS-ID citations peppered through the prose. Provenance,
+  coverage, and sign-off state live in ONE place: the Status section that closes the
+  page. A constraint may be marked Proposed in the Constraints table itself; the page
+  never opens with a banner saying so.
+
   Delete these comment blocks when you author a real page.
 */}
-
-<Note>
-  **Everything on this page is design intent**, not generated — a pattern has no export and
-  therefore no source to emit from. Constraints are **Proposed** until signed off. Values
-  referenced here come from the [foundations](/invoca-design-system/foundations/overview); disagreements between
-  the design language and the shipped code are recorded in
-  [Divergences](/invoca-design-system/foundations/divergences).
-</Note>
 
 ## The problem
 
@@ -141,7 +139,9 @@ a live region, a focus move, or a role change.
      (TITAN-DESTROY-01, TITAN-FILTER-01) — not a generic PAT prefix. Every
      pattern sharing one area code guarantees number collisions across pages.
 
-     IDs are permanent. Deprecate, never renumber. */}
+     IDs are permanent. Deprecate, never renumber. A rule that REVERSES an earlier
+     one gets a new ID — never rewrite what an existing ID says. Leave the old
+     entry in place, marked superseded, pointing at its replacement. */}
 
 | ID | Constraint | Rationale |
 |---|---|---|
@@ -195,3 +195,15 @@ a live region, a focus move, or a role change.
 {/* Components this pattern composes, neighbouring patterns, and the views that
      use it. Derive the component list from the Structure table above rather than
      assuming. */}
+
+## Status
+
+{/* Closes the page. The only place provenance, coverage, and sign-off state
+     appear — nowhere else on this page notes any of it.
+
+     | | |
+     |---|---|
+     | **Constraints** | Proposed / signed off, and which IDs. |
+     | **Decided** | What is a made design decision versus still a proposal. |
+     | **Provenance** | How this page was built — from what, checked against what. |
+     | **Open** | Pointer to Gaps and Known issues, not a restatement of them. */}

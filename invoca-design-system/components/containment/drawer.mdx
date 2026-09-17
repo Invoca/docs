@@ -28,7 +28,7 @@ Hand-confirmed from source — no prop emitter has run for this component yet.
 | `open` | `boolean` | Required. |
 | `onClose` | `() => void` | Callback fired when the Drawer requests to close. |
 | `width` | `"small" \| "medium" \| "large"` | Default `"small"`. Maps to 500px / 800px / 1200px — see [Tokens](#tokens). |
-| `footerContent` | `ReactNode` | Optional. Rendered after the scrollable content area, outside its padding. |
+| `footerContent` | `ReactNode` | Optional. Pinned below the scrollable content, sticky to the drawer's bottom edge. |
 | `wrapContent` | `boolean` | Default `true`. When `true`, children render inside a `Typography` wrapper; when `false`, children render directly, for a custom layout. |
 
 Every other prop of the underlying side-panel primitive is forwarded through except `anchor`,
@@ -70,10 +70,14 @@ source. Height is always full-viewport; there is no size preset for height.
 
 - **Only one anchor exists.** The component hardcodes `anchor="right"` and omits `anchor` from
   its own prop type entirely — a left, top, or bottom Drawer is not possible through this
-  component. See [TITAN-DRAWER-01](#constraints).
-- **The footer is unstyled.** `footerContent` renders with no padding, border, or background of
-  its own — confirmed from source, which places it as a plain sibling after the padded content
-  `Box`. Any visual separation from the content area is the caller's responsibility.
+  component.
+- **`footerContent` is the drawer's own footer, and it commits the drawer's fields only** — not
+  the view behind it, which keeps its own footer and is inert while the drawer is open. See
+  [Footers](/invoca-design-system/patterns/footers#constraints), which covers this rule.
+- **The footer is unpadded and unbordered, but not unstyled.** `footerContent` renders inside a
+  wrapper that is sticky to the drawer's bottom edge, opaque (`background-default`), and stacked
+  above the body — confirmed from source. It carries no padding and no border of its own, so
+  spacing inside it and separation from the content above are the caller's responsibility.
 
 ## Tokens
 
@@ -132,7 +136,7 @@ true everywhere it appears, rather than checking each instance.
 | | |
 |---|---|
 | **Package** | `@invoca/titan-core` |
-| **Version** | 3.6.3 (hand-confirmed from `package.json` at research time — check current for drift) |
+| **Version** | 3.7.1 (hand-confirmed from `package.json` — check current for drift) |
 | **Exports covered on this page** | `Drawer` |
 
 <Note>
@@ -147,5 +151,6 @@ Hand-confirmed from `utilization.md` — no utilization emitter has run for this
 22 usages across 9 applications, the heaviest being **ai-agent-studio** (9, mostly editing
 workflow actions, intents, and version comparisons) and **reporting-thoughtspot** (3).
 
+- [Footers](/invoca-design-system/patterns/footers) — which surface owns a commit, and why a drawer's footer covers the drawer's fields rather than the view behind it
 - [Dialog](/invoca-design-system/components/containment/dialog) — for a task that should block the rest of the page
 - [Panel](/invoca-design-system/components/containment/panel) — for a persistent region that is not an overlay

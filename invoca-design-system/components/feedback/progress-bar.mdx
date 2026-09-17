@@ -41,7 +41,7 @@ hand-confirmed rather than generated.
 <Warning>
   **The package exports this as `LinearProgress`, not `ProgressBar`.** This page's name is the
   design vocabulary's term for the concept; `LinearProgress` is the import. This is the same
-  pattern [TITAN-DIV-10](/invoca-design-system/foundations/divergences#titan-div-10) records for
+  pattern the [naming divergence](/invoca-design-system/foundations/divergences#titan-div-10) records for
   Table/`DataGrid`, Switch/`Toggle`, and others, and it already lists this exact mapping —
   ProgressBar is `LinearProgress`.
 </Warning>
@@ -115,7 +115,7 @@ across every use — there is no small/medium distinction the way Button or Text
 | `variant="determinate"` with no `value` | Renders at the type's default, `0` — an apparently-stuck, empty bar | Always pass a `value` alongside `determinate`. |
 | `value` outside 0–100 | Not clamped in source | Clamp the value yourself before passing it. What renders outside the range is undemonstrated by any story. |
 | Left at the default `variant` while a real percentage exists | Renders `indeterminate` — animates instead of showing the actual number | Set `variant="determinate"` explicitly whenever a real value is available; the default does not infer this from the presence of a `value` prop. |
-| The process never completes | An indeterminate bar animates forever; a determinate one sits at whatever value it was last given | Same failure mode as an unresolved Skeleton — see [TITAN-SKL-03](/invoca-design-system/components/feedback/skeleton#constraints). Time out and show an [Alert](/invoca-design-system/components/feedback/alert). |
+| The process never completes | An indeterminate bar animates forever; a determinate one sits at whatever value it was last given | Same failure mode as an unresolved Skeleton — see [Skeleton's own constraints](/invoca-design-system/components/feedback/skeleton#constraints). Time out and show an [Alert](/invoca-design-system/components/feedback/alert). |
 
 ## Tokens
 
@@ -196,7 +196,7 @@ decision made about ProgressBar on its own.
 | | |
 |---|---|
 | Package | `@invoca/titan-core` |
-| Version | `3.6.3` |
+| Version | `3.7.1` |
 | Exports covered | `LinearProgress` |
 
 <Note>

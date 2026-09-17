@@ -6,16 +6,6 @@ tag: "Draft"
 keywords: ["split view", "master detail", "list detail", "two pane", "side by side", "selection"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
-  page — Titan's design library was not available while writing it. It is built from general
-  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
-  [List view](/invoca-design-system/views/list-view), [Detail view](/invoca-design-system/views/detail-view),
-  and [CRUD: Read](/invoca-design-system/patterns/crud/read) already establish. Treat every
-  constraint below as a starting point to check against real product screens, not as a rule
-  already enforced.
-</Warning>
-
 ## What it is
 
 A page whose body holds a **list and a detail pane side by side** — a narrower version of
@@ -33,8 +23,7 @@ and [Detail view](/invoca-design-system/views/detail-view) costs more than it's 
 
 ## Region vocabulary
 
-**This archetype adds no regions, but it changes how one is used.** Per
-[TITAN-VIEW-06](/invoca-design-system/views/overview#constraints), a page has exactly one
+**This archetype adds no regions, but it changes how one is used.** A page has exactly one
 `Contents`, and a split view does not violate that by having a list and a detail pane — it is
 **one `Contents` region, internally divided into two panes**: a narrower list pane and a wider
 detail pane. The panes are not two `Contents` regions any more than a tabbed body's `TabPanel`s
@@ -129,9 +118,9 @@ per [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states#w
 Selecting a row in the list pane updates the detail pane in place — no navigation, no page
 reload of the list pane.
 
-**Selection changes the URL.** [TITAN-VIEW-14](/invoca-design-system/views/overview#constraints)
-requires this for tabs because a section that exists only in local state cannot be linked,
-survive a reload, or be reached by the back button. The same reasoning applies to a selected
+**Selection changes the URL.** The frame requires this for tabs because a section that exists
+only in local state cannot be linked, survive a reload, or be reached by the back button. The
+same reasoning applies to a selected
 record: a reader who wants to send a colleague "this campaign, in this view" or refresh the page
 mid-review needs the selection to be more than component state. A split view's selected row is
 functionally the same kind of navigable state a tab is — a piece of "where am I" that the reader
@@ -191,11 +180,11 @@ What is **specific to this archetype**:
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-SPLITVIEW-01** | The list pane and detail pane share one `Contents` region. They are never modeled as two separate `Contents`. | Per [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints) — one `Contents` per page, carrying the `main` landmark once. |
+| **TITAN-SPLITVIEW-01** | The list pane and detail pane share one `Contents` region. They are never modeled as two separate `Contents`. | One `Contents` per page, carrying the `main` landmark once. |
 | **TITAN-SPLITVIEW-02** | The list pane's column behavior at reduced width follows [List view](/invoca-design-system/views/list-view)'s own column-collapse logic. This archetype does not define a second one. | A second, slightly different collapse rule for the same table shape is the kind of drift that makes two pages of the same collection look inconsistent for no reason tied to the data. |
 | **TITAN-SPLITVIEW-03** | The detail pane's content model is [Detail view](/invoca-design-system/views/detail-view)'s, condensed for pane width. The two pages cite each other rather than each specifying attribute-group and related-data behavior independently. | Two independently-maintained descriptions of the same content for the same object type diverge the first time one of them is updated and the other isn't. |
-| **TITAN-SPLITVIEW-04** | Selecting a row changes the URL to a state that resolves back to that same selection on reload or when shared. | Matches [TITAN-VIEW-14](/invoca-design-system/views/overview#constraints)'s reasoning for tabs — a selection that exists only in local state cannot be linked, reloaded, or reached by the back button. |
-| **TITAN-SPLITVIEW-05** | Below the two-pane breakpoint, the split collapses to the list pane alone. The detail pane never squeezes into an unreadable sliver instead of collapsing. | Per [TITAN-VIEW-07](/invoca-design-system/views/overview#constraints) — a region dropped at a narrow viewport is never the only route to a function, so the detail content must still be fully reachable, just through a different surface. |
+| **TITAN-SPLITVIEW-04** | Selecting a row changes the URL to a state that resolves back to that same selection on reload or when shared. | Matches the same reasoning tabs already follow — a selection that exists only in local state cannot be linked, reloaded, or reached by the back button. |
+| **TITAN-SPLITVIEW-05** | Below the two-pane breakpoint, the split collapses to the list pane alone. The detail pane never squeezes into an unreadable sliver instead of collapsing. | A region dropped at a narrow viewport is never the only route to a function, so the detail content must still be fully reachable, just through a different surface. |
 | **TITAN-SPLITVIEW-06** | The header's primary action creates a member of the collection, same as [List view](/invoca-design-system/views/list-view), never an action on the currently selected record. | The header acts on the page's collection-level subject; the selected record's own actions belong inside the detail pane, following [Detail view](/invoca-design-system/views/detail-view#header-right)'s placement, not the page header. |
 
 ## Composed example
@@ -255,3 +244,13 @@ campaign's attributes are grouped only has to be made once.
 usable.** Two panes each too narrow to read is worse than one pane that works and a second
 surface reached deliberately. The list survives the width; the detail pane changes surfaces
 instead of degrading in place.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+page — Titan's design library was not available while writing it. It is built from general
+interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+[List view](/invoca-design-system/views/list-view), [Detail view](/invoca-design-system/views/detail-view),
+and [CRUD: Read](/invoca-design-system/patterns/crud/read) already establish. Treat every
+constraint below as a starting point to check against real product screens, not as a rule
+already enforced.

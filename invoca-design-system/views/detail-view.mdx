@@ -6,16 +6,6 @@ tag: "Draft"
 keywords: ["detail view", "record", "attributes", "related data", "single object", "profile page"]
 ---
 
-<Warning>
-  **Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
-  page — Titan's design library was not available while writing it. It is built from general
-  interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
-  [CRUD: Read](/invoca-design-system/patterns/crud/read), [CRUD: Update](/invoca-design-system/patterns/crud/update),
-  and [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) already
-  establish. Treat every constraint below as a starting point to check against real product
-  screens, not as a rule already enforced.
-</Warning>
-
 ## What it is
 
 A page whose subject is **one record** — one campaign, one number, one routing rule — shown in
@@ -84,8 +74,8 @@ own rule that `Status` is for the page's subject, never implied by which actions
 
 ### Header — Right
 
-**Page-level actions on this specific record go here**, per
-[TITAN-VIEW-03](/invoca-design-system/views/overview#constraints). This is the surface [CRUD:
+**Page-level actions on this specific record go here** — `Left` says what the record is, `Right`
+says what can be done to it. This is the surface [CRUD:
 Update](/invoca-design-system/patterns/crud/update) and [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)
 attach to:
 
@@ -98,9 +88,9 @@ attach to:
   dialog, at whichever tier that page's own decision tree selects for this record's
   consequences.
 
-At most one primary action, per [TITAN-VIEW-04](/invoca-design-system/views/overview#constraints).
-Collapse anything past three actions into a [Menu](/invoca-design-system/components/actions/menu),
-per [Views overview](/invoca-design-system/views/overview#header-right).
+At most one primary action. Collapse anything past three actions into a
+[Menu](/invoca-design-system/components/actions/menu), per
+[Views overview](/invoca-design-system/views/overview#header-right).
 
 ### Header — Tabs versus a scrolling page
 
@@ -121,15 +111,14 @@ often reads better as one scrolling page with the long section last, not four ta
 worth of content.
 
 When tabbed, each tab is a section of *this record's own data* — Overview, Routing, History —
-never an action or a filter, per [TITAN-VIEW-15](/invoca-design-system/views/overview#constraints).
-Selecting a tab changes the URL, per [TITAN-VIEW-14](/invoca-design-system/views/overview#constraints),
-so a specific section of a specific record is linkable and survives a reload.
+never an action or a filter. Selecting a tab changes the URL, so a specific section of a
+specific record is linkable and survives a reload.
 
 ### Contents — attribute groups and related data
 
-**The whole record is one `Contents` region**, per [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints).
-When the page is tabbed, each tab's content is a `TabPanel` inside that same `Contents` — the
-tabs partition one region, they do not create additional ones.
+**The whole record is one `Contents` region.** When the page is tabbed, each tab's content is a
+`TabPanel` inside that same `Contents` — the tabs partition one region, they do not create
+additional ones.
 
 Inside it, two kinds of content recur:
 
@@ -164,13 +153,19 @@ full apparatus.
 at a record, they do not submit it, per the same reasoning [List view](/invoca-design-system/views/list-view#regions)
 gives for its own footer.
 
-A footer applies only when the **whole page is inline-editable as a unit** — every field on the
-page is open for editing at once, with one Save and one Cancel for the entire record. This is
-rare. The far more common case, a single field the reader wants to change without leaving the
-page, is [Inline editing](/invoca-design-system/patterns/inline-editing)'s territory: it commits
-per-field, with no page-level footer at all. Reach for a page-level footer only when the edit
-genuinely spans the whole record at once; reach for [Inline editing](/invoca-design-system/patterns/inline-editing)
-for everything short of that.
+A **page-level** footer applies only when the whole page is inline-editable as a unit — every
+field open for editing at once, with one Save and one Cancel for the entire record. This is
+rare.
+
+**When one container on the page is configurable and the rest is read-only, the footer belongs
+to that container, not to the page** — a static footer at the foot of the panel that holds those
+fields, committing exactly them. The page carries none. That is the same rule as the page-level
+case reaching a different answer, because the unit of commit sits inside the container rather
+than spanning the view — see [Footers](/invoca-design-system/patterns/footers).
+
+The far more common case, a single field the reader wants to change without leaving the page, is
+[Inline editing](/invoca-design-system/patterns/inline-editing)'s territory: it commits
+per-field, with no footer at all.
 
 ## Responsive and density behavior
 
@@ -210,12 +205,12 @@ What is **specific to this archetype**:
 | ID | Constraint | Rationale |
 |---|---|---|
 | **TITAN-DTLVIEW-01** | `Title` is the record's own name or identifier, never a generic label for the page type. | A reader arriving from a link, search result, or row action should see the identity they clicked, not a category label repeated on every record of that type. |
-| **TITAN-DTLVIEW-02** | Page-level actions on the record — edit, delete — render in `Header` → `Right`, never beside `Title`. | Per [TITAN-VIEW-03](/invoca-design-system/views/overview#constraints) — `Left` says what the record is, `Right` says what can be done to it. |
-| **TITAN-DTLVIEW-03** | The edit action opens whatever surface [CRUD: Update](/invoca-design-system/patterns/crud/update#choosing-a-surface-revisited) selects for this object type. This archetype does not choose the surface itself. | Matches [TITAN-LSTVIEW-02](/invoca-design-system/views/list-view#constraints)'s relationship to Create — the surface decision belongs to the CRUD pattern, not the view that hosts the trigger. |
+| **TITAN-DTLVIEW-02** | Page-level actions on the record — edit, delete — render in `Header` → `Right`, never beside `Title`. | `Left` says what the record is, `Right` says what can be done to it. |
+| **TITAN-DTLVIEW-03** | The edit action opens whatever surface [CRUD: Update](/invoca-design-system/patterns/crud/update#choosing-a-surface-revisited) selects for this object type. This archetype does not choose the surface itself. | Matches List view's own relationship to Create — the surface decision belongs to the CRUD pattern, not the view that hosts the trigger. |
 | **TITAN-DTLVIEW-04** | The delete action opens [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation), never a bespoke confirmation. | A second confirmation pattern invented per page defeats the friction-matching [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation#three-tiers-of-friction) already tunes across the whole product. |
-| **TITAN-DTLVIEW-05** | The record's attribute groups and related data share one `Contents` region. A tabbed body wraps each section in `TabPanel` inside that same region. | Per [TITAN-VIEW-06](/invoca-design-system/views/overview#constraints) — tabs partition one region, they do not create a second. |
+| **TITAN-DTLVIEW-05** | The record's attribute groups and related data share one `Contents` region. A tabbed body wraps each section in `TabPanel` inside that same region. | Tabs partition one region, they do not create a second. |
 | **TITAN-DTLVIEW-06** | A related-data table embedded in `Contents` is scoped to this record and is not a substitute for that collection's own [List view](/invoca-design-system/views/list-view). | A reader who needs to filter, sort broadly, or bulk-act across the full collection has outgrown the embedded table's scope — see [Contents — attribute groups and related data](#contents-attribute-groups-and-related-data). |
-| **TITAN-DTLVIEW-07** | A footer appears only when the entire page commits as one unit. A single field's edit uses [Inline editing](/invoca-design-system/patterns/inline-editing) instead. | Per [Footer](#footer) — most attribute viewing has no whole-page commit, and inventing one for a single field's change borrows a footer for a job [Inline editing](/invoca-design-system/patterns/inline-editing) already does without one. |
+| **TITAN-DTLVIEW-07** | A page-level footer appears only when the entire page commits as one unit. When a single container is configurable, the footer belongs to that container; a single field's edit uses [Inline editing](/invoca-design-system/patterns/inline-editing) and no footer. | The footer goes on the surface whose boundary matches what it saves, and most attribute viewing has no whole-page commit to hold one at all — see [Footer](#footer). |
 
 ## Composed example
 
@@ -276,3 +271,13 @@ section has earned independent scrolling produces a record split into three shal
 instead of one page a reader can skim in a single scroll. The cost of tabbing too early is not
 visual — it's that a reader who wants to check two facts in different sections now pays for two
 navigations instead of one scroll.
+
+## Status
+
+**Exemplar page — first pass, entirely proposal.** No audited Invoca screen backs this
+page — Titan's design library was not available while writing it. It is built from general
+interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview),
+[CRUD: Read](/invoca-design-system/patterns/crud/read), [CRUD: Update](/invoca-design-system/patterns/crud/update),
+and [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) already
+establish. Treat every constraint below as a starting point to check against real product
+screens, not as a rule already enforced.

@@ -54,7 +54,7 @@ names differ.
 |---|---|---|
 | 1 | Track | Yes |
 | 2 | Thumb | Yes |
-| 3 | Control label | No — see [TITAN-SWITCH-03](#constraints) when omitted |
+| 3 | Control label | No — an explicit accessible name is required when omitted |
 
 ## Variants, sizes, and states
 
@@ -65,8 +65,8 @@ names differ.
 | Situation | What renders | Recovery |
 |---|---|---|
 | Hover | **Undefined** — no hover treatment is demonstrated in the design library | See [Gaps](/invoca-design-system/components/forms/switch/open-issues#gaps-in-the-current-rules) |
-| Disabled | One of several uncoordinated disabled-opacity values — see [Tokens](#tokens) | See [TITAN-GAP-32](/invoca-design-system/foundations/open-decisions#titan-gap-32) |
-| The setting change fails after being applied | **Undefined.** No component expresses a failed action — see [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22). | Surface the failure adjacent to the control and revert it, same reasoning as [Button](/invoca-design-system/components/actions/button#edge-and-failure-states) |
+| Disabled | One of several uncoordinated disabled-opacity values — see [Tokens](#tokens) | See the [open decision on disabled-opacity values](/invoca-design-system/foundations/open-decisions#titan-gap-32) |
+| The setting change fails after being applied | **Undefined.** No component expresses a failed action — see the [open decision on failed actions](/invoca-design-system/foundations/open-decisions#titan-gap-22). | Surface the failure adjacent to the control and revert it, same reasoning as [Button](/invoca-design-system/components/actions/button#edge-and-failure-states) |
 
 ## Tokens
 
@@ -104,7 +104,7 @@ Switch passed as children. Neither is a documented, decided pattern — see
 - A Switch with no visible label carries an explicit accessible name.
 
 **What this component does not handle:** confirming the change, or reporting whether it
-succeeded — see [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22).
+succeeded — see the [open decision on failed actions](/invoca-design-system/foundations/open-decisions#titan-gap-22).
 
 ## Constraints
 
@@ -113,7 +113,7 @@ succeeded — see [TITAN-GAP-22](/invoca-design-system/foundations/open-decision
 | **TITAN-SWITCH-01** | A Switch's change takes effect immediately, without a submit step. Use Checkbox for a form field that's part of a batch submission. | Reusing Switch for a deferred-effect setting tells the reader something already happened when it hasn't. |
 | **TITAN-SWITCH-02** | A Switch expresses exactly two states. More than two, or grouped exclusivity, uses Radio or Select instead. | A Switch with a third state or hidden modes contradicts the on/off promise the control's shape makes. |
 | **TITAN-SWITCH-03** | A Switch with no visible label carries an explicit accessible name. | Without one, a screen reader announces "switch" with no indication of what it controls. |
-| **TITAN-SWITCH-04** | A disabled Switch is always accompanied by a reachable explanation of what would enable it. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-SWITCH-04** | A disabled Switch is always accompanied by a reachable explanation of what would enable it. | Same reasoning as the disabled-state constraint on [Button](/invoca-design-system/components/actions/button#constraints). |
 | **TITAN-SWITCH-05** | The label describes the setting as a noun phrase, correct to read in either state. Never a question or an instruction to act. | Because the change is immediate, a label phrased as a pending question ("Turn on dark mode?") continues to read as unanswered after the reader has already acted. |
 
 ## Known issues

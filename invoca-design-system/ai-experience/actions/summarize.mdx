@@ -5,17 +5,6 @@ icon: "file-text"
 keywords: ["signal ai", "transcript summary", "call summary", "transcript analysis api", "synopsis"]
 ---
 
-<Warning>
-  **Partially real — most of this page is still proposal.** The transcript-summary
-  capability itself is shipped, named, and documented: it is
-  [Signal AI](/invoca-design-system/ai-experience/overview#why-this-isnt-a-pattern)'s
-  Transcript Analysis API, described accurately in the [Reference](#reference) section
-  below. Everything *around* that summary — how the outcome states are handled, how the
-  user is told it's AI-generated, how they'd check or correct it — is not built. That part
-  is proposal, exactly like the rest of this section. See
-  [Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).
-</Warning>
-
 ## What it is
 
 A user looking at a call record often wants to know what happened on the call without
@@ -113,7 +102,7 @@ available.
    name and behavior. Nothing in the documented contract says it also draws on other calls,
    CRM data, or any record beyond the one transcript tied to that `call_record_id`.
 3. **How sure is it?** Unknown. The API returns no confidence value. Proposal: don't display
-   one until the API provides it — see [TITAN-SUMMARIZE-03](#constraints).
+   one until the API provides it.
 4. **How does the user check it?** Link back to the full transcript or the call recording for
    the same call. This is the only check available, since the summary doesn't cite which
    part of the transcript it drew from.
@@ -164,7 +153,7 @@ documented anywhere accessible for this capability — real and shipped as it is
 - An indeterminate wait for a summary needs a text equivalent ("Loading summary…"), not a
   spinner alone.
 - The AI-generated label pairs an icon or text with any visual treatment — never color alone,
-  per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  per [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - If a future "regenerate summary" control exists, where focus goes and what gets announced
   on completion is undecided; see [Gaps](#gaps).
 
@@ -172,11 +161,11 @@ documented anywhere accessible for this capability — real and shipped as it is
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-SUMMARIZE-01** | The summary is labeled as AI-generated at the point of display. | Matches [TITAN-AI-04](/invoca-design-system/ai-experience/overview#constraints) — disclosure that requires the user to already suspect something isn't disclosure. |
+| **TITAN-SUMMARIZE-01** | The summary is labeled as AI-generated at the point of display. | Matches [the overview's own disclosure-timing rule](/invoca-design-system/ai-experience/overview#constraints) — disclosure that requires the user to already suspect something isn't disclosure. |
 | **TITAN-SUMMARIZE-02** | The summary always links to the full transcript or recording for the same call. | It is the only real check available, per Disclosure & recourse item 4. |
-| **TITAN-SUMMARIZE-03** | No confidence figure is displayed unless and until the API provides one. | Matches [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints) — inventing a number the source doesn't supply is worse than omitting it. |
+| **TITAN-SUMMARIZE-03** | No confidence figure is displayed unless and until the API provides one. | Matches [the overview's own constraint](/invoca-design-system/ai-experience/overview#constraints) on this — inventing a number the source doesn't supply is worse than omitting it. |
 | **TITAN-SUMMARIZE-04** | The UI distinguishes "no summary available" from a request failure. | The real API returns `200` for both a present and an absent summary — conflating an absent field with an error would hide a genuine outage behind a normal, documented case. |
-| **TITAN-SUMMARIZE-05** | No model identifier, prompt text, or latency/cost figure is stated in product copy for this capability. | None is publicly documented; asserting one would be an invented fact, per [TITAN-AI-05](/invoca-design-system/ai-experience/overview#constraints). |
+| **TITAN-SUMMARIZE-05** | No model identifier, prompt text, or latency/cost figure is stated in product copy for this capability. | None is publicly documented; asserting one would be an invented fact, per [the overview's own rule against unsubstantiated claims](/invoca-design-system/ai-experience/overview#constraints). |
 | **TITAN-SUMMARIZE-06** | The summary is never presented as a verbatim quotation from the call. | It is a generated synthesis, not a transcript excerpt; presenting it as a quotation misstates what it is. |
 
 ## Divergences
@@ -242,3 +231,14 @@ Reference section with nothing invented in it. A reader designing what a user se
 proposal clearly marked as one, instead of a page that quietly presents both as equally
 settled. Blurring the two would make this the most dangerous page in the section, precisely
 because it is the one page where a claim can sound verified and be partly true.
+
+## Status
+
+**Partially real — most of this page is still proposal.** The transcript-summary
+capability itself is shipped, named, and documented: it is
+[Signal AI](/invoca-design-system/ai-experience/overview#why-this-isnt-a-pattern)'s
+Transcript Analysis API, described accurately in the [Reference](#reference) section
+below. Everything *around* that summary — how the outcome states are handled, how the
+user is told it's AI-generated, how they'd check or correct it — is not built. That part
+is proposal, exactly like the rest of this section. See
+[Coverage, stated honestly](/invoca-design-system/ai-experience/overview#coverage-stated-honestly).

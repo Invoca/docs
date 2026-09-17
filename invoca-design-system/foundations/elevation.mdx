@@ -94,7 +94,7 @@ a gap to report rather than a number to invent.
 | **TITAN-ELV-02** | Shadow direction matches the direction the surface is anchored from. Bottom-anchored uses `shadow-up-*`; left-anchored uses `shadow-right-*`. | A shadow that falls toward the element's own anchor edge casts onto nothing and reads as a rendering artifact. |
 | **TITAN-ELV-03** | At most one elevation level per stacking context. Nested raised surfaces do not add levels. | A card at level 1 containing a card at level 1 reads as one surface. Stacking shadows to express nesting produces mud, not depth. |
 | **TITAN-ELV-04** | A surface that traps focus (modal, dialog) pairs its shadow with a scrim. | Shadow communicates depth to sighted users at a glance; the scrim communicates that the content beneath is inert. Depth alone does not say "blocked." |
-| **TITAN-ELV-05** | Never use shadow to indicate state — selection, error, or focus. | Selection and error have dedicated tokens (`background-selected`, `border-error`). Focus does not — see [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02) — but shadow is not the answer to that either. Shadow is spatial; overloading it makes both meanings unreadable. |
+| **TITAN-ELV-05** | Never use shadow to indicate state — selection, error, or focus. | Selection and error have dedicated tokens (`background-selected`, `border-error`). Focus does not, but shadow is not the answer to that either. Shadow is spatial; overloading it makes both meanings unreadable. |
 | **TITAN-ELV-06** | Deliberate absence of shadow is `shadow-*-0`, not `none`. | Records a decision rather than an omission. A bare `none` is indistinguishable from a forgotten value. |
 
 ## Accessibility

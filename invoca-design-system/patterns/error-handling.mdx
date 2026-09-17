@@ -5,18 +5,6 @@ icon: "octagon-alert"
 keywords: ["error", "failure", "retry", "alert", "toast", "banner", "network error", "failed request"]
 ---
 
-<Warning>
-  **Exemplar page — first pass.** This is a *proposal* for review, not established policy. It
-  is also a proposal for how to improvise a failed state at all — not a claim that Titan
-  already has one. Checked directly against source:
-  **[TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22)** — no
-  component in Titan expresses a failed action today. There is a `loading` state and a
-  `disabled` state, and nothing between them for failure, and no token names a control-level
-  error state. Every product surface currently improvises this — inline text, a toast, a
-  banner, or nothing — and what follows is a proposal for improvising it consistently, not a
-  description of an existing primitive.
-</Warning>
-
 <Note>
   **This page covers deterministic failures only** — a failed API call, a failed save, a page
   that couldn't load. Where the "failure" is a wrong-but-confident model output rather than an
@@ -55,6 +43,14 @@ flowchart TD
     H -->|Yes, partially| I[Alert above the stale content.<br/>Keep what already loaded.]
     H -->|No, nothing loaded| J[Full-page or full-region error state:<br/>EmptyState with the error illustration]
 ```
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Failure | Error, exception | **Failure** — a deterministic, exception-based non-success: a rejected request, a timeout, a failed load |
+| Retry | Try again, reattempt | **Retry** — re-attempting the same failed action, either once silently or repeatedly at the reader's request |
+| Partial failure | Mixed result | **Partial** — a load or batch action where some, but not all, of the attempt succeeded |
 
 ## When this applies
 
@@ -95,23 +91,23 @@ flowchart TD
 | State | Behavior |
 |---|---|
 | Control-level action fails | The control returns to its resting state (not disabled, not loading). An [Alert](/invoca-design-system/components/feedback/alert) appears beside it, stating what happened and how to resolve it. |
-| Failure occurs inside a Dialog | The dialog **stays open**; an Alert appears inside it. Never close a dialog on failure — see [TITAN-DESTROY-09](/invoca-design-system/patterns/destructive-confirmation#constraints), which this page follows rather than restates. |
+| Failure occurs inside a Dialog | The dialog **stays open**; an Alert appears inside it. Never close a dialog on failure — the same rule a destructive confirmation follows for its own. |
 | Partial page or table load failure | Existing, already-loaded content stays on screen. An Alert appears above it, stating that a refresh or a subsequent request failed — see [Table's own edge-state row](/invoca-design-system/components/data-display/table#edge-and-failure-states). |
 | Full load failure — nothing rendered at all | The region shows an [EmptyState](/invoca-design-system/components/data-display/empty-state) with the `error` illustration and a Retry action, replacing the region's content since there was none to preserve. |
 | Retry pressed | The retry control enters `loading`; the same message stays in place until the result is known, then either clears (success) or updates (failed again). |
 | First automatic retry (network-layer, transient) | May happen silently, once, before anything is shown to the reader. |
 | Retry fails again, past the first automatic attempt | Becomes fully user-triggered. No further silent retries. |
-| N consecutive retries fail | The message states that the failure has recurred, not just that it failed again — see [TITAN-ERRHANDLE-09](#constraints). |
+| N consecutive retries fail | The message states that the failure has recurred, not just that it failed again. |
 
 ## Constraints
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-ERRHANDLE-01** | A failure renders as close to the control that caused it as the composition allows. | See [TITAN-ERR-02](/invoca-design-system/content/error-messages#constraints) — follow it, don't restate it. |
-| **TITAN-ERRHANDLE-02** | A failure inside a Dialog never closes the dialog. The Alert renders inside it. | See [TITAN-DESTROY-09](/invoca-design-system/patterns/destructive-confirmation#constraints) — closing on failure discards the reader's context and they cannot tell whether it worked. |
-| **TITAN-ERRHANDLE-03** | A partial load failure keeps whatever content already loaded. The failure is an Alert placed above it, never a replacement. | See [TITAN-ALR-04](/invoca-design-system/components/feedback/alert#constraints) — replacing the content throws away what the reader had. |
-| **TITAN-ERRHANDLE-04** | A failure with nothing to preserve — the first load failed entirely — uses EmptyState's `error` illustration with a Retry action. | See [TITAN-EMP-03](/invoca-design-system/components/data-display/empty-state#constraints) — the illustration must match the meaning; `error` is the one that says "this failed," not "there's nothing here." |
-| **TITAN-ERRHANDLE-05** | The message states what happened and how to resolve it, never only that something went wrong. | See [TITAN-ERR-03](/invoca-design-system/content/error-messages#constraints) — follow it, don't restate it. |
+| **TITAN-ERRHANDLE-01** | A failure renders as close to the control that caused it as the composition allows. | Follows the same placement rule error copy generally follows, rather than restating it. |
+| **TITAN-ERRHANDLE-02** | A failure inside a Dialog never closes the dialog. The Alert renders inside it. | Closing on failure discards the reader's context and they cannot tell whether it worked. |
+| **TITAN-ERRHANDLE-03** | A partial load failure keeps whatever content already loaded. The failure is an Alert placed above it, never a replacement. | Replacing the content throws away what the reader had. |
+| **TITAN-ERRHANDLE-04** | A failure with nothing to preserve — the first load failed entirely — uses EmptyState's `error` illustration with a Retry action. | The illustration must match the meaning; `error` is the one that says "this failed," not "there's nothing here." |
+| **TITAN-ERRHANDLE-05** | The message states what happened and how to resolve it, never only that something went wrong. | Follows the same rule error copy generally follows, rather than restating it. |
 | **TITAN-ERRHANDLE-06** | At most one silent, automatic retry. Anything past that is user-triggered. | A silent retry loop hides an ongoing problem from the person waiting on it, and never gives them a moment to decide to stop waiting. |
 | **TITAN-ERRHANDLE-07** | A control that fails returns to its resting state and never uses `disabled` as its only signal of failure. | Disabled announces nothing and is indistinguishable from "you don't have permission" or "select a row first" — see [Button's edge-state row](/invoca-design-system/components/actions/button#edge-and-failure-states), which states plainly that the Button does not own error display. |
 | **TITAN-ERRHANDLE-08** | Never route a single action's failure through a product-wide announcement. | No Banner ships in Titan today — see [Banner](/invoca-design-system/components/feedback/banner) — and even if one did, a single action's failure is scoped to that action, not the whole product. |
@@ -133,9 +129,8 @@ follows rather than restates.
 ## Accessibility
 
 - An Alert that appears after page load carries a live-region role so a screen reader user
-  hears it — see [TITAN-ALR-08](/invoca-design-system/components/feedback/alert#constraints).
-- Severity is carried by the icon and the words, not only by color — see
-  [TITAN-ALR-09](/invoca-design-system/components/feedback/alert#constraints).
+  hears it.
+- Severity is carried by the icon and the words, not only by color.
 - A control's `loading` state during a retry sets `aria-busy="true"` automatically — see
   [Button](/invoca-design-system/components/actions/button#accessibility) — but the failure
   message that follows is a separate announcement the composition still has to make.
@@ -159,8 +154,7 @@ seconds is the wrong place for a failure the reader is expected to act on — th
 left on screen once it's gone.
 
 **Closing a dialog on failure.** The reader is left unable to tell whether their input
-survived, and has to redo work that may already have gone through. See
-[TITAN-DESTROY-09](/invoca-design-system/patterns/destructive-confirmation#constraints).
+survived, and has to redo work that may already have gone through.
 
 **Silent, unbounded automatic retry.** A request that keeps failing quietly in the background
 never gives the reader a signal that something is actually wrong, and never hands them a way
@@ -169,3 +163,53 @@ to stop waiting.
 **A disabled control as the only sign that something failed.** Indistinguishable from "you
 don't have permission," "select a row first," or a bug — three different messages that all
 render identically with nothing said.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component in Titan expresses a failed action today, checked directly against source. There's a `loading` state and a `disabled` state, and nothing between them. Everything this page proposes is a way to improvise that gap consistently, not a description of a shipped primitive. |
+
+## Gaps in the current rules
+
+- What the exact threshold is before a "recurring failure" message replaces a plain retry
+  message — this page names the behavior without naming the count.
+- Whether the single automatic silent retry should ever be configurable per action, or is
+  always exactly one.
+- What a reader sees for a failure that recurs mid-retry, after they've already pressed Retry
+  once by hand — whether the control re-enters `loading` identically or signals that this is a
+  second attempt.
+
+## Why it works this way
+
+**Where a failure renders is decided by the same test at every level of the composition — is
+there already a place, right next to what failed, to say so?** A control's own space, a Dialog,
+a region above stale content — each is the closest available surface, chosen in that order,
+rather than a single default like Toast that would be right for none of them.
+
+**Keeping stale content on screen during a partial failure is the harder-to-build choice, and
+it's made anyway because the alternative destroys real information.** The rule could be
+satisfied more simply by clearing the region and showing only the error — it exists because
+what the reader already had and what just failed are both worth keeping visible at once.
+
+## Related
+
+[Alert](/invoca-design-system/components/feedback/alert) and
+[Toast](/invoca-design-system/components/feedback/toast), the two surfaces a failure renders
+through. [EmptyState](/invoca-design-system/components/data-display/empty-state), for a full
+load failure with nothing to preserve. [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states),
+the sibling pattern for the non-failure case an empty region can also mean.
+[Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation), for a
+dialog's own failure behavior this page follows rather than restates.
+
+## Status
+
+**Exemplar page — first pass.** This is a *proposal* for review, not established policy. It
+is also a proposal for how to improvise a failed state at all — not a claim that Titan
+already has one. Checked directly against source:
+**[TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22)** — no
+component in Titan expresses a failed action today. There is a `loading` state and a
+`disabled` state, and nothing between them for failure, and no token names a control-level
+error state. Every product surface currently improvises this — inline text, a toast, a
+banner, or nothing — and what follows is a proposal for improvising it consistently, not a
+description of an existing primitive.

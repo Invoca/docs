@@ -693,6 +693,75 @@ Computed from the shipped token values, formula validated against published refe
 | **Affects** | [Banner](/invoca-design-system/components/feedback/banner), [Alert](/invoca-design-system/components/feedback/alert) |
 
 ---
+## TITAN-DIV-34
+
+**The page frame's footer insets its contents past the page gutter.**
+
+| | |
+|---|---|
+| **Code ships** | `Footer`'s outer `AppBar` carries `px: spacing-6` (24px). Its inner `Stack`, which holds the actual buttons, adds its own `px: spacing-5` (16px) on top — a combined 40px from the frame's edge to the first button. `Header` and `Contents` both stop at `spacing-6`. |
+| **Design intends** | A footer whose buttons align to the same left and right edge as the page title and body — one gutter for the whole frame. |
+| **Follow today** | Override the inner `Stack`'s `sx` to remove the second inset, or accept the 16px misalignment until the component changes. |
+| **Direction** | Drop the inner `spacing-5` and let the outer `spacing-6` be the footer's only inset, matching `Header` and `Contents`. |
+| **Affects** | [Footers](/invoca-design-system/patterns/footers), [Views overview](/invoca-design-system/views/overview) |
+
+---
+
+## TITAN-DIV-35
+
+**The page frame's footer sets no shadow in either mode.**
+
+| | |
+|---|---|
+| **Code ships** | `Footer`'s `AppBar` hard-codes `boxShadow: "none"`, sticky or not, light or dark. No `appBarStyles` default supplies one either — a caller has to pass a shadow value through that escape hatch by hand. |
+| **Design intends** | A fixed footer separated from the content behind it by `shadow-up-1` and a top border, per [Elevation](/invoca-design-system/foundations/elevation#choosing-a-token)'s own guidance for a bottom-anchored bar. |
+| **Follow today** | Pass `shadow-up-1` through `appBarStyles` on any sticky `Footer`. The component supplies only the top border on its own. |
+| **Direction** | Add `shadow-up-1` to the component's sticky state so a caller does not have to supply it per instance. |
+| **Affects** | [Footers](/invoca-design-system/patterns/footers), [Elevation](/invoca-design-system/foundations/elevation) |
+
+---
+
+## TITAN-DIV-36
+
+**`Drawer`'s footer has no inset of its own.**
+
+| | |
+|---|---|
+| **Code ships** | The `footerContent` wrapper `Box` sets `flexShrink`, `position: sticky`, `zIndex`, and a `backgroundColor` — no `padding` property at all. Its contents sit flush to the drawer's edge, against a body inset `spacing-6`. |
+| **Design intends** | A footer whose contents align to the same inset as the drawer's own body content. |
+| **Follow today** | Pad whatever is passed as `footerContent` to `spacing-6` on its own, since the component does not. |
+| **Direction** | Give the wrapper `Box` a `spacing-6` padding to match the body, so a caller no longer has to remember to add it. |
+| **Affects** | [Footers](/invoca-design-system/patterns/footers), [Drawer](/invoca-design-system/components/containment/drawer) |
+
+---
+
+## TITAN-DIV-37
+
+**`Modal`'s footer and its content area use two unrelated horizontal insets.**
+
+| | |
+|---|---|
+| **Code ships** | `DialogTitle` and `DialogActions` (the footer) both use `padding: spacing-4` on all four sides. `DialogContent` uses `modal-content-padding-x` (`0.85rem`) horizontally instead — a literal off the standard spacing scale, unconnected to `spacing-4`. |
+| **Design intends** | A dialog's title, content, and footer sharing one horizontal rhythm, the way `Header`/`Contents`/`Footer` share `spacing-6` on the page frame. |
+| **Follow today** | Treat the two values as independent; do not assume aligning one moves the other. |
+| **Direction** | Resolve `modal-content-padding-x` onto the standard scale, or state explicitly why the content area is exempt from it. |
+| **Affects** | [Footers](/invoca-design-system/patterns/footers), [Dialog](/invoca-design-system/components/containment/dialog) |
+
+---
+
+## TITAN-DIV-38
+
+**The Figma mapping for `Footer` pairs a secondary Cancel with the primary commit; the shipped stories pair a tertiary one.**
+
+| | |
+|---|---|
+| **Code ships** | `Footer.figma.tsx` maps the component's secondary button to `variant="outlined"` — Titan's **secondary** weight. Every published `Footer` story, and [Views overview](/invoca-design-system/views/overview#footer)'s own examples, use `variant="text"` — **tertiary** — for Cancel instead. |
+| **Design intends** | One prominence for a footer's Cancel, matching whichever the rest of the system treats as the lighter of a two-button pair. |
+| **Follow today** | Build to tertiary — it is what every rendered example actually ships, and what [Footers](/invoca-design-system/patterns/footers#structure) documents as the trailing pair's weight. |
+| **Direction** | Update the Code Connect mapping to `variant="text"` so the Figma component and the shipped stories agree. |
+| **Affects** | [Footers](/invoca-design-system/patterns/footers), [Views overview](/invoca-design-system/views/overview) |
+
+---
 
 ## Resolved
 

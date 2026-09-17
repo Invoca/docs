@@ -11,8 +11,8 @@ import { StorybookFrame } from "/invoca-design-system/snippets/StorybookFrame.js
 ## What it is
 
 A calendar control for picking a date, or a start/end range, without asking the reader to
-type one. It removes the format ambiguity a typed date carries — the reasoning
-[TITAN-INPUT-07](/invoca-design-system/components/forms/input#constraints) applies to numeric spinners applies here
+type one. It removes the format ambiguity a typed date carries — the same reasoning behind
+[Input's numeric-spinner constraint](/invoca-design-system/components/forms/input#constraints) applies here
 too, to a worse-behaved input.
 
 **This page covers single-date and range selection together** — the design library models
@@ -82,7 +82,7 @@ both as one `Display` axis on the same component, not two.
 
 | Situation | What renders | Recovery |
 |---|---|---|
-| A day outside the selectable range (before a minimum or after a maximum date) | The `Disabled` day-cell state | Should be paired with a reachable reason per [TITAN-DATEPICKER-04](#constraints) |
+| A day outside the selectable range (before a minimum or after a maximum date) | The `Disabled` day-cell state | Should be paired with a reachable reason it can't be chosen |
 | Range mode with only a start date chosen | **Undefined** how the grid previews the incomplete range | See [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules) |
 | Today falls in a month the reader has navigated away from | **Undefined** — no "jump to today" control was found among the header's navigation options | See [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules) |
 | The trigger field's typed value doesn't parse (if typing is allowed at all) | **Undefined**, mirroring [Input's](/invoca-design-system/components/forms/input#edge-and-failure-states) own async/invalid gaps | See [Gaps](/invoca-design-system/components/forms/date-picker/open-issues#gaps-in-the-current-rules) |
@@ -113,7 +113,7 @@ Confirmed directly from the design library's own composed examples:
 | Rule | ✅ | ❌ |
 |---|---|---|
 | A range's start and end render in the same date format | `3/1/2026 – 3/8/2026` | `3/1 – 3/8/2026` |
-| Follow the system's date format everywhere this component renders one | Per [TITAN-DATE-01](/invoca-design-system/content/dates-and-times#constraints) and [TITAN-DATE-03](/invoca-design-system/content/dates-and-times#constraints) | A picker-specific format that disagrees with the rest of the product |
+| Follow the system's date format everywhere this component renders one | Per [Dates and times](/invoca-design-system/content/dates-and-times#constraints) | A picker-specific format that disagrees with the rest of the product |
 
 ## Accessibility
 
@@ -138,9 +138,9 @@ beyond min/max bounds — that belongs to [Form validation](/invoca-design-syste
 | ID | Constraint | Rationale |
 |---|---|---|
 | **TITAN-DATEPICKER-01** | A date range is captured with this component's own range mode, never with two independent single-date pickers placed side by side. | Two separate pickers can produce a start date after the end date with nothing to prevent it; one component modeling the relationship prevents that class of error by construction. |
-| **TITAN-DATEPICKER-02** | A range's start and end render in the same date format, per [TITAN-DATE-03](/invoca-design-system/content/dates-and-times#constraints). | A range with two different formats on its two ends reads as two unrelated values, not one span. |
+| **TITAN-DATEPICKER-02** | A range's start and end render in the same date format, per [Dates and times](/invoca-design-system/content/dates-and-times#constraints). | A range with two different formats on its two ends reads as two unrelated values, not one span. |
 | **TITAN-DATEPICKER-03** | Today's marker remains visible even when today is also the selected date. | Confirmed as a real, modeled combination in the design library — losing the "today" cue the moment it's selected would make it harder to reorient after navigating to a different month and back. |
-| **TITAN-DATEPICKER-04** | A disabled day cell is paired with a reachable reason it can't be chosen, somewhere in the composition. | Same reasoning as [TITAN-BTN-06](/invoca-design-system/components/actions/button#constraints) — a disabled cell alone announces nothing about why. |
+| **TITAN-DATEPICKER-04** | A disabled day cell is paired with a reachable reason it can't be chosen, somewhere in the composition. | Same reasoning as the disabled-state constraint on [Button](/invoca-design-system/components/actions/button#constraints) — a disabled cell alone announces nothing about why. |
 
 ## Known issues
 

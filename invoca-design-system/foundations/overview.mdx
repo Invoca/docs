@@ -68,8 +68,7 @@ The 244 on `theme.tokens`, grouped by what they name:
 
 Every value on this page and throughout Foundations is the **light color scheme at
 comfortable density**. Titan ships a dark scheme and a compact density; neither carries a
-design decision yet, and this documentation does not define them — see
-[TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01).
+design decision yet, and this documentation does not define them.
 
 ## The naming grammar
 
@@ -119,8 +118,7 @@ Three things the grammar does not cover, and how to recognise them:
   **The specification and the shipped tokens have diverged substantially** — 215 specified
   names never shipped, 190 shipped names were never specified, and only 54 appear in both.
   Use this grammar to *understand and name* tokens; use the
-  [token reference](/invoca-design-system/foundations/color#token-reference) to know what actually exists. See
-  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09).
+  [token reference](/invoca-design-system/foundations/color#token-reference) to know what actually exists.
 </Warning>
 
 ## Reaching a token
@@ -143,14 +141,12 @@ Three surfaces, one token — but they are not equal, and one of them is closed.
   **The SCSS surface is frozen.** `$token-name` reaches 48 semantic + 10 spacing + 24
   shadow names — 82 of the 244. The list is pinned in `legacy-surface-inventory.json` and
   asserted by a test; new tokens never appear there. A token missing from SCSS is not a bug.
-  See [TITAN-DIV-05](/invoca-design-system/foundations/divergences#titan-div-05).
 </Warning>
 
 <Warning>
   **`--titan-tokens-*` and `--titan-*` are different surfaces.** The `--titan-tokens-` prefix
   is the token API; the bare `--titan-` prefix is the primitive layer beneath it. They hold
   the same value for many tokens today, so reaching for the wrong one looks correct.
-  See [TITAN-FND-02](#constraints).
 </Warning>
 
 ## Choosing where to look

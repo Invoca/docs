@@ -25,9 +25,10 @@ Three naming systems coexist, and only one of them is what you type into code:
 | Theme variants (`theme.typography.*`) | 13 | A raw `<Typography>` imported from the underlying library, bypassing Titan's wrapper | No — implementation surface |
 | Type scale entries | 34 | Nothing public | No — internal to the theme |
 
-See [TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04) for how these
-three counts came apart, and why nine of the thirteen theme variants below have no reachable
-name at all.
+Of the 13 theme-wired variants, 9 — every heading level above `h2`, both subtitle sizes,
+`body2`, and `overline` — have no reachable `<Typography>` prop at all (see
+[Known issues](/invoca-design-system/foundations/typography/open-issues#known-issues) for the
+full accounting of how these three counts came apart).
 
 The eleven variant names are:
 
@@ -95,10 +96,9 @@ Bold, italic, and all-caps siblings of `body1`, `body2`, `subtitle1`, `subtitle2
   sanctioned way to render a subsection heading, a dense panel heading, a group label, a
   structural micro-label, or 14px running text — the scale was designed with those steps but
   the component was never given props for them. Reaching past the component into a raw
-  `<Typography variant="h3">` from the underlying library renders correctly today, but
-  [TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04) says not to —
-  that is "reaching past the component into the underlying scale," and it is exactly the
-  usage this page previously (incorrectly) recommended.
+  `<Typography variant="h3">` from the underlying library renders correctly today, but design
+  intent says not to — that is exactly the usage this page previously (incorrectly)
+  recommended.
 </Warning>
 
 <Note>
@@ -125,11 +125,10 @@ Bold, italic, and all-caps siblings of `body1`, `body2`, `subtitle1`, `subtitle2
 | Text inside a Button | Nothing — Button applies its own text styling automatically | Passing a `variant` to text inside a Button; there is no `button` prop value |
 
 <Note>
-  **Every row above that says "nothing reachable" is the same gap**, restated per use case:
-  [TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04) already tracks
-  it as one open question — expose more of the scale, or accept eleven variants as final. Do
-  not invent a local heading size to fill the gap; that is exactly the local-override
-  problem [TITAN-TYP-05](#constraints) exists to prevent.
+  **Every row above that says "nothing reachable" is the same gap**, restated per use case —
+  one open question: expose more of the scale, or accept eleven variants as final. Do not
+  invent a local heading size to fill the gap; that is exactly the local-override problem
+  overriding a variant's own properties exists to prevent.
 </Note>
 
 ## Token reference
@@ -159,8 +158,8 @@ only through `<Typography>`.
 | **TITAN-TYP-02** | Choose a variant by role, not by size. | `baseSmall` and its siblings are not "the small ones to reach for when something needs to be small" — they are metadata and micro-label roles. Picking one for its size alone produces uppercase or 12px text in the wrong context. |
 | **TITAN-TYP-03** | One `mainHeader` per view. | It is the page title, and the only variant rendering an `<h1>` by default. Two means the page has two subjects and needs splitting — and it breaks the document outline for screen readers. |
 | **TITAN-TYP-04** | Visual variant and semantic heading level are chosen independently. | `mainHeader` and `subHeader` render `<h1>`/`<h2>` by default, but the `component` prop can override the tag. Never reorder headings to get a size. |
-| **TITAN-TYP-05** | Never override `fontSize`, `fontWeight`, or `lineHeight` on a variant. | An overridden variant is a twelfth variant that no other consumer has and the audit cannot see. If none of the eleven fit, that is a token proposal — see the coverage gap in [Choosing a variant](#choosing-a-variant), tracked as [TITAN-DIV-04](/invoca-design-system/foundations/divergences#titan-div-04). |
-| **TITAN-TYP-06** | Uppercase comes from the variant (`baseSmallAllCaps`, `baseSmallAllCapsBold`), never from `text-transform` or typed capitals. | Typed capitals are read letter-by-letter by some screen readers and cannot be un-cased for locales where the transform is wrong. Button's own uppercase transform is separate — see [TITAN-DIV-23](/invoca-design-system/foundations/divergences#titan-div-23). |
+| **TITAN-TYP-05** | Never override `fontSize`, `fontWeight`, or `lineHeight` on a variant. | An overridden variant is a twelfth variant that no other consumer has and the audit cannot see. If none of the eleven fit, that is a token proposal — see the coverage gap in [Choosing a variant](#choosing-a-variant). |
+| **TITAN-TYP-06** | Uppercase comes from the variant (`baseSmallAllCaps`, `baseSmallAllCapsBold`), never from `text-transform` or typed capitals. | Typed capitals are read letter-by-letter by some screen readers and cannot be un-cased for locales where the transform is wrong. Button's own uppercase transform is a separate, already-recorded case (see [Known issues](/invoca-design-system/foundations/typography/open-issues#known-issues)). |
 
 ## Accessibility
 
@@ -173,9 +172,9 @@ only through `<Typography>`.
   sustained reading, and uppercase, which lowers legibility further. Nothing in
   `<Typography>` reaches it directly today (see the coverage gap above), but anywhere it
   does render — a raw `<h1>`–`<h6>` from the underlying library, or a component styled
-  directly off the scale, such as `EmptyState`'s `subTitle` per
-  [TITAN-DIV-22](/invoca-design-system/foundations/divergences#titan-div-22) — treat it as a
-  one- or two-word label only, never as anything a user must read carefully.
+  directly off the scale, such as `EmptyState`'s `subTitle` (a component divergence recorded
+  on that page) — treat it as a one- or two-word label only, never as anything a user must
+  read carefully.
 - **Line heights are tight at the small end of the scale.** `h6` is 10px on 12.5px (1.25)
   and `h4` is 14px on 16px (1.14). [WCAG 2.2 Text Spacing (AA)](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html)
   requires content to survive user-applied line spacing of 1.5× without loss — verify that

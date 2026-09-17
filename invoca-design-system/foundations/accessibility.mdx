@@ -19,7 +19,7 @@ each component page.
 
 | Term | Means |
 |---|---|
-| `focus` | Appears in the specification as **both** a purpose and a state. `border-focus` is specified — and not implemented. See [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02). |
+| `focus` | Appears in the specification as **both** a purpose and a state. `border-focus` is specified — and not implemented. |
 | `alt` | The alternate state, and the contrast-carrying partner of a status colour. On any surface, status text and icons use it. |
 | `invert` | For content on an inverted surface. Its contrast is *not* guaranteed — see the pairings below. |
 | `disabled` | Exempt from contrast minimums, which is why it must never be the only signal. |
@@ -56,7 +56,7 @@ Criteria carried over from 2.1 that the token layer governs directly:
 |---|---|---|
 | [1.4.3 Contrast (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) | AA | **Failing** for four token pairings — see below. |
 | [1.4.11 Non-text Contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html) | AA | **Failing** for `icon-success` and `icon-warning` on light. |
-| [2.4.7 Focus Visible](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html) | AA | No semantic focus token exists — see [TITAN-DIV-02](/invoca-design-system/foundations/divergences#titan-div-02). |
+| [2.4.7 Focus Visible](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html) | AA | No semantic focus token exists. |
 | [1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) | AA | Not verified anywhere. |
 | [2.3.3 Animation from Interactions](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) | AAA | No reduced-motion token exists. |
 
@@ -72,8 +72,7 @@ Criteria carried over from 2.1 that the token layer governs directly:
    `background-view-background` (`#f5f6fa`) is the more common of the two surfaces. Use the
    `-alt` variants for body-size status text anywhere.
 3. **White text on the success and warning fills fails badly.** A bold status fill needs dark
-   text, and no token expresses that pairing — see
-   [TITAN-GAP-07](/invoca-design-system/foundations/open-decisions#titan-gap-07).
+   text, and no token expresses that pairing.
 
 ## Focus
 
@@ -93,7 +92,7 @@ most consequential accessibility gap in the system).
 | **TITAN-A11Y-03** | Contrast is verified against `background-view-background`, not only `background-default`. | The page canvas is `#f5f6fa`, not white. Two tokens pass on white and fail on the canvas. |
 | **TITAN-A11Y-04** | Focus is always visible and never removed. | Keyboard users cannot navigate without it. `outline: none` with no replacement removes navigation entirely. |
 | **TITAN-A11Y-05** | Color never carries meaning alone. Pair with icon, text, or both. | Color vision deficiency, monochrome displays, and bright ambient light each remove color as a channel. |
-| **TITAN-A11Y-06** | Every transition respects `prefers-reduced-motion: reduce`. | Vestibular disorders make large-area motion physically painful. See [TITAN-MOT-03](/invoca-design-system/foundations/motion#constraints). |
+| **TITAN-A11Y-06** | Every transition respects `prefers-reduced-motion: reduce`. | Vestibular disorders make large-area motion physically painful. Matches Motion's own equivalent rule. |
 | **TITAN-A11Y-07** | Interactive targets are at least 24×24px. | WCAG 2.2 Target Size (Minimum) is an AA criterion. Both shipped control heights clear it; nothing may reduce them further. |
 | **TITAN-A11Y-08** | Opacity is never used to derive a color variant. | Opacity composites against whatever is behind it, so the resulting contrast is unknowable at author time. |
 | **TITAN-A11Y-09** | Visual order matches DOM order. | Reordering with CSS leaves keyboard and screen-reader order unchanged, producing focus that jumps around the screen. |
