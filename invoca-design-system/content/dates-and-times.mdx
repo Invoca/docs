@@ -95,7 +95,7 @@ When a comment is posted, a timestamp shows how long ago it happened.
 | **TITAN-DATE-02** | Date filter labels use the "Display for filter" column, not the picker's option text. | The picker says "Current Month"; the applied filter reads "This Month". |
 | **TITAN-DATE-03** | Custom ranges render as `[START] - [END]` using the same `M/D/YYYY` format on both ends. | A range with two different formats reads as two unrelated values. |
 | **TITAN-TIME-01** | Meridiem is lowercase, with no space before it. | `11:30am`, not `11:30 AM`. |
-| **TITAN-TIME-02** | Times have no leading zero on single-digit hours. | Matches TITAN-DATE-01. |
+| **TITAN-TIME-02** | Times have no leading zero on single-digit hours. | Matches the date-formatting rule above. |
 | **TITAN-TIME-03** | Relative timestamps switch to an absolute date at 7 days. | Past a week, "43 days ago" requires the reader to do arithmetic to place the event. |
 
 ## Gaps in the current rules

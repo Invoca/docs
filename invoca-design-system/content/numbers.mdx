@@ -73,7 +73,7 @@ Same precision rule as abbreviated numbers: one decimal, and never a trailing `.
 | **TITAN-NUM-04** | Abbreviated numbers show at most one decimal place. | A second decimal on an abbreviated number implies a precision the abbreviation already discarded. |
 | **TITAN-NUM-05** | A trailing `.0` is never rendered — on abbreviations or percentages. | `12.0M` implies measured precision that isn't there. |
 | **TITAN-NUM-06** | Abbreviate only where space is constrained and the exact value is not actionable. Show the full number wherever the reader may need to read or copy the exact value. | **Proposed, not from source.** Resolves the abbreviation/comma conflict. Needs sign-off. |
-| **TITAN-PCT-01** | Percentages show at most one decimal place, with no trailing `.0`. | Matches TITAN-NUM-04/05. |
+| **TITAN-PCT-01** | Percentages show at most one decimal place, with no trailing `.0`. | Matches the abbreviated-number precision rules above. |
 | **TITAN-CUR-01** | Currency always displays its symbol. | A bare `4.25` is not identifiable as money, and Invoca reports mix currency with counts and rates in the same table. |
 | **TITAN-CUR-02** | Currency shows 2 decimal places when cents are present, and none when they are not. | Cents are a real denomination; `$4.00` adds width without information. |
 
