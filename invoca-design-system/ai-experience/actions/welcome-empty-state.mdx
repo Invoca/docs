@@ -36,7 +36,7 @@ scope**, not just about the current state of the data.
 | Situation | Do this instead | Why |
 |---|---|---|
 | The region has nothing to show and no AI feature is involved | [Empty and zero states](/invoca-design-system/patterns/empty-and-zero-states) and [EmptyState](/invoca-design-system/components/data-display/empty-state) | Those pages cover the deterministic case: a table with no rows, a list with nothing created yet. Neither needs to set capability expectations, and neither risks being confused with "still thinking" — a deterministic empty region was never going to produce a result on its own. This page exists because an AI panel's emptiness carries an extra question a plain one doesn't: did the run actually finish, and does the user understand what it can do at all? |
-| A run is still in progress | The [Working](#outcome-states) treatment — a [Skeleton](/invoca-design-system/components/feedback/skeleton) or [Spinner](/invoca-design-system/components/feedback/spinner) | This pattern renders only once a run has definitively finished with nothing, or before one has started. Showing it while a run is still going is the single most damaging mistake this page exists to prevent — see [TITAN-AIWELCOME-01](#constraints). |
+| A run is still in progress | The [Working](#outcome-states) treatment — a [Skeleton](/invoca-design-system/components/feedback/skeleton) or [Spinner](/invoca-design-system/components/feedback/spinner) | This pattern renders only once a run has definitively finished with nothing, or before one has started. Showing it while a run is still going is the single most damaging mistake this page exists to prevent. |
 | The request had more than one plausible reading, not zero results | [Disambiguate](/invoca-design-system/ai-experience/actions/disambiguate) | Ambiguity and emptiness are different problems — one has too many candidate answers, the other has none. |
 | There's nothing notable to recommend this period | [Recommend](/invoca-design-system/ai-experience/actions/recommend)'s own [Empty](/invoca-design-system/ai-experience/actions/recommend#outcome-states) outcome state | Recommend's empty case composes this pattern's no-results treatment; document the copy specifics there, not by duplicating this page. |
 
@@ -86,10 +86,10 @@ No-results:
 | 1 | AI identifier mark (welcome only) | See [Identifiers](/invoca-design-system/ai-experience/identifiers/avatar) | Yes, for welcome |
 | 2 | Illustration (no-results only) | [EmptyState](/invoca-design-system/components/data-display/empty-state)'s `search` illustration | Yes, for no-results — never the loading or error illustration |
 | 3 | Heading | Text content, no component | Yes |
-| 4 | Scope-setting line — what it can and can't do (welcome only) | Text content, no component | Yes — see [TITAN-AIWELCOME-02](#constraints) |
+| 4 | Scope-setting line — what it can and can't do (welcome only) | Text content, no component | Yes — states both what the feature can and can't do |
 | 5 | Example prompts (welcome only) | [Tag](/invoca-design-system/components/data-display/tag) or [Button](/invoca-design-system/components/actions/button) `outlined`, clickable | Recommended |
 | 6 | Input | [Input](/invoca-design-system/components/forms/input) | Yes, for welcome |
-| 7 | Next-step actions (no-results only) | [Button](/invoca-design-system/components/actions/button) | Recommended — see [TITAN-EMP-05](/invoca-design-system/components/data-display/empty-state#constraints) |
+| 7 | Next-step actions (no-results only) | [Button](/invoca-design-system/components/actions/button) | Recommended — per [EmptyState's own constraint](/invoca-design-system/components/data-display/empty-state#constraints) on resolving actions |
 
 The no-results variant composes [EmptyState](/invoca-design-system/components/data-display/empty-state)
 directly — same illustration-plus-title-plus-supporting-line shape that component already
@@ -103,8 +103,8 @@ the user's own words, not a generic "no results."
 | Working | **Not applicable to this pattern — by construction.** This pattern renders only before a run starts or once one has definitively finished. A run in progress is a [Skeleton](/invoca-design-system/components/feedback/skeleton) or [Spinner](/invoca-design-system/components/feedback/spinner), never this pattern's copy or illustration. |
 | Streaming / partial | **Not applicable**, for the same reason — nothing here is a partial result. |
 | Confident and right | **Not applicable.** No output was produced in either the welcome or no-results case; there's nothing to be right about. |
-| Confident and wrong | **The no-results claim is itself a claim, and it can be wrong.** A search that says "no calls matched" when a manual filter over the same data turns up results is a confidently wrong empty state — the failure looks identical to a correctly empty one. The user notices only by trying the equivalent manual path (a plain filter, a direct table view) and finding what the AI search missed, or by already knowing the data should be there. Nothing about the no-results screen itself signals that the search might have missed something — see [TITAN-AIWELCOME-04](#constraints). |
-| Uncertain | If the search was cut short (timeout, partial index) rather than exhaustive, the copy says "the search may be incomplete" rather than a flat "no calls matched" — see [TITAN-AIWELCOME-05](#constraints). |
+| Confident and wrong | **The no-results claim is itself a claim, and it can be wrong.** A search that says "no calls matched" when a manual filter over the same data turns up results is a confidently wrong empty state — the failure looks identical to a correctly empty one. The user notices only by trying the equivalent manual path (a plain filter, a direct table view) and finding what the AI search missed, or by already knowing the data should be there. Nothing about the no-results screen itself signals that the search might have missed something. |
+| Uncertain | If the search was cut short (timeout, partial index) rather than exhaustive, the copy says "the search may be incomplete" rather than a flat "no calls matched". |
 | Refused | **Not applicable to this page.** A declined request (disallowed query, out-of-scope ask) is the invoking action's own [Refused](/invoca-design-system/ai-experience/actions/disambiguate#outcome-states) state, documented there — this pattern only covers a request that ran and legitimately found nothing. |
 | Empty | This **is** the no-results half of this pattern — a run that completed and genuinely found nothing to show. |
 | Interrupted | A cancelled or dropped run must not render as no-results. Show that the run was stopped, not that it finished empty — conflating the two tells the user a search happened when it didn't. |
@@ -153,10 +153,9 @@ false empty) versus correctly.
 Never reuse [EmptyState](/invoca-design-system/components/data-display/empty-state)'s generic
 fallback copy ("No Records found!") for a no-results moment — it doesn't name what was searched
 for and reads as broken rather than as a completed, empty search. Per
-[TITAN-EMPTYCOPY-03](/invoca-design-system/content/empty-state-copy#constraints), the no-results
-wording names the query; per this page's own
-[TITAN-AIWELCOME-02](#constraints), the welcome wording names what the feature can't do, not
-only what it can.
+[Empty state copy](/invoca-design-system/content/empty-state-copy#constraints), the no-results
+wording names the query; this page's own rule for the welcome wording similarly requires
+naming what the feature can't do, not only what it can.
 
 ## Accessibility
 
@@ -166,7 +165,7 @@ only what it can.
 - An indeterminate wait before either state renders needs a non-visual equivalent to a spinner —
   accessible status text, not a purely visual animation.
 - The scope-setting line and the no-results heading are both real text, never baked into an
-  illustration — matches [TITAN-EMP-07](/invoca-design-system/components/data-display/empty-state#constraints).
+  illustration — matches [EmptyState's own rule](/invoca-design-system/components/data-display/empty-state#constraints) on this.
 - When a no-results screen replaces a loading region, focus moves to the heading so a screen
   reader user lands on the result, not left on a control that no longer has anything to act on.
 - Example prompts (welcome) and next-step actions (no-results) are both reachable by keyboard in
@@ -207,8 +206,8 @@ Not applicable — nothing is shipped yet to diverge from.
 ## Volatility
 
 This page assumes an agentic feature can distinguish, internally, between "ran and found
-nothing" and "didn't finish" — that distinction is what
-[TITAN-AIWELCOME-04](#constraints) depends on, and it doesn't hold for every possible
+nothing" and "didn't finish" — that distinction is what this page's no-results-versus-cancelled
+rule depends on, and it doesn't hold for every possible
 implementation (a system that times out silently may not know which case it's in). Dated
 2026-09-02; revisit on the first real implementation of any search, summarize, or recommend
 panel, and whenever [EmptyState](/invoca-design-system/components/data-display/empty-state)'s

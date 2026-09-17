@@ -139,10 +139,10 @@ the claim it's attached to.
 |---|---|---|
 | **TITAN-VERIFY-01** | Every discrete, checkable claim about call data carries a citation to the specific source passage, not to the call as a whole. | "See the call" is a redirect, not a citation on a specific claim — passage-level discipline is what makes the citation useful. |
 | **TITAN-VERIFY-02** | A claim the system cannot cite to a specific passage is dropped or rewritten as a hedge, never given a fabricated or approximate citation. | A wrong-looking-right citation is worse than no citation — it is the exact failure this category of pattern exists to prevent. |
-| **TITAN-VERIFY-03** | Citation links are Link, never Button. | Navigation to a resolvable location follows [TITAN-BTN-08](/invoca-design-system/components/actions/button#constraints). |
+| **TITAN-VERIFY-03** | Citation links are Link, never Button. | Navigation to a resolvable location follows [Button's own navigation rule](/invoca-design-system/components/actions/button#constraints). |
 | **TITAN-VERIFY-04** | Citation navigation lands on the specific timestamp or transcript line, not the top of the call. | Forcing the user to re-search inside the source defeats the point of citing a passage. |
 | **TITAN-VERIFY-05** | When the underlying source is degraded (text-only, unavailable, redacted), that is stated next to the citation, not only discoverable by clicking through. | A disclosure that arrives after the fact is not disclosure. |
-| **TITAN-VERIFY-06** | A citation is never styled or worded to imply verification has already happened ("confirmed," a checkmark icon). | That language claims a review step nothing performed. See [TITAN-AI-05](/invoca-design-system/ai-experience/overview#constraints). |
+| **TITAN-VERIFY-06** | A citation is never styled or worded to imply verification has already happened ("confirmed," a checkmark icon). | That language claims a review step nothing performed. See [the overview's own rule against unsubstantiated claims](/invoca-design-system/ai-experience/overview#constraints). |
 | **TITAN-VERIFY-07** | If a cited source changes after the citation was generated, the pattern flags the citation as stale rather than showing it as current. | A citation is a promise about the state of the source at generation time, and it can go stale exactly like the answer it supports. |
 
 ## Divergences
@@ -154,7 +154,8 @@ Not applicable. Nothing is shipped yet to diverge from.
 - Whether a user can flag a broken or incorrect citation, and whether that flag ever reaches a
   model owner, is undecided.
 - Whether citation-to-passage mapping is produced by the model itself or a separate retrieval or
-  alignment step is undecided — this affects how reliably TITAN-VERIFY-02 can actually hold.
+  alignment step is undecided — this affects how reliably this page's no-fabricated-citation
+  rule can actually hold.
 - No decision on how long a generated citation stays valid once the underlying recording or
   transcript is deleted under data retention policy.
 - Whether citations render for every role, including a user without permission to view the
@@ -165,9 +166,10 @@ Not applicable. Nothing is shipped yet to diverge from.
 
 This guidance depends on the eventual model or pipeline being able to produce passage-level
 grounding at all — some retrieval architectures can cite a document but not a line or a
-timestamp within it, which would make TITAN-VERIFY-01 unbuildable as written. It also depends
-on Invoca's data-retention rules for recordings and transcripts, which determine how long a
-citation stays resolvable before TITAN-VERIFY-07 has to apply. Reverify when a model or pipeline
+timestamp within it, which would make this page's passage-level citation requirement unbuildable
+as written. It also depends on Invoca's data-retention rules for recordings and transcripts,
+which determine how long a citation stays resolvable before this page's staleness-flagging rule
+has to apply. Reverify when a model or pipeline
 is selected for the first feature that cites call data, and whenever retention policy changes.
 Dated 2026-09-02.
 

@@ -71,10 +71,10 @@ be recorded, not a fallback that ships unremarked.
 | 2 | AI identifier mark | See [Identifiers](/invoca-design-system/ai-experience/identifiers/avatar) | Yes — see [Disclosure & recourse](#disclosure-recourse) |
 | 3 | The disambiguation question, naming the term that split | Text content, no component | Yes |
 | 4 | One row per candidate reading | [Menu](/invoca-design-system/components/actions/menu) or a stack of [Button](/invoca-design-system/components/actions/button) `outlined` controls | Yes — at least two |
-| 5 | Escape route back to free text | [Button](/invoca-design-system/components/actions/button) `text`, or [Link](/invoca-design-system/components/actions/link) | Yes — see [TITAN-DISAMBIG-05](#constraints) |
+| 5 | Escape route back to free text | [Button](/invoca-design-system/components/actions/button) `text`, or [Link](/invoca-design-system/components/actions/link) | Yes |
 
 Each candidate row states the reading in the user's words, not the underlying field name — "the
-Billing campaign," not `campaign_id = 4`. Per [TITAN-COLOR-01](/invoca-design-system/foundations/color#constraints)
+Billing campaign," not `campaign_id = 4`. Per [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this
 and the vocabulary rules on the [overview](/invoca-design-system/ai-experience/overview), no
 row is styled to look more "correct" than another with color alone; if one reading is more
 likely, say so in the row's own text.
@@ -86,12 +86,12 @@ likely, say so in the row's own text.
 | Working | Brief; a [Spinner](/invoca-design-system/components/feedback/spinner) or inline "Checking what you meant…" while candidate readings are generated, before the question renders. |
 | Streaming / partial | **Not applicable.** Candidate readings are shown as a complete, discrete set. A partially-listed set of options is not choosable — the question does not render until all candidates are ready. |
 | Confident and right | **Not applicable to this page.** Disambiguate exists specifically for the cases the system is *not* confident enough to skip. A confidently correct single reading never reaches this pattern — it's [Search](/invoca-design-system/ai-experience/actions/search) or [Summarize](/invoca-design-system/ai-experience/actions/summarize) running normally. |
-| Confident and wrong | **The pattern's central failure mode: the system skipped asking.** It picked one reading silently instead of surfacing the split. The user notices only indirectly — a result set that's smaller, larger, or differently shaped than expected, or a Signal that doesn't match what the transcript actually shows on replay. Nothing in the interface flags this at the moment it happens, which is exactly why [TITAN-DISAMBIG-01](#constraints) exists. |
+| Confident and wrong | **The pattern's central failure mode: the system skipped asking.** It picked one reading silently instead of surfacing the split. The user notices only indirectly — a result set that's smaller, larger, or differently shaped than expected, or a Signal that doesn't match what the transcript actually shows on replay. Nothing in the interface flags this at the moment it happens — which is exactly why this pattern asks instead of silently choosing. |
 | Uncertain | This is the pattern's normal operating state, not an edge case — the question itself *is* how uncertainty is communicated. Ranking candidates by likelihood, when the system has a basis for it, is stated in the row text, never only in row order. |
-| Refused | More candidate readings exist than can be shown usefully (see [TITAN-DISAMBIG-06](#constraints)). The system states that the request is too broad and asks the user to narrow it, rather than listing an unusable number of options. |
+| Refused | More candidate readings exist than can be shown usefully. The system states that the request is too broad and asks the user to narrow it, rather than listing an unusable number of options. |
 | Empty | **Not applicable at this stage.** A reading that itself returns nothing is the invoked action's [Empty](/invoca-design-system/ai-experience/actions/welcome-empty-state) state, once the user has picked one. |
 | Interrupted | The user closes the question or navigates away without choosing. No reading is acted on, and no default is silently applied. Returning to the same request shows the question again. |
-| Degraded | The system falls back to a simple keyword match instead of full interpretation, and disambiguation is skipped entirely. This must be disclosed — see [TITAN-DISAMBIG-07](#constraints) — not discovered only when results look off. |
+| Degraded | The system falls back to a simple keyword match instead of full interpretation, and disambiguation is skipped entirely. This must be disclosed, not discovered only when results look off. |
 | Rate-limited / over budget | Generating candidate readings is itself a model call; if it can't complete in budget, the system states that plainly and offers the literal keyword search as a fallback rather than guessing silently. |
 | Stale | **Not applicable.** The candidates are generated at the moment of the request and answered immediately; nothing here persists long enough to go stale. |
 
@@ -145,7 +145,7 @@ plain language, no apology for asking.
   spinner: accessible status text, not only a visual animation.
 - If one reading is more likely than the others, that likelihood is stated in the row's visible
   and accessible text — never conveyed by row order or color alone, per
-  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - Initial focus lands on the first candidate row, not on the escape control — the common path
   is picking a reading, not rephrasing.
 - Selecting a candidate and dismissing the question both need to visibly and programmatically
@@ -158,7 +158,7 @@ plain language, no apology for asking.
 |---|---|---|
 | **TITAN-DISAMBIG-01** | When two or more candidate readings would produce materially different results, the system asks rather than silently choosing one. | Skipping the question is this pattern's characteristic failure — the user gets a plausible-looking result that is quietly the wrong scope, with nothing to signal it. |
 | **TITAN-DISAMBIG-02** | Each candidate reading is stated in the user's own vocabulary, never as an internal field name or code. | "The Billing campaign" is checkable against what the user meant; `campaign_id = 4` is not. |
-| **TITAN-DISAMBIG-03** | Likelihood between candidates, when the system has a basis for it, is stated in words. It is never conveyed only by row order or color. | Matches [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints) — a signal carried only by position or color is invisible to a reader who can't perceive it or isn't looking closely. |
+| **TITAN-DISAMBIG-03** | Likelihood between candidates, when the system has a basis for it, is stated in words. It is never conveyed only by row order or color. | Matches [Color's own constraint](/invoca-design-system/foundations/color#constraints) — a signal carried only by position or color is invisible to a reader who can't perceive it or isn't looking closely. |
 | **TITAN-DISAMBIG-04** | Choosing a candidate takes effect immediately; nothing runs before the user chooses. | The entire value of asking is lost if the system also acts on a default while waiting. |
 | **TITAN-DISAMBIG-05** | An escape route back to free-text rephrasing is always present alongside the candidate list. | A user whose actual intent matches none of the offered readings needs a way out that isn't "pick the closest wrong one." |
 | **TITAN-DISAMBIG-06** | More than a handful of candidate readings is a refusal to narrow, not a longer list. | A list long enough to require scanning defeats the point of asking instead of guessing — it just moves the guessing to the user with worse information. |
@@ -172,7 +172,7 @@ Not applicable — nothing is shipped yet to diverge from.
 
 - Whether a user's chosen reading should be remembered as a standing preference for future,
   similarly-worded requests is undecided.
-- How many candidate readings is "too many" (see [TITAN-DISAMBIG-06](#constraints)) has no
+- How many candidate readings is "too many" has no
   stated number — it is a judgment call pending a real product case to test it against.
 - Whether Signal AI's own intent-disambiguation case surfaces to the call reviewer synchronously
   (blocking further analysis of that call) or asynchronously (queued for later review) is

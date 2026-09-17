@@ -140,7 +140,7 @@ own rule that a label states what the value means, not how it's implemented.
   not only a visual spinner change.
 - No control's effect is conveyed by color alone; a selected discrete control (e.g., "Full" in
   the button group) is marked with `aria-pressed` or equivalent state, not color contrast
-  alone, per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  alone, per [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - When regeneration completes, focus stays on the Regenerate control rather than jumping to
   the new output automatically — the user changed a setting deliberately and is not
   disoriented by staying where they are, unlike a fresh [Open input](/invoca-design-system/ai-experience/inputs/open-input#accessibility)
@@ -153,7 +153,7 @@ own rule that a label states what the value means, not how it's implemented.
 | **TITAN-TUNE-01** | The control values that produced a given output remain visible alongside it, not only at the moment of setting them. | [Disclosure & recourse](#disclosure-recourse), question 4 — a result cannot be checked against settings the interface has already hidden. |
 | **TITAN-TUNE-02** | A control that applies immediately (no separate regenerate step) states so visually — the absence of an apply button is not sufficient signal on its own. | Otherwise identical-looking control groups behave differently with no way to tell which is which before touching one. |
 | **TITAN-TUNE-03** | Changing a control while a previous run is in flight cancels that run outright; it is never left to complete and silently discarded. | A discarded-but-completed run wastes the cost of generating it and risks a race where the stale result renders after the new one. |
-| **TITAN-TUNE-04** | An invalid or unsupported combination of control values is refused before running, naming the specific incompatible values. | "Invalid selection" tells the user something is wrong and nothing about what to fix — same reasoning as [TITAN-ERR-03](/invoca-design-system/content/error-messages#constraints). |
+| **TITAN-TUNE-04** | An invalid or unsupported combination of control values is refused before running, naming the specific incompatible values. | "Invalid selection" tells the user something is wrong and nothing about what to fix — same reasoning as [Error messages' own actionable-resolution rule](/invoca-design-system/content/error-messages#constraints). |
 | **TITAN-TUNE-05** | A degraded fallback for a higher-cost control option states that it fell back, rather than returning a lesser result silently labeled as the option requested. | An output that doesn't match the label the user selected, with no disclosure, is the control-level version of confident-and-wrong. |
 | **TITAN-TUNE-06** | Controls provide a reset to default values. | Recourse requires an easy way back to a known-good state, not just forward adjustment. |
 | **TITAN-TUNE-07** | A Control never itself performs an unsupervised action; changing one only ever configures a future Suggests-tier run unless that escalation is explicitly stated. | Per [TITAN-AI overview](/invoca-design-system/ai-experience/overview#agency-tier) — escalating tier is a decision, never a default, and a Control's simplicity makes it an easy place for that line to blur unnoticed. |

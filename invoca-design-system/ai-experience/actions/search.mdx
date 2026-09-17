@@ -138,7 +138,7 @@ accessible.
 - An indeterminate "working" state needs a text equivalent ("Searching call records…") for
   anyone not looking at the spinner.
 - If an interpretation chip carries any confidence-like signal, it's paired with text — never
-  color alone, per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  color alone, per [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - Focus moves to the result list heading when a search completes, not back to the input,
   so a screen reader user lands on the new content rather than re-reading the query.
 
@@ -151,7 +151,7 @@ accessible.
 | **TITAN-AISEARCH-03** | A degraded (keyword-fallback) result set is visually distinguished from a fully parsed one. | A narrower, lower-quality result set that looks identical to a good one is a confident-and-wrong failure by another name. |
 | **TITAN-AISEARCH-04** | Zero results always restate the interpreted query next to the empty message. | Proves the query ran as understood, distinguishing a genuinely empty result from a broken search. |
 | **TITAN-AISEARCH-05** | Search never writes to a record. | Search's tier is Suggests; any side effect belongs to Draft or Update instead. |
-| **TITAN-AISEARCH-06** | No confidence percentage is shown unless it would change what the user does next. | Matches [TITAN-AI-03](/invoca-design-system/ai-experience/overview#constraints) — a number that doesn't change behavior is decoration. |
+| **TITAN-AISEARCH-06** | No confidence percentage is shown unless it would change what the user does next. | Matches [the overview's own constraint](/invoca-design-system/ai-experience/overview#constraints) on this — a number that doesn't change behavior is decoration. |
 
 ## Divergences
 

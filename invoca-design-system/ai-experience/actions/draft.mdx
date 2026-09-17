@@ -25,7 +25,7 @@ change from a call's content for a user to review.
 
 | Situation | Do this instead | Why |
 |---|---|---|
-| The change is small, common, and cleanly reversible — a tag, a category, a status flag | [Update](/invoca-design-system/ai-experience/actions/update) | Requiring a review step on every routine, reversible change is friction with no benefit — the same failure [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints) names for confirmation dialogs. |
+| The change is small, common, and cleanly reversible — a tag, a category, a status flag | [Update](/invoca-design-system/ai-experience/actions/update) | Requiring a review step on every routine, reversible change is friction with no benefit — the same failure [Destructive confirmation's own perform-then-undo rule](/invoca-design-system/patterns/destructive-confirmation#constraints) names for confirmation dialogs. |
 | The user just wants to know what happened on the call, not produce something new | [Summarize](/invoca-design-system/ai-experience/actions/summarize) | A summary describes the past. A draft is a new artifact meant to go somewhere. |
 | The user is composing free text unaided, in a normal form | [Input](/invoca-design-system/components/forms/input) or [Form](/invoca-design-system/components/forms/form) | Draft only earns its place when starting from a blank field is slower than reviewing a generated starting point. |
 
@@ -60,7 +60,7 @@ the user acts on elsewhere; a draft is the completed artifact itself, just not y
   editable in place. Editing *is* the correction; see
   [Disclosure & recourse](#disclosure-recourse).
 - [Button](/invoca-design-system/components/actions/button) — Send/Apply as the single
-  `contained` action per [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints);
+  `contained` action per [Button's one-primary-per-region rule](/invoca-design-system/components/actions/button#constraints);
   Discard as `text`, first in the group, matching the ordering
   [destructive confirmation](/invoca-design-system/patterns/destructive-confirmation#structure)
   uses for its own Cancel/Confirm pair.
@@ -139,7 +139,7 @@ accessible.
 - An indeterminate generation wait needs a text equivalent ("Drafting…") alongside any
   spinner.
 - Uncertain-span flags are text-based (`[VERIFY: ...]`), never a color highlight alone, per
-  [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  [Color's own constraint](/invoca-design-system/foundations/color#constraints) on this.
 - Focus moves into the editable draft field once generation completes, so the user can
   immediately review and edit without hunting for where the content landed.
 
@@ -148,10 +148,10 @@ accessible.
 | ID | Constraint | Rationale |
 |---|---|---|
 | **TITAN-DRAFT-01** | A draft never sends, saves, or applies without a separate, explicit user action. | This is what the Drafts tier means; without it, the pattern is actually Update wearing a draft's label. |
-| **TITAN-DRAFT-02** | The send/apply control is the only `contained` Button in the draft's region; discard is `text` and comes first. | Matches [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints) and the destructive-confirmation ordering — the safe path stays easiest to reach. |
+| **TITAN-DRAFT-02** | The send/apply control is the only `contained` Button in the draft's region; discard is `text` and comes first. | Matches [Button's one-primary-per-region rule](/invoca-design-system/components/actions/button#constraints) and the destructive-confirmation ordering — the safe path stays easiest to reach. |
 | **TITAN-DRAFT-03** | An uncertain detail is flagged inline, never silently guessed and stated as fact. | A flagged guess asks for verification; an unflagged one reads as a claim. |
 | **TITAN-DRAFT-04** | A draft always names the specific call or record it was generated from. | It is the one fixed reference point a skimming reviewer has to check a claim against. |
-| **TITAN-DRAFT-05** | Discarding a draft requires no confirmation dialog. | Nothing has been committed yet — matches [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints)'s rule that confirmation is for non-reversible actions only. |
+| **TITAN-DRAFT-05** | Discarding a draft requires no confirmation dialog. | Nothing has been committed yet — matches [Destructive confirmation's own rule](/invoca-design-system/patterns/destructive-confirmation#constraints) that confirmation is for non-reversible actions only. |
 | **TITAN-DRAFT-06** | A degraded (template-fallback) draft discloses that fallback in the draft itself. | A generic template presented as call-specific is a confident-and-wrong failure at the level of the whole artifact. |
 
 ## Divergences
