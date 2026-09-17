@@ -216,7 +216,7 @@ is not a landmark; it is part of the container's own content.
 | **TITAN-FOOTER-02** | At most one commit footer per active surface, and two footers never cover the same changes. | Two commits over one set of changes force the reader to work out which is which at each one. A dialog or drawer over a view is not a second claim — it is a different surface with a different unit. |
 | **TITAN-FOOTER-03** | On a view whose whole purpose is configuration, the view owns the footer and its sections carry no commit of their own. | Every section on such a view is part of one subject's configuration. A commit per section splits one unit into several and makes "am I done?" unanswerable from the screen. |
 | **TITAN-FOOTER-04** | When configuration is scoped to one container on a view doing other work, the footer sits at the foot of that container and the view carries none. | The container is the boundary of the change. A view-level footer there would claim the read-only content around it as well. |
-| **TITAN-FOOTER-05** | A view-level footer is fixed to the viewport. A container-level footer is static within its container. | A container footer is already adjacent to the fields it commits. A view footer is a scroll away from wherever the reader is editing, and that distance is what makes a per-section button look like the fix. |
+| **TITAN-FOOTER-05** | A view-level footer is fixed to the viewport, unless the view fits one viewport at `lg` with room to spare — then it is static. A container-level footer is always static within its container. | A container footer is already adjacent to the fields it commits. A view footer is a scroll away from wherever the reader is editing, and that distance is what makes a per-section button look like the fix — unless nothing can scroll out of reach in the first place. |
 | **TITAN-FOOTER-06** | The commit label states the action, never the scope it covers. | With one footer per unit there is nothing to disambiguate, and a scope-named commit implies the rest of the surface was excluded from it. |
 | **TITAN-FOOTER-07** | A container's footer region that holds no commit is a summary region, and never carries another surface's commit. | A view-wide commit placed in a container is indistinguishable from a container-scoped one, which is the ambiguity the first rule removes. |
 | **TITAN-FOOTER-08** | A footer's contents align to the gutter of the surface that owns it. | A footer inset differently from the content above it reads as a separate surface floating over the page rather than that page's last row. |
@@ -341,7 +341,6 @@ reader finds the one they came for.
 
 | | |
 |---|---|
-| **Constraints** | Proposed. `TITAN-FOOTER-01` through `-11`. |
-| **Decided** | The configuration-view case and the container-scoped case are design decisions. |
+| **Constraints** | Proposed. `TITAN-FOOTER-01` through `-11`, covering both the configuration-view case and the container-scoped case. |
 | **Provenance** | Values and shipped behaviour read from Titan source; no emitter covers footer arrangement, so the tables in [Structure](#structure) are hand-confirmed. |
 | **Open** | Six items in [Gaps](#gaps-in-the-current-rules); nine disagreements in [Known issues](#known-issues). |
