@@ -76,7 +76,7 @@ text — lives in the URL, so a narrowed view is exactly as linkable and durable
 │ │ Table — the narrowed result set                          │   │
 │ │  ...                                                       │   │
 │ │  Pagination — inside the table, above the page footer    │   │
-│ │  (per TITAN-GAP-27's "Direction")                         │   │
+│ │  (see Known issues)                                        │   │
 │ └─────────────────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -106,11 +106,11 @@ tiers do not apply here.
 | **TITAN-FSEARCH-01** | Every applied filter renders as a removable chip in a dedicated active-filters row, separate from the controls that set it. | A narrowed list with no visible trace of what narrowed it gives the reader no way to explain the rows that are missing, let alone undo it. |
 | **TITAN-FSEARCH-02** | A "clear all" control appears whenever more than one filter is active. | Removing filters one chip at a time is fine for one filter; past that it is the slower path back to the full list every time. |
 | **TITAN-FSEARCH-03** | Search input is debounced before it runs. It never queries on every keystroke. | Querying per keystroke against a large table produces a result list that visibly reflows while the reader is still typing, and runs redundant queries that are discarded before they're seen. |
-| **TITAN-FSEARCH-04** | Filters and search sit in the page frame's `Controls` region, not inside an ad hoc toolbar the page invents. | [TITAN-VIEW-05](/invoca-design-system/views/overview#constraints) — `Controls` changes what the body shows; a filter row placed elsewhere is a control pretending to be part of the body. |
+| **TITAN-FSEARCH-04** | Filters and search sit in the page frame's `Controls` region, not inside an ad hoc toolbar the page invents. | `Controls` changes what the body shows; a filter row placed elsewhere is a control pretending to be part of the body. |
 | **TITAN-FSEARCH-05** | Active filter and search state is reflected in the URL, so a filtered view is linkable and survives a reload or the back button. | An interface state that exists only in memory cannot be shared, bookmarked, or returned to — the same reasoning behind tab addressability in [Views overview](/invoca-design-system/views/overview#constraints). |
 | **TITAN-FSEARCH-06** | Removing one filter chip removes only that filter. It never resets the others. | Filters typically combine as AND; a reader backing out one criterion at a time should not be forced to restart the whole search. |
 | **TITAN-FSEARCH-07** | A zero-result narrowed list hands off to [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states) rather than defining its own empty treatment. | One definition of the empty case, not two that can drift out of sync. |
-| **TITAN-FSEARCH-08** | Pagination of the narrowed result set follows [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27)'s "Direction" — inside the table, above the page footer — until the frame decides otherwise. | The page frame has no region between `Contents` and `Footer` for it; building a bespoke pagination bar is the exact duplication that gap entry already records as a real cost. |
+| **TITAN-FSEARCH-08** | Pagination of the narrowed result set lives inside the table, above the page footer, until the frame decides otherwise — see [Known issues](#known-issues). | The page frame has no region between `Contents` and `Footer` for it; building a bespoke pagination bar is the exact duplication already recorded as a real cost elsewhere. |
 
 ## Content
 
@@ -128,7 +128,7 @@ tiers do not apply here.
 - Each filter chip's remove control needs its own accessible name stating which filter it
   removes ("Remove filter: Status: Active"), not a bare "×" with no context.
 - An active filter chip's state is never carried by color alone — pair it with the field name and
-  value as text, per [TITAN-COLOR-03](/invoca-design-system/foundations/color#constraints).
+  value as text.
 - Focus stays on the search box or filter control the reader just used; a result-set update never
   steals focus to the results themselves. Moving focus away from an in-progress interaction (still
   typing, still choosing a filter) is more disruptive here than in a one-shot action like a
@@ -184,9 +184,9 @@ don't I see everything" has one answer, and it should be answered from one place
 checking a search box and a row of Selects separately.
 
 **State lives in the URL because a narrowed view that can't be linked or reloaded stops being a
-real view.** [TITAN-FSEARCH-05](#constraints) isn't a convenience — a filtered list a reader
-can't bookmark, share, or return to via the back button is functionally invisible to everything
-outside the single session that created it.
+real view.** This isn't a convenience — a filtered list a reader can't bookmark, share, or return
+to via the back button is functionally invisible to everything outside the single session that
+created it.
 
 ## Related
 

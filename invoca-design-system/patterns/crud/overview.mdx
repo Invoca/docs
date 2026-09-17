@@ -40,10 +40,10 @@ decide which one fits, in the order they're worth asking:
 
 **Sequence is a modifier, not a fourth vote.** A "yes" on Sequence doesn't pick a surface by
 itself — it says the surface that Permanence, Density, and Continuity already chose needs a
-visible step indicator inside it. See [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26):
-the design library has already drawn what that looks like — a numbered step header paired with
-a `Workflow` template — and nothing in code builds it yet. Any sequential surface this section
-recommends is a proposal against that same undecided component, not a claim it exists.
+visible step indicator inside it. The design library has already drawn what that looks like — a
+numbered step header paired with a `Workflow` template — and nothing in code builds it yet. Any
+sequential surface this section recommends is a proposal against that same undecided component,
+not a claim it exists.
 
 ## Choosing a surface
 
@@ -110,7 +110,7 @@ it; the two are consolidated instead.
 | **TITAN-CRUD-01** | The surface decision follows the axes in [Choosing a surface](#choosing-a-surface) — Permanence, then Density, then Continuity — not developer convenience or "what the last screen used." | A surface picked because it was quick to build, rather than because the object needed it, is the fastest way to end up with the same object created three different ways in three parts of the product. |
 | **TITAN-CRUD-02** | The same object type uses the same surface for Create and Update unless a stated reason distinguishes them. | A campaign created on a full page and edited in a modal asks the user to hold two mental models of the same object. See [Update](/invoca-design-system/patterns/crud/update) for the one legitimate reason this sometimes differs. |
 | **TITAN-CRUD-03** | A "quick create" modal that escapes to a full surface hands off the data already entered — it never discards it. | Making someone re-enter what they already typed because they needed one more field is a worse outcome than not offering the shortcut at all. |
-| **TITAN-CRUD-04** | A sequential, multi-step operation states which step the user is on and how many remain, regardless of which surface holds it. | Per [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) — a sequence without visible progress is one the user cannot judge whether to start, continue, or abandon. |
+| **TITAN-CRUD-04** | A sequential, multi-step operation states which step the user is on and how many remain, regardless of which surface holds it. | A sequence without visible progress is one the user cannot judge whether to start, continue, or abandon — the design library has already drawn the step indicator this needs; nothing in code builds it yet, so this constraint is a proposal against that undecided component. |
 
 ## Related
 

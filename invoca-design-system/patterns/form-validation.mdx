@@ -13,13 +13,14 @@ submission to report a mistake made in the first field. Two separate decisions t
 name here: **when** to check a field, and **where** to show the result. Getting the timing wrong
 either marks a field invalid before the reader has finished typing it, or defers every error to a
 full-page failure discovered only on submit. Getting the placement wrong disconnects the message
-from the field it is about — see [TITAN-ERR-02](/invoca-design-system/content/error-messages#constraints).
+from the field it is about.
 
 On a long or tabbed form, a third problem appears that a single field's validation does not have:
 the invalid field can be out of view entirely — scrolled past on a long page, or on a tab the
 reader is not looking at. Nothing about validating one field in isolation explains what should
-happen when the invalid one isn't the one currently in front of the reader, and — per
-TITAN-GAP-30 above — the tab bar itself cannot flag which section holds the problem.
+happen when the invalid one isn't the one currently in front of the reader — and the shipped tab
+bar itself has no way to flag which section holds the problem, a real gap this page's tabbed-form
+guidance has to work around (see [Known issues](#known-issues)).
 
 ## When to validate
 
@@ -67,7 +68,7 @@ flowchart TD
 | Order | Component | Role |
 |---|---|---|
 | 1 | [FieldLabel](/invoca-design-system/components/forms/field-label) | Names the field; its shared helper/error slot renders the message |
-| 2 | [Input](/invoca-design-system/components/forms/input) or [Select](/invoca-design-system/components/forms/select) | The field itself, composed via `FormInput` per [TITAN-INPUT-08](/invoca-design-system/components/forms/input#constraints) |
+| 2 | [Input](/invoca-design-system/components/forms/input) or [Select](/invoca-design-system/components/forms/select) | The field itself, always composed via `FormInput` rather than the raw underlying field |
 | 3 | [Alert](/invoca-design-system/components/feedback/alert) `error` | Page-level error summary — **only on a long or tabbed form**, see [Constraints](#constraints) |
 | 4 | [Button](/invoca-design-system/components/actions/button) `primary` | Submit — re-validates on press |
 
@@ -103,20 +104,20 @@ the confirmed reading order (label, field, then helper-or-error) on FieldLabel's
 | Field is invalid | Border and focus ring switch to error tokens; error text replaces helper text in the shared slot — per [Input](/invoca-design-system/components/forms/input#edge-and-failure-states) |
 | Submit pressed with invalid fields | Submission is blocked; focus moves to the first invalid field; a page-level summary appears if the form is long or tabbed |
 | A field is corrected after a failed submit | Re-validates on blur (or as-you-type, per its own timing) — the reader is not forced to press Submit again just to clear one field's error |
-| Invalid field is on a tab not currently open | **No shipped per-tab signal exists** — see [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30). The page-level error summary is the only route to it, since it can link across tab boundaries |
+| Invalid field is on a tab not currently open | **No shipped per-tab signal exists** — see [Known issues](#known-issues). The page-level error summary is the only route to it, since it can link across tab boundaries |
 
 ## Constraints
 
 | ID | Constraint | Rationale |
 |---|---|---|
 | **TITAN-FORMVAL-01** | Validate as-you-type only when the feedback itself is what the reader needs to decide what to type next — a strength meter, a character count. Every other field validates on blur or on submit. | Flagging an unfinished value as wrong reads as the form failing, not helping — most rules can't be judged until the reader has stopped typing. |
-| **TITAN-FORMVAL-02** | A field validates on blur when it can be judged complete on its own. It validates on submit only when it depends on another field's value or requires a round trip. | Waiting until submit for a check that could run on blur defers a correction the reader could have made immediately — see [TITAN-ERR-01](/invoca-design-system/content/error-messages#constraints). |
-| **TITAN-FORMVAL-03** | Error text renders in the field's own helper/error slot, directly below the field. It never renders only in a separate summary. | Per [TITAN-ERR-02](/invoca-design-system/content/error-messages#constraints) — a message should not require the reader to search the screen to connect it to the field it's about. |
-| **TITAN-FORMVAL-04** | A page-level error summary is used only on a form long enough that an invalid field can be out of view, or tabbed. A short, single-view form does not get one. | A summary above a form the reader can already see in full repeats information sitting two lines below it — see [TITAN-ERR-02](/invoca-design-system/content/error-messages#constraints). |
-| **TITAN-FORMVAL-05** | On a tabbed form, the page-level error summary links each entry to its specific field, naming the tab it's on. | This is the workaround for [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) — with no per-tab error signal, the summary is the only place that can say which section holds the problem. |
+| **TITAN-FORMVAL-02** | A field validates on blur when it can be judged complete on its own. It validates on submit only when it depends on another field's value or requires a round trip. | Waiting until submit for a check that could run on blur defers a correction the reader could have made immediately. |
+| **TITAN-FORMVAL-03** | Error text renders in the field's own helper/error slot, directly below the field. It never renders only in a separate summary. | A message should not require the reader to search the screen to connect it to the field it's about. |
+| **TITAN-FORMVAL-04** | A page-level error summary is used only on a form long enough that an invalid field can be out of view, or tabbed. A short, single-view form does not get one. | A summary above a form the reader can already see in full repeats information sitting two lines below it. |
+| **TITAN-FORMVAL-05** | On a tabbed form, the page-level error summary links each entry to its specific field, naming the tab it's on. | This is the workaround for the shipped tab bar's own missing per-tab error signal — see [Known issues](#known-issues) — the summary is the only place that can say which section holds the problem. |
 | **TITAN-FORMVAL-06** | Submitting with invalid fields moves focus to the first invalid field, not to the error summary. | The summary is a map; the field is the destination. Landing on the summary adds a step for a reader who still has to find the field afterward. |
 | **TITAN-FORMVAL-07** | A field corrected after a failed submit re-validates on its own configured timing (blur or as-you-type) — it is never left showing a stale error until the next full submit. | Requiring a second full submission to clear one field's error punishes the reader for the same mistake twice. |
-| **TITAN-FORMVAL-08** | Error message content states the correction, not only the failure. | [TITAN-ERR-03](/invoca-design-system/content/error-messages#constraints) and [TITAN-FLD-04](/invoca-design-system/components/forms/field-label#constraints) — "Invalid" tells the reader nothing about what to do next. |
+| **TITAN-FORMVAL-08** | Error message content states the correction, not only the failure. | "Invalid" tells the reader nothing about what to do next — the same reasoning [Error messages](/invoca-design-system/content/error-messages) and [FieldLabel](/invoca-design-system/components/forms/field-label) already state for their own copy rules. |
 
 ## Content
 
@@ -127,9 +128,8 @@ the confirmed reading order (label, field, then helper-or-error) on FieldLabel's
 | Page-level summary heading | 2 fields need attention | Errors |
 | Summary entry (tabbed form) | Routing rule (Routing tab) — Select a destination | Routing rule — invalid |
 
-All error copy is sentence case, per [TITAN-ERR-04](/invoca-design-system/content/error-messages#constraints) —
-see [Error messages](/invoca-design-system/content/error-messages) for the full copy rules this
-pattern inherits rather than restates.
+All error copy is sentence case — see [Error messages](/invoca-design-system/content/error-messages)
+for the full copy rules this pattern inherits rather than restates.
 
 ## Accessibility
 
@@ -141,8 +141,8 @@ pattern inherits rather than restates.
 - On a blocked submit, focus moves to the first invalid field — this is a focus change a
   screen-reader user needs, not just a visual one, since nothing else tells them where to go.
 - A page-level error summary is announced as a whole when it appears (a live region, or focus
-  landing on its heading) — but see [TITAN-FORMVAL-06](#constraints): focus goes on to the first
-  field immediately after, not left resting on the summary.
+  landing on its heading) — but focus moves on to the first field immediately after, not left
+  resting on the summary.
 - As-you-type feedback (a strength meter, a character count) updates a live region sparingly —
   announcing every keystroke is unusable; announce on a meaningful change in the result, not on
   every character.
@@ -153,7 +153,7 @@ pattern inherits rather than restates.
 |---|---|---|
 | Single-field validation | One field, no other context | Error renders in the field's own slot only; no page-level summary |
 | Long single-page form | Several fields, one scrollable view, no tabs | Page-level summary added once the form is long enough that scrolling past an invalid field is likely |
-| Tabbed form | Fields spread across tab sections | Page-level summary is required, not optional, per [TITAN-FORMVAL-05](#constraints) — it is the only cross-tab signal until TITAN-GAP-30 closes |
+| Tabbed form | Fields spread across tab sections | Page-level summary is required, not optional — it is the only cross-tab signal until the tab bar's own missing error state ships (see [Known issues](#known-issues)) |
 
 ## Anti-patterns
 
@@ -170,16 +170,15 @@ then reports every mistake at once, spends the reader's effort on fields they ha
 finished and moved past minutes earlier.
 
 **Treating the tab-bar's silence about errors as settled.** Building a tabbed form and assuming a
-future version will surface a per-tab error marker is building against
-[TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) as if it were
-already closed. It isn't — the page-level summary is required precisely because the tab bar can't
-do this today.
+future version will surface a per-tab error marker is building against a real, open gap as if it
+were already closed. It isn't — the page-level summary is required precisely because the tab bar
+can't do this today.
 
 ## Known issues
 
 | ID | Kind | What |
 |---|---|---|
-| [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | The design library specifies an `Error` display state for a tab; the shipped tab component has no equivalent, so an invalid field on an unopened tab has no per-tab signal — [TITAN-FORMVAL-05](#constraints)'s page-level summary exists specifically to work around this. |
+| [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | The design library specifies an `Error` display state for a tab; the shipped tab component has no equivalent, so an invalid field on an unopened tab has no per-tab signal — this page's page-level summary constraint exists specifically to work around this. |
 
 ## Gaps in the current rules
 
@@ -199,11 +198,11 @@ field reported in the right place but checked too early still reads as broken be
 finished. Treating them as one decision is how a page ends up validating everything as-you-type
 simply because that's also when it happens to render the message closest to the field.
 
-**The page-level summary is a concession to a gap, not a preferred pattern.**
-[TITAN-FORMVAL-04](#constraints) restricts it to long or tabbed forms specifically because a
-summary above a form the reader can already see whole just repeats what the field-level message
-already says. It earns its place only where TITAN-GAP-30 leaves no other way to point at an
-invalid field the reader isn't looking at.
+**The page-level summary is a concession to a gap, not a preferred pattern.** It's restricted to
+long or tabbed forms specifically because a summary above a form the reader can already see
+whole just repeats what the field-level message already says. It earns its place only where the
+tab bar's own missing error signal leaves no other way to point at an invalid field the reader
+isn't looking at.
 
 ## Related
 

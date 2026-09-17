@@ -38,7 +38,7 @@ flowchart TD
 <Tip>
   **Skeleton is not the default just because it is the most-used.** It is correct only when the
   shape is known. Reaching for it when the shape is a guess trades a blank region for a
-  confidently wrong one — see [TITAN-SKL-02](/invoca-design-system/components/feedback/skeleton#constraints).
+  confidently wrong one.
 </Tip>
 
 ## Vocabulary
@@ -63,7 +63,7 @@ flowchart TD
 | The response is usually fast — well under a second | Nothing. Render the content directly. | A loading state that flashes and vanishes costs more attention than the wait it covered. |
 | The shape of what's coming is unknown, or the space is small and inline | [Spinner](/invoca-design-system/components/feedback/spinner) | A skeleton is a promise about layout. Guessing at one is worse than promising nothing. |
 | A real percentage, step count, or size is available | [ProgressBar](/invoca-design-system/components/feedback/progress-bar) | A skeleton says "wait"; a progress bar says "how much longer" — use the more specific answer when it exists. |
-| Content already on screen is being refreshed | The data component's own loading affordance; keep the existing content visible | Replacing readable content with grey shapes takes away what the reader was looking at — [TITAN-SKL-07](/invoca-design-system/components/feedback/skeleton#constraints). |
+| Content already on screen is being refreshed | The data component's own loading affordance; keep the existing content visible | Replacing readable content with grey shapes takes away what the reader was looking at. |
 | The load has failed or timed out | [Error handling](/invoca-design-system/patterns/error-handling) | A loading state is not an error state. This page does not decide timeout or retry behavior — that pattern does. |
 
 ## Structure
@@ -89,7 +89,7 @@ flowchart TD
 
 | State | Behavior |
 |---|---|
-| Wait begins | If expected duration is well under a second, show nothing at all — see [TITAN-LOADING-02](#constraints) |
+| Wait begins | If expected duration is well under a second, show nothing at all |
 | Wait exceeds the threshold | Skeleton (shape known), Spinner (shape unknown), or ProgressBar (value known) appears |
 | Content arrives | Loading state is replaced; the region announces once that it finished, not that it was loading |
 | Content arrives but is empty | Resolves to [EmptyState](/invoca-design-system/components/data-display/empty-state), never to blank space |
@@ -100,14 +100,14 @@ flowchart TD
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-LOADING-01** | Match the indicator to what's known: a real value → ProgressBar; a known content shape → Skeleton; neither → Spinner. | Each primitive communicates a different amount of information. Using the wrong one either overstates what's known or wastes information that was available. See [TITAN-SKL-02](/invoca-design-system/components/feedback/skeleton#constraints). |
+| **TITAN-LOADING-01** | Match the indicator to what's known: a real value → ProgressBar; a known content shape → Skeleton; neither → Spinner. | Each primitive communicates a different amount of information. Using the wrong one either overstates what's known or wastes information that was available. |
 | **TITAN-LOADING-02** | Show no loading indicator at all for a wait expected to resolve in under roughly 300ms. | Below that, the indicator itself becomes the most noticeable thing on screen — it appears and disappears faster than the reader can register what it was, which reads as a flicker rather than feedback. |
-| **TITAN-LOADING-03** | A skeleton screen matches the real layout — same line count, widths, and spacing as the content it replaces. | Its only value is preparing the reader for a shape. A mismatch makes the page jump on load, which undoes the reason to use one at all — [TITAN-SKL-01](/invoca-design-system/components/feedback/skeleton#constraints). |
-| **TITAN-LOADING-04** | One animation, one loading primitive, per region. Do not mix Skeleton's `pulse` with `wave`, or a skeleton with a spinner, in the same view. | Two loading rhythms in one region read as two different systems, not one thing loading — [TITAN-SKL-04](/invoca-design-system/components/feedback/skeleton#constraints). |
-| **TITAN-LOADING-05** | A loading state always resolves — to content, an [EmptyState](/invoca-design-system/components/data-display/empty-state), or a handoff to [Error handling](/invoca-design-system/patterns/error-handling). It never simply stops appearing. | An indefinite loading state is a hang the interface is disguising as progress — [TITAN-SKL-03](/invoca-design-system/components/feedback/skeleton#constraints). |
-| **TITAN-LOADING-06** | A skeleton screen used on more than one page is built once and shared, not re-implemented per application. | [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) records three independent copies of the same `TabLoadingSkeleton`, 21 instances each. That duplication is the measured cost of not doing this. |
-| **TITAN-LOADING-07** | Under `prefers-reduced-motion: reduce`, pass `animation={false}` to every Skeleton on the screen. | The component does not honor the preference itself — [TITAN-SKL-05](/invoca-design-system/components/feedback/skeleton#constraints), [TITAN-GAP-08](/invoca-design-system/foundations/open-decisions#titan-gap-08). This is a call-site workaround, not a fix. |
-| **TITAN-LOADING-08** | The loading region carries `aria-busy` and announces completion once; the placeholder itself is hidden from assistive technology. | Grey shapes carry no information to a screen reader. The announcement belongs to the region, and only on completion — [TITAN-SKL-06](/invoca-design-system/components/feedback/skeleton#constraints). |
+| **TITAN-LOADING-03** | A skeleton screen matches the real layout — same line count, widths, and spacing as the content it replaces. | Its only value is preparing the reader for a shape. A mismatch makes the page jump on load, which undoes the reason to use one at all. |
+| **TITAN-LOADING-04** | One animation, one loading primitive, per region. Do not mix Skeleton's `pulse` with `wave`, or a skeleton with a spinner, in the same view. | Two loading rhythms in one region read as two different systems, not one thing loading. |
+| **TITAN-LOADING-05** | A loading state always resolves — to content, an [EmptyState](/invoca-design-system/components/data-display/empty-state), or a handoff to [Error handling](/invoca-design-system/patterns/error-handling). It never simply stops appearing. | An indefinite loading state is a hang the interface is disguising as progress. |
+| **TITAN-LOADING-06** | A skeleton screen used on more than one page is built once and shared, not re-implemented per application. | Three independent copies of the same `TabLoadingSkeleton`, 21 instances each, are the measured cost of not doing this — see [Known issues](#known-issues). |
+| **TITAN-LOADING-07** | Under `prefers-reduced-motion: reduce`, pass `animation={false}` to every Skeleton on the screen. | The component does not honor the preference itself (see [Known issues](#known-issues)). This is a call-site workaround, not a fix. |
+| **TITAN-LOADING-08** | The loading region carries `aria-busy` and announces completion once; the placeholder itself is hidden from assistive technology. | Grey shapes carry no information to a screen reader. The announcement belongs to the region, and only on completion. |
 
 ## Content
 
@@ -126,12 +126,10 @@ in progress. A screen-reader user given a running commentary of "loading" has be
 than one given a single, timed "done."
 
 **Reduced motion is currently unhandled at the component level.** Skeleton's `pulse` and `wave`
-animations do not respond to `prefers-reduced-motion: reduce` — this is part of
-[TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31), and the same gap
-[TITAN-GAP-08](/invoca-design-system/foundations/open-decisions#titan-gap-08) records at the
-motion-foundation level: seven durations exist and none has a reduced variant. Until the
-component handles this itself, pass `animation={false}` at every call site under that
-preference — [TITAN-LOADING-07](#constraints).
+animations do not respond to `prefers-reduced-motion: reduce` — the same absence recorded at the
+motion-foundation level generally, where seven durations exist and none has a reduced variant
+(see [Known issues](#known-issues)). Until the component handles this itself, pass
+`animation={false}` at every call site under that preference.
 
 **A spinner or progress bar needs an explicit accessible name at the call site.** Neither sets
 one automatically — pair a Spinner with `aria-describedby` on the region it describes and
@@ -150,7 +148,7 @@ one automatically — pair a Spinner with `aria-describedby` on the region it de
 
 **The flashing skeleton.** Showing a placeholder for a wait that resolves in 150ms turns a fast
 response into a visible flicker. The fix is not a faster skeleton — it's not showing one at all
-under the threshold in [TITAN-LOADING-02](#constraints).
+under the ~300ms threshold.
 
 **The eternal skeleton.** Nothing about Skeleton times out on its own. Without a timeout in the
 calling code, a failed or hung request looks identical to "still loading," and the reader waits
@@ -161,8 +159,8 @@ loading independently, not one page. Titan ships both animations with no decisio
 pick one and stay consistent within a screen.
 
 **Rebuilding the skeleton screen per application.** The pattern this page exists to prevent has
-already happened three times over — see [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31).
-A composed skeleton screen worth naming is worth sharing.
+already happened three times over — see [Known issues](#known-issues). A composed skeleton
+screen worth naming is worth sharing.
 
 ## Known issues
 
@@ -175,12 +173,11 @@ A composed skeleton screen worth naming is worth sharing.
 
 - Where the exact line sits between "well under a second" (show nothing) and "noticeable" (show
   an indicator) — this page names the shape of the threshold without a specific number beyond
-  [TITAN-LOADING-02](#constraints)'s ~300ms.
+  the ~300ms already stated in Constraints.
 - What a ProgressBar should do when the underlying measurement stalls — hold its last known
   value, or show some "no progress" signal distinct from a hang.
-- Whether a skeleton screen, once built once and shared per [TITAN-LOADING-06](#constraints),
-  should live as a Titan export or stay an application-level composition — the constraint says
-  "shared," not where.
+- Whether a skeleton screen, once built once and shared, should live as a Titan export or stay
+  an application-level composition — the constraint says "shared," not where.
 
 ## Why it works this way
 
@@ -189,10 +186,10 @@ the three makes a different claim and a wrong claim costs the reader something s
 skeleton claims to know the shape; get that wrong and the page visibly jumps on load, which is
 worse than the blank moment a spinner would have shown honestly instead.
 
-**The threshold in [TITAN-LOADING-02](#constraints) exists because an indicator's failure mode
-below that point isn't "unnecessary" — it's actively worse than nothing.** A shape that appears
-and vanishes before a reader can register what it was reads as a flicker, not as helpful feedback
-withheld; the fix is omission, not a faster or smaller version of the same indicator.
+**The threshold exists because an indicator's failure mode below that point isn't
+"unnecessary" — it's actively worse than nothing.** A shape that appears and vanishes before a
+reader can register what it was reads as a flicker, not as helpful feedback withheld; the fix is
+omission, not a faster or smaller version of the same indicator.
 
 ## Related
 

@@ -50,7 +50,7 @@ flowchart TD
     of fields, even though it's reasonably permanent. That's the case for a **Modal with an
     escape hatch**: default to the fast path, and hand off to the full surface — never
     discarding what's already been entered — the moment someone needs more than the modal
-    offers. See [TITAN-CREATE-04](#constraints).
+    offers.
   </Step>
   <Step title="Continuity — does losing the parent cost more than the interruption saves?">
     Creating a Tag *while filling out a Campaign form* is the case for a **Drawer** or an
@@ -64,8 +64,8 @@ flowchart TD
   <Step title="Sequence — does order matter, and is there enough of it to show?">
     Setting up a new integration might require a connection step before a mapping step before a
     review step, each depending on the last. That's **Full page — Wizard**, with a step
-    indicator — see [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26).
-    A single-section object never reaches this branch at all.
+    indicator — the design library has already drawn what that looks like, though nothing in
+    code builds it yet. A single-section object never reaches this branch at all.
   </Step>
 </Steps>
 
@@ -73,13 +73,11 @@ flowchart TD
   **"Modal" is this page's word for what Titan's design language calls Dialog.** Two of the
   three names in play point at the same thing; the third is a trap. "Modal" (this page) and
   "Dialog" (the design term, and the docs page this page links to) both mean the styled,
-  themed surface — imported from the package as `Modal`, per
-  [TITAN-DIALOG-01](/invoca-design-system/components/containment/dialog#constraints). The
+  themed surface — always imported from the package as `Modal`, never as `Dialog`. The
   package **also** exports something literally named `Dialog` — a raw, unstyled primitive with
   none of `Modal`'s sizing presets, footer contract, or divider tokens. That export is not a
   fourth name for the same thing; it's a different component that happens to share a word with
-  the design term. See [TITAN-DIV-27](/invoca-design-system/foundations/divergences#titan-div-27)
-  for the full case. Every link on this page to "Dialog" goes to the design-language page, and
+  the design term. Every link on this page to "Dialog" goes to the design-language page, and
   every actual import belongs on `Modal` — never on the package's raw `Dialog` export.
 </Note>
 
@@ -101,10 +99,10 @@ flowchart TD
 
 | Order | Component | Role |
 |---|---|---|
-| 1 | The trigger — [Button](/invoca-design-system/components/actions/button) `outlined`, or `text` if it's a secondary "add another" | Opens the chosen surface. Never `contained` unless creation is the page's single primary action — see [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). |
+| 1 | The trigger — [Button](/invoca-design-system/components/actions/button) `outlined`, or `text` if it's a secondary "add another" | Opens the chosen surface. Never `contained` unless creation is the page's single primary action. |
 | 2 | The surface — [Dialog](/invoca-design-system/components/containment/dialog), [Drawer](/invoca-design-system/components/containment/drawer), [Full-page form](/invoca-design-system/views/full-page-form), or the parent surface itself for inline | Holds the form. Chosen by the tree above. |
 | 3 | [Form](/invoca-design-system/components/forms/form), [Input](/invoca-design-system/components/forms/input), [Select](/invoca-design-system/components/forms/select), etc. | The fields, following [Form validation](/invoca-design-system/patterns/form-validation)'s rules regardless of which surface holds them. |
-| 4 | [Button](/invoca-design-system/components/actions/button) `contained` — commit, `text` — cancel | Per [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints) and [TITAN-DESTROY-05](/invoca-design-system/patterns/destructive-confirmation#constraints)'s ordering, cancel comes first. |
+| 4 | [Button](/invoca-design-system/components/actions/button) `contained` — commit, `text` — cancel | Cancel is lighter weight and comes first, matching the trailing-primary order every other button pair in this system follows. |
 
 ```
 Modal (handful of fields, no lasting page)          Drawer (continuity with parent matters)
@@ -132,11 +130,11 @@ Full page — Wizard (several dependent sections)
 | State | Behavior |
 |---|---|
 | Trigger pressed | The chosen surface opens. A Modal or Drawer opens with focus on the first field; a full page navigates, replacing the current URL. |
-| Modal's "More options" pressed | The surface transitions to the full page, carrying every value already entered — see [TITAN-CREATE-04](#constraints). Nothing already typed is lost or re-asked. |
+| Modal's "More options" pressed | The surface transitions to the full page, carrying every value already entered. Nothing already typed is lost or re-asked. |
 | Validation fails on submit | Per [Form validation](/invoca-design-system/patterns/form-validation) — the surface stays open regardless of which one it is. |
 | Submit succeeds | Modal or Drawer closes; a [Toast](/invoca-design-system/components/feedback/toast) confirms and, where the object has a detail page, offers a link to it. A full-page create navigates to the new object's page directly — no toast needed, the destination is the confirmation. |
 | Closed or navigated away with unsaved input | Follows [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s existing guidance on unsaved edits — a lightweight warning for anything non-trivially filled in, nothing for an untouched form. |
-| A Wizard's step is left incomplete and the user navigates forward | Blocked with an inline message on the incomplete field — see [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) for the step-indicator gap this depends on. |
+| A Wizard's step is left incomplete and the user navigates forward | Blocked with an inline message on the incomplete field. The step indicator this depends on is itself an undecided component — see [Related](#related). |
 
 ## Constraints
 
@@ -144,10 +142,10 @@ Full page — Wizard (several dependent sections)
 |---|---|---|
 | **TITAN-CREATE-01** | The surface is chosen by walking Permanence, then Density, then Continuity, then Sequence — in that order — not by which surface is fastest to build. | Building order and decision order are different questions; picking a surface because it's cheap to implement is how the same kind of object ends up created three different ways in three parts of the product. |
 | **TITAN-CREATE-02** | An object with no page of its own after creation never opens a full-page surface to create it. | A full page implies the object is worth navigating to. An object with nowhere to navigate to afterward contradicts the surface it was created on. |
-| **TITAN-CREATE-03** | A Wizard is used only when sections genuinely depend on each other in order. A form with several independent sections is one page with a Table of Contents, not a Wizard. | A Wizard forces linear traversal. Forcing it on independent sections adds clicks with no corresponding benefit — see [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) for the component this depends on either way. |
-| **TITAN-CREATE-04** | A Modal's escape hatch to a fuller surface carries forward every value already entered. It never restarts the form. | Per [CRUD overview: TITAN-CRUD-03](/invoca-design-system/patterns/crud/overview#constraints) — discarding entered data to offer more room is a worse experience than not offering the room. |
-| **TITAN-CREATE-05** | The commit button's label states what's being created, not a generic verb. "Create Campaign," not "Submit" or "Create." | Matches the reasoning behind [TITAN-DESTROY-04](/invoca-design-system/patterns/destructive-confirmation#constraints) — at the moment of commitment, the button should say what it does without making the reader re-read the form. |
-| **TITAN-CREATE-06** | Closing or navigating away from a non-empty, unsubmitted create surface warns before discarding it, per [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s existing rule for unsaved edits. An empty, untouched surface closes with no warning. | Warning on an untouched form trains the same dismiss-without-reading behavior [TITAN-DESTROY-01](/invoca-design-system/patterns/destructive-confirmation#constraints) already warns against. |
+| **TITAN-CREATE-03** | A Wizard is used only when sections genuinely depend on each other in order. A form with several independent sections is one page with a Table of Contents, not a Wizard. | A Wizard forces linear traversal. Forcing it on independent sections adds clicks with no corresponding benefit — and the step indicator this depends on either way is itself an undecided component, not a reason to reach for it more often. |
+| **TITAN-CREATE-04** | A Modal's escape hatch to a fuller surface carries forward every value already entered. It never restarts the form. | Discarding entered data to offer more room is a worse experience than not offering the room — the same reasoning CRUD's own choose-a-surface rules apply generally. |
+| **TITAN-CREATE-05** | The commit button's label states what's being created, not a generic verb. "Create Campaign," not "Submit" or "Create." | At the moment of commitment, the button should say what it does without making the reader re-read the form — the same reasoning a destructive action's confirm button restates the action rather than saying "Yes" or "OK." |
+| **TITAN-CREATE-06** | Closing or navigating away from a non-empty, unsubmitted create surface warns before discarding it, per [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation)'s existing rule for unsaved edits. An empty, untouched surface closes with no warning. | Warning on an untouched form trains the same dismiss-without-reading reflex that over-confirming anything else does — the warning has to be reserved for when it's actually protecting something. |
 | **TITAN-CREATE-07** | A successful full-page create navigates to the new object; a successful Modal or Drawer create closes and confirms via Toast, offering a link to the object if one exists. | The full page already *is* the destination once creation succeeds — an extra toast on top of an already-changed URL is a redundant confirmation. A Modal or Drawer returns the reader to where they were, so the confirmation and the way back to the new object both have to be explicit. |
 
 ## Content
@@ -196,11 +194,18 @@ though they were produces either an over-built tag flow or an under-built campai
 
 **A Modal that discards entered data when the reader needs "more options."** Offering a
 shortcut and then punishing the reader for outgrowing it is worse than never offering the
-shortcut — see [TITAN-CREATE-04](#constraints).
+shortcut.
 
 **A Wizard for sections that don't actually depend on each other.** Forcing linear steps on
 independent content is friction with no organizing benefit — the reader can't skip ahead to the
 one section they came to fill in.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-27](/invoca-design-system/foundations/divergences#titan-div-27) | Divergence | The package's `Dialog` export is not the design vocabulary's Dialog — the real component is `Modal`. |
+| [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) | Open decision | No step indicator exists for multi-step flows. The Wizard shape this page recommends for sequential creation is a proposal against that undecided component. |
 
 ## Related
 
