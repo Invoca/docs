@@ -25,9 +25,7 @@ Layout is the least specified foundation in Titan. Do not infer answers to any o
 - **The specification's breakpoint vocabulary doesn't correspond to what ships.** It names
   `breakpoint-tablet-min`, `breakpoint-desktop-min`, and `breakpoint-desktop-max` — three
   bands — as tokens; none ship. The code has five unnamed numeric breakpoints and no
-  breakpoint tokens at all. See
-  [TITAN-DIV-09](/invoca-design-system/foundations/divergences#titan-div-09) and
-  [TITAN-GAP-12](/invoca-design-system/foundations/open-decisions#titan-gap-12).
+  breakpoint tokens at all — already recorded above.
 - **No layout tokens exist at all.** No container max-width, no page gutter, no column
   count, no sidebar width. Every one of those is currently a per-view decision with nothing
   to check it against.
@@ -36,8 +34,8 @@ Layout is the least specified foundation in Titan. Do not infer answers to any o
 - **No maximum content width is defined.** On a 2560px monitor a full-width text region
   produces line lengths far beyond the ~75-character readable maximum. Nothing prevents
   it.
-- **`Grid`'s off-scale `spacing` prop is not documented as a hazard** anywhere in Titan.
-  See [TITAN-LAY-03](#constraints-titan-should-enforce) below.
+- **`Grid`'s off-scale `spacing` prop is not documented as a hazard** anywhere in Titan —
+  see [Constraints Titan should enforce](#constraints-titan-should-enforce) below.
 - **No guidance exists on breakpoints vs. container queries.** Both are available; nothing
   says which to reach for.
 - **No published page-region model.** [Views](/invoca-design-system/views/overview) is the tier meant to answer this and
