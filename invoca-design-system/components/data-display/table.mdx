@@ -47,7 +47,7 @@ the one the system standardizes on and the one every list page should reach for.
 | **Row** | Record, entry, line, result | **`row`** | `rows[]` |
 | **Cell** | Field, value | **`cell`** | rendered from a column definition |
 | **Toolbar** | Search band, table header, action bar | **`toolbar`** | `GridToolbar` |
-| **Selection bar** | Bulk bar, action bar, contextual header | **`selection bar`** | nothing — [TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19) |
+| **Selection bar** | Bulk bar, action bar, contextual header | **`selection bar`** | nothing — design intent specifies this; nothing in code ships it (see [Known issues](#known-issues)) |
 | **Pinned column** | Frozen column, sticky column, locked column | **`pinned`** | `pinnedColumns` |
 | **Row action** | Overflow menu, kebab, row menu | **`row action`** | `GridActionsCellItem` |
 
@@ -84,7 +84,7 @@ place — and frozen suggests the data stopped updating.
 | 3 | Selection column | `checkboxSelection` | No |
 | 4 | Rows and cells | `rows`, and each column's renderer | Yes |
 | 5 | Row action cell | `GridActionsCellItem` in a column of `type: "actions"` | No |
-| 6 | Pagination footer | the grid's own footer | No — see [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) |
+| 6 | Pagination footer | the grid's own footer | No — where pagination lives is itself an open question (see [Known issues](#known-issues)) |
 
 The design library models these as separate components — a header, a row, a column, a cell, and a
 header cell — which is why its vocabulary is more specific than the code's. Its column types are
@@ -106,8 +106,8 @@ focus ring on a cell, and the colour of the sort icon.
 issue](/invoca-design-system/components/data-display/table/open-issues)), which matters most on
 exactly the pages that have bulk actions.
 
-**Density** is out of scope for this documentation ([TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01)),
-so no compact row height is specified here even though the grid accepts one.
+**Density** is out of scope for this documentation, so no compact row height is specified here
+even though the grid accepts one.
 
 ## Edge and failure states
 
@@ -117,10 +117,10 @@ so no compact row height is specified here even though the grid accepts one.
 | No rows, because none exist yet | Same overlay, same wording | These are different messages. "No results" tells a new user the product is broken. |
 | Loading | `loading` shows an overlay above the current rows | Use it for a refresh. For a first load use a [Skeleton](/invoca-design-system/components/feedback/skeleton), since an overlay over nothing is a grey box. |
 | Load failed | Nothing. The table looks empty | An empty table is indistinguishable from a successful query with no matches. Show an [Alert](/invoca-design-system/components/feedback/alert) and keep the rows you had — see [Error handling](/invoca-design-system/patterns/error-handling). |
-| More columns than fit | The grid scrolls horizontally | Pin the identifying column so a reader scrolled right still knows which row they are on — [TITAN-TBL-05](#constraints). |
-| A cell's value is longer than its column | The text truncates | Truncate the cell, never the column header, and make the full value reachable — [TITAN-TBL-06](#constraints). |
+| More columns than fit | The grid scrolls horizontally | Pin the identifying column so a reader scrolled right still knows which row they are on. |
+| A cell's value is longer than its column | The text truncates | Truncate the cell, never the column header, and make the full value reachable. |
 | A value is empty for one row | An empty cell | Empty means "no value". If it means zero, write zero — see [Numbers](/invoca-design-system/content/numbers). |
-| Rows selected, then the filter changes | Selection persists for rows no longer visible | State the count, and say what it applies to before a bulk action runs — [TITAN-TBL-08](#constraints). |
+| Rows selected, then the filter changes | Selection persists for rows no longer visible | State the count, and say what it applies to before a bulk action runs. |
 
 ## Tokens
 
@@ -138,15 +138,14 @@ strip or a chart beside it, because the reader came to find a row.
 
 **Filters and search sit above it.** In the page frame they belong to `Controls`; in the design
 library's table templates they are drawn inside the table's own toolbar band. Both place them
-directly above the columns they narrow — see
-[TITAN-DIV-18](/invoca-design-system/foundations/divergences#titan-div-18) for which owns them.
+directly above the columns they narrow — which of the two actually owns them today is an open
+question (see [Known issues](#known-issues)).
 
 **Selection turns the toolbar into a selection bar.** In the design library, selecting rows changes
 the toolbar band: it takes the selected fill, shows a count — "4 selected" — keeps search available,
 and reveals the bulk actions. The header checkbox carries a menu with **Select all *n* items**,
 **Select all on page**, and **Deselect all**, which is how the design distinguishes selecting a
-page from selecting a result set. **None of this exists in code** —
-[TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19), and it is the substance of
+page from selecting a result set. **None of this exists in code** — it is the substance of
 [Bulk selection](/invoca-design-system/patterns/bulk-selection).
 
 **Row actions go in a trailing actions column**, one per row, collapsed into a menu past two. A row

@@ -44,7 +44,7 @@ different subjects it is navigation; if they are the same records narrowed diffe
 | **Tab panel** | Pane, tab body, section body | **`tab panel`** | `TabPanel` — documented with the [page frame](/invoca-design-system/views/overview) |
 | Selected | Active, current, open | **`selected`** | `value` matches the tab |
 | Unselected | Inactive, default | **`unselected`** | any other tab |
-| Error | Invalid, warning, flagged | **`error`** | nothing — see [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) |
+| Error | Invalid, warning, flagged | **`error`** | nothing — no error treatment ships for a tab today (see [Known issues](/invoca-design-system/components/navigation/tabs/open-issues#known-issues)) |
 | **Navigation rail** | Side nav, vertical tabs, left rail | **`rail`** | `Tabs orientation="vertical"` |
 
 **Say "selected", not "active".** A tab is selected; a session is active. The distinction matters
@@ -72,14 +72,14 @@ claim about the content rather than the control.
 | # | Part | In code | Required |
 |---|---|---|---|
 | 1 | The bar | `Tabs` | Yes |
-| 2 | A tab's label | `Tab label` | Yes — see [TITAN-TAB-04](#constraints) |
+| 2 | A tab's label | `Tab label` | Yes — 1–3 words, naming a section |
 | 3 | A leading icon | `Tab icon` | No |
 | 4 | The selected marker | themed — the indicator | Yes, and automatic |
 | 5 | The boundary rule | themed — the bar's bottom border | Yes, and automatic |
 | 6 | The panel | `TabPanel` | Yes — one per tab |
 
 The bar draws its own bottom rule. That is why a header carrying a tab bar suppresses the page
-divider rather than drawing both — [TITAN-VIEW-12](/invoca-design-system/views/overview#constraints).
+divider rather than drawing both.
 
 ## Variants, sizes, and states
 
@@ -89,7 +89,7 @@ divider rather than drawing both — [TITAN-VIEW-12](/invoca-design-system/views
 name.** Horizontal is a tab bar. Vertical is a navigation rail — it has its own minimum row
 width, a selected row with a fill and a leading edge marker, a rule down its trailing side, and
 an indented mode for nested rows. This page documents the horizontal bar. What the rail is *for*
-is undecided — see [TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29).
+is undecided (see [Known issues](/invoca-design-system/components/navigation/tabs/open-issues#known-issues)).
 
 **How the bar distributes its tabs** — three published behaviours, and the system has not stated
 which is the default choice:
@@ -113,23 +113,22 @@ scroll affordance:
   **`scrollButtons={false}` produces a bar a pointer user cannot reach the end of.** Overflowing
   tabs stay reachable by keyboard and by touch-drag, and a mouse user gets no arrows and no
   scrollbar. A published story demonstrates it, which is not the same as the system endorsing it.
-  Use `"auto"` — [TITAN-TAB-06](#constraints).
+  Use `"auto"`.
 </Warning>
 
 **States a tab carries:** unselected, selected, hover, pressed, focused, and disabled. The design
 library also defines an **error** display for a tab, across every interaction state. **Code has no
 error treatment for a tab** — verified against the theme overrides, the token set, the shared
-package, and the legacy stylesheets. See
-[TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30).
+package, and the legacy stylesheets (see [Known issues](/invoca-design-system/components/navigation/tabs/open-issues#known-issues)).
 
 ## Edge and failure states
 
 | Condition | What happens | What to do |
 |---|---|---|
-| Label longer than the bar allows | The label is truncated unless `wrapped` is set, which lets it run to a second line and grows the bar | Shorten the label — [TITAN-TAB-04](#constraints). A bar of unequal heights is the cost of a long label. |
+| Label longer than the bar allows | The label is truncated unless `wrapped` is set, which lets it run to a second line and grows the bar | Shorten the label to 1–3 words. A bar of unequal heights is the cost of a long label. |
 | More tabs than fit | Nothing, until `variant="scrollable"` is set. Without it the overflow is unreachable | Set `scrollable` with `scrollButtons="auto"`, or reconsider whether these are sections. |
-| A section has an error inside it | Nothing. The tab looks the same as its siblings | No mechanism exists. Report the failure at page level and cite [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30). |
-| A tab is disabled | Not focusable, announces nothing about why | Pair it with a reachable explanation — [TITAN-TAB-05](#constraints). |
+| A section has an error inside it | Nothing. The tab looks the same as its siblings | No mechanism exists. Report the failure at page level instead. |
+| A tab is disabled | Not focusable, announces nothing about why | Pair it with a reachable explanation. |
 | No tab is selected | `value={false}` selects nothing and the bar renders with no indicator | Only for a rail whose selection lives elsewhere. A page's tab bar always has a selected tab. |
 | A tab's panel is still loading | The panel is empty; the tab looks selected and finished | Put a [Skeleton](/invoca-design-system/components/feedback/skeleton) in the panel — see [Loading & skeletons](/invoca-design-system/patterns/loading-and-skeletons). |
 
@@ -147,9 +146,8 @@ internal padding comes from no token at all.
 **The bar goes in the header.** A tabbed page carries its bar in the header's second row and
 suppresses the page divider; the header's second row holds a tab bar or a filter row and never
 both. That is a view-tier decision and it is documented with the
-[page frame](/invoca-design-system/views/overview), including the constraint that
-`Header` cannot hold the bar today
-([TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16)).
+[page frame](/invoca-design-system/views/overview), including the fact that
+`Header` cannot hold the bar today — it composes as a sibling instead.
 
 **Each tab needs a panel, and the pairing is manual.** The shipped `TabPanel` defaults to naming a
 tab that nothing produces, so set the ids yourself on both sides:
@@ -160,15 +158,14 @@ tab that nothing produces, so set the ids yourself on both sides:
 <TabPanel value={tab} index={0} id="campaign-panel-0" aria-labelledby="campaign-tab-0">…</TabPanel>
 ```
 
-See [TITAN-DIV-14](/invoca-design-system/foundations/divergences#titan-div-14) for the pairing and
-[TITAN-DIV-15](/invoca-design-system/foundations/divergences#titan-div-15) for what the shipped panel does to block
-content. Every application that needs a panel has written its own.
+See [Known issues](/invoca-design-system/components/navigation/tabs/open-issues#known-issues)
+for the specifics of the pairing default and what the shipped panel does to block content.
+Every application that needs a panel has written its own.
 
 **The rail composes further.** `TabIconLabel` gives a rail row an icon, a truncating label, and a
 trailing accessory; `TabMenu` gives a row its own overflow menu. A published story assembles a
 section header with expand and collapse, indented sub-rows, a status chip on a row, and per-row
-menus. **That is a navigation pattern, not a component**, and nothing states when to reach for it
-— see [TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29).
+menus. **That is a navigation pattern, not a component**, and nothing states when to reach for it.
 
 ## Content
 
@@ -191,7 +188,7 @@ indication of what it belongs to.
 
 **Each tab and its panel reference each other.** The tab carries `id` and `aria-controls`; the
 panel carries `id` and `aria-labelledby` pointing back. The frame does not wire this and the
-shipped panel wires it wrong — [TITAN-DIV-14](/invoca-design-system/foundations/divergences#titan-div-14).
+shipped panel wires it wrong (see [Known issues](/invoca-design-system/components/navigation/tabs/open-issues#known-issues)).
 
 **Keyboard.** The bar is a single tab stop. Arrow keys move between tabs, `Home` and `End` jump to
 the ends. A bar of nine sections costs one stop on the way to the body, not nine.
@@ -234,7 +231,7 @@ recorded with the [page frame](/invoca-design-system/views/overview#why-it-works
 **Selection is addressable.** A tab that changes only local state cannot be linked, cannot survive
 a reload, and is lost to the back button — and the shipped panel unmounts the section it leaves,
 so unsaved work in it goes too. Making each section a URL turns a tab bar into navigation the
-browser understands ([TITAN-VIEW-14](/invoca-design-system/views/overview#constraints)).
+browser understands.
 
 **Peers, not steps.** The strongest reason to keep filters and sequences out of a tab bar is that
 both imply the sections are not peers — a filter says some of these are subsets, a step says one
