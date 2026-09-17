@@ -19,7 +19,7 @@ differs:
 | You think… | That is | Do this |
 |---|---|---|
 | The value I need does not exist | **A token gap** | This page. Propose one. |
-| A token exists but I cannot tell which to use | **A definition gap** | Still this page — the fix is a definition, not a new token. See [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02). |
+| A token exists but I cannot tell which to use | **A definition gap** | Still this page — the fix is a definition, not a new token. See [the open decision on undefined tokens](/invoca-design-system/foundations/open-decisions#titan-gap-02). |
 | The value in code is wrong | **A change proposal** | Not a new token. [Report it](/invoca-design-system/contribute/reporting-drift#proposing-a-change). |
 | Figma shows something else | **Drift** | [Reporting drift](/invoca-design-system/contribute/reporting-drift). Resolution is re-emission. |
 
@@ -122,8 +122,8 @@ Three surfaces a new token will **not** appear on. None of these is a bug.
 
 | Surface | Why |
 |---|---|
-| **SCSS `$name`** | Frozen at 82 names by `legacy-surface-inventory.json` and asserted by test. New tokens never join it. See [TITAN-DIV-05](/invoca-design-system/foundations/divergences#titan-div-05). |
-| **A dark or compact value** | Those axes are out of scope for the design language — [TITAN-GAP-01](/invoca-design-system/foundations/open-decisions#titan-gap-01). The build accepts an extension; nothing in this documentation defines one. |
+| **SCSS `$name`** | Frozen at 82 names by `legacy-surface-inventory.json` and asserted by test. New tokens never join it. See [the divergence this is recorded as](/invoca-design-system/foundations/divergences#titan-div-05). |
+| **A dark or compact value** | Those axes are out of scope for the design language — see [the open decision on this](/invoca-design-system/foundations/open-decisions#titan-gap-01). The build accepts an extension; nothing in this documentation defines one. |
 | **Lifecycle metadata** | There is no `status`, `since`, or `deprecated` field. See [Versioning & deprecation](/invoca-design-system/contribute/versioning-and-deprecation). |
 
 ## Constraints
@@ -132,7 +132,7 @@ Three surfaces a new token will **not** appear on. None of these is a bug.
 |---|---|---|
 | **TITAN-TOK-01** | A token is authored in DTCG source. Never added directly to a generated file. | Generated files are overwritten on the next build. The edit disappears, or worse, survives long enough to be trusted. |
 | **TITAN-TOK-02** | A token's value is an alias, not an inline literal, wherever a suitable value already exists. | The alias records where the value came from. A leaf hex records nothing, and the relationship it had is unrecoverable. |
-| **TITAN-TOK-03** | Every new token ships with a `$description` stating what it is for. | A token whose only guide is its name is a token two people will use differently. This is the rule that stops [TITAN-GAP-02](/invoca-design-system/foundations/open-decisions#titan-gap-02) growing. |
+| **TITAN-TOK-03** | Every new token ships with a `$description` stating what it is for. | A token whose only guide is its name is a token two people will use differently. This is the rule that stops [the undefined-tokens gap](/invoca-design-system/foundations/open-decisions#titan-gap-02) growing. |
 | **TITAN-TOK-04** | A new component token aliases the semantic tier, or states why it does not. | Skipping the tier duplicates a decision the semantic layer already made, and severs the relationship between the two. |
 | **TITAN-TOK-05** | A missing value is a token proposal, never a literal in component code. | A literal is invisible to the audit and cannot participate in any system-wide change. |
 
