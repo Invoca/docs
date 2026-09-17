@@ -99,7 +99,7 @@ The frame's terms, and the words it is not using. These are the names to say in 
 
 | Slot | Use | Constraint |
 |---|---|---|
-| Actions | `Actions` | At most one **primary** button — see [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). Three actions maximum; collapse the rest into a [Menu](/invoca-design-system/components/actions/menu). |
+| Actions | `Actions` | At most one **primary** button. Three actions maximum; collapse the rest into a [Menu](/invoca-design-system/components/actions/menu). |
 
 ### Header — Tab bar
 
@@ -118,14 +118,14 @@ The header's second row has three states, and they are exclusive:
 | Header holds | Reader-facing name | What goes there | In code |
 |---|---|---|---|
 | Nothing | **Default** | The header row alone | `Header` + `PageDivider` |
-| Sections | **Tabs** | A tab bar | `Tabs`, composed outside `Header` — [TITAN-DIV-16](/invoca-design-system/foundations/divergences#titan-div-16) |
-| Filters | **Filters** | A filter row | `Controls`, a separate region — [TITAN-DIV-18](/invoca-design-system/foundations/divergences#titan-div-18) |
+| Sections | **Tabs** | A tab bar | `Tabs`, composed outside `Header` — see [Known issues](/invoca-design-system/views/overview/open-issues#known-issues) |
+| Filters | **Filters** | A filter row | `Controls`, a separate region — see [Known issues](/invoca-design-system/views/overview/open-issues#known-issues) |
 
 **A tabbed header does not also carry a `PageDivider`.** The bar's underline is the header's
 lower edge, so pass `hidePageDivider` and let it close the region.
 
 **Each tab is addressable** — selecting one changes the URL, so a section can be linked,
-reloaded, and reached with the back button ([TITAN-VIEW-14](#constraints)). A tab switches which
+reloaded, and reached with the back button. A tab switches which
 section you are looking at; a control narrows what that section shows; an action changes the
 subject. Those are three regions, and a tab that filters or saves is in the wrong one.
 
@@ -142,7 +142,7 @@ subject. Those are three regions, and a tab that filters or saves is in the wron
   </Right>
 </Header>
 
-{/* Renders outside Header today — see TITAN-DIV-16. Inset it to the header's gutter. */}
+{/* Renders outside Header today (see Known issues). Inset it to the header's gutter. */}
 <Tabs
   value={tab}
   onChange={onTabChange}
@@ -164,11 +164,9 @@ subject. Those are three regions, and a tab that filters or saves is in the wron
 as a sibling instead of a child. See [Open issues](/invoca-design-system/views/overview/open-issues) for what that costs.
 
 **At the component level**, see [Tabs](/invoca-design-system/components/navigation/tabs) for the bar's own behaviour —
-the states a tab carries, the id pairing the shipped `TabPanel` gets wrong
-([TITAN-DIV-14](/invoca-design-system/foundations/divergences#titan-div-14),
-[TITAN-DIV-15](/invoca-design-system/foundations/divergences#titan-div-15)), what "tab bar" and "tab" name on each
-side, and the vertical orientation, which is a navigation rail rather than a tab bar
-([TITAN-GAP-29](/invoca-design-system/foundations/open-decisions#titan-gap-29)).
+the states a tab carries, the id pairing the shipped `TabPanel` gets wrong, what "tab bar" and
+"tab" name on each side, and the vertical orientation, which is a navigation rail rather than a
+tab bar with no region of its own yet.
 
 ### Controls
 
@@ -176,7 +174,7 @@ side, and the vertical orientation, which is a navigation rail rather than a tab
 |---|---|---|
 | Filters, search, view switches | `Controls` | Changes what the body shows, never what the data *is*. |
 | — when the header has a tab bar | `Controls` | The header's second row is taken, so filters go **below** it. They filter the active section, not the choice of section. |
-| — when the header has no tab bar | — | Design intent puts the filters **in the header**; code has no second row, so `Controls` is where they land. See [TITAN-DIV-18](/invoca-design-system/foundations/divergences#titan-div-18). |
+| — when the header has no tab bar | — | Design intent puts the filters **in the header**; code has no second row, so `Controls` is where they land — see [Known issues](/invoca-design-system/views/overview/open-issues#known-issues). |
 
 ### Contents
 
@@ -222,21 +220,21 @@ where you came from. Putting anything else there costs you that.
 | Slot | Use | Constraint |
 |---|---|---|
 | Leading — backward | `Button` **tertiary** | At most one. Only in a multi-step flow. Never destructive. |
-| Trailing — commit and cancel | `Button` | Trailing-primary order. At most one primary — [TITAN-BTN-01](/invoca-design-system/components/actions/button#constraints). |
+| Trailing — commit and cancel | `Button` | Trailing-primary order. At most one primary. |
 
 <Note>
   **The leading slot is a convention, not a prop.** It is produced by setting
   `justifyContent: "space-between"` and wrapping the trailing buttons so they group as one child.
   The footer does not have a named slot for it, which means nothing enforces "one backward action,
-  tertiary, leftmost" — see [TITAN-GAP-25](/invoca-design-system/foundations/open-decisions#titan-gap-25).
+  tertiary, leftmost" — see [Known issues](/invoca-design-system/views/overview/open-issues#known-issues).
 </Note>
 
 <Warning>
   **Wrapping the trailing group costs you the footer's gap.** The footer spaces its *direct*
   children using `spacing-3`. Once the trailing buttons are wrapped to make space-between work,
   that gap no longer applies between them, and the group has to supply its own. The published
-  example uses a margin on a button to do it — which is exactly what
-  [TITAN-VIEW-08](#constraints) says not to do.
+  example uses a margin on a button to do it — which is exactly what region spacing coming only
+  from the frame says not to do.
 
   Use a `Stack` with a `spacing-*` token for the trailing group rather than a bare wrapper with
   margins.
@@ -259,7 +257,7 @@ and they hold across every archetype.
 | **State is visible, not inferred** | If the subject has a state that changes what you can do to it — draft, paused, archived — it is on the page as `Status`, not implied by which buttons are enabled. |
 | **One obvious next action** | At most one primary action per page. If two feel equally primary, the decision has not been made yet and is being handed to the reader. |
 | **The body is the page's job** | Header, controls, and footer exist to serve `Contents`. When chrome competes with the body for attention, the balance is wrong. |
-| **Commitment is deliberate, escape is easy** | The primary action sits last, dismissal is lightest and first. A page that is easy to leave and deliberate to submit — see [TITAN-BTN-02](/invoca-design-system/components/actions/button#constraints). |
+| **Commitment is deliberate, escape is easy** | The primary action sits last, dismissal is lightest and first. A page that is easy to leave and deliberate to submit. |
 | **A sequence can be walked backward** | Any page that is a step in a flow offers a way back to the previous step, in the footer's leading slot. Forward progress is never the only direction available. |
 | **Nothing important is only in a sticky region** | Sticky regions are a convenience for long pages, not a place to hide the only route to an action. |
 
@@ -290,7 +288,7 @@ user outlining the page sees tab labels only if they are in the tab bar's own se
 **The tab bar needs a name and a wired pair.** Give `Tabs` an `aria-label` describing what it
 divides — "Campaign sections", not "Tabs". Then each tab needs an `id` and an `aria-controls`
 pointing at its panel, and each panel an `aria-labelledby` pointing back. The frame does not do
-this for you and the shipped panel guesses wrong ([TITAN-DIV-14](/invoca-design-system/foundations/divergences#titan-div-14)).
+this for you and the shipped panel guesses wrong — see [Known issues](/invoca-design-system/views/overview/open-issues#known-issues).
 
 **Focus order.** Region order in the DOM matches visual order: header row, tab bar, controls, body,
 footer. Provide a skip link to `Contents` when the header and site chrome together exceed a few
@@ -299,8 +297,8 @@ nine sections does not cost nine stops on the way to the body.
 
 **Sticky regions must not obscure a focused element**
 ([WCAG 2.2 Focus Not Obscured, AA](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html)).
-Both `Header` and `Footer` can be sticky, and both can cover a focused control in a long body.
-See [TITAN-GAP-09](/invoca-design-system/foundations/open-decisions#titan-gap-09).
+Both `Header` and `Footer` can be sticky, and both can cover a focused control in a long body —
+see [Known issues](/invoca-design-system/views/overview/open-issues#known-issues).
 
 **Reflow.** The frame works at 320px equivalent without two-dimensional scrolling — a desktop
 page at 400% zoom, not a phone.

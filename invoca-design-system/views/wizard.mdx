@@ -23,13 +23,11 @@ needs. A page whose sections could be filled in any order is a
 This archetype extends the page frame in one place: **the header's second row gains a third
 occupant.** [Views overview](/invoca-design-system/views/overview#header-tab-bar) documents that
 row as holding exactly one of two things — a tab bar (`Tabs`) or a filter row (`Controls`-style),
-"never both," per [TITAN-VIEW-17](/invoca-design-system/views/overview#constraints). A Wizard
-adds a third candidate for that same row: a **step indicator**. This is an extension of the
-existing model, not a contradiction of it — the row still holds exactly one occupant at a time,
-and "never both" now reads as "never two of these three." A page is sectioned by `Tabs`, filtered
-by `Controls` in the header, or sequenced by a Wizard's steps — never two of those at once, for
-the same one-row reason [TITAN-VIEW-17](/invoca-design-system/views/overview#constraints) already
-states. See [TITAN-WIZARD-01](#constraints).
+never both. A Wizard adds a third candidate for that same row: a **step indicator**. This is an
+extension of the existing model, not a contradiction of it — the row still holds exactly one
+occupant at a time, and "never both" now reads as "never two of these three." A page is
+sectioned by `Tabs`, filtered by `Controls` in the header, or sequenced by a Wizard's steps —
+never two of those at once, for the same one-row reason the frame already states.
 
 | Region | Also called | The system uses |
 |---|---|---|
@@ -37,10 +35,9 @@ states. See [TITAN-WIZARD-01](#constraints).
 | Step | A page in the sequence, a screen | Not a separate region — one step's content is `Contents`, replaced as the reader advances |
 
 <Note>
-  **No stepper ships in code.** [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26)
-  records that nothing — no stepper, no step progress component — exists anywhere in the package.
-  What's proposed on this page is a design intent to build toward, not a component you can import
-  today.
+  **No stepper ships in code.** Nothing — no stepper, no step progress component — exists
+  anywhere in the package (see [Known issues](#known-issues)). What's proposed on this page is a
+  design intent to build toward, not a component you can import today.
 </Note>
 
 ## Choose this view when
@@ -57,7 +54,7 @@ states. See [TITAN-WIZARD-01](#constraints).
 
 | If the sections are actually… | Use | Why |
 |---|---|---|
-| Independent of each other, fillable in any order | [Full-page form](/invoca-design-system/views/full-page-form) | Per [CRUD: Create: TITAN-CREATE-03](/invoca-design-system/patterns/crud/create#constraints) — "a form with several independent sections is one page with a Table of Contents, not a Wizard." Forcing linear steps on independent content is friction with no organizing benefit. |
+| Independent of each other, fillable in any order | [Full-page form](/invoca-design-system/views/full-page-form) | Per [CRUD: Create](/invoca-design-system/patterns/crud/create#constraints)'s own rule — "a form with several independent sections is one page with a Table of Contents, not a Wizard." Forcing linear steps on independent content is friction with no organizing benefit. |
 | A single screen with a handful of fields | A [Dialog](/invoca-design-system/components/containment/dialog) | The object never reaches Density's "several sections" branch, so Sequence is never asked. |
 | Sections of an existing object's own subject, not a creation sequence | `Tabs` in the header's second row | A tab bar and a step indicator occupy the same row for different reasons — sections of a settled subject versus steps toward a not-yet-committed one. See [Region vocabulary](#region-vocabulary). |
 
@@ -75,18 +72,16 @@ states. See [TITAN-WIZARD-01](#constraints).
 
 ### Header — second row: the step indicator
 
-Per [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26), the design
-library already draws this: a **numbered step row with a short descriptor under each step**,
-matching the design library's `Timeline` header type, paired with a `Workflow` template. That's
-the shape this page proposes — not an invention, a citation of the one place the shape has
-already been drawn. No component ships it yet; building one is the open question
-[TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) leaves unresolved
-("whether it becomes a component, a pattern built from existing parts, or a property of the
-header alongside the tab bar").
+The design library already draws this: a **numbered step row with a short descriptor under each
+step**, matching the design library's `Timeline` header type, paired with a `Workflow` template.
+That's the shape this page proposes — not an invention, a citation of the one place the shape has
+already been drawn. No component ships it yet; building one is the open question this leaves
+unresolved — whether it becomes a component, a pattern built from existing parts, or a property
+of the header alongside the tab bar (see [Known issues](#known-issues)).
 
 | Slot | Use | Constraint |
 |---|---|---|
-| Step indicator | No shipped component — proposed shape only | At most one per page, in the header's second row. Mutually exclusive with `Tabs` and header-row `Controls` — see [TITAN-WIZARD-01](#constraints). |
+| Step indicator | No shipped component — proposed shape only | At most one per page, in the header's second row. Mutually exclusive with `Tabs` and header-row `Controls`. |
 | A step | A numbered marker plus a short label | States the step's name, not an action. Completed, current, and upcoming steps are visually distinct. |
 
 ### Header — Left and Right
@@ -113,13 +108,13 @@ once; here, only the current step is.
 The **leading-and-trailing arrangement**, cited from
 [Views overview: Footer](/invoca-design-system/views/overview#footer) rather than re-derived —
 a `Back` action in the leading slot, Cancel and a forward action trailing. `Back` is **tertiary**,
-per [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints), which reserves that slot
-for a backward action and nothing else — never secondary, never destructive.
+since the leading slot is reserved for a backward action and nothing else — never secondary,
+never destructive.
 
 | Slot | Use | Constraint |
 |---|---|---|
 | Leading — backward | `Button` **tertiary**, "Back" | At most one. Absent on the first step — there's nowhere to go back to. |
-| Trailing — forward and cancel | `Button` | Cancel first, forward action last. `Next` on every step but the last; on the last step the label states the actual commit — "Create Integration," not "Finish" — per [TITAN-CREATE-05](/invoca-design-system/patterns/crud/create#constraints)'s same reasoning. |
+| Trailing — forward and cancel | `Button` | Cancel first, forward action last. `Next` on every step but the last; on the last step the label states the actual commit — "Create Integration," not "Finish" — the same reasoning CRUD's own commit-label rule applies. |
 
 ```jsx
 {/* A middle step — Back present, forward label is "Next" */}
@@ -149,9 +144,9 @@ case — "a Wizard's step is left incomplete and the user navigates forward" is 
 inline message on the incomplete field" — this page inherits that behavior rather than deciding
 it separately. The message lands on the field itself, following
 [Form validation](/invoca-design-system/patterns/form-validation)'s general error-surfacing
-rules; the step indicator does not additionally carry the error — see
-[TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) for the parallel,
-still-open question of whether a section can show an error at the header level at all.
+rules; the step indicator does not additionally carry the error — a parallel, still-open
+question of whether a section can show an error at the header level at all (see
+[Known issues](#known-issues)).
 
 ### Leaving mid-wizard
 
@@ -165,11 +160,10 @@ Wizard specifically.
 <Note>
   **Whether a Wizard supports resuming a saved-but-incomplete flow later is a real, open
   question — not one this page has grounds to answer.** Nothing in [CRUD: Create](/invoca-design-system/patterns/crud/create),
-  [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation), or
-  [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) states whether
-  progress persists across a session so the reader can pick a multi-step flow back up later, or
-  whether leaving mid-flow simply discards it subject to the warning above. Treat this as
-  undecided rather than inferring an answer.
+  [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation), or the
+  step indicator's own open gap states whether progress persists across a session so the reader
+  can pick a multi-step flow back up later, or whether leaving mid-flow simply discards it
+  subject to the warning above. Treat this as undecided rather than inferring an answer.
 </Note>
 
 ## Responsive and density behavior
@@ -211,24 +205,30 @@ What is **specific to this archetype**:
 
 | ID | Constraint | Rationale |
 |---|---|---|
-| **TITAN-WIZARD-01** | The header's second row holds the step indicator, a tab bar, or header-row filters — never more than one of the three at once. | Extends [TITAN-VIEW-17](/invoca-design-system/views/overview#constraints)'s "never both" to a third candidate for the same one-row reason: it's one row, so a second occupant means one of them moved somewhere unstated. |
-| **TITAN-WIZARD-02** | The footer uses the leading-and-trailing arrangement: `Back` leading, Cancel and the forward action trailing. | Cited from [TITAN-VIEW-09](/invoca-design-system/views/overview#constraints) and [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints) — a Wizard is a step in a sequence, which is exactly the case that arrangement exists for. |
-| **TITAN-WIZARD-03** | `Back` is a tertiary button, at most one, absent on the first step. | Per [TITAN-VIEW-10](/invoca-design-system/views/overview#constraints) — the leading slot is for moving backward and nothing else; a first step has no previous step to return to. |
+| **TITAN-WIZARD-01** | The header's second row holds the step indicator, a tab bar, or header-row filters — never more than one of the three at once. | Extends the frame's "never both" to a third candidate for the same one-row reason: it's one row, so a second occupant means one of them moved somewhere unstated. |
+| **TITAN-WIZARD-02** | The footer uses the leading-and-trailing arrangement: `Back` leading, Cancel and the forward action trailing. | A Wizard is a step in a sequence, which is exactly the case that arrangement exists for. |
+| **TITAN-WIZARD-03** | `Back` is a tertiary button, at most one, absent on the first step. | The leading slot is for moving backward and nothing else; a first step has no previous step to return to. |
 | **TITAN-WIZARD-04** | `Contents` holds one step's fields at a time. Advancing replaces this region's contents; it never reveals a second step on the same scroll. | This is the structural fact that distinguishes a Wizard from a [Full-page form](/invoca-design-system/views/full-page-form), whose sections are all visible at once because they aren't sequential. |
 | **TITAN-WIZARD-05** | An incomplete step blocks the forward action with an inline message on the incomplete field. | Per [CRUD: Create](/invoca-design-system/patterns/crud/create#behavior)'s own statement of this exact case — this page cites it rather than re-deciding it. |
-| **TITAN-WIZARD-06** | The forward action reads "Next" on every step but the last; on the last step it states the actual commit. | Matches [TITAN-CREATE-05](/invoca-design-system/patterns/crud/create#constraints)'s reasoning — at the moment of commitment the button should say what it does, not a generic "Finish." |
+| **TITAN-WIZARD-06** | The forward action reads "Next" on every step but the last; on the last step it states the actual commit. | At the moment of commitment the button should say what it does, not a generic "Finish" — the same reasoning CRUD's own commit-label rule applies. |
 | **TITAN-WIZARD-07** | The step indicator states the current step and total count as text an assistive technology can read, not only through visual position (a filled dot). | Per [CRUD: Create](/invoca-design-system/patterns/crud/create#accessibility)'s existing "Step 2 of 4" requirement — inherited here, not re-derived. |
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) | Open decision | No stepper or step-progress component exists anywhere in the package. The numbered step row this archetype proposes is a citation of the one place the design library has already drawn the shape — a `Timeline` header type paired with a `Workflow` template — not a description of a shipped component. Whether it becomes a component, a pattern built from existing parts, or a header property alongside the tab bar is unresolved. |
+| [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | A tab can show an error in design and cannot in code — the parallel, still-open question of whether a step in this archetype's own indicator can carry an error signal at all. |
 
 ## Composed example
 
 <Warning>
-  **No live embed exists yet, and no component exists to embed.** Per
-  [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26), nothing in code
-  builds the step indicator this page proposes — the diagram below is structural (region names
-  and what's in them, no measurements or visual styling), the same way every Structure diagram in
-  [Patterns](/invoca-design-system/patterns/overview) is, and is a further step removed from a
-  real screen than [Full-page form](/invoca-design-system/views/full-page-form)'s equivalent
-  diagram: there, the regions exist in code; here, the second row's occupant does not.
+  **No live embed exists yet, and no component exists to embed.** Nothing in code builds the
+  step indicator this page proposes (see [Known issues](#known-issues)) — the diagram below is
+  structural (region names and what's in them, no measurements or visual styling), the same way
+  every Structure diagram in [Patterns](/invoca-design-system/patterns/overview) is, and is a
+  further step removed from a real screen than [Full-page form](/invoca-design-system/views/full-page-form)'s
+  equivalent diagram: there, the regions exist in code; here, the second row's occupant does not.
 </Warning>
 
 ```
@@ -254,7 +254,6 @@ What is **specific to this archetype**:
 - [Full-page form](/invoca-design-system/views/full-page-form) — the sibling archetype for independent, non-sequential sections
 - [CRUD: Create](/invoca-design-system/patterns/crud/create) — the decision tree that resolves to this page, and the source of the step-validity and commit-label behavior cited above
 - [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation) — the unsaved-edits guidance this page inherits
-- [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26) — the open gap this entire archetype is proposed against
 
 ## Why it works this way
 
@@ -278,6 +277,5 @@ showing them.
 page — Titan's design library was not available while writing it. It is built from general
 interaction-design practice and from the constraints [Views overview](/invoca-design-system/views/overview)
 and [CRUD: Create](/invoca-design-system/patterns/crud/create) already establish, plus the
-design-library finding recorded at [TITAN-GAP-26](/invoca-design-system/foundations/open-decisions#titan-gap-26).
-Treat every constraint below as a starting point to check against real product screens, not
-as a rule already enforced.
+design-library finding recorded in [Known issues](#known-issues). Treat every constraint below
+as a starting point to check against real product screens, not as a rule already enforced.
