@@ -36,6 +36,15 @@ flowchart TD
   better investment over adding a dialog.
 </Tip>
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Destructive | Dangerous, unsafe, irreversible | **Destructive** — an action that removes or hides data, whether or not it can eventually be recovered |
+| Confirm | Verify, double-check, "are you sure" | **Confirm** — a deliberate second step the reader takes before a destructive action runs |
+| Cascade | Dependent deletion, cleanup | **Cascade** — a destructive action's effect on objects the reader did not directly select |
+| Undo | Revert, rollback, unwind | **Undo** — reversing an action within the same session, with no confirmation step at all |
+
 ## When this applies
 
 - The action is not reversible by the user without contacting support.
@@ -238,6 +247,36 @@ else disappeared only after confirming — see [TITAN-DESTROY-10](#constraints).
 **Treating "orphaned" and "deleted" as the same outcome in the dialog copy.** They leave the
 product in different states, and the reader needs to know which one they're choosing — see
 [TITAN-DESTROY-11](#constraints).
+
+## Known issues
+
+No divergence or open decision is currently recorded specifically for Destructive
+confirmation. The nearest related entry is
+[TITAN-DIALOG-01](/invoca-design-system/components/containment/dialog#constraints)'s
+raw-`Dialog`-vs-`Modal` naming, inherited by composition rather than specific to this pattern.
+
+## Gaps in the current rules
+
+- Whether a grace-period "scheduled destructive" action (see [Variations](#variations)) needs
+  its own cancellation UI beyond stating the deletion date.
+- What happens when the object being deleted was already removed by someone else between the
+  dialog opening and the confirm press — a stricter case than a simple re-fetch resolves.
+- Whether typed confirmation's match is case-sensitive, and whether it tolerates trailing
+  whitespace. Neither is stated anywhere.
+
+## Why it works this way
+
+**Friction is the scarce resource this pattern spends.** A dialog only protects the reader if
+seeing one still means something, and every dialog shown for a low-consequence action spends
+down the attention the next, real one needs. That's why [TITAN-DESTROY-01](#constraints)
+reserves confirmation for what undo cannot cover, rather than defaulting to a dialog whenever an
+action is labeled "delete" — a product that confirms everything has, in practice, stopped
+confirming anything.
+
+**Three tiers exist because friction that doesn't match consequence fails in both directions.**
+Tier 3's typed confirmation only works because it is rare; using it at tier 2's frequency would
+train the same click-through reflex a dialog is meant to prevent. Matching the tier to what's
+actually at stake is what keeps the heaviest tier effective.
 
 ## Related
 

@@ -43,6 +43,14 @@ flowchart TD
   distinction itself is design intent already recorded.
 </Tip>
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Select all | Select everything, check all | Ambiguous on its own — this page always qualifies it: **select all on page**, or **select all N matching** |
+| Selection bar | Bulk action bar, toolbar | **Selection bar** — appears once anything is selected; states the count and scope, holds the bulk actions |
+| Scope | Selection scope | **Scope** — which rows a selection actually covers: the current page, or every row matching the active filter |
+
 ## When this applies
 
 - A reader needs to act on more than one row at a time, on the same data type, with the same
@@ -164,6 +172,47 @@ didn't choose in this view.
 selection because most of it worked hides the two rows that didn't; failing the whole batch
 because two rows errored discards eighteen that succeeded. Either one makes the reader redo
 work that already happened correctly.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-19](/invoca-design-system/foundations/divergences#titan-div-19) | Divergence | The design library specifies a header-checkbox menu with "Select all *n* items," "Select all on page," and "Deselect all" — none of it exists in code. This pattern is that menu's specification, per [TITAN-BULK-03](#constraints), not a competing proposal. |
+| [TITAN-GAP-33](/invoca-design-system/foundations/open-decisions#titan-gap-33) | Open decision | No indeterminate/mixed checkbox state exists in the design library, so [TITAN-BULK-04](#constraints) settles for the bar's count as the only signal of a partial selection. |
+| [TITAN-DIV-20](/invoca-design-system/foundations/divergences#titan-div-20) / [TITAN-GAP-04](/invoca-design-system/foundations/open-decisions#titan-gap-04) | Divergence / Open decision | `background-hover` and `background-selected` resolve to the same value — a hovered row and a selected row currently look identical, which is why [TITAN-BULK-05](#constraints) doesn't rely on fill color to carry selection state. |
+
+## Gaps in the current rules
+
+- What "select all N matching" should do if N is large enough that running the action
+  synchronously would time out — [Variations](#variations) gestures at a background job without
+  naming a threshold.
+- Whether a retry after a partial failure should re-fetch the rows first, in case they changed
+  between the first attempt and the retry.
+- Whether selection should ever persist across a page reload within the same session, rather
+  than clearing unconditionally.
+
+## Why it works this way
+
+**The header checkbox is scoped to the page, never to everything, because "select all" over a
+filtered table has no single obvious meaning.** [TITAN-BULK-03](#constraints) resolves the
+ambiguity by making the larger scope a separate, explicitly-labeled action rather than an
+implicit consequence of the same click — a reader who wanted the page gets the page, and a
+reader who wanted everything has to say so.
+
+**Selection clears on any change to the underlying result set because a selection is a claim
+about specific rows, not a count.** [TITAN-BULK-06](#constraints) treats a changed filter as a
+changed context entirely — carrying four selected rows across a filter change silently
+redefines what "those four" refers to, and the reader never agreed to that redefinition.
+
+## Related
+
+[Table](/invoca-design-system/components/data-display/table) and
+[List](/invoca-design-system/components/data-display/list), the two containers this pattern
+selects from. [Checkbox](/invoca-design-system/components/forms/checkbox), the row and header
+controls. [Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation),
+for the bulk-destructive variation a destructive batch action routes through.
+[Filtering & search](/invoca-design-system/patterns/filtering-and-search), for the narrowing
+that precedes selection and clears it on change.
 
 ## Status
 

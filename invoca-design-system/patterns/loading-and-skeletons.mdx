@@ -41,6 +41,14 @@ flowchart TD
   confidently wrong one — see [TITAN-SKL-02](/invoca-design-system/components/feedback/skeleton#constraints).
 </Tip>
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Skeleton | Placeholder, shimmer, wireframe loader | **Skeleton** — a placeholder matching the known shape of incoming content |
+| Spinner | Loader, throbber | **Spinner** — activity with no known shape and no measurable progress |
+| Determinate | Measured, quantified | **Determinate** — a wait with a real, reportable amount of progress, shown by ProgressBar |
+
 ## When this applies
 
 - Content whose eventual layout — line count, widths, roughly how many rows or fields — is
@@ -155,6 +163,45 @@ pick one and stay consistent within a screen.
 **Rebuilding the skeleton screen per application.** The pattern this page exists to prevent has
 already happened three times over — see [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31).
 A composed skeleton screen worth naming is worth sharing.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) | Open decision | Skeleton — the component this page leans on most — carries no theme overrides, no tokens, and no representation in the design library at all, despite being the most-used component in this area (132 usages across 13 applications). Three applications have independently built the same `TabLoadingSkeleton`. |
+| [TITAN-GAP-08](/invoca-design-system/foundations/open-decisions#titan-gap-08) | Open decision | Reduced motion is unimplemented at the token layer — seven durations exist and none has a reduced variant, which is why [TITAN-LOADING-07](#constraints) is a call-site workaround rather than a fix. |
+
+## Gaps in the current rules
+
+- Where the exact line sits between "well under a second" (show nothing) and "noticeable" (show
+  an indicator) — this page names the shape of the threshold without a specific number beyond
+  [TITAN-LOADING-02](#constraints)'s ~300ms.
+- What a ProgressBar should do when the underlying measurement stalls — hold its last known
+  value, or show some "no progress" signal distinct from a hang.
+- Whether a skeleton screen, once built once and shared per [TITAN-LOADING-06](#constraints),
+  should live as a Titan export or stay an application-level composition — the constraint says
+  "shared," not where.
+
+## Why it works this way
+
+**The decision runs on what's actually known, not on which primitive looks best, because each of
+the three makes a different claim and a wrong claim costs the reader something specific.** A
+skeleton claims to know the shape; get that wrong and the page visibly jumps on load, which is
+worse than the blank moment a spinner would have shown honestly instead.
+
+**The threshold in [TITAN-LOADING-02](#constraints) exists because an indicator's failure mode
+below that point isn't "unnecessary" — it's actively worse than nothing.** A shape that appears
+and vanishes before a reader can register what it was reads as a flicker, not as helpful feedback
+withheld; the fix is omission, not a faster or smaller version of the same indicator.
+
+## Related
+
+[Skeleton](/invoca-design-system/components/feedback/skeleton),
+[Spinner](/invoca-design-system/components/feedback/spinner), and
+[ProgressBar](/invoca-design-system/components/feedback/progress-bar), the three primitives this
+pattern chooses between. [Error handling](/invoca-design-system/patterns/error-handling), the
+handoff once a wait exceeds its timeout. [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states),
+what a load resolves to when it succeeds with nothing to show.
 
 ## Status
 

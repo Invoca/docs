@@ -44,6 +44,14 @@ flowchart TD
     H -->|No, nothing loaded| J[Full-page or full-region error state:<br/>EmptyState with the error illustration]
 ```
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Failure | Error, exception | **Failure** — a deterministic, exception-based non-success: a rejected request, a timeout, a failed load |
+| Retry | Try again, reattempt | **Retry** — re-attempting the same failed action, either once silently or repeatedly at the reader's request |
+| Partial failure | Mixed result | **Partial** — a load or batch action where some, but not all, of the attempt succeeded |
+
 ## When this applies
 
 - An action the reader took — save, submit, delete, export — did not complete successfully.
@@ -157,6 +165,45 @@ to stop waiting.
 **A disabled control as the only sign that something failed.** Indistinguishable from "you
 don't have permission," "select a row first," or a bug — three different messages that all
 render identically with nothing said.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component in Titan expresses a failed action today, checked directly against source. There's a `loading` state and a `disabled` state, and nothing between them. Everything this page proposes is a way to improvise that gap consistently, not a description of a shipped primitive. |
+
+## Gaps in the current rules
+
+- What the exact threshold is before a "recurring failure" message ([TITAN-ERRHANDLE-09](#constraints))
+  replaces a plain retry message — this page names the behavior without naming the count.
+- Whether a background, silent retry ([TITAN-ERRHANDLE-06](#constraints)'s single automatic
+  attempt) should ever be configurable per action, or is always exactly one.
+- What a reader sees for a failure that recurs mid-retry, after they've already pressed Retry
+  once by hand — whether the control re-enters `loading` identically or signals that this is a
+  second attempt.
+
+## Why it works this way
+
+**Where a failure renders is decided by the same test at every level of the composition — is
+there already a place, right next to what failed, to say so?** A control's own space, a Dialog,
+a region above stale content — each is the closest available surface, chosen in that order,
+rather than a single default like Toast that would be right for none of them.
+
+**Keeping stale content on screen during a partial failure is the harder-to-build choice, and
+it's made anyway because the alternative destroys real information.**
+[TITAN-ERRHANDLE-03](#constraints) could be satisfied more simply by clearing the region and
+showing only the error — the constraint exists because what the reader already had and what
+just failed are both worth keeping visible at once.
+
+## Related
+
+[Alert](/invoca-design-system/components/feedback/alert) and
+[Toast](/invoca-design-system/components/feedback/toast), the two surfaces a failure renders
+through. [EmptyState](/invoca-design-system/components/data-display/empty-state), for a full
+load failure with nothing to preserve. [Empty & zero states](/invoca-design-system/patterns/empty-and-zero-states),
+the sibling pattern for the non-failure case an empty region can also mean.
+[Destructive confirmation](/invoca-design-system/patterns/destructive-confirmation), for a
+dialog's own failure behavior this page follows rather than restates.
 
 ## Status
 

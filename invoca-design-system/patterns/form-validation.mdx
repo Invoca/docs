@@ -39,6 +39,14 @@ flowchart TD
   mid-keystroke reads as the form being broken rather than helpful.
 </Tip>
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Validate | Check, verify | **Validate** — testing a field's value against a rule, at a defined moment (as-you-type, on blur, or on submit) |
+| Error summary | Error banner, validation summary | **Page-level error summary** — a list of every invalid field, used only once a form is long or tabbed enough that an invalid one can be out of view |
+| Blur | Focus-out, on-leave | **Blur** — the moment focus leaves a field, the default point to validate a field judgeable on its own |
+
 ## When this applies
 
 - A form has one or more fields whose values need to be checked against a rule before the form
@@ -166,6 +174,36 @@ future version will surface a per-tab error marker is building against
 [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) as if it were
 already closed. It isn't — the page-level summary is required precisely because the tab bar can't
 do this today.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-30](/invoca-design-system/foundations/open-decisions#titan-gap-30) | Open decision | The design library specifies an `Error` display state for a tab; the shipped tab component has no equivalent, so an invalid field on an unopened tab has no per-tab signal — [TITAN-FORMVAL-05](#constraints)'s page-level summary exists specifically to work around this. |
+
+## Gaps in the current rules
+
+- Whether a field's error should persist if the reader navigates to a different tab and back
+  without correcting it, or whether re-focusing it should re-check silently.
+- Whether an async, round-trip validation (a uniqueness check, an availability check) needs its
+  own transient loading state on the field, distinct from the form's overall submit-in-flight
+  state — [Structure](#structure) and [Behavior](#behavior) don't cover it.
+- What a reader sees between pressing Submit and a round-trip validation's result returning, for
+  a field that depends on a server check.
+
+## Why it works this way
+
+**Timing and placement are two separate decisions because they fail independently.** A field
+validated at the right moment but reported in the wrong place still sends the reader hunting; a
+field reported in the right place but checked too early still reads as broken before it's
+finished. Treating them as one decision is how a page ends up validating everything as-you-type
+simply because that's also when it happens to render the message closest to the field.
+
+**The page-level summary is a concession to a gap, not a preferred pattern.**
+[TITAN-FORMVAL-04](#constraints) restricts it to long or tabbed forms specifically because a
+summary above a form the reader can already see whole just repeats what the field-level message
+already says. It earns its place only where TITAN-GAP-30 leaves no other way to point at an
+invalid field the reader isn't looking at.
 
 ## Related
 

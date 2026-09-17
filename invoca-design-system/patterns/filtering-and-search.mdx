@@ -23,6 +23,22 @@ options. A user who wants to describe what they're after in their own words, wit
 which field holds it, needs something to interpret that request first. This page is the
 deterministic half of that fork; see [When it doesn't](#when-it-doesnt) for the other half.
 
+## The solution
+
+Filters and search compose into one small system rather than two separate ones: a discrete
+choice against a known field renders as a removable chip in a dedicated active-filters row;
+free-text search debounces before it queries; and the combined state — every filter, the search
+text — lives in the URL, so a narrowed view is exactly as linkable and durable as any other page.
+[Structure](#structure) below is that system's concrete parts.
+
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Filter | Facet, refinement | **Filter** — a discrete, enumerable choice against one known field |
+| Search | Query, search box | **Search** — free-text matching against one or more fields, debounced before it runs |
+| Active filter | Applied filter | **Chip** — the removable representation of one applied filter, in a row separate from the controls that set it |
+
 ## When this applies
 
 - The list is longer than fits in one view, and the reader needs a subset matching criteria they
@@ -144,6 +160,33 @@ do next.
 
 **A "clear all" that only clears some of the state.** If search text survives a "clear all" that
 visibly cleared every filter chip, the reader has no reason to expect the list is still narrowed.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-27](/invoca-design-system/foundations/open-decisions#titan-gap-27) | Open decision | Pagination has no home in the page frame, and three unreconciled implementations exist. [TITAN-FSEARCH-08](#constraints) follows that gap's own "Direction" note rather than re-deciding where a narrowed result set's pagination lives. |
+
+## Gaps in the current rules
+
+- Whether a filter combination should ever be savable as a named view the reader returns to,
+  rather than reconstructed from the URL each time.
+- What happens when a filter's own option list is itself long enough to need its own search —
+  this page assumes a Select's options are already short enough to pick from directly.
+- Whether search should ever match across more fields than it's explicitly scoped to, and how
+  that scope is communicated to the reader.
+
+## Why it works this way
+
+**Filters and search share one active-filters row because the reader doesn't experience them as
+two systems.** Whatever narrowed the list — a typed word or a chosen status — the question "why
+don't I see everything" has one answer, and it should be answered from one place, not by
+checking a search box and a row of Selects separately.
+
+**State lives in the URL because a narrowed view that can't be linked or reloaded stops being a
+real view.** [TITAN-FSEARCH-05](#constraints) isn't a convenience — a filtered list a reader
+can't bookmark, share, or return to via the back button is functionally invisible to everything
+outside the single session that created it.
 
 ## Related
 

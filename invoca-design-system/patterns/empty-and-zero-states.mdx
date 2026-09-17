@@ -37,6 +37,14 @@ flowchart TD
     D -->|No| F[Zero state — nothing created yet]
 ```
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Zero state | First-run, blank slate | **Zero state** — nothing has been created yet; reserved for the "hasn't been created" case specifically |
+| No-results state | Empty search, no matches | **No-results state** — data exists; a filter, search, or query excluded all of it |
+| EmptyState | *(the component both states below are built from)* | **EmptyState** — the illustration, title, and supporting-line component composed for either state |
+
 ## When this applies
 
 - A region that normally holds content currently has none, and the load that would have
@@ -150,6 +158,45 @@ cases, and indistinguishable from a bug no matter which of the three actually ha
 actual cause is a failed request hides that something needs fixing, and sends the reader down
 the wrong path — creating a record that already exists, or waiting for data that will never
 arrive because the load never ran.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-DIV-22](/invoca-design-system/foundations/divergences#titan-div-22) | Divergence | `EmptyState` renders its supporting line as a heading element, checked against source — a reader relying on the document outline encounters a second heading where design intent expects body text. |
+
+## Gaps in the current rules
+
+- Whether a zero state's resolving action should differ when the reader lacks permission to
+  create the first record, beyond simply omitting the button — [Variations](#variations) names
+  the omission but not what replaces it.
+- What a no-results state should say when the search or filter is itself malformed (an invalid
+  date range, a query with no valid tokens), as opposed to well-formed but unmatched.
+- Whether a table's sortable, filterable controls should stay interactive during a zero state,
+  or disable until content exists.
+
+## Why it works this way
+
+**Naming which of the three cases applies is the whole job, because the cost of getting it
+wrong is asymmetric and silent.** A reader told "no results" when they've created nothing yet,
+or told "get started" when their search just missed, doesn't see an error — they see an
+interface that's confidently wrong, and correcting that requires them to already suspect it,
+which most readers won't.
+
+**The failed-load case is routed elsewhere rather than folded in as a fourth option, because
+"empty" and "broken" are not degrees of the same thing.** [TITAN-ZERO-02](#constraints) exists
+so this pattern never has to guess whether an empty region is empty on purpose — that
+distinction belongs to [Error handling](/invoca-design-system/patterns/error-handling), which
+knows whether the load actually succeeded.
+
+## Related
+
+[EmptyState](/invoca-design-system/components/data-display/empty-state), the component this
+pattern composes for both cases. [Empty state copy](/invoca-design-system/content/empty-state-copy),
+the copy rules [Content](#content) follows rather than restates.
+[Error handling](/invoca-design-system/patterns/error-handling), for the failed-load case this
+pattern explicitly excludes. [Welcome / empty state](/invoca-design-system/ai-experience/actions/welcome-empty-state),
+the AI-driven counterpart for an agentic panel's first run or empty result.
 
 ## Status
 

@@ -38,6 +38,14 @@ flowchart TD
   someone can check against real usage. "This feels advanced" is not.
 </Tip>
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Disclosure | Show more, expand/collapse | **Disclosure** — deferring genuinely secondary content behind an action, scoped to how much of the page it affects |
+| Trigger | Toggle, expander | **Trigger** — the control that opens or closes the disclosed region; always labeled with what it reveals |
+| Secondary | Advanced, optional | **Secondary** — used by a minority of users in a minority of sessions, per the heuristic above, not "feels advanced" |
+
 ## When this applies
 
 - The content is genuinely secondary or advanced, by the heuristic above — not merely "would
@@ -152,6 +160,42 @@ so every list of mutually exclusive sections either gets this built fresh or get
 it — a smaller version of the same duplication
 [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) records for
 skeleton screens.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-31](/invoca-design-system/foundations/open-decisions#titan-gap-31) | Open decision | Accordion carrying no group state of its own is a smaller version of the same per-application-rebuilding cost this gap already measures for skeleton screens — see [Anti-patterns](#anti-patterns). |
+
+## Gaps in the current rules
+
+- Whether disclosure state should persist across a page reload or a later session —
+  [Behavior](#behavior) already flags this as undecided rather than guessing.
+- What the actual usage threshold is behind "a minority of users in a minority of sessions" —
+  the heuristic is stated as testable, but no specific percentage is set anywhere in Titan.
+- Whether a "Show more" link's revealed rows should animate into place or simply appear, and
+  whether that differs from an Accordion's own expand transition.
+
+## Why it works this way
+
+**The three disclosure mechanisms are matched to scope, not to preference, because the cost of
+getting the scope wrong is different in each direction.** Using an Accordion for what should be
+its own settings tab hides an entire area behind a control a reader might never notice was
+there. Using a settings tab for two fields sends the reader on a navigation for something that
+fit in the space of a single click.
+
+**The heuristic is written to be checkable, because "this feels advanced" is exactly the kind of
+claim that never gets revisited.** A stated threshold — a percentage of accounts, a percentage
+of sessions — is either true or it isn't, and can be re-measured as usage changes; a feeling has
+no such correction.
+
+## Related
+
+[Accordion](/invoca-design-system/components/containment/accordion), the component this
+pattern's collapsible-section variant composes. [Tabs](/invoca-design-system/components/navigation/tabs),
+for the settings-tab variant when the secondary area is large enough to be its own screen.
+[Form validation](/invoca-design-system/patterns/form-validation), for the validation-error
+exception to the collapsed-by-default rule.
 
 ## Status
 

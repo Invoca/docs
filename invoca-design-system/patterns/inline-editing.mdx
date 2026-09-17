@@ -38,6 +38,14 @@ flowchart TD
   ground instead.
 </Tip>
 
+## Vocabulary
+
+| Term | Also called | The system uses |
+|---|---|---|
+| Resting | Display mode, view mode, read state | **Resting** — the value shown as plain text before editing starts |
+| Commit | Save, confirm, apply | **Commit** — accepting the new value and returning to resting state |
+| Cancel | Discard, revert, undo | **Cancel** — reverting to the original value with no save attempted |
+
 ## When this applies
 
 - The value is a single field, and changing it has no side effects on other data.
@@ -156,6 +164,34 @@ indication that clicking away committed something bigger than the one visible fi
 **No keyboard equivalent for commit or cancel.** Requiring a mouse click on a tiny icon to save
 or discard an inline edit, with no <kbd>Enter</kbd> or <kbd>Escape</kbd> alternative, breaks a
 convention every reader already expects from editing text anywhere else.
+
+## Known issues
+
+| ID | Kind | What |
+|---|---|---|
+| [TITAN-GAP-22](/invoca-design-system/foundations/open-decisions#titan-gap-22) | Open decision | No component in Titan expresses a failed action today — there is a `loading` state and a `disabled` state, and nothing between them for failure. [TITAN-INLINE-05](#constraints)'s inline error treatment is this page's proposal for what fills that gap, not a description of an existing primitive. |
+
+## Gaps in the current rules
+
+- Whether committing one inline edit should be blocked while another inline edit on the same
+  row or page is still open and uncommitted.
+- What happens to an in-progress inline edit if the underlying record is deleted, or changed by
+  someone else, while the reader is still typing.
+- Whether a long-running commit needs its own loading treatment on the field, beyond what
+  [Behavior](#behavior) currently describes.
+
+## Why it works this way
+
+**Inline editing borrows <kbd>Enter</kbd> and <kbd>Escape</kbd> rather than inventing its own
+commit gesture, because the convention already exists everywhere else text is edited.** A
+reader who has never seen this specific composition still knows what those two keys do the
+moment the field becomes editable — [TITAN-INLINE-03](#constraints) is deliberately unoriginal.
+
+**The failed-save behavior in [TITAN-INLINE-05](#constraints) is argued from the same principle
+as a failed destructive action, not derived independently.** Reverting silently on failure and
+closing a dialog on failure destroy the same thing — the reader's belief that their input is
+still there. Once one of those cases is settled, the other isn't a new decision; it's the same
+decision applied to a different surface.
 
 ## Related
 
